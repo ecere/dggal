@@ -30,6 +30,11 @@ int levelInfo(DGGRS dggrs, int level, Map<String, const String> options, bool as
 
       PrintLn($"Assuming sub-zone depth of ", depth, $" and display resolution of ", mmPerPixel, $" mm/pixel:");
 
+      // The "meters/sub-zone" is the length of a square with same area as a hexagon
+      // divide by sqrt(pi)/2        = 0.8862269254528 (x ~1.1283791671) for the diameter of a circle with same area
+      // divide by sqrt(1.5*sqrt(3)) = 1.6118548977353 (x ~0.6204032394) for the measure of a hexagon's edge / radius of circumscribed circle
+      // divide by sqrt(pi)          = 1.7724538509055 (x ~0.5641895835) for the radius of a circle with same area
+      // divide by 2*sqrt(sqrt(3)/2) = 1.8612097182042 (x ~0.5372849659) for the measure of a hexagon's apothem
       PrintLn($"Level       Reference Area                             Sub-zones count        Sub-zone area                                                 Scale                   Meters/Sub-zone");
       PrintLn("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
       for(level = 0; level <= maxLevel; level++)

@@ -23,8 +23,8 @@ The DGGAL library also allows to resolve a sub-zone index at a particular depth 
 
 A very early draft of the API documentation can be [found here](https://dggal.org/docs/html/dggal/Classes/DGGRS.html).
 
-While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C and Python generated using the
-Ecere SDK's [`bgen` tool](https://github.com/ecere/ecere-sdk/tree/latest/bgen) are provided. Support for additional languages will be added in the future, starting with C++.
+While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
+Ecere SDK's [`bgen` tool](https://github.com/ecere/ecere-sdk/tree/latest/bgen) are provided. Support for additional languages may be added in the future.
 
 ## Pre-built binaries
 
@@ -55,11 +55,17 @@ A future version of the Ecere SDK will be better modularized so as to avoid thes
 
 C bindings are [available here](https://github.com/ecere/dggal/tree/main/bindings/c).
 
-A C example implementing the `dgg info` command using the DGGAL C bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/c/info/info.c).
+A C example implementing the `dgg info` command using the DGGAL C bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/c/info.c).
+
+### C++ Bindings
+
+C++ bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/cpp).
+
+A C++ example implementing the `dgg info` command using the DGGAL C++ bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/cpp/info.cpp).
 
 ### Python Bindings
 
-Python bindings are [available here](https://github.com/ecere/dggal/tree/main/bindings/py).
+Python bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/py).
 
 A Python example using the DGGAL Python bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/py/info.py).
 
@@ -126,16 +132,16 @@ A Python example using the DGGAL Python bindings is [available here](https://git
 EPSG:4326, OGC:CRS84, ISEA, 5x6
 
 **-depth** <_relative depth_>
-- For sub, specify relative depth  
-Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels  
+- For sub, specify relative depth
+Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels
 default: depth corresponding to ~64K sub-zones (ISEA: 5, ISEA3H: 10, GNOSIS: 8)
 
 **-bbox** <_llLat,llLon,urLat,urLon_>
-- Specify extent for which to list zones, generate grid, or reference extent for -pixels  
+- Specify extent for which to list zones, generate grid, or reference extent for -pixels
 example: -bbox 60,-120,62,-118 -- specified in EPSG:4326 (lat,lon)
 
 **-centroids**
-- For sub, list centroids instead of sub-zone identifiers  
+- For sub, list centroids instead of sub-zone identifiers
 For togeo, use centroid points for geometry instead of polygons
 
 **-compact**

@@ -185,7 +185,7 @@ int main(int argc, char * argv[])
       {
          const char * value = argv[a++];
          T(MapIterator, String, constString) it = { options };
-         Iterator_index((Iterator *)&it, TAp((void *)key+1), true);
+         Iterator_index((Iterator *)&it, TAp((void *)(key+1)), true);
          Iterator_setData((Iterator *)&it, TAp((void *)value));
       }
       else

@@ -1,0 +1,107 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "info",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "../../bindings/c"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "info",
+      "Libraries" : [
+         "ecere"
+      ],
+      "LibraryDirs" : [
+         "../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereVanilla"
+            ],
+            "LibraryDirs" : [
+               "../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
+            ],
+            "FastMath" : true
+         },
+         "Platforms" : [
+            {
+               "Name" : "linux",
+               "Options" : {
+                  "Libraries" : [
+                     "dggalStatic",
+                     "X11",
+                     "Xext",
+                     "Xrender",
+                     "m",
+                     "dl",
+                     "pthread",
+                     "curses",
+                     "z"
+                  ]
+               }
+            },
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "kernel32",
+                     "gdi32",
+                     "user32",
+                     "winmm",
+                     "mpr",
+                     "imm32",
+                     "z",
+                     "dggalStatic"
+                  ]
+               }
+            }
+         ]
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "bindings",
+         "Files" : [
+            "../../bindings/c/eC.c",
+            "../../bindings/c/eC.h",
+            "../../bindings/c/ecere.c",
+            "../../bindings/c/ecere.h",
+            "../../bindings/c/dggal.c",
+            "../../bindings/c/dggal.h"
+         ]
+      },
+      "info.c"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

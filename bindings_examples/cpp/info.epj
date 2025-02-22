@@ -4,7 +4,8 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "../../../bindings/c"
+         "../../bindings/c",
+         "../../bindings/cpp"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "info",
@@ -12,7 +13,7 @@
          "ecere"
       ],
       "LibraryDirs" : [
-         "../../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)"
+         "../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)"
       ],
       "Console" : true
    },
@@ -39,7 +40,7 @@
       {
          "Name" : "Static",
          "Options" : {
-            "Debug" : true,
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC"
             ],
@@ -47,8 +48,9 @@
                "ecereVanilla"
             ],
             "LibraryDirs" : [
-               "../../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
-            ]
+               "../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
+            ],
+            "FastMath" : true
          },
          "Platforms" : [
             {
@@ -89,15 +91,36 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "../../../bindings/c/eC.c",
-            "../../../bindings/c/eC.h",
-            "../../../bindings/c/ecere.c",
-            "../../../bindings/c/ecere.h",
-            "../../../bindings/c/dggal.c",
-            "../../../bindings/c/dggal.h"
+            {
+               "Folder" : "cpp",
+               "Files" : [
+                  "../../bindings/cpp/dggal.cpp",
+                  "../../bindings/cpp/dggal.hpp",
+                  "../../bindings/cpp/eC.cpp",
+                  "../../bindings/cpp/eC.hpp",
+                  "../../bindings/cpp/ecere.cpp",
+                  "../../bindings/cpp/ecere.hpp"
+               ]
+            },
+            {
+               "Folder" : "c",
+               "Files" : [
+                  "../../bindings/c/dggal.c",
+                  "../../bindings/c/dggal.h",
+                  "../../bindings/c/eC.c",
+                  "../../bindings/c/eC.h",
+                  "../../bindings/c/ecere.c",
+                  "../../bindings/c/ecere.h"
+               ],
+               "Options" : {
+                  "PreprocessorDefinitions" : [
+                     "ECPRFX=eC_"
+                  ]
+               }
+            }
          ]
       },
-      "info.c"
+      "info.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [

@@ -93,7 +93,7 @@ enum C(JSONSchemaType)
 };
 
 // end -- moved backwards outputs
-#define nullZone (0xFFFFFFFFFFFFFFFFLL)
+#define nullZone ((C(DGGRSZone))(0xFFFFFFFFFFFFFFFFLL))
 
 #define wgs84InvFlattening (298.257223563)
 
@@ -662,7 +662,7 @@ struct CM(JSONSchema)
    C(Array) allOf;
    C(Array) anyOf;
    C(Array) oneOf;
-   C(JSONSchema) not;
+   C(JSONSchema) _not;
    C(String) xogcrole;
    int xogcpropertySeq;
 };

@@ -65,9 +65,9 @@ _OBJECTS = \
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	../../../bindings/c/eC.c \
-	../../../bindings/c/ecere.c \
-	../../../bindings/c/dggal.c \
+	../../bindings/c/eC.c \
+	../../bindings/c/ecere.c \
+	../../bindings/c/dggal.c \
 	info.c
 
 RESOURCES =
@@ -86,9 +86,9 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 -g $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DECERE_STATIC \
-			 -I../../../bindings/c
+			 -I../../bindings/c
 
 ECFLAGS += -module $(MODULE)
 # PLATFORM-SPECIFIC OPTIONS
@@ -130,7 +130,7 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../../../obj/static.$(PLATFORM)$(COMPILER_CONFIG))
+	 -L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_CONFIG))
 endif
 
 # TARGETS
@@ -148,6 +148,9 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
 	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
+ifndef NOSTRIP
+	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
 else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
@@ -170,14 +173,14 @@ endif
 
 # OBJECT RULES
 
-$(OBJ)eC$(O): ../../../bindings/c/eC.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/eC.c) -o $(call quote_path,$@)
+$(OBJ)eC$(O): ../../bindings/c/eC.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/eC.c) -o $(call quote_path,$@)
 
-$(OBJ)ecere$(O): ../../../bindings/c/ecere.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/ecere.c) -o $(call quote_path,$@)
+$(OBJ)ecere$(O): ../../bindings/c/ecere.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecere.c) -o $(call quote_path,$@)
 
-$(OBJ)dggal$(O): ../../../bindings/c/dggal.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/dggal.c) -o $(call quote_path,$@)
+$(OBJ)dggal$(O): ../../bindings/c/dggal.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/dggal.c) -o $(call quote_path,$@)
 
 $(OBJ)info$(O): info.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,info.c) -o $(call quote_path,$@)

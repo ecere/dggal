@@ -65,9 +65,9 @@ _OBJECTS = \
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	../../../bindings/c/eC.c \
-	../../../bindings/c/ecere.c \
-	../../../bindings/c/dggal.c \
+	../../bindings/c/eC.c \
+	../../bindings/c/ecere.c \
+	../../bindings/c/dggal.c \
 	info.c
 
 RESOURCES =
@@ -87,14 +87,14 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I../../../bindings/c
+			 -I../../bindings/c
 
 ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../../../obj/release.$(PLATFORM)$(COMPILER_CONFIG))
+	 -L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_CONFIG))
 endif
 
 # TARGETS
@@ -137,14 +137,14 @@ endif
 
 # OBJECT RULES
 
-$(OBJ)eC$(O): ../../../bindings/c/eC.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/eC.c) -o $(call quote_path,$@)
+$(OBJ)eC$(O): ../../bindings/c/eC.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/eC.c) -o $(call quote_path,$@)
 
-$(OBJ)ecere$(O): ../../../bindings/c/ecere.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/ecere.c) -o $(call quote_path,$@)
+$(OBJ)ecere$(O): ../../bindings/c/ecere.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecere.c) -o $(call quote_path,$@)
 
-$(OBJ)dggal$(O): ../../../bindings/c/dggal.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../../bindings/c/dggal.c) -o $(call quote_path,$@)
+$(OBJ)dggal$(O): ../../bindings/c/dggal.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/dggal.c) -o $(call quote_path,$@)
 
 $(OBJ)info$(O): info.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,info.c) -o $(call quote_path,$@)
