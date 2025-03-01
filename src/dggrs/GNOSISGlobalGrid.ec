@@ -100,7 +100,9 @@ public class GNOSISGlobalGrid : DGGRS
       if(!crs || crs == { ogc, 84 } || crs == { epsg, 4326 })
       {
          GeoPoint v[4];
-         int count = getZoneWGS84Vertices(zone, v), i;
+         int i;
+
+         count = getZoneWGS84Vertices(zone, v);
 
          switch(crs)
          {

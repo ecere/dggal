@@ -26,6 +26,8 @@ int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String
          bool aContainsB = dggrs.doesZoneContain(a, b);
          int aIndexInB = dggrs.getSubZoneIndex(b, a);
          int bIndexInA = dggrs.getSubZoneIndex(a, b);
+         bool aSubZoneOfB = dggrs.zoneHasSubZone(b, a);
+         bool bSubZoneOfA = dggrs.zoneHasSubZone(a, b);
          bool overlap = dggrs.doZonesOverlap(a, b);
          int maxDepth = dggrs.getMaxDepth();
 
@@ -52,25 +54,23 @@ int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String
          PrintLn($"Zone A is ", aDescendantOfB ? "" : $"NOT ", $"a descendant of zone B");
          PrintLn($"Zone A is ", aAncestorOfB ? "" : $"NOT ", $"an ancestor of zone B");
 
-         if((aIndexInB != -1 || bIndexInA != -1) || Abs(levelA - levelB) <= maxDepth)
-         {
-            Print($"Zone A is ", aIndexInB != -1 ? "" : $"NOT ", $"a sub-zone of zone B");
-            if(aIndexInB != -1)
-               Print($" (at depth ", levelA - levelB, ", index ", aIndexInB, ")");
-            PrintLn("");
-            Print($"Zone A ", bIndexInA != -1 ? "has" : $"does NOT have", $" B as a sub-zone");
-            if(bIndexInA != -1)
-               Print(" (at depth ", levelB - levelA, ", index ", bIndexInA, ")");
-            PrintLn("");
-            PrintLn($"These zones are ", neighbors ? "" : $"NOT ", $"neighbors");
-            PrintLn($"These zones are ", siblings ? "" : $"NOT ", $"siblings");
-            PrintLn($"Zone A is ", aContainedInB ? "" : $"NOT ", $"contained in zone B");
-            PrintLn($"Zone A ", aContainsB ? $"contains" : $"does not contain", $" zone B");
-            PrintLn($"Zone A and B ", !overlap ? $"do NOT " : "", $"overlap");
-         }
-         else
-            PrintLn($"WARNING: Currently unable to check containment/overlap for these zones since they are too many (",
-               Abs(levelA - levelB), $") refinement levels apart");
+         Print($"Zone A is ", aSubZoneOfB ? "" : $"NOT ", $"a sub-zone of zone B");
+         if(aIndexInB != -1)
+            Print($" (at depth ", levelA - levelB, ", index ", aIndexInB, ")");
+         else if(aSubZoneOfB)
+            Print($" (depth ", levelA - levelB, $" is too many levels apart (max: ", maxDepth, $"), not currently able to compute index)");
+         PrintLn("");
+         Print($"Zone A ", bSubZoneOfA ? "has" : $"does NOT have", $" B as a sub-zone");
+         if(bIndexInA != -1)
+            Print(" (at depth ", levelB - levelA, ", index ", bIndexInA, ")");
+         else if(bSubZoneOfA)
+            Print($" (depth ", levelB - levelA, $" is too many levels apart (max: ", maxDepth, $"), not currently able to compute index)");
+         PrintLn("");
+         PrintLn($"These zones are ", neighbors ? "" : $"NOT ", $"neighbors");
+         PrintLn($"These zones are ", siblings ? "" : $"NOT ", $"siblings");
+         PrintLn($"Zone A is ", aContainedInB ? "" : $"NOT ", $"contained in zone B");
+         PrintLn($"Zone A ", aContainsB ? $"contains" : $"does not contain", $" zone B");
+         PrintLn($"Zone A and B ", !overlap ? $"do NOT " : "", $"overlap");
 
          exitCode = 0;
       }

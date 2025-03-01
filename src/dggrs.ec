@@ -124,6 +124,49 @@ public:
       return subZone;
    }
 
+   /*virtual */bool zoneHasSubZone(DGGRSZone hayStack, DGGRSZone needle)
+   {
+      bool result = false;
+      int zLevel = getZoneLevel(hayStack), szLevel = getZoneLevel(needle);
+      if(szLevel > zLevel)
+      {
+         Pointd v[6], c;
+         int n, i;
+         DGGRSZone cChild = getZoneCentroidChild(needle);
+
+         if(cChild == nullZone)
+         {
+            getZoneCRSCentroid(needle, 0, c);
+            n = getZoneCRSVertices(needle, 0, v);
+         }
+         else
+            n = getZoneCRSVertices(cChild, 0, v);
+
+         for(i = 0; i < n; i++)
+         {
+            DGGRSZone tz;
+
+            if(cChild == nullZone)
+            {
+               Pointd m {
+                  (c.x + v[i].x) / 2,
+                  (c.y + v[i].y) / 2
+               };
+               tz = getZoneFromCRSCentroid(zLevel, 0, m);
+            }
+            else
+               tz = getZoneFromCRSCentroid(zLevel, 0, v[i]);
+
+            if(tz == hayStack)
+            {
+               result = true;
+               break;
+            }
+         }
+      }
+      return result;
+   }
+
    // REVIEW: Allow override for faster implementation?
    /*virtual */Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
    {
@@ -322,32 +365,28 @@ public:
 
    bool doZonesOverlap(DGGRSZone a, DGGRSZone b)
    {
-      int ix = -1, aLevel = getZoneLevel(a), bLevel = getZoneLevel(b);
+      bool result = false;
+      int aLevel = getZoneLevel(a), bLevel = getZoneLevel(b);
       if(aLevel > bLevel)
-         ix = getSubZoneIndex(b, a);
+         result = zoneHasSubZone(b, a);
       else if(aLevel < bLevel)
-         ix = getSubZoneIndex(a, b);
-      return ix != -1;
+         result = zoneHasSubZone(a, b);
+      return result;
    }
 
    bool doesZoneContain(DGGRSZone hayStack, DGGRSZone needle)
    {
       bool contains = false;
-      int hLevel = getZoneLevel(hayStack), nLevel = getZoneLevel(needle);
-      if(nLevel > hLevel)
+      if(zoneHasSubZone(hayStack, needle))
       {
-         int ix = getSubZoneIndex(hayStack, needle);
-         if(ix != -1)
-         {
-            // For non-congruent grids: sub-zones are not contained if they are on the edge and overlap a neighbor
-            DGGRSZone neighbors[6];
-            int nNeighbors = getZoneNeighbors(hayStack, neighbors, null), i;
-            for(i = 0; i < nNeighbors; i++)
-               if(getSubZoneIndex(neighbors[i], needle) != -1)
-                  break;
-            if(i == nNeighbors)
-               contains = true;
-         }
+         // For non-congruent grids: sub-zones are not contained if they are on the edge and overlap a neighbor
+         DGGRSZone neighbors[6];
+         int nNeighbors = getZoneNeighbors(hayStack, neighbors, null), i;
+         for(i = 0; i < nNeighbors; i++)
+            if(zoneHasSubZone(neighbors[i], needle))
+               break;
+         if(i == nNeighbors)
+            contains = true;
       }
       return contains;
    }

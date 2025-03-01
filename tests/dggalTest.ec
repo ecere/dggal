@@ -323,6 +323,44 @@ public class DGGSUnitTest : eTest
                            success = false;
                            break;
                         }
+                        else if(depth > 0 && !dggrs.zoneHasSubZone(zone, subZones[i]))
+                        {
+                           char szID[256];
+                           dggrs.getZoneTextID(subZones[i], szID);
+                           PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone ", zoneID, ": sub-zone ", szID, " not recognized");
+                           fail("DGGS sub-zones", thisTest, "of undetected sub-zone");
+                           dggrs.zoneHasSubZone(zone, subZones[i]);
+                           success = false;
+                        }
+                     }
+                     if(success && depth > 0)
+                     {
+                        for(i = 0; i < subZones.count; i++)
+                        {
+                           DGGRSZone sz = subZones[i];
+                           DGGRSZone nb[6];
+                           int j, n;
+
+                           n = dggrs.getZoneNeighbors(sz, nb, null);
+
+                           for(j = 0; j < n; j++)
+                           {
+                              if(!avl.Find(nb[j]))
+                              {
+                                 if(dggrs.zoneHasSubZone(zone, nb[j]))
+                                 {
+                                    char szID[256];
+                                    dggrs.getZoneTextID(nb[j], szID);
+
+                                    PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone ", zoneID, ": sub-zone ", szID, " wrongly recognized");
+                                    fail("DGGS sub-zones", thisTest, "of bad sub-zone result");
+
+                                    dggrs.zoneHasSubZone(zone, nb[j]);
+                                    success = false;
+                                 }
+                              }
+                           }
+                        }
                      }
                      delete avl;
                   }
