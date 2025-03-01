@@ -854,25 +854,93 @@ private:
             // PrintLn("   rix: ", rix, ", x: ", x, ", y: ", y, ", xd: ", xd, ", yd: ", yd);
             if(level & 1) // Odd level
             {
+               // TODO: Review non-centroid positions for poles
                if(root == 0 && y == 0 && x == p - 1 && xd > 0.667 && yd < 0.332)
                   sh = 6; // "North" pole G
                else if(root == 9 && y == p-1 && x == 0 && yd > 0.667 && xd < 0.332)
                   sh = 7; // "South" pole H
-               else if(xd > 0.334)
-                  sh = 4; // E
-               else if(yd > 0.334)
-                  sh = 5; // F
                else
-                  sh = 3; // D
+               {
+                  // TODO: Review for interruptions
+                  bool leftThird = 3*xd < 1, topThird  = 3*yd < 1;
+
+                  if(leftThird && topThird)
+                     sh = 3; // D
+                  else
+                  {
+                     bool rightThird = 3*xd > 2, bottomThird = 3*yd > 2;
+                     if(rightThird && bottomThird)
+                     {
+                        rix += p + 1;
+                        sh = 3; // D
+                     }
+                     else if(bottomThird)
+                     {
+                        if(3 * (yd - xd) > 2)
+                        {
+                           rix += p;
+                           sh = 3; // D
+                        }
+                        else
+                           sh = 5; // F
+                     }
+                     else if(rightThird)
+                     {
+                        if(3 * (xd - yd) > 2)
+                        {
+                           rix++;
+                           sh = 3; // D
+                        }
+                        else
+                           sh = 4; // E
+                     }
+                     else if(xd > yd)
+                        sh = 4; // E
+                     else
+                        sh = 5; // F
+                  }
+               }
             }
             else          // Even level
             {
+               // TODO: Review non-centroid positions for poles
                if(root == 0 && y == 0 && x == p-1 && xd > 0.667 && yd < 0.332)
                   sh = 1; // "North" pole B
                else if(root == 9 && y == p-1 && x == 0 && xd < 0.332 && yd > 0.667)
                   sh = 2; // "South" pole C
                else
+               {
+                  // TODO: Review for interruptions
+                  bool topRight = false, bottomLeft = false, bottomRight = false;
+                  if(xd - 1 > -yd) // Bottom-Right portion
+                  {
+                     // Top-right hexagon
+                     if(xd > yd * 2)
+                        topRight = true;
+                     // Bottom-left hexagon
+                     else if(2 * xd < yd)
+                        bottomLeft = true;
+                     // Bottom-right hexagon
+                     else
+                        bottomRight = true;
+                  }
+                  else // Top-Left portion
+                  {
+                     // Top-right hexagon
+                     if(2 * xd > yd + 1)
+                        topRight = true;
+                     // Bottom-left hexagon
+                     else if(xd + 1 < 2 * yd)
+                        bottomLeft = true;
+                  }
+                  if(topRight)
+                     rix++;
+                  else if(bottomLeft)
+                     rix += p;
+                  else if(bottomRight)
+                     rix += p + 1;
                   sh = 0; // A
+               }
             }
          }
          return { l9r, root, rix, sh };
