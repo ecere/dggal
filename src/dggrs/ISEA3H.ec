@@ -848,98 +848,248 @@ private:
             sh = (level & 1) ? 7 : 2, root = 9, rix = p * (p-1);
          else
          {
+            bool rightSR = x == p-1, topSR = y == 0;
+            bool leftSR = x == 0, bottomSR = y == p-1;
+            bool npSubRhombus = rightSR  && topSR  && !(root & 1);
+            bool spSubRhombus = bottomSR && leftSR &&  (root & 1);
+
             if(cy < cx || xd < -1 || yd < -1 || x >= p || y >= p || rix >= p*p)
                return nullZone; // y cannot be smaller than x
 
             // PrintLn("   rix: ", rix, ", x: ", x, ", y: ", y, ", xd: ", xd, ", yd: ", yd);
             if(level & 1) // Odd level
             {
-               // TODO: Review non-centroid positions for poles
-               if(root == 0 && y == 0 && x == p - 1 && xd > 0.667 && yd < 0.332)
-                  sh = 6; // "North" pole G
-               else if(root == 9 && y == p-1 && x == 0 && yd > 0.667 && xd < 0.332)
-                  sh = 7; // "South" pole H
+               bool leftThird = 3*xd < 1, topThird = 3*yd < 1;
+
+               if(leftThird && topThird)
+                  sh = 3; // D
                else
                {
-                  // TODO: Review for interruptions
-                  bool leftThird = 3*xd < 1, topThird  = 3*yd < 1;
-
-                  if(leftThird && topThird)
-                     sh = 3; // D
-                  else
+                  bool rightThird = 3*xd > 2, bottomThird = 3*yd > 2;
+                  if(rightThird && bottomThird)
                   {
-                     bool rightThird = 3*xd > 2, bottomThird = 3*yd > 2;
-                     if(rightThird && bottomThird)
+                     if(bottomSR && rightSR)
                      {
+                        // Non-polar pentagon
+                        root = (root + 2) % 10;
+                        rix = 0;
+                     }
+                     else if(bottomSR)
+                     {
+                        // Indexed to another root rhombus
+                        if(root & 1)
+                        {
+                           // Crossing South interruption to the right
+                           root = (root + 2) % 10;
+                           rix = (p-1-x) * p;
+                        }
+                        else
+                        {
+                           root++;
+                           rix = x + 1;
+                        }
+                     }
+                     else if(rightSR)
+                     {
+                        // Indexed to another root rhombus
+                        if(!(root & 1))
+                        {
+                           // Crossing North interruption to the right
+                           root = (root + 2) % 10;
+                           rix = p-1-y;
+                        }
+                        else
+                        {
+                           root = (root + 1) % 10;
+                           rix = p * (y + 1);
+                        }
+                     }
+                     else
                         rix += p + 1;
-                        sh = 3; // D
-                     }
-                     else if(bottomThird)
+                     sh = 3; // D
+                  }
+                  else if(bottomThird)
+                  {
+                     if(3 * (yd - xd) > 2)
                      {
-                        if(3 * (yd - xd) > 2)
+                        if(spSubRhombus)
+                           root = 9, sh = 7; // "South" pole H
+                        else
                         {
-                           rix += p;
+                           if(bottomSR)
+                           {
+                              // Indexed to another root rhombus
+                              if(root & 1)
+                              {
+                                 // Crossing South interruption to the right
+                                 root = (root + 2) % 10;
+                                 rix = (p-x) * p;
+                              }
+                              else
+                              {
+                                 rix = x;
+                                 root++;
+                              }
+                           }
+                           else
+                              rix += p;
                            sh = 3; // D
                         }
-                        else
-                           sh = 5; // F
                      }
-                     else if(rightThird)
-                     {
-                        if(3 * (xd - yd) > 2)
-                        {
-                           rix++;
-                           sh = 3; // D
-                        }
-                        else
-                           sh = 4; // E
-                     }
-                     else if(xd > yd)
-                        sh = 4; // E
                      else
                         sh = 5; // F
                   }
+                  else if(rightThird)
+                  {
+                     if(3 * (xd - yd) > 2)
+                     {
+                        if(npSubRhombus)
+                           root = 0, sh = 6; // "North" pole G
+                        else
+                        {
+                           if(rightSR)
+                           {
+                              if(!(root & 1))
+                              {
+                                 // Crossing North interruption to the right
+                                 root = (root + 2) % 10;
+                                 rix = p-y;
+                              }
+                              else
+                              {
+                                 root = (root + 1) % 10;
+                                 rix = p * y;
+                              }
+                           }
+                           else
+                              rix++;
+                           sh = 3; // D
+                        }
+                     }
+                     else
+                        sh = 4; // E
+                  }
+                  else if(xd > yd)
+                     sh = 4; // E
+                  else
+                     sh = 5; // F
                }
             }
             else          // Even level
             {
-               // TODO: Review non-centroid positions for poles
-               if(root == 0 && y == 0 && x == p-1 && xd > 0.667 && yd < 0.332)
-                  sh = 1; // "North" pole B
-               else if(root == 9 && y == p-1 && x == 0 && xd < 0.332 && yd > 0.667)
-                  sh = 2; // "South" pole C
-               else
+               bool topRight = false, bottomLeft = false, bottomRight = false;
+               if(xd - 1 > -yd) // Bottom-Right portion
                {
-                  // TODO: Review for interruptions
-                  bool topRight = false, bottomLeft = false, bottomRight = false;
-                  if(xd - 1 > -yd) // Bottom-Right portion
+                  // Top-right hexagon
+                  if(xd > yd * 2)
+                     topRight = true;
+                  // Bottom-left hexagon
+                  else if(2 * xd < yd)
+                     bottomLeft = true;
+                  // Bottom-right hexagon
+                  else
+                     bottomRight = true;
+               }
+               else // Top-Left portion
+               {
+                  // Top-right hexagon
+                  if(2 * xd > yd + 1)
+                     topRight = true;
+                  // Bottom-left hexagon
+                  else if(xd + 1 < 2 * yd)
+                     bottomLeft = true;
+               }
+
+               sh = 0; // A
+               if(topRight)
+               {
+                  if(npSubRhombus)
+                     root = 0, sh = 1; // "North" pole B
+                  else
                   {
-                     // Top-right hexagon
-                     if(xd > yd * 2)
-                        topRight = true;
-                     // Bottom-left hexagon
-                     else if(2 * xd < yd)
-                        bottomLeft = true;
-                     // Bottom-right hexagon
+                     if(rightSR)
+                     {
+                        if(!(root & 1))
+                        {
+                           // Crossing North interruption to the right
+                           root = (root + 2) % 10;
+                           rix = p-y;
+                        }
+                        else
+                        {
+                           root = (root + 1) % 10;
+                           rix = p * y;
+                        }
+                     }
                      else
-                        bottomRight = true;
+                        rix++;
                   }
-                  else // Top-Left portion
+               }
+               else if(bottomLeft)
+               {
+                  if(spSubRhombus)
+                     root = 9, sh = 2; // "South" pole C
+                  else
                   {
-                     // Top-right hexagon
-                     if(2 * xd > yd + 1)
-                        topRight = true;
-                     // Bottom-left hexagon
-                     else if(xd + 1 < 2 * yd)
-                        bottomLeft = true;
+                     if(bottomSR)
+                     {
+                        // Indexed to another root rhombus
+                        if(root & 1)
+                        {
+                           // Crossing South interruption to the right
+                           root = (root + 2) % 10;
+                           rix = (p-x) * p;
+                        }
+                        else
+                        {
+                           rix = x;
+                           root++;
+                        }
+                     }
+                     else
+                        rix += p;
                   }
-                  if(topRight)
-                     rix++;
-                  else if(bottomLeft)
-                     rix += p;
-                  else if(bottomRight)
+               }
+               else if(bottomRight)
+               {
+                  if(bottomSR && rightSR)
+                  {
+                     // Non-polar pentagon
+                     root = (root + 2) % 10;
+                     rix = 0;
+                  }
+                  else if(bottomSR)
+                  {
+                     // Indexed to another root rhombus
+                     if(root & 1)
+                     {
+                        // Crossing South interruption to the right
+                        root = (root + 2) % 10;
+                        rix = (p-1-x) * p;
+                     }
+                     else
+                     {
+                        root++;
+                        rix = x + 1;
+                     }
+                  }
+                  else if(rightSR)
+                  {
+                     // Indexed to another root rhombus
+                     if(!(root & 1))
+                     {
+                        // Crossing North interruption to the right
+                        root = (root + 2) % 10;
+                        rix = p-1-y;
+                     }
+                     else
+                     {
+                        root = (root + 1) % 10;
+                        rix = p * (y + 1);
+                     }
+                  }
+                  else
                      rix += p + 1;
-                  sh = 0; // A
                }
             }
          }
