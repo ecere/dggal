@@ -28,6 +28,9 @@ public class ISEA3H : DGGRS
 
    int getMaxDGGRSZoneLevel() { return 33; }
    int getRefinementRatio() { return 3; }
+   int getMaxParents() { return 3; }
+   int getMaxNeighbors() { return 6; }
+   int getMaxChildren() { return 7; }
 
    uint64 countSubZones(ISEA3HZone zone, int depth)
    {

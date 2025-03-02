@@ -35,6 +35,10 @@ public:
    virtual int getMaxDGGRSZoneLevel() { return 0; }
    virtual int getRefinementRatio() { return 0; }
 
+   virtual int getMaxParents() { return 0; }
+   virtual int getMaxNeighbors() { return 0; }
+   virtual int getMaxChildren() { return 0; }
+
    virtual DGGRSZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid) { return nullZone; }
    virtual DGGRSZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid) { return nullZone; }
 
@@ -294,8 +298,7 @@ public:
       }
    }
 
-   // Topological queries
-   bool isZoneAncestorOf(DGGRSZone ancestor, DGGRSZone descendant, int maxDepth)
+   static bool isZoneAncestorOfWithTree(DGGRSZone ancestor, DGGRSZone descendant, int maxDepth, AVLTree<DGGRSZone> tree)
    {
       int aLevel = getZoneLevel(ancestor), dLevel = getZoneLevel(descendant);
       if(dLevel > aLevel && (!maxDepth || dLevel - aLevel <= maxDepth))
@@ -304,13 +307,27 @@ public:
          int nParents = getZoneParents(descendant, parents), i;
          for(i = 0; i < nParents; i++)
          {
-            if(parents[i] == ancestor)
+            DGGRSZone parent = parents[i];
+            if(parent == ancestor)
                return true;
-            if(dLevel - aLevel > 1 && isZoneAncestorOf(ancestor, parents[i], maxDepth ? maxDepth - 1 : 0))
-               return true;
+            if(dLevel - aLevel > 1 && (!tree || !tree.Find(parent)))
+            {
+               if(tree) tree.Add(parent);
+               if(isZoneAncestorOfWithTree(ancestor, parent, maxDepth ? maxDepth - 1 : 0, tree))
+                  return true;
+            }
          }
       }
       return false;
+   }
+
+   // Topological queries
+   bool isZoneAncestorOf(DGGRSZone ancestor, DGGRSZone descendant, int maxDepth)
+   {
+      AVLTree<DGGRSZone> tree = getMaxParents() > 1 ? { } : null;
+      bool result = isZoneAncestorOfWithTree(ancestor, descendant, maxDepth, tree);
+      delete tree;
+      return result;
    }
 
    bool areZonesSiblings(DGGRSZone a, DGGRSZone b)

@@ -20,6 +20,9 @@ public class GNOSISGlobalGrid : DGGRS
 
    int getMaxDGGRSZoneLevel() { return maxGGGZoomLevel; }
    int getRefinementRatio() { return 4; }
+   int getMaxParents() { return 1; }
+   int getMaxNeighbors() { return 5; }
+   int getMaxChildren() { return 4; }
 
    uint64 countSubZones(GGGZone zone, int depth)
    {
