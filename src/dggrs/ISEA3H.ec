@@ -18,10 +18,13 @@ level GP notation Name                             Class       Conway           
    5: GP(9,9)                                      2     dktktkD tktktI        dkdkdkdkdkdI     dkdkdkdkdkD      tdtdtdtdtdD    243                 2432
 */
 
-/*static*/ uint powersOf3[] =
+/*static*/ uint64 powersOf3[] =
 {
-   1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683, 59049,
-   177147, 531441, 1594323, 4782969, 14348907, 43046721
+   1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683,
+   59049, 177147, 531441, 1594323, 4782969, 14348907, 43046721, 129140163, 387420489, 1162261467,
+   3486784401LL, 10460353203LL, 31381059609LL, 94143178827LL, 282429536481LL, 847288609443LL, 2541865828329LL, 7625597484987LL,
+      22876792454961LL, 68630377364883LL,
+   205891132094649LL, 617673396283947LL, 1853020188851841LL, 5559060566555523LL
 };
 
 #define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
@@ -1890,7 +1893,7 @@ private:
    int64 getSubZonesCount(int rDepth)
    {
       int64 nHexSubZones = rDepth > 0 ? POW3(rDepth) + POW3((rDepth + 1)/2) + 1 : 1;
-      return (int64)ceil(nHexSubZones * nPoints / 6.0);
+      return (nHexSubZones * nPoints + 5) / 6;
    }
 
    ISEA3HZone getFirstSubZone(int rDepth)
