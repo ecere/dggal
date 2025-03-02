@@ -90,11 +90,9 @@ public:
    virtual void compactZones(Array<DGGRSZone> zones);
 
    // Utility methods or virtual methods with default implementations
-
-   // Allow override for faster implementation
-   /* virtual */ int getSubZoneIndex(DGGRSZone parent, DGGRSZone subZone)
+   virtual int64 getSubZoneIndex(DGGRSZone parent, DGGRSZone subZone)
    {
-      int ix = -1;
+      int64 ix = -1;
       int level = getZoneLevel(parent), szLevel = getZoneLevel(subZone);
       if(szLevel > level)
       {
@@ -109,8 +107,8 @@ public:
       }
       return ix;
    }
-   // Allow override for faster implementation
-   /*virtual */DGGRSZone getSubZoneAtIndex(DGGRSZone parent, int relativeDepth, int index)
+
+   virtual DGGRSZone getSubZoneAtIndex(DGGRSZone parent, int relativeDepth, int64 index)
    {
       DGGRSZone subZone = nullZone;
       if(index >= 0 && index < countSubZones(parent, relativeDepth))
@@ -121,7 +119,7 @@ public:
          {
             Array<DGGRSZone> subZones = getSubZones(parent, relativeDepth);
             if(subZones && index < subZones.count)
-               subZone = subZones[index];
+               subZone = subZones[(uint)index];
             delete subZones;
          }
       }
@@ -172,7 +170,7 @@ public:
    }
 
    // REVIEW: Allow override for faster implementation?
-   /*virtual */Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
+   virtual Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
    {
       Array<DGGRSZone> result = null;
       int szLevel = getZoneLevel(parent) + relativeDepth;
@@ -206,6 +204,7 @@ public:
       return (int)(log(65536) / log(getRefinementRatio()) + 0.5);
    }
 
+   // for getZone*Centroids*(), getSubZones()
    int getMaxDepth()
    {
       int depth64k = get64KDepth();
@@ -217,6 +216,12 @@ public:
       while(((nSubZones = countSubZones(testZone, maxDepth) << 4) > (1LL<<32)))
          maxDepth--;
       return maxDepth;
+   }
+
+   // For getSubZoneIndex(), getSubZoneAtIndex()
+   virtual int getIndexMaxDepth()
+   {
+      return getMaxDepth();
    }
 
    // Refinement Levels

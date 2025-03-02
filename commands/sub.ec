@@ -1,7 +1,7 @@
 public import IMPORT_STATIC "ecere"
 import IMPORT_STATIC "dggal"
 
-int subZones(DGGRS dggrs, DGGRSZone zone, int index, Map<String, const String> options)
+int subZones(DGGRS dggrs, DGGRSZone zone, int64 index, Map<String, const String> options)
 {
    int exitCode = 1;
    int depth = dggrs.get64KDepth();
@@ -20,7 +20,7 @@ int subZones(DGGRS dggrs, DGGRSZone zone, int index, Map<String, const String> o
 
    if(depthOption)
    {
-      int maxDepth = dggrs.getMaxDepth();
+      int maxDepth = index == -1 ? dggrs.getMaxDepth() : dggrs.getIndexMaxDepth();
 
       depth.OnGetDataFromString(depthOption);
       if(depth > maxDepth)

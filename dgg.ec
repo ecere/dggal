@@ -97,7 +97,8 @@ class DGGAL : Application
       int cmdArg = 0;
       subclass(DGGRS) dggrsClass = null;
       // Command arguments
-      int gLevel = -1, subIndex = -1;
+      int gLevel = -1;
+      int64 subIndex = -1;
       const String zone1ID = null, zone2ID = null, input = null, coordinates = null;
 
            if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsClass = class(ISEA3H), cmdArg = 1;

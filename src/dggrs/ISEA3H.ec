@@ -18,12 +18,20 @@ level GP notation Name                             Class       Conway           
    5: GP(9,9)                                      2     dktktkD tktktI        dkdkdkdkdkdI     dkdkdkdkdkD      tdtdtdtdtdD    243                 2432
 */
 
+/*static*/ uint powersOf3[] =
+{
+   1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683, 59049,
+   177147, 531441, 1594323, 4782969, 14348907, 43046721
+};
+
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
+
 public class ISEA3H : DGGRS
 {
    // DGGH
    uint64 countZones(int level)
    {
-      return (uint64)(10 * pow(3, level) + 2);
+      return (uint64)(10 * POW3(level) + 2);
    }
 
    int getMaxDGGRSZoneLevel() { return 33; }
@@ -334,6 +342,100 @@ public class ISEA3H : DGGRS
 
       delete zonesTree;
    }
+
+   int getIndexMaxDepth()
+   {
+      return 33;
+   }
+
+   int64 getSubZoneIndex(ISEA3HZone parent, ISEA3HZone subZone)
+   {
+      int64 ix = -1;
+      int level = getZoneLevel(parent), szLevel = getZoneLevel(subZone);
+
+      if(szLevel == level)
+         ix = 0;
+      else if(szLevel > level && zoneHasSubZone(parent, subZone))
+      {
+         Pointd zCentroid;
+
+         canonicalizeCentroid(subZone.centroid, zCentroid);
+         ix = iterateISEA3HSubZones(parent, szLevel - level, &zCentroid, findSubZone, -1);
+      }
+      return ix;
+   }
+
+   DGGRSZone getSubZoneAtIndex(ISEA3HZone parent, int relativeDepth, int64 index)
+   {
+      ISEA3HZone subZone = nullZone;
+      if(index >= 0 && index < countSubZones(parent, relativeDepth))
+      {
+         if(index == 0)
+            return getFirstSubZone(parent, relativeDepth);
+         else
+         {
+            Pointd centroid;
+            iterateISEA3HSubZones(parent, relativeDepth, &centroid, findByIndex, index);
+            subZone = ISEA3HZone::fromCentroid(parent.level + relativeDepth, centroid);
+         }
+      }
+      return subZone;
+   }
+}
+
+static bool findByIndex(Pointd centroid, int64 index, const Pointd c)
+{
+   centroid = c;
+   return false;
+}
+
+static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
+{
+   Pointd centroid;
+
+   canonicalizeCentroid(c, centroid);
+   if(fabs(centroid.x - szCentroid.x) < 1E-11 &&
+      fabs(centroid.y - szCentroid.y) < 1E-11)
+      return false;
+   return true;
+   // return *zone != ISEA3HZone::fromCentroid(zone->level, centroid);
+}
+
+static void canonicalizeCentroid(const Pointd src, Pointd out)
+{
+   int cx = (int)floor(src.x + 1E-11);
+   int cy = (int)floor(src.y + 1E-11);
+   bool south = false, cross = false;
+   bool np = false, sp = false;
+
+   switch(cy)
+   {
+      case 0: cross = fabs(src.x - 1) < 1E-11; np = cross && fabs(src.y - 0) < 1E-11; break;
+      case 1: cross = fabs(src.x - 2) < 1E-11; np = cross && fabs(src.y - 1) < 1E-11; break;
+      case 2: cross = fabs(src.x - 3) < 1E-11; np = cross && fabs(src.y - 2) < 1E-11; break;
+      case 3: cross = fabs(src.x - 4) < 1E-11; np = cross && fabs(src.y - 3) < 1E-11; break;
+      case 4: cross = fabs(src.x - 5) < 1E-11; np = cross && fabs(src.y - 4) < 1E-11; break;
+   }
+
+   switch(cx)
+   {
+      case 0: cross = fabs(src.y - 2) < 1E-11; south = true; sp = cross && fabs(src.x - 0) < 1E-11; break;
+      case 1: cross = fabs(src.y - 3) < 1E-11; south = true; sp = cross && fabs(src.x - 1) < 1E-11; break;
+      case 2: cross = fabs(src.y - 4) < 1E-11; south = true; sp = cross && fabs(src.x - 2) < 1E-11; break;
+      case 3: cross = fabs(src.y - 5) < 1E-11; south = true; sp = cross && fabs(src.x - 3) < 1E-11; break;
+      case 4: cross = fabs(src.y - 6) < 1E-11; south = true; sp = cross && fabs(src.x - 4) < 1E-11; break;
+   }
+
+   if(sp)
+      out = { 4, 6 };
+   else if(np)
+      out = { 1, 0 };
+   else if(cross)
+      crossISEAInterruption(src, out, south, false);
+   else if(fabs(src.x - 5) < 1E-11)
+      out = { 0, src.y - 5 };
+   else
+      out = src;
 }
 
 enum ISEA3HNeighbor
@@ -373,6 +475,20 @@ private:
          if(sh == 1 || sh == 2 || sh == 6 || sh == 7 || (rhombusIX == 0 && (sh == 0 || sh == 3)))
             return 5; // Polar zones and 0 rhombus index 0 (A and D) are pentagons
          return 6;
+      }
+   }
+
+   property bool isEdgeHex
+   {
+      get
+      {
+         if(nPoints == 6)
+         {
+            int divs = (int)POW3(levelISEA9R);
+            bool southRhombus = rootRhombus & 1;
+            return rhombusIX && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
+         }
+         return false;
       }
    }
 
@@ -421,7 +537,7 @@ private:
 
    ISEA3HZone ::fromISEA9R(int level, uint row, uint col, char subHex)
    {
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = POW3(level);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int root = rowOP + colOP;
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
@@ -439,7 +555,7 @@ private:
 
    bool ::validate(uint levelISEA9R, uint row, uint col, char subHex)
    {
-      uint64 p = (uint64)pow(3, levelISEA9R);
+      uint64 p = POW3(levelISEA9R);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
       uint root = rowOP + colOP;
@@ -470,7 +586,7 @@ private:
             else
             {
                int row, col, level = iseaLRCFromLRtI((char)('A' + levelISEA9R), rootRhombus, rhombusIX, &row, &col);
-               uint64 p = (uint64)pow(3.0, level);
+               uint64 p = POW3(level);
                uint64 r = rhombusIX / p, c = rhombusIX % p;
                uint rm3 = (uint)(r % 3), cm3 = (uint)(c % 3);
                key = fromISEA9R(level - 1, row / 3, col / 3, (char)('A' + (sh == 1 ? 6 : sh == 2 ? 7 : (cm3 > 1 ? 4 : rm3 > 1 ? 5 : 3))));
@@ -490,7 +606,7 @@ private:
       bool northPole = north && fabs(centroid.x - centroid.y - 1.0) < 1E-11;
       bool southPole = south && fabs(centroid.y - centroid.x - 2.0) < 1E-11;
       uint l9r = levelISEA9R;
-      uint64 p = (uint64)pow(3, l9r);
+      uint64 p = POW3(l9r);
       double d = 1.0 / p, x = 0, y = 0;
       int sh = subHex;
       Pointd v;
@@ -805,7 +921,7 @@ private:
    {
       Pointd c = centroid;
       uint l9r = level / 2;
-      uint64 p = (uint64)pow(3, l9r);
+      uint64 p = POW3(l9r);
       double d =  1.0 / p;
       bool isNorthPole = false, isSouthPole = false;
       if(fabs(c.x - c.y - 1) < 1E-10)
@@ -1105,7 +1221,7 @@ private:
       int sh = subHex;
       uint level = levelISEA9R, root = rootRhombus;
       uint64 rix = rhombusIX;
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = POW3(level);
       uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
       uint64 ixOP = (uint64)(rix / p);
       uint64 row = (uint64)(rowOP * p + ixOP);
@@ -1213,7 +1329,7 @@ private:
       int row, col, level = iseaLRCFromLRtI((char)('A' + levelISEA9R), rootRhombus, rhombusIX, &row, &col);
       int subHex = this.subHex;
       bool result = true;
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = POW3(level);
       double d =  1.0 / p;
       bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
       Pointd v;
@@ -1504,7 +1620,7 @@ private:
                centroidChild = { l9r, root, rix, 3 };
             else
             {
-               uint64 p = (uint64)pow(3.0, l9r);
+               uint64 p = POW3(l9r);
                switch(sh)
                {
                   case 1: centroidChild = { l9r, 0, p-1, 6 }; break; // Even level "North" Pole
@@ -1538,7 +1654,7 @@ private:
       if(sh == 1 || sh == 2 || sh == 6 || sh == 7)
       {
          // Special cases for the poles
-         uint64 p = (uint64)pow(3.0, l9r);
+         uint64 p = POW3(l9r);
          switch(sh)
          {
             case 1: // Even level "North" Pole
@@ -1718,7 +1834,7 @@ private:
          {
             uint level = levelISEA9R, root = rootRhombus;
             uint64 rix = rhombusIX;
-            uint64 p = (uint64)pow(3, level);
+            uint64 p = POW3(level);
             uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
             uint64 ixOP = (uint64)(rix / p);
             uint64 row = (uint64)(rowOP * p + ixOP);
@@ -1760,7 +1876,7 @@ private:
             // Even level -- some A are centroid children
             int level = this.levelISEA9R;
             uint64 rix = this.rhombusIX;
-            uint64 p = (uint64)pow(3.0, level);
+            uint64 p = POW3(level);
             uint64 r = rix / p, c = rix % p;
             if(!(r % 3) && !(c % 3))
                return true; // Both row & column multiple of 3 are centroid children
@@ -1773,7 +1889,7 @@ private:
 
    int64 getSubZonesCount(int rDepth)
    {
-      int64 nHexSubZones = rDepth > 0 ? ((int64)(pow(3, rDepth) + pow(3, (rDepth + 1)/2)) + 1) : 1;
+      int64 nHexSubZones = rDepth > 0 ? POW3(rDepth) + POW3((rDepth + 1)/2) + 1 : 1;
       return (int64)ceil(nHexSubZones * nPoints / 6.0);
    }
 
@@ -1969,7 +2085,7 @@ static Array<DGGRSZone> listISEA3HZones(int zoneLevel, const GeoExtent bbox)
    AVLTree<ISEA3HZone> tsZones { };
    ISEA5x6Projection pj = isea5x6PJ;
    int isea9RLevel = zoneLevel / 2;
-   uint64 power = (uint64)pow(3, isea9RLevel);
+   uint64 power = POW3(isea9RLevel);
    double z = 1.0 / power;
    int hexSubLevel = zoneLevel & 1;
    Pointd tl, br;

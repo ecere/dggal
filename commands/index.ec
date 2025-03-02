@@ -10,10 +10,10 @@ int subZoneIndex(DGGRS dggrs, DGGRSZone parent, DGGRSZone subZone, Map<String, c
       int levelParent = dggrs.getZoneLevel(parent), levelSub = dggrs.getZoneLevel(subZone);
       if(levelSub >= levelParent)
       {
-         if(levelSub - levelParent < dggrs.getMaxDepth())
+         if(levelSub - levelParent <= dggrs.getIndexMaxDepth())
          {
             char zoneID[256], subZoneID[256];
-            int index = dggrs.getSubZoneIndex(parent, subZone);
+            int64 index = dggrs.zoneHasSubZone(parent, subZone) ? dggrs.getSubZoneIndex(parent, subZone) : -1;
 
             dggrs.getZoneTextID(parent, zoneID);
             dggrs.getZoneTextID(subZone, subZoneID);

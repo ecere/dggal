@@ -24,12 +24,12 @@ int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String
          bool aDescendantOfB = dggrs.isZoneDescendantOf(a, b, 0);
          bool aContainedInB = dggrs.isZoneContainedIn(a, b);
          bool aContainsB = dggrs.doesZoneContain(a, b);
-         int aIndexInB = dggrs.getSubZoneIndex(b, a);
-         int bIndexInA = dggrs.getSubZoneIndex(a, b);
          bool aSubZoneOfB = dggrs.zoneHasSubZone(b, a);
          bool bSubZoneOfA = dggrs.zoneHasSubZone(a, b);
+         int maxDepth = dggrs.getMaxDepth(), maxIndexDepth = dggrs.getIndexMaxDepth();
+         int64 aIndexInB = aSubZoneOfB && levelA - levelB <= maxDepth ? dggrs.getSubZoneIndex(b, a) : -1;
+         int64 bIndexInA = bSubZoneOfA && levelB - levelA <= maxDepth ? dggrs.getSubZoneIndex(a, b) : -1;
          bool overlap = dggrs.doZonesOverlap(a, b);
-         int maxDepth = dggrs.getMaxDepth();
 
          dggrs.getZoneTextID(a, zoneID[0]);
          dggrs.getZoneTextID(b, zoneID[1]);
@@ -58,13 +58,19 @@ int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String
          if(aIndexInB != -1)
             Print($" (at depth ", levelA - levelB, ", index ", aIndexInB, ")");
          else if(aSubZoneOfB)
-            Print($" (depth ", levelA - levelB, $" is too many levels apart (max: ", maxDepth, $"), not currently able to compute index)");
+            Print($" (depth ", levelA - levelB, $" is too many levels apart -- max: ", maxDepth,
+               levelA - levelB <= maxIndexDepth ?
+                  $", use index command to compute index -- currently slow)" :
+                  $", not currently able to compute index)");
          PrintLn("");
          Print($"Zone A ", bSubZoneOfA ? "has" : $"does NOT have", $" B as a sub-zone");
          if(bIndexInA != -1)
             Print(" (at depth ", levelB - levelA, ", index ", bIndexInA, ")");
          else if(bSubZoneOfA)
-            Print($" (depth ", levelB - levelA, $" is too many levels apart (max: ", maxDepth, $"), not currently able to compute index)");
+            Print($" (depth ", levelB - levelA, $" is too many levels apart -- max: ", maxDepth,
+               levelB - levelA <= maxIndexDepth ?
+                  $", use index command to compute index -- currently slow)" :
+                  $", not currently able to compute index)");
          PrintLn("");
          PrintLn($"These zones are ", neighbors ? "" : $"NOT ", $"neighbors");
          PrintLn($"These zones are ", siblings ? "" : $"NOT ", $"siblings");

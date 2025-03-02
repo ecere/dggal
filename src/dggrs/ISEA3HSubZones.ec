@@ -96,6 +96,8 @@ import "ISEA3H"
      All scanlines are defined in a clockwise manner when looking at the zones on the globe.
 */
 
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
+
 void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
 {
    Pointd vertices[6];
@@ -198,7 +200,7 @@ void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
             int top = 4;
             c = vertices[top];
             /*
-            int depthO2 = rDepth/2, pow3DepthO2 = (int)pow(3, depthO2);
+            int depthO2 = rDepth/2, pow3DepthO2 = (int)POW3(depthO2);
             int xFromTop = (int)(pow3DepthO2 / 3 - 1); // https://oeis.org/A024023 where n = depthO2
             int nAboveRows = xFromTop / 2;             // https://oeis.org/A003462 where n = depthO2
             double f = 1.0 / pow3DepthO2;
@@ -225,7 +227,7 @@ void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
             else if(top == 1 || right == 1)  ix = 0;
 #else
             int ix = subHex == 1 ? 0 : (nv == 6) ? 5 : 4;
-            int divs = (int)pow(3, levelISEA9R);
+            int divs = (int)POW3(levelISEA9R);
             bool edgeHex = nv == 6 && rhombusIX && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
             if(edgeHex && southRhombus)
                ix = 4;
@@ -243,10 +245,11 @@ void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
 }
 
 // This function handles variations #1 (basic), #5 (north edge hex), #6 (south edge hex), #13 (north pentagon), #14 (south pentagon), #21 (north pole) and #22 (south pole)
-static void generateOddParentOddDepth(void * context, void (* centroidCallback)(void * context, uint64 index, Pointd centroid),
+static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)(void * context, uint64 index, Pointd centroid),
    Pointd firstCentroid, int rDepth, double u,
-   int nv, bool polarPentagon, bool southRhombus, bool edgeHex)
+   int nv, bool polarPentagon, bool southRhombus, bool edgeHex, int64 index)
 {
+   bool keepGoing = true;
    Pointd centroid;
    bool northPentagon = nv == 5 && !southRhombus;
    bool southPentagon = nv == 5 && southRhombus;
@@ -265,16 +268,22 @@ static void generateOddParentOddDepth(void * context, void (* centroidCallback)(
    */
    // e.g., A5-0-D (level 1 south pentagon) with level 4 sub-zones (relative depth: 3) -- first zone: C4-36-A
    // e.g., A6-0-D (level 1 north pentagon) with level 4 sub-zones (relative depth: 3) -- first zone: C6-3-A
-   int nHalfRows = (int)pow(3, (rDepth-1)/2);
+   int nHalfRows = (int)POW3((rDepth-1)/2);
    int nRows = 2 * nHalfRows + 1, maxCols = nRows;
    int minCols = maxCols - (maxCols-1)/2;
    int r, nCols, col;
    Pointd rc;
-   int i = 0;
+   int64 i = 0;
 
    // First half
-   for(r = 0, nCols = minCols; r <= nHalfRows; r++, nCols++)
+   for(r = 0, nCols = minCols; keepGoing && r <= nHalfRows; r++, nCols++)
    {
+      if(index != -1 && i + nCols < index)
+      {
+         i += nCols;
+         continue;
+      }
+
       // Computing start of scanline
       if(polarPentagon)
          moveISEAVertex(rc, firstCentroid, (southPentagon ? -r : r) * u, (southPentagon ? -r : r) * u);
@@ -284,8 +293,15 @@ static void generateOddParentOddDepth(void * context, void (* centroidCallback)(
          moveISEAVertex(rc, firstCentroid, -r * u, 0);
 
       // Iterating through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
+         if(index != -1)
+         {
+            // Jump to index
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(polarPentagon)
          {
             int a = Min(col, r), b = col - a;
@@ -334,16 +350,23 @@ static void generateOddParentOddDepth(void * context, void (* centroidCallback)(
          else
             moveISEAVertex(centroid, rc, col * u, col * u);//, false);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Second half
-   for(r = 1, nCols = maxCols-1; r <= nHalfRows; r++, nCols--)
+   for(r = 1, nCols = maxCols-1; keepGoing && r <= nHalfRows; r++, nCols--)
    {
+      int n = -1;
+
       // Computing start of scanline
-      if(northPentagon || polarPentagon) nCols--;
-      if(polarPentagon)
+      if(northPentagon || polarPentagon)
+         nCols--;
+      else if(southPentagon)
+         n = (nCols-r)/2;
+
+      if(index != -1 && i + nCols < index);  // nCols is not always the actual number of indices
+      else if(polarPentagon)
          moveISEAVertex(rc, firstCentroid, southPentagon ? (-1 - r * u) : (1 + r * u), southPentagon ? (-1 -r * u) : (1 + r * u));
       else if(northPentagon || (edgeHex && !southRhombus))
          moveISEAVertex(rc, firstCentroid, r * u, (r + nHalfRows) * u);
@@ -351,50 +374,65 @@ static void generateOddParentOddDepth(void * context, void (* centroidCallback)(
          moveISEAVertex(rc, firstCentroid, -nHalfRows * u, r * u);
 
       // Iterating through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
-         if(northPentagon || edgeHex || polarPentagon)
+         if(index == -1 || index == i)
          {
-            int a = Min(col, nHalfRows - r), b = col - a;
-            Pointd t;
-            if(b)
+            if(northPentagon || edgeHex || polarPentagon)
             {
-               if(polarPentagon || edgeHex)
+               int a = Min(col, nHalfRows - r), b = col - a;
+               Pointd t;
+               if(b)
                {
-                  Pointd i2;
-                  moveISEAVertex(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
-                  crossISEAInterruption(t, i2, southRhombus, southPentagon && polarPentagon);
-                  t = i2;
+                  if(polarPentagon || edgeHex)
+                  {
+                     Pointd i2;
+                     moveISEAVertex(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+                     crossISEAInterruption(t, i2, southRhombus, southPentagon && polarPentagon);
+                     t = i2;
+                  }
+                  else
+                     moveISEAVertex3(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+                  moveISEAVertex(centroid, t, polarPentagon ? 0 : b * u, southRhombus ? (polarPentagon ? -b * u : 0) : b * u);
                }
                else
-                  moveISEAVertex3(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
-               moveISEAVertex(centroid, t, polarPentagon ? 0 : b * u, southRhombus ? (polarPentagon ? -b * u : 0) : b * u);
+                  moveISEAVertex3(centroid, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
             }
             else
-               moveISEAVertex3(centroid, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+               moveISEAVertex(centroid, rc, col * u, col * u);//, false);
+
+            if((keepGoing = centroidCallback(context, i, centroid))) i++;
+         }
+         else if(nv == 5 && n > col && n - col < index - i)
+         {
+            i += (int64)n - col + 1;
+            col = n;
          }
          else
-            moveISEAVertex(centroid, rc, col * u, col * u);//, false);
+         {
+            int ff = (int)Min(index - i, nCols - col);
+            col += ff-1;
+            i += ff;
+         }
 
-         centroidCallback(context, i++, centroid);
-
-         if(!polarPentagon && southPentagon && col == (nCols-r)/2)
-            col = nCols - 1 - col; // Skip interruption
+         if(col == n)
+            col = nCols - 1 - n; // Skip interruption
       }
    }
 
 #ifdef _DEBUG
-   if(i != ((Array)context).count)
+   if(keepGoing && i != ((Array)context).count)
    {
       PrintLn("WARNING: Mismatched sub-zone index");
    }
 #endif
+   return keepGoing ? -1 : i;
 }
 
 // This function handles variations #2 (basic), #7 (north edge hex), #8 (south edge hex), #15 (north pentagon), #16 (south pentagon), #23 (north pole) and #24 (south pole)
-static void generateEvenParentOddDepth(void * context, void (* centroidCallback)(void * context, uint64 index, Pointd centroid),
+static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback)(void * context, uint64 index, Pointd centroid),
    Pointd firstCentroid, int rDepth, double u,
-   int nv, bool polarPentagon, bool southRhombus, bool edgeHex)
+   int nv, bool polarPentagon, bool southRhombus, bool edgeHex, int64 index)
 {
    // Start from hexagon / pentagon edge
 
@@ -424,19 +462,26 @@ static void generateEvenParentOddDepth(void * context, void (* centroidCallback)
       2    x   x
         1    x
    */
+   bool keepGoing = true;
    Pointd centroid;
    bool northPentagon = nv == 5 && !southRhombus;
    bool southPentagon = nv == 5 && southRhombus;
-   int nHalfRows = (int)pow(3, (rDepth-1)/2);
+   int nHalfRows = (int)POW3((rDepth-1)/2);
    int nRows = 2 * nHalfRows + 1, maxCols = nRows;
    int minCols = maxCols - (maxCols-1)/2;
    int r, nCols, col;
    Pointd rc;
-   int i = 0;
+   int64 i = 0;
 
    // First half
-   for(r = 0, nCols = minCols; r <= nHalfRows; r++, nCols++)
+   for(r = 0, nCols = minCols; keepGoing && r <= nHalfRows; r++, nCols++)
    {
+      if(index != -1 && i + nCols < index)
+      {
+         i += nCols;
+         continue;
+      }
+
       // Computing start of scanline
       if(polarPentagon)
       {
@@ -481,8 +526,14 @@ static void generateEvenParentOddDepth(void * context, void (* centroidCallback)
          moveISEAVertex(rc, firstCentroid, r * u / 3, r * 2 * u / 3);
 
       // Iterating through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(polarPentagon)
          {
             Pointd t, start;
@@ -591,15 +642,21 @@ static void generateEvenParentOddDepth(void * context, void (* centroidCallback)
          else
             moveISEAVertex3(centroid, rc, col * u/3, -col * u/3);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Second half
-   for(r = 1, nCols = maxCols-1; r <= nHalfRows; r++, nCols--)
+   for(r = 1, nCols = maxCols-1; keepGoing && r <= nHalfRows; r++, nCols--)
    {
       int skip = nv == 5 ? r : 0;
       bool crosses = false;
+
+      if(index != -1 && i + nCols - skip < index)
+      {
+         i += nCols - skip;
+         continue;
+      }
 
       // Computing start of scanline
       if(polarPentagon)
@@ -650,8 +707,14 @@ static void generateEvenParentOddDepth(void * context, void (* centroidCallback)
       }
 
       // Iterating through scanline
-      for(col = 0; col < nCols - skip; col++)
+      for(col = 0; keepGoing && col < nCols - skip; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(polarPentagon)
          {
             int a, b = col;
@@ -742,22 +805,23 @@ static void generateEvenParentOddDepth(void * context, void (* centroidCallback)
          else
             moveISEAVertex3(centroid, rc, col * u/3, -col * u/3);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
 #ifdef _DEBUG
-   if(i != ((Array)context).count)
+   if(keepGoing && i != ((Array)context).count)
    {
       PrintLn("WARNING: Mismatched sub-zone index");
    }
 #endif
+   return keepGoing ? -1 : i;
 }
 
 // This function handles variations #3 (basic), #9 (north edge hex), #10 (south edge hex), #17 (north pentagon), #18 (south pentagon), #25 (north pole) and #26 (south pole)
-static void generateEvenParentEvenDepth(void * context, void (* centroidCallback)(void * context, uint64 index, Pointd centroid),
+static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallback)(void * context, uint64 index, Pointd centroid),
    Pointd firstCentroid, int rDepth, double u,
-   int nv, bool polarPentagon, bool southRhombus, bool edgeHex)
+   int nv, bool polarPentagon, bool southRhombus, bool edgeHex, int64 index)
 {
    // Start from hexagon / pentagon vertex
    // Left-To-Right Scanlines
@@ -773,18 +837,25 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
     x   x   x   x       4
           x          1
    */
+   bool keepGoing = true;
    Pointd centroid;
    bool southPentagon = nv == 5 && southRhombus;
-   int nCapRows = (int)pow(3, (rDepth-2)/2), nMidRows = 2 * nCapRows + 1;
+   int nCapRows = (int)POW3((rDepth-2)/2), nMidRows = 2 * nCapRows + 1;
    int endCapSkip = nv == 5 ? (nCapRows + 1) / 2 : 0;
    int minCols = 1;
    int r, nCols, col;
    Pointd rc;
-   int i = 0;
+   int64 i = 0;
 
    // First cap
-   for(r = 0, nCols = minCols; r < nCapRows; r++, nCols += 3)
+   for(r = 0, nCols = minCols; keepGoing && r < nCapRows; r++, nCols += 3)
    {
+      if(index != -1 && i + nCols < index)
+      {
+         i += nCols;
+         continue;
+      }
+
       // Computing start of scanline
       if(polarPentagon && southRhombus)
       {
@@ -819,8 +890,14 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
          moveISEAVertex(rc, firstCentroid, r * -2 * u, r * -1 * u);
 
       // Iterating through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if((edgeHex || nv == 5) && !southRhombus)
          {
             if(r > nCapRows / 2)
@@ -907,14 +984,20 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
          else
             moveISEAVertex(centroid, rc, col * u, col * u);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Main portion
-   for(r = 0; r < nMidRows; r++, nCols += (nCols & 1) ? 1 : -1)
+   for(r = 0; keepGoing && r < nMidRows; r++, nCols += (nCols & 1) ? 1 : -1)
    {
       int colSkip = (nv == 5 && r > nMidRows/2) ? r - nMidRows/2: 0;
+
+      if(index != -1 && i + nCols - colSkip < index)
+      {
+         i += nCols - colSkip;
+         continue;
+      }
 
       // Computing start of scanline
       if(polarPentagon && southRhombus)
@@ -962,8 +1045,14 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
              nCapRows * -1 * u + (r >> 1) *  u + (r & 1) * u);
 
       // Iterating through scanline
-      for(col = 0; col < nCols - colSkip; col++)
+      for(col = 0; keepGoing && col < nCols - colSkip; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(colSkip && southPentagon)
          {
             int jumpCol = (nCols - colSkip) >> 1;
@@ -1096,15 +1185,19 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
          else
             moveISEAVertex(centroid, rc, col * u, col * u);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Second cap
-   for(r = 0, nCols -= 2; r < nCapRows - endCapSkip; r++, nCols -= 3)
+   for(r = 0, nCols -= 2; keepGoing && r < nCapRows - endCapSkip; r++, nCols -= 3)
    {
+      int n = (edgeHex || nv == 5) && r < nCapRows / 2 ? nCapRows - (2*(r+1)) : 0;
+
+      if(index != -1 && i + nCols < index);
+
       // Compute start of scanline
-      if(polarPentagon)
+      else if(polarPentagon)
       {
          if(southRhombus)
          {
@@ -1161,84 +1254,97 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
             nCapRows * -1 * u + ((nMidRows-1) >> 1) *  u + (r + 1) * 2 * u);
 
       // Iterate through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
-         int n = (edgeHex || nv == 5) && r < nCapRows / 2 ? nCapRows - (2*(r+1)) : 0;
-         if((edgeHex || nv == 5) && !southRhombus)
+         if(index == -1 || i == index)
          {
-            int a = Min(col, n), b = col - a;
-
-            if(a)
+            if((edgeHex || nv == 5) && !southRhombus)
             {
-               Pointd t;
+               int a = Min(col, n), b = col - a;
 
-               if(b)
+               if(a)
                {
-                  Pointd i2;
-                  if(nv == 5)
+                  Pointd t;
+
+                  if(b)
                   {
-                     b -= (nCols/2 - n/2) + r + r / 2 + 1;
-                     if(polarPentagon)
+                     Pointd i2;
+                     if(nv == 5)
+                     {
+                        b -= (nCols/2 - n/2) + r + r / 2 + 1;
+                        if(polarPentagon)
+                        {
+                           moveISEAVertex(t, rc, a * u, 0);
+                           crossISEAInterruption(t, i2, false, false);
+                        }
+                        else
+                           moveISEAVertex3(i2, rc, a * u, 0);
+                     }
+                     else
                      {
                         moveISEAVertex(t, rc, a * u, 0);
                         crossISEAInterruption(t, i2, false, false);
                      }
-                     else
-                        moveISEAVertex3(i2, rc, a * u, 0);
-                  }
-                  else
-                  {
-                     moveISEAVertex(t, rc, a * u, 0);
-                     crossISEAInterruption(t, i2, false, false);
-                  }
-                  if(polarPentagon)
-                     moveISEAVertex3(centroid, i2, 0, b * u);
-                  else
-                     moveISEAVertex3(centroid, i2, b * u, b * u);
-               }
-               else
-                  moveISEAVertex3(centroid, rc, a * u, 0);
-            }
-            else
-               moveISEAVertex3(centroid, rc, b * u, b * u);
-         }
-         else if((edgeHex || nv == 5) && southRhombus)
-         {
-            int a = Min(col, n), b = col - a;
-
-            if(a)
-            {
-               Pointd t;
-               if(polarPentagon) // REVIEW: moveISEAVertex3() breaks things here
-                  moveISEAVertex(t, rc, -a * u, 0);
-               else
-                  // REVIEW: Avoid using moveISEAVertex3() before crossISEAInterruption()
-                  (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, a * u);
-               if(b)
-               {
-                  Pointd i2;
-                  crossISEAInterruption(t, i2, true, polarPentagon);
-                  if(nv == 5)
-                  {
-                     b -= (nCols/2 - n/2) + r + r / 2 + 1;
                      if(polarPentagon)
-                        moveISEAVertex3(centroid, i2, 0, -b * u);
+                        moveISEAVertex3(centroid, i2, 0, b * u);
                      else
                         moveISEAVertex3(centroid, i2, b * u, b * u);
                   }
                   else
-                     moveISEAVertex3(centroid, i2, b * u, 0);
+                     moveISEAVertex3(centroid, rc, a * u, 0);
                }
                else
-                  centroid = t;
+                  moveISEAVertex3(centroid, rc, b * u, b * u);
+            }
+            else if((edgeHex || nv == 5) && southRhombus)
+            {
+               int a = Min(col, n), b = col - a;
+
+               if(a)
+               {
+                  Pointd t;
+                  if(polarPentagon) // REVIEW: moveISEAVertex3() breaks things here
+                     moveISEAVertex(t, rc, -a * u, 0);
+                  else
+                     // REVIEW: Avoid using moveISEAVertex3() before crossISEAInterruption()
+                     (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, a * u);
+                  if(b)
+                  {
+                     Pointd i2;
+                     crossISEAInterruption(t, i2, true, polarPentagon);
+                     if(nv == 5)
+                     {
+                        b -= (nCols/2 - n/2) + r + r / 2 + 1;
+                        if(polarPentagon)
+                           moveISEAVertex3(centroid, i2, 0, -b * u);
+                        else
+                           moveISEAVertex3(centroid, i2, b * u, b * u);
+                     }
+                     else
+                        moveISEAVertex3(centroid, i2, b * u, 0);
+                  }
+                  else
+                     centroid = t;
+               }
+               else
+                  moveISEAVertex3(centroid, rc, b * u, 0);
             }
             else
-               moveISEAVertex3(centroid, rc, b * u, 0);
+               moveISEAVertex(centroid, rc, col * u, col * u);
+
+            if((keepGoing = centroidCallback(context, i, centroid))) i++;
+         }
+         else if(nv == 5 && n > col && n - col < index - i)
+         {
+            i += (int64)n - col + 1;
+            col = n;
          }
          else
-            moveISEAVertex(centroid, rc, col * u, col * u);
-
-         centroidCallback(context, i++, centroid);
+         {
+            int ff = (int)Min(index - i, nCols - col);
+            col += ff-1;
+            i += ff;
+         }
 
          if(nv == 5 && col == n)
             col = nCols - n - 1;
@@ -1246,17 +1352,18 @@ static void generateEvenParentEvenDepth(void * context, void (* centroidCallback
    }
 
 #ifdef _DEBUG
-   if(i != ((Array)context).count)
+   if(keepGoing && i != ((Array)context).count)
    {
       PrintLn("WARNING: Mismatched sub-zone index");
    }
 #endif
+   return keepGoing ? -1 : i;
 }
 
 // This function handles variations #4 (basic), #11 (north edge hex), #12 (south edge hex), #19 (north pentagon), #20 (south pentagon), #27 (north pole) and #28 (south pole)
-static void generateOddParentEvenDepth(void * context, void (* centroidCallback)(void * context, uint64 index, Pointd centroid),
+static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback)(void * context, uint64 index, Pointd centroid),
    Pointd firstCentroid, int rDepth, double u,
-   int nv, bool polarPentagon, bool southRhombus, bool edgeHex)
+   int nv, bool polarPentagon, bool southRhombus, bool edgeHex, int64 index)
 {
    // Start from hexagon / pentagon vertex
 
@@ -1300,19 +1407,26 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
      1                                                                          1
 
    */
+   bool keepGoing = true;
    Pointd centroid;
    bool northPentagon = nv == 5 && !southRhombus;
    bool southPentagon = nv == 5 && southRhombus;
-   int nCapRows = (int)pow(3, (rDepth-2)/2), nMidRows = 2 * nCapRows + 1;
+   int nCapRows = (int)POW3((rDepth-2)/2), nMidRows = 2 * nCapRows + 1;
    int endCapSkip = nv == 5 ? (nCapRows + 1) / 2 : 0;
    int minCols = 1;
    int r, nCols, col;
    Pointd rc;
-   int i = 0;
+   int64 i = 0;
 
    // First cap
-   for(r = 0, nCols = minCols; r < nCapRows; r++, nCols += 3)
+   for(r = 0, nCols = minCols; keepGoing && r < nCapRows; r++, nCols += 3)
    {
+      if(index != -1 && i + nCols < index)
+      {
+         i += nCols;
+         continue;
+      }
+
       // Compute start of scanline
       if(polarPentagon)
          moveISEAVertex(rc, firstCentroid, (southPentagon?-1:1) * r * u, (southPentagon?-1:1) * r * u);
@@ -1320,8 +1434,14 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
          moveISEAVertex(rc, firstCentroid, 0, r * u);
 
       // Iterate through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(polarPentagon)
          {
             int n = r/2 + r;
@@ -1346,14 +1466,20 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
          }
          else
             moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Main section
-   for(r = 0; r < nMidRows; r++, nCols += (nCols & 1) ? 1 : -1)
+   for(r = 0; keepGoing && r < nMidRows; r++, nCols += (nCols & 1) ? 1 : -1)
    {
       int skip = nv == 5 && r > nCapRows ? r - nCapRows : 0;
+
+      if(index != -1 && i + nCols - skip < index)
+      {
+         i += nCols - skip;
+         continue;
+      }
 
       // Compute start of scanline
       if(polarPentagon)
@@ -1400,8 +1526,14 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
             (nCapRows + (r >> 1)) * u + (r & 1) * u / 3);
 
       // Iterate through scanline
-      for(col = 0; col < nCols - skip; col++)
+      for(col = 0; keepGoing && col < nCols - skip; col++)
       {
+         if(index != -1)
+         {
+            col = (int)(index - i);
+            i = index;
+         }
+
          if(polarPentagon)
          {
             int r2 = r > nCapRows ? (2*nCapRows - r) : r;
@@ -1515,15 +1647,19 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
          else
             moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
 
-         centroidCallback(context, i++, centroid);
+         if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
 
    // Second cap
-   for(r = 0, nCols -= 2; r < nCapRows - endCapSkip; r++, nCols -= 3)
+   for(r = 0, nCols -= 2; keepGoing && r < nCapRows - endCapSkip; r++, nCols -= 3)
    {
+      int n = nv == 5 ? (r >= nCapRows / 2 ? 0 : nCapRows - (2*(r+1))) : -1;
+
+      if(index != -1 && i + nCols < index);
+
       // Compute start of scanline
-      if(polarPentagon)
+      else if(polarPentagon)
       {
          Pointd t, i2;
          int r2 = nMidRows-1, a = r2 >> 1, b = r2 & 1;
@@ -1563,75 +1699,75 @@ static void generateOddParentEvenDepth(void * context, void (* centroidCallback)
             (nCapRows + ((nMidRows-1) >> 1)) * u);
 
       // Iterate through scanline
-      for(col = 0; col < nCols; col++)
+      for(col = 0; keepGoing && col < nCols; col++)
       {
-         if(polarPentagon)
-         {
-            int n = r >= nCapRows / 2 ? 0 : nCapRows - (2*(r+1));
-            int a = Min(col, n), b = col - a;
-            Pointd t;
+         Pointd t;
+         int a = 0, b = 0;
 
+         if(nv == 5)
+         {
+            a = Min(col, n);
+            b = col - a;
             if(b)
                b -= (nCols/2 - n/2) + r + r / 2 + 1;
-
-            moveISEAVertex(t, rc, (southPentagon?-1:1) * a * 2*u/3, (southPentagon?-1:1) * a * u/3);
-            moveISEAVertex(centroid, t, (southPentagon?-1:1) * b * u/3, (southPentagon?-1:1) * b * 2*u/3);
-
-            if(col == n)
-               col = nCols - 1 - n; // REVIEW: We could subtract from nCols in for loop instead?
          }
-         else if(northPentagon)
+
+         if(index == -1 || index == i)
          {
-            int n = r >= nCapRows / 2 ? 0 : nCapRows - (2*(r+1));
-            int a = Min(col, n), b = col - a;
-            Pointd t;
+            if(polarPentagon)
+            {
+               moveISEAVertex(t, rc, (southPentagon?-1:1) * a * 2*u/3, (southPentagon?-1:1) * a * u/3);
+               moveISEAVertex(centroid, t, (southPentagon?-1:1) * b * u/3, (southPentagon?-1:1) * b * 2*u/3);
+            }
+            else if(northPentagon)
+            {
+               moveISEAVertex(t, rc, a * u/3, -a * u/3);
+               moveISEAVertex(centroid, t, b * 2*u/3, b * u/3);
+            }
+            else if(southPentagon)
+            {
+               moveISEAVertex(t, rc, -a * u/3, -2*a * u/3);
+               moveISEAVertex(centroid, t, b * u/3, -b * u/3);
+            }
+            else if(edgeHex && !southRhombus)
+               moveISEAVertex(centroid, rc, col * 2*u/3, col * u/3);
+            else if(edgeHex && southRhombus)
+               moveISEAVertex(centroid, rc, -col * u/3, -2*col * u/3);
+            else
+               moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
 
-            if(b)
-               b -= (nCols/2 - n/2) + r + r / 2 + 1;
-
-            moveISEAVertex(t, rc, a * u/3, -a * u/3);
-            moveISEAVertex(centroid, t, b * 2*u/3, b * u/3);
-
-            if(col == n)
-               col = nCols - 1 - n; // REVIEW: We could subtract from nCols in for loop instead?
+            if((keepGoing = centroidCallback(context, i, centroid))) i++;
          }
-         else if(southPentagon)
+         else if(nv == 5 && n > col && n - col < index - i)
          {
-            int n = r >= nCapRows / 2 ? 0 : nCapRows - (2*(r+1));
-            int a = Min(col, n), b = col - a;
-            Pointd t;
-
-            if(b)
-               b -= (nCols/2 - n/2) + r + r / 2 + 1;
-
-            moveISEAVertex(t, rc, -a * u/3, -2*a * u/3);
-            moveISEAVertex(centroid, t, b * u/3, -b * u/3);
-
-            if(col == n)
-               col = nCols - 1 - n; // REVIEW: We could subtract from nCols in for loop instead?
+            i += (int64)n - col + 1;
+            col = n;
          }
-         else if(edgeHex && !southRhombus)
-            moveISEAVertex(centroid, rc, col * 2*u/3, col * u/3);
-         else if(edgeHex && southRhombus)
-            moveISEAVertex(centroid, rc, -col * u/3, -2*col * u/3);
          else
-            moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
+         {
+            int ff = (int)Min(index - i, nCols - col);
+            col += ff-1;
+            i += ff;
+         }
 
-         centroidCallback(context, i++, centroid);
+         if(nv == 5 && col == n)
+            col = nCols - n - 1;
       }
    }
 
 #ifdef _DEBUG
-   if(i != ((Array)context).count)
+   if(keepGoing && i != ((Array)context).count)
    {
       PrintLn("WARNING: Mismatched sub-zone index");
    }
 #endif
+   return keepGoing ? -1 : i;
 }
 
-static inline void addCentroid(Array<Pointd> centroids, uint64 index, Pointd centroid)
+static inline bool addCentroid(Array<Pointd> centroids, uint64 index, Pointd centroid)
 {
    centroids[(uint)index] = centroid;
+   return true;
 }
 
 Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
@@ -1647,7 +1783,7 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
       Array<Pointd> centroids { size = (uint)nSubZones };
 
       if(rDepth > 0)
-         iterateISEA3HSubZones(zone, rDepth, centroids, addCentroid);
+         iterateISEA3HSubZones(zone, rDepth, centroids, addCentroid, -1);
       else
          centroids[0] = zone.centroid;
 #if 0 //def _DEBUG
@@ -1661,19 +1797,20 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
    return null;
 }
 
-static void iterateISEA3HSubZones(ISEA3HZone zone, int rDepth, void * context,
-   void (* centroidCallback)(void * context, uint64 index, Pointd centroid))
+/*static */int64 iterateISEA3HSubZones(ISEA3HZone zone, int rDepth, void * context,
+   bool (* centroidCallback)(void * context, uint64 index, Pointd centroid), int64 index)
 {
+   int64 stopIndex;
    Pointd firstCentroid;
    int level = zone.level, levelISEA9R = zone.levelISEA9R;
    int nv = zone.nPoints, subHex = zone.subHex, rootRhombus = zone.rootRhombus;
    uint64 rhombusIX = zone.rhombusIX;
    bool oddDepth = rDepth & 1, oddParent = subHex > 2;
    int szLevel = level + rDepth;
-   double u = 1.0 / pow(3, (szLevel / 2));
+   double u = 1.0 / POW3((szLevel / 2));
    bool southRhombus = rootRhombus & 1;
    bool polarPentagon = subHex == 1 || subHex == 2 || subHex == 6 || subHex == 7;
-   int divs = (int)pow(3, levelISEA9R);
+   int divs = (int)POW3(levelISEA9R);
    // Edge Hexagons are either -A or -D
    bool edgeHex = nv == 6 && rhombusIX && (subHex == 0 || subHex == 3) && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
 
@@ -1692,16 +1829,17 @@ static void iterateISEA3HSubZones(ISEA3HZone zone, int rDepth, void * context,
    {
       // Odd Level parents -- e.g., A6-0-E (level 1)
       if(oddDepth)
-         generateOddParentOddDepth  (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex);
+         stopIndex = generateOddParentOddDepth  (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex, index);
       else
-         generateOddParentEvenDepth (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex);
+         stopIndex = generateOddParentEvenDepth (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex, index);
    }
    else
    {
       // Even Level parents
       if(oddDepth)
-         generateEvenParentOddDepth (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex);
+         stopIndex = generateEvenParentOddDepth (context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex, index);
       else
-         generateEvenParentEvenDepth(context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex);
+         stopIndex = generateEvenParentEvenDepth(context, centroidCallback, firstCentroid, rDepth, u, nv, polarPentagon, southRhombus, edgeHex, index);
    }
+   return stopIndex;
 }
