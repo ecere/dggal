@@ -1981,11 +1981,11 @@ static Array<DGGRSZone> listISEA3HZones(int zoneLevel, const GeoExtent bbox)
    else
       extentCheck = false, pj.crsExtentFromWGS84(wholeWorld, tl, br);
 
-   for(y = tl.y; y < br.y + z; y += z)
+   for(y = tl.y; y < br.y + 2*z; y += z)
    {
       int rootY = (int)(y + 1E-11);
       int row = (int)(y / z + 1E-11);
-      for(x = tl.x; x < br.x + z; x += z)
+      for(x = tl.x; x < br.x + 2*z; x += z)
       {
          int rootX = (int)(x + 1E-11);
          int col = (int)(x / z + 1E-11);
