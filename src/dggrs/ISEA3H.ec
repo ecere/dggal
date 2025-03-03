@@ -411,7 +411,7 @@ static void canonicalizeCentroid(const Pointd _src, Pointd out)
    Pointd src = _src;
    int cx, cy;
 
-   if(src.x > 5 + 1E-11 && src.y > 5 + 1E-11)
+   if(src.x > 5 - 1E-11 && src.y > 5 - 1E-11)
       src.x -= 5, src.y -= 5;
    if(src.x < -1E-11 || src.y < -1E-11)
       src.x += 5, src.y += 5;
