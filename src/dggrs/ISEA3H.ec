@@ -404,12 +404,20 @@ static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
    // return *zone != ISEA3HZone::fromCentroid(zone->level, centroid);
 }
 
-static void canonicalizeCentroid(const Pointd src, Pointd out)
+static void canonicalizeCentroid(const Pointd _src, Pointd out)
 {
-   int cx = (int)floor(src.x + 1E-11);
-   int cy = (int)floor(src.y + 1E-11);
    bool south = false, cross = false;
    bool np = false, sp = false;
+   Pointd src = _src;
+   int cx, cy;
+
+   if(src.x > 5 + 1E-11 && src.y > 5 + 1E-11)
+      src.x -= 5, src.y -= 5;
+   if(src.x < -1E-11 || src.y < -1E-11)
+      src.x += 5, src.y += 5;
+
+   cx = (int)floor(src.x + 1E-11);
+   cy = (int)floor(src.y + 1E-11);
 
    switch(cy)
    {
@@ -422,11 +430,11 @@ static void canonicalizeCentroid(const Pointd src, Pointd out)
 
    switch(cx)
    {
-      case 0: cross = fabs(src.y - 2) < 1E-11; south = true; sp = cross && fabs(src.x - 0) < 1E-11; break;
-      case 1: cross = fabs(src.y - 3) < 1E-11; south = true; sp = cross && fabs(src.x - 1) < 1E-11; break;
-      case 2: cross = fabs(src.y - 4) < 1E-11; south = true; sp = cross && fabs(src.x - 2) < 1E-11; break;
-      case 3: cross = fabs(src.y - 5) < 1E-11; south = true; sp = cross && fabs(src.x - 3) < 1E-11; break;
-      case 4: cross = fabs(src.y - 6) < 1E-11; south = true; sp = cross && fabs(src.x - 4) < 1E-11; break;
+      case 0: if(fabs(src.y - 2) < 1E-11) { cross = true; south = true; sp = cross && fabs(src.x - 0) < 1E-11; } break;
+      case 1: if(fabs(src.y - 3) < 1E-11) { cross = true; south = true; sp = cross && fabs(src.x - 1) < 1E-11; } break;
+      case 2: if(fabs(src.y - 4) < 1E-11) { cross = true; south = true; sp = cross && fabs(src.x - 2) < 1E-11; } break;
+      case 3: if(fabs(src.y - 5) < 1E-11) { cross = true; south = true; sp = cross && fabs(src.x - 3) < 1E-11; } break;
+      case 4: if(fabs(src.y - 6) < 1E-11) { cross = true; south = true; sp = cross && fabs(src.x - 4) < 1E-11; } break;
    }
 
    if(sp)

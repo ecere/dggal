@@ -278,7 +278,7 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
    // First half
    for(r = 0, nCols = minCols; keepGoing && r <= nHalfRows; r++, nCols++)
    {
-      if(index != -1 && i + nCols < index)
+      if(index != -1 && i + nCols <= index)
       {
          i += nCols;
          continue;
@@ -365,7 +365,7 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
       else if(southPentagon)
          n = (nCols-r)/2;
 
-      if(index != -1 && i + nCols < index);  // nCols is not always the actual number of indices
+      if(index != -1 && i + nCols <= index);  // nCols is not always the actual number of indices
       else if(polarPentagon)
          moveISEAVertex(rc, firstCentroid, southPentagon ? (-1 - r * u) : (1 + r * u), southPentagon ? (-1 -r * u) : (1 + r * u));
       else if(northPentagon || (edgeHex && !southRhombus))
@@ -476,7 +476,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
    // First half
    for(r = 0, nCols = minCols; keepGoing && r <= nHalfRows; r++, nCols++)
    {
-      if(index != -1 && i + nCols < index)
+      if(index != -1 && i + nCols <= index)
       {
          i += nCols;
          continue;
@@ -652,7 +652,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
       int skip = nv == 5 ? r : 0;
       bool crosses = false;
 
-      if(index != -1 && i + nCols - skip < index)
+      if(index != -1 && i + nCols - skip <= index)
       {
          i += nCols - skip;
          continue;
@@ -850,7 +850,7 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
    // First cap
    for(r = 0, nCols = minCols; keepGoing && r < nCapRows; r++, nCols += 3)
    {
-      if(index != -1 && i + nCols < index)
+      if(index != -1 && i + nCols <= index)
       {
          i += nCols;
          continue;
@@ -993,7 +993,7 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
    {
       int colSkip = (nv == 5 && r > nMidRows/2) ? r - nMidRows/2: 0;
 
-      if(index != -1 && i + nCols - colSkip < index)
+      if(index != -1 && i + nCols - colSkip <= index)
       {
          i += nCols - colSkip;
          continue;
@@ -1194,7 +1194,7 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
    {
       int n = (edgeHex || nv == 5) && r < nCapRows / 2 ? nCapRows - (2*(r+1)) : 0;
 
-      if(index != -1 && i + nCols < index);
+      if(index != -1 && i + nCols <= index);
 
       // Compute start of scanline
       else if(polarPentagon)
@@ -1421,7 +1421,7 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
    // First cap
    for(r = 0, nCols = minCols; keepGoing && r < nCapRows; r++, nCols += 3)
    {
-      if(index != -1 && i + nCols < index)
+      if(index != -1 && i + nCols <= index)
       {
          i += nCols;
          continue;
@@ -1475,7 +1475,7 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
    {
       int skip = nv == 5 && r > nCapRows ? r - nCapRows : 0;
 
-      if(index != -1 && i + nCols - skip < index)
+      if(index != -1 && i + nCols - skip <= index)
       {
          i += nCols - skip;
          continue;
@@ -1656,7 +1656,7 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
    {
       int n = nv == 5 ? (r >= nCapRows / 2 ? 0 : nCapRows - (2*(r+1))) : -1;
 
-      if(index != -1 && i + nCols < index);
+      if(index != -1 && i + nCols <= index);
 
       // Compute start of scanline
       else if(polarPentagon)
