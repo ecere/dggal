@@ -62,10 +62,17 @@ public:
 #define REG_DGGRS_countZoneEdges(m, c)              REGVMETHOD(DGGRS, countZoneEdges,              c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
 #define REG_DGGRS_countZones(m, c)                  REGVMETHOD(DGGRS, countZones,                  c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level),                                                         c, (/*4Im*/level))
 #define REG_DGGRS_getFirstSubZone(m, c)             REGVMETHOD(DGGRS, getFirstSubZone,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int relativeDepth),                          c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/relativeDepth))
+#define REG_DGGRS_getIndexMaxDepth(m, c)            REGVMETHOD(DGGRS, getIndexMaxDepth,            c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxChildren(m, c)              REGVMETHOD(DGGRS, getMaxChildren,              c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
 #define REG_DGGRS_getMaxDGGRSZoneLevel(m, c)        REGVMETHOD(DGGRS, getMaxDGGRSZoneLevel,        c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxNeighbors(m, c)             REGVMETHOD(DGGRS, getMaxNeighbors,             c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxParents(m, c)               REGVMETHOD(DGGRS, getMaxParents,               c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
 #define REG_DGGRS_getRefinementRatio(m, c)          REGVMETHOD(DGGRS, getRefinementRatio,          c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getSubZoneAtIndex(m, c)           REGVMETHOD(DGGRS, getSubZoneAtIndex,           c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth, /*1Ab*/int64 index),    c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth, /*4Im*/index))
 #define REG_DGGRS_getSubZoneCRSCentroids(m, c)      REGVMETHOD(DGGRS, getSubZoneCRSCentroids,      c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/CRS crs, /*1Ab*/int relativeDepth),        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(CRS)crs, /*4Im*/relativeDepth))
+#define REG_DGGRS_getSubZoneIndex(m, c)             REGVMETHOD(DGGRS, getSubZoneIndex,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone subZone),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(DGGRSZone)subZone))
 #define REG_DGGRS_getSubZoneWGS84Centroids(m, c)    REGVMETHOD(DGGRS, getSubZoneWGS84Centroids,    c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
+#define REG_DGGRS_getSubZones(m, c)                 REGVMETHOD(DGGRS, getSubZones,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
 #define REG_DGGRS_getZoneArea(m, c)                 REGVMETHOD(DGGRS, getZoneArea,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
 #define REG_DGGRS_getZoneCRSCentroid(m, c)          REGVMETHOD(DGGRS, getZoneCRSCentroid,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/Pointd & centroid),          c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Im*/centroid))
 #define REG_DGGRS_getZoneCRSExtent(m, c)            REGVMETHOD(DGGRS, getZoneCRSExtent,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/CRSExtent & extent),         c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Im*/extent))
@@ -95,10 +102,17 @@ public:
       REG_DGGRS_countZoneEdges(countZoneEdges, c); \
       REG_DGGRS_countZones(countZones, c); \
       REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
       REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
       REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
       REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
       REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
       REG_DGGRS_getZoneArea(getZoneArea, c); \
       REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
       REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
@@ -132,14 +146,28 @@ public:
       uint64, c & _ARG, , /*6Fj*/int level); \
    VIRTUAL_METHOD_PROTO(getFirstSubZone, getFirstSubZone, c, DGGRS, \
       DGGRSZone, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/int relativeDepth); \
+   VIRTUAL_METHOD_PROTO(getIndexMaxDepth, getIndexMaxDepth, c, DGGRS, \
+      int, c &, , ); \
+   VIRTUAL_METHOD_PROTO(getMaxChildren, getMaxChildren, c, DGGRS, \
+      int, c &, , ); \
    VIRTUAL_METHOD_PROTO(getMaxDGGRSZoneLevel, getMaxDGGRSZoneLevel, c, DGGRS, \
+      int, c &, , ); \
+   VIRTUAL_METHOD_PROTO(getMaxNeighbors, getMaxNeighbors, c, DGGRS, \
+      int, c &, , ); \
+   VIRTUAL_METHOD_PROTO(getMaxParents, getMaxParents, c, DGGRS, \
       int, c &, , ); \
    VIRTUAL_METHOD_PROTO(getRefinementRatio, getRefinementRatio, c, DGGRS, \
       int, c &, , ); \
+   VIRTUAL_METHOD_PROTO(getSubZoneAtIndex, getSubZoneAtIndex, c, DGGRS, \
+      DGGRSZone, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth _ARG /*6Fj*/int64 index); \
    VIRTUAL_METHOD_PROTO(getSubZoneCRSCentroids, getSubZoneCRSCentroids, c, DGGRS, \
       TArray<Pointd _ARG int _ARG Pointd>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/CRS_ crs _ARG /*6Fj*/int relativeDepth); \
+   VIRTUAL_METHOD_PROTO(getSubZoneIndex, getSubZoneIndex, c, DGGRS, \
+      int64, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/DGGRSZone subZone); \
    VIRTUAL_METHOD_PROTO(getSubZoneWGS84Centroids, getSubZoneWGS84Centroids, c, DGGRS, \
       TArray<GeoPoint _ARG int _ARG GeoPoint>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth); \
+   VIRTUAL_METHOD_PROTO(getSubZones, getSubZones, c, DGGRS, \
+      TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth); \
    VIRTUAL_METHOD_PROTO(getZoneArea, getZoneArea, c, DGGRS, \
       double, c & _ARG, , /*6Fj*/DGGRSZone zone); \
    VIRTUAL_METHOD_PROTO(getZoneCRSCentroid, getZoneCRSCentroid, c, DGGRS, \
@@ -199,20 +227,42 @@ VIRTUAL_METHOD(countZones, countZones, c, DGGRS, \
 VIRTUAL_METHOD(getFirstSubZone, getFirstSubZone, c, DGGRS, \
    DGGRSZone, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/int relativeDepth, \
    return DGGRS_getFirstSubZone(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone, /*7Al*/relativeDepth);); \
+VIRTUAL_METHOD(getIndexMaxDepth, getIndexMaxDepth, c, DGGRS, \
+   int, c &, , , \
+   return DGGRS_getIndexMaxDepth(self ? self->impl : (C(DGGRS))null);); \
+VIRTUAL_METHOD(getMaxChildren, getMaxChildren, c, DGGRS, \
+   int, c &, , , \
+   return DGGRS_getMaxChildren(self ? self->impl : (C(DGGRS))null);); \
 VIRTUAL_METHOD(getMaxDGGRSZoneLevel, getMaxDGGRSZoneLevel, c, DGGRS, \
    int, c &, , , \
    return DGGRS_getMaxDGGRSZoneLevel(self ? self->impl : (C(DGGRS))null);); \
+VIRTUAL_METHOD(getMaxNeighbors, getMaxNeighbors, c, DGGRS, \
+   int, c &, , , \
+   return DGGRS_getMaxNeighbors(self ? self->impl : (C(DGGRS))null);); \
+VIRTUAL_METHOD(getMaxParents, getMaxParents, c, DGGRS, \
+   int, c &, , , \
+   return DGGRS_getMaxParents(self ? self->impl : (C(DGGRS))null);); \
 VIRTUAL_METHOD(getRefinementRatio, getRefinementRatio, c, DGGRS, \
    int, c &, , , \
    return DGGRS_getRefinementRatio(self ? self->impl : (C(DGGRS))null);); \
+VIRTUAL_METHOD(getSubZoneAtIndex, getSubZoneAtIndex, c, DGGRS, \
+   DGGRSZone, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth _ARG /*6Fj*/int64 index, \
+   return DGGRS_getSubZoneAtIndex(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/relativeDepth, /*7Al*/index);); \
 VIRTUAL_METHOD(getSubZoneCRSCentroids, getSubZoneCRSCentroids, c, DGGRS, \
    TArray<Pointd _ARG int _ARG Pointd>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/CRS_ crs _ARG /*6Fj*/int relativeDepth, \
    C(Array) retArray = DGGRS_getSubZoneCRSCentroids(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/(C(CRS))crs, /*7Al*/relativeDepth); \
       return TArray<Pointd _ARG int _ARG Pointd>(retArray);); \
+VIRTUAL_METHOD(getSubZoneIndex, getSubZoneIndex, c, DGGRS, \
+   int64, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/DGGRSZone subZone, \
+   return DGGRS_getSubZoneIndex(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/(C(DGGRSZone))subZone);); \
 VIRTUAL_METHOD(getSubZoneWGS84Centroids, getSubZoneWGS84Centroids, c, DGGRS, \
    TArray<GeoPoint _ARG int _ARG GeoPoint>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth, \
    C(Array) retArray = DGGRS_getSubZoneWGS84Centroids(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/relativeDepth); \
       return TArray<GeoPoint _ARG int _ARG GeoPoint>(retArray);); \
+VIRTUAL_METHOD(getSubZones, getSubZones, c, DGGRS, \
+   TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>, c & _ARG, , /*6Fj*/DGGRSZone parent _ARG /*6Fj*/int relativeDepth, \
+   C(Array) retArray = DGGRS_getSubZones(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/relativeDepth); \
+      return TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>(retArray);); \
 VIRTUAL_METHOD(getZoneArea, getZoneArea, c, DGGRS, \
    double, c & _ARG, , /*6Fj*/DGGRSZone zone, \
    return DGGRS_getZoneArea(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone);); \
@@ -447,14 +497,12 @@ public:
    inline double getMetersPerSubZoneFromLevel(/*1Ab*/int parentLevel, /*1Ab*/int relativeDepth); // DGGRS_getMetersPerSubZoneFromLevel
    inline double getRefZoneArea(/*1Ab*/int level); // DGGRS_getRefZoneArea
    inline double getScaleDenominatorFromLevel(/*1Ab*/int parentLevel, /*1Ab*/int relativeDepth, /*1Ab*/double mmPerPixel); // DGGRS_getScaleDenominatorFromLevel
-   inline C(DGGRSZone) getSubZoneAtIndex(/*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth, /*1Ab*/int index); // DGGRS_getSubZoneAtIndex
-   inline int getSubZoneIndex(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone subZone); // DGGRS_getSubZoneIndex
-   inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> getSubZones(/*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth); // DGGRS_getSubZones
    inline C(bool) isZoneAncestorOf(/*1Ab*/DGGRSZone ancestor, /*1Ab*/DGGRSZone descendant, /*1Ab*/int maxDepth); // DGGRS_isZoneAncestorOf
    inline C(bool) isZoneContainedIn(/*1Ab*/DGGRSZone needle, /*1Ab*/DGGRSZone hayStack); // DGGRS_isZoneContainedIn
    inline C(bool) isZoneDescendantOf(/*1Ab*/DGGRSZone descendant, /*1Ab*/DGGRSZone ancestor, /*1Ab*/int maxDepth); // DGGRS_isZoneDescendantOf
    inline C(bool) isZoneImmediateChildOf(/*1Ab*/DGGRSZone child, /*1Ab*/DGGRSZone parent); // DGGRS_isZoneImmediateChildOf
    inline C(bool) isZoneImmediateParentOf(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone child); // DGGRS_isZoneImmediateParentOf
+   inline C(bool) zoneHasSubZone(/*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle); // DGGRS_zoneHasSubZone
 
    struct DGGRS_compactZones_Functor
    {
@@ -501,6 +549,24 @@ public:
    } getFirstSubZone;
    // inline static void register_getFirstSubZone(CPPClass & cl, DGGRS::DGGRS_getFirstSubZone_Functor::FunctionType func)
 
+   struct DGGRS_getIndexMaxDepth_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(DGGRS &);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()( );
+   } getIndexMaxDepth;
+   // inline static void register_getIndexMaxDepth(CPPClass & cl, DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType func)
+
+   struct DGGRS_getMaxChildren_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(DGGRS &);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()( );
+   } getMaxChildren;
+   // inline static void register_getMaxChildren(CPPClass & cl, DGGRS::DGGRS_getMaxChildren_Functor::FunctionType func)
+
    struct DGGRS_getMaxDGGRSZoneLevel_Functor
    {
       [[no_unique_address]] int _[0];
@@ -509,6 +575,24 @@ public:
       inline int operator()( );
    } getMaxDGGRSZoneLevel;
    // inline static void register_getMaxDGGRSZoneLevel(CPPClass & cl, DGGRS::DGGRS_getMaxDGGRSZoneLevel_Functor::FunctionType func)
+
+   struct DGGRS_getMaxNeighbors_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(DGGRS &);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()( );
+   } getMaxNeighbors;
+   // inline static void register_getMaxNeighbors(CPPClass & cl, DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType func)
+
+   struct DGGRS_getMaxParents_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(DGGRS &);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()( );
+   } getMaxParents;
+   // inline static void register_getMaxParents(CPPClass & cl, DGGRS::DGGRS_getMaxParents_Functor::FunctionType func)
 
    struct DGGRS_getRefinementRatio_Functor
    {
@@ -519,6 +603,15 @@ public:
    } getRefinementRatio;
    // inline static void register_getRefinementRatio(CPPClass & cl, DGGRS::DGGRS_getRefinementRatio_Functor::FunctionType func)
 
+   struct DGGRS_getSubZoneAtIndex_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef DGGRSZone (* FunctionType)(DGGRS & , /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth, /*6Fj*/int64 index);
+      inline FunctionType operator= (FunctionType func);
+      inline DGGRSZone operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth, /*6Fj*/int64 index);
+   } getSubZoneAtIndex;
+   // inline static void register_getSubZoneAtIndex(CPPClass & cl, DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType func)
+
    struct DGGRS_getSubZoneCRSCentroids_Functor
    {
       [[no_unique_address]] int _[0];
@@ -528,6 +621,15 @@ public:
    } getSubZoneCRSCentroids;
    // inline static void register_getSubZoneCRSCentroids(CPPClass & cl, DGGRS::DGGRS_getSubZoneCRSCentroids_Functor::FunctionType func)
 
+   struct DGGRS_getSubZoneIndex_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int64 (* FunctionType)(DGGRS & , /*6Fj*/DGGRSZone parent, /*6Fj*/DGGRSZone subZone);
+      inline FunctionType operator= (FunctionType func);
+      inline int64 operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/DGGRSZone subZone);
+   } getSubZoneIndex;
+   // inline static void register_getSubZoneIndex(CPPClass & cl, DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType func)
+
    struct DGGRS_getSubZoneWGS84Centroids_Functor
    {
       [[no_unique_address]] int _[0];
@@ -536,6 +638,15 @@ public:
       inline TArray<GeoPoint _ARG int _ARG GeoPoint> operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth);
    } getSubZoneWGS84Centroids;
    // inline static void register_getSubZoneWGS84Centroids(CPPClass & cl, DGGRS::DGGRS_getSubZoneWGS84Centroids_Functor::FunctionType func)
+
+   struct DGGRS_getSubZones_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> (* FunctionType)(DGGRS & , /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth);
+      inline FunctionType operator= (FunctionType func);
+      inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth);
+   } getSubZones;
+   // inline static void register_getSubZones(CPPClass & cl, DGGRS::DGGRS_getSubZones_Functor::FunctionType func)
 
    struct DGGRS_getZoneArea_Functor
    {
@@ -1835,10 +1946,17 @@ public:
       REG_DGGRS_countZoneEdges(countZoneEdges, c); \
       REG_DGGRS_countZones(countZones, c); \
       REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
       REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
       REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
       REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
       REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
       REG_DGGRS_getZoneArea(getZoneArea, c); \
       REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
       REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
@@ -2096,10 +2214,17 @@ public:
       REG_DGGRS_countZoneEdges(countZoneEdges, c); \
       REG_DGGRS_countZones(countZones, c); \
       REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
       REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
       REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
       REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
       REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
       REG_DGGRS_getZoneArea(getZoneArea, c); \
       REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
       REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
@@ -2338,10 +2463,17 @@ public:
       REG_DGGRS_countZoneEdges(countZoneEdges, c); \
       REG_DGGRS_countZones(countZones, c); \
       REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
       REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
       REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
       REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
       REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
       REG_DGGRS_getZoneArea(getZoneArea, c); \
       REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
       REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
@@ -3038,14 +3170,14 @@ public:
       /*regSet*/inline JSONSchema::oneOf_Prop & operator= (JSONSchema::oneOf_Prop & prop);
       /*regGet*/inline operator /*0I*/TArray<C(JSONSchema) _ARG int _ARG C(JSONSchema)> () const;
    } oneOf;
-   struct not_Prop
+   struct Not_Prop
    {
-      constexpr not_Prop() :_() { };
+      constexpr Not_Prop() :_() { };
       [[no_unique_address]] int _[0];
       /*nstSet*/inline /*0H*/JSONSchema operator= (/*0H*/JSONSchema v);
-      /*regSet*/inline JSONSchema::not_Prop & operator= (JSONSchema::not_Prop & prop);
+      /*regSet*/inline JSONSchema::Not_Prop & operator= (JSONSchema::Not_Prop & prop);
       /*regGet*/inline operator /*0I*/JSONSchema () const;
-   } _not;  // FIXME: C++ not?
+   } Not;
    struct xogcrole_Prop
    {
       constexpr xogcrole_Prop() :_() { };
@@ -3345,6 +3477,50 @@ inline DGGRSZone DGGRS::DGGRS_getFirstSubZone_Functor::operator()( /*6Fj*/DGGRSZ
 //    ((DGGRS::DGGRS_getFirstSubZone_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getFirstSubZone)] = func;
 // }
 
+inline DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType DGGRS::DGGRS_getIndexMaxDepth_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getIndexMaxDepth);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getIndexMaxDepth)] = func;
+   return func;
+}
+inline int DGGRS::DGGRS_getIndexMaxDepth_Functor::operator()( )
+{
+   SELF(DGGRS, getIndexMaxDepth);
+   return DGGRS_getIndexMaxDepth(self ? self->impl : (C(DGGRS))null);
+}
+// inline void DGGRS::register_getIndexMaxDepth(CPPClass & cl, DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getIndexMaxDepth_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getIndexMaxDepth)] = func;
+// }
+
+inline DGGRS::DGGRS_getMaxChildren_Functor::FunctionType DGGRS::DGGRS_getMaxChildren_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getMaxChildren);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getMaxChildren_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getMaxChildren_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getMaxChildren_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getMaxChildren)] = func;
+   return func;
+}
+inline int DGGRS::DGGRS_getMaxChildren_Functor::operator()( )
+{
+   SELF(DGGRS, getMaxChildren);
+   return DGGRS_getMaxChildren(self ? self->impl : (C(DGGRS))null);
+}
+// inline void DGGRS::register_getMaxChildren(CPPClass & cl, DGGRS::DGGRS_getMaxChildren_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getMaxChildren_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getMaxChildren)] = func;
+// }
+
 inline DGGRS::DGGRS_getMaxDGGRSZoneLevel_Functor::FunctionType DGGRS::DGGRS_getMaxDGGRSZoneLevel_Functor::operator= (FunctionType func)
 {
    SELF(DGGRS, getMaxDGGRSZoneLevel);
@@ -3367,6 +3543,50 @@ inline int DGGRS::DGGRS_getMaxDGGRSZoneLevel_Functor::operator()( )
 //    ((DGGRS::DGGRS_getMaxDGGRSZoneLevel_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getMaxDGGRSZoneLevel)] = func;
 // }
 
+inline DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType DGGRS::DGGRS_getMaxNeighbors_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getMaxNeighbors);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getMaxNeighbors)] = func;
+   return func;
+}
+inline int DGGRS::DGGRS_getMaxNeighbors_Functor::operator()( )
+{
+   SELF(DGGRS, getMaxNeighbors);
+   return DGGRS_getMaxNeighbors(self ? self->impl : (C(DGGRS))null);
+}
+// inline void DGGRS::register_getMaxNeighbors(CPPClass & cl, DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getMaxNeighbors_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getMaxNeighbors)] = func;
+// }
+
+inline DGGRS::DGGRS_getMaxParents_Functor::FunctionType DGGRS::DGGRS_getMaxParents_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getMaxParents);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getMaxParents_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getMaxParents_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getMaxParents_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getMaxParents)] = func;
+   return func;
+}
+inline int DGGRS::DGGRS_getMaxParents_Functor::operator()( )
+{
+   SELF(DGGRS, getMaxParents);
+   return DGGRS_getMaxParents(self ? self->impl : (C(DGGRS))null);
+}
+// inline void DGGRS::register_getMaxParents(CPPClass & cl, DGGRS::DGGRS_getMaxParents_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getMaxParents_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getMaxParents)] = func;
+// }
+
 inline DGGRS::DGGRS_getRefinementRatio_Functor::FunctionType DGGRS::DGGRS_getRefinementRatio_Functor::operator= (FunctionType func)
 {
    SELF(DGGRS, getRefinementRatio);
@@ -3387,6 +3607,28 @@ inline int DGGRS::DGGRS_getRefinementRatio_Functor::operator()( )
 // inline void DGGRS::register_getRefinementRatio(CPPClass & cl, DGGRS::DGGRS_getRefinementRatio_Functor::FunctionType func)
 // {
 //    ((DGGRS::DGGRS_getRefinementRatio_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getRefinementRatio)] = func;
+// }
+
+inline DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType DGGRS::DGGRS_getSubZoneAtIndex_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getSubZoneAtIndex);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getSubZoneAtIndex)] = func;
+   return func;
+}
+inline DGGRSZone DGGRS::DGGRS_getSubZoneAtIndex_Functor::operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth, /*6Fj*/int64 index)
+{
+   SELF(DGGRS, getSubZoneAtIndex);
+   return DGGRS_getSubZoneAtIndex(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/relativeDepth, /*7Al*/index);
+}
+// inline void DGGRS::register_getSubZoneAtIndex(CPPClass & cl, DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getSubZoneAtIndex_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getSubZoneAtIndex)] = func;
 // }
 
 inline DGGRS::DGGRS_getSubZoneCRSCentroids_Functor::FunctionType DGGRS::DGGRS_getSubZoneCRSCentroids_Functor::operator= (FunctionType func)
@@ -3412,6 +3654,28 @@ inline TArray<Pointd _ARG int _ARG Pointd> DGGRS::DGGRS_getSubZoneCRSCentroids_F
 //    ((DGGRS::DGGRS_getSubZoneCRSCentroids_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getSubZoneCRSCentroids)] = func;
 // }
 
+inline DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType DGGRS::DGGRS_getSubZoneIndex_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getSubZoneIndex);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getSubZoneIndex)] = func;
+   return func;
+}
+inline int64 DGGRS::DGGRS_getSubZoneIndex_Functor::operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/DGGRSZone subZone)
+{
+   SELF(DGGRS, getSubZoneIndex);
+   return DGGRS_getSubZoneIndex(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/(C(DGGRSZone))subZone);
+}
+// inline void DGGRS::register_getSubZoneIndex(CPPClass & cl, DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getSubZoneIndex_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getSubZoneIndex)] = func;
+// }
+
 inline DGGRS::DGGRS_getSubZoneWGS84Centroids_Functor::FunctionType DGGRS::DGGRS_getSubZoneWGS84Centroids_Functor::operator= (FunctionType func)
 {
    SELF(DGGRS, getSubZoneWGS84Centroids);
@@ -3433,6 +3697,29 @@ inline TArray<GeoPoint _ARG int _ARG GeoPoint> DGGRS::DGGRS_getSubZoneWGS84Centr
 // inline void DGGRS::register_getSubZoneWGS84Centroids(CPPClass & cl, DGGRS::DGGRS_getSubZoneWGS84Centroids_Functor::FunctionType func)
 // {
 //    ((DGGRS::DGGRS_getSubZoneWGS84Centroids_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getSubZoneWGS84Centroids)] = func;
+// }
+
+inline DGGRS::DGGRS_getSubZones_Functor::FunctionType DGGRS::DGGRS_getSubZones_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getSubZones);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getSubZones_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getSubZones_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getSubZones_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getSubZones)] = func;
+   return func;
+}
+inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> DGGRS::DGGRS_getSubZones_Functor::operator()( /*6Fj*/DGGRSZone parent, /*6Fj*/int relativeDepth)
+{
+   SELF(DGGRS, getSubZones);
+   C(Array) retArray = DGGRS_getSubZones(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))parent, /*7Al*/relativeDepth);
+      return TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>(retArray);
+}
+// inline void DGGRS::register_getSubZones(CPPClass & cl, DGGRS::DGGRS_getSubZones_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getSubZones_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getSubZones)] = func;
 // }
 
 inline DGGRS::DGGRS_getZoneArea_Functor::FunctionType DGGRS::DGGRS_getZoneArea_Functor::operator= (FunctionType func)
@@ -3957,18 +4244,6 @@ inline double DGGRS::getScaleDenominatorFromLevel(/*1Ab*/int parentLevel, /*1Ab*
 {
    return DGGRS_getScaleDenominatorFromLevel(impl, /*5Ge*/parentLevel, /*5Ge*/relativeDepth, /*5Ge*/mmPerPixel);
 }
-inline C(DGGRSZone) DGGRS::getSubZoneAtIndex(/*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth, /*1Ab*/int index)
-{
-   return DGGRS_getSubZoneAtIndex(impl, /*5Ee*/(C(DGGRSZone))parent.impl, /*5Ge*/relativeDepth, /*5Ge*/index);
-}
-inline int DGGRS::getSubZoneIndex(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone subZone)
-{
-   return DGGRS_getSubZoneIndex(impl, /*5Ee*/(C(DGGRSZone))parent.impl, /*5Ee*/(C(DGGRSZone))subZone.impl);
-}
-inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> DGGRS::getSubZones(/*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth)
-{
-   return TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>(DGGRS_getSubZones(impl, /*5Ee*/(C(DGGRSZone))parent.impl, /*5Ge*/relativeDepth));
-}
 inline C(bool) DGGRS::isZoneAncestorOf(/*1Ab*/DGGRSZone ancestor, /*1Ab*/DGGRSZone descendant, /*1Ab*/int maxDepth)
 {
    return DGGRS_isZoneAncestorOf(impl, /*5Ee*/(C(DGGRSZone))ancestor.impl, /*5Ee*/(C(DGGRSZone))descendant.impl, /*5Ge*/maxDepth);
@@ -3988,6 +4263,10 @@ inline C(bool) DGGRS::isZoneImmediateChildOf(/*1Ab*/DGGRSZone child, /*1Ab*/DGGR
 inline C(bool) DGGRS::isZoneImmediateParentOf(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone child)
 {
    return DGGRS_isZoneImmediateParentOf(impl, /*5Ee*/(C(DGGRSZone))parent.impl, /*5Ee*/(C(DGGRSZone))child.impl);
+}
+inline C(bool) DGGRS::zoneHasSubZone(/*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle)
+{
+   return DGGRS_zoneHasSubZone(impl, /*5Ee*/(C(DGGRSZone))hayStack.impl, /*5Ee*/(C(DGGRSZone))needle.impl);
 }
 
 
@@ -6029,27 +6308,27 @@ inline JSONSchema::JSONSchema(char * schema, char * id = 0, char * title = 0, ch
    return value;
 }
 
-// member accessors: JSONSchema::not
+// member accessors: JSONSchema::Not
 // (normal::normal)
 
-/*nstSet*/inline /*0H*/JSONSchema JSONSchema::not_Prop::operator= (/*0H*/JSONSchema v)
+/*nstSet*/inline /*0H*/JSONSchema JSONSchema::Not_Prop::operator= (/*0H*/JSONSchema v)
 {
-   SELF(JSONSchema, _not);
-   IPTR(self->impl, JSONSchema)->_not = v.impl;
+   SELF(JSONSchema, Not);
+   IPTR(self->impl, JSONSchema)->Not = v.impl;
    return v;
 }
 
-/*regSet*/inline JSONSchema::not_Prop & JSONSchema::not_Prop::operator= (JSONSchema::not_Prop & prop)
+/*regSet*/inline JSONSchema::Not_Prop & JSONSchema::Not_Prop::operator= (JSONSchema::Not_Prop & prop)
 {
-   SELF(JSONSchema, _not);
+   SELF(JSONSchema, Not);
    /*0H*/JSONSchema v = prop;
-   IPTR(self->impl, JSONSchema)->_not = v.impl;
+   IPTR(self->impl, JSONSchema)->Not = v.impl;
    return prop;
 }
-/*regGet*/inline JSONSchema::not_Prop::operator /*0I*/JSONSchema () const
+/*regGet*/inline JSONSchema::Not_Prop::operator /*0I*/JSONSchema () const
 {
-   SELF(JSONSchema, _not);
-   JSONSchema value(IPTR(self->impl, JSONSchema)->_not, JSONSchema::_cpp_class);
+   SELF(JSONSchema, Not);
+   JSONSchema value(IPTR(self->impl, JSONSchema)->Not, JSONSchema::_cpp_class);
    return value;
 }
 

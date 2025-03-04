@@ -228,7 +228,7 @@ extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, countZones);
 
 extern THIS_LIB_IMPORT C(bool) (* DGGRS_doZonesOverlap)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
 
-extern THIS_LIB_IMPORT C(bool) (* DGGRS_doesZoneContain)(C(DGGRS) __this, C(DGGRSZone) haystack, C(DGGRSZone) needle);
+extern THIS_LIB_IMPORT C(bool) (* DGGRS_doesZoneContain)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
 extern THIS_LIB_IMPORT int (* DGGRS_get64KDepth)(C(DGGRS) __this);
 
@@ -240,6 +240,14 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getFirstSubZone);
       __i _ARG zone _ARG relativeDepth)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getFirstSubZone);
 
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getIndexMaxDepth);
+// int DGGRS_getIndexMaxDepth(C(DGGRS) __i);
+#define DGGRS_getIndexMaxDepth(__i) \
+   VMETHOD(CO(DGGRS), DGGRS, getIndexMaxDepth, __i, int, \
+      C(DGGRS), \
+      __i)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getIndexMaxDepth);
+
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromMetersPerSubZone)(C(DGGRS) __this, double physicalMetersPerSubZone, int relativeDepth);
 
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, C(Point) * pixels, int relativeDepth);
@@ -247,6 +255,14 @@ extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromRefZoneArea)(C(DGGRS) __this, double metersSquared);
 
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromScaleDenominator)(C(DGGRS) __this, double scaleDenominator, int relativeDepth, double mmPerPixel);
+
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getMaxChildren);
+// int DGGRS_getMaxChildren(C(DGGRS) __i);
+#define DGGRS_getMaxChildren(__i) \
+   VMETHOD(CO(DGGRS), DGGRS, getMaxChildren, __i, int, \
+      C(DGGRS), \
+      __i)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getMaxChildren);
 
 extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getMaxDGGRSZoneLevel);
 // int DGGRS_getMaxDGGRSZoneLevel(C(DGGRS) __i);
@@ -257,6 +273,22 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getMaxDGGRSZoneLevel);
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getMaxDGGRSZoneLevel);
 
 extern THIS_LIB_IMPORT int (* DGGRS_getMaxDepth)(C(DGGRS) __this);
+
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getMaxNeighbors);
+// int DGGRS_getMaxNeighbors(C(DGGRS) __i);
+#define DGGRS_getMaxNeighbors(__i) \
+   VMETHOD(CO(DGGRS), DGGRS, getMaxNeighbors, __i, int, \
+      C(DGGRS), \
+      __i)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getMaxNeighbors);
+
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getMaxParents);
+// int DGGRS_getMaxParents(C(DGGRS) __i);
+#define DGGRS_getMaxParents(__i) \
+   VMETHOD(CO(DGGRS), DGGRS, getMaxParents, __i, int, \
+      C(DGGRS), \
+      __i)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getMaxParents);
 
 extern THIS_LIB_IMPORT double (* DGGRS_getMetersPerSubZoneFromLevel)(C(DGGRS) __this, int parentLevel, int relativeDepth);
 
@@ -272,7 +304,13 @@ extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getRefinementRatio);
 
 extern THIS_LIB_IMPORT double (* DGGRS_getScaleDenominatorFromLevel)(C(DGGRS) __this, int parentLevel, int relativeDepth, double mmPerPixel);
 
-extern THIS_LIB_IMPORT C(DGGRSZone) (* DGGRS_getSubZoneAtIndex)(C(DGGRS) __this, C(DGGRSZone) parent, int relativeDepth, int index);
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneAtIndex);
+// C(DGGRSZone) DGGRS_getSubZoneAtIndex(C(DGGRS) __i, C(DGGRSZone) parent, int relativeDepth, int64 index);
+#define DGGRS_getSubZoneAtIndex(__i, parent, relativeDepth, index) \
+   VMETHOD(CO(DGGRS), DGGRS, getSubZoneAtIndex, __i, C(DGGRSZone), \
+      C(DGGRS) _ARG C(DGGRSZone) _ARG int _ARG int64, \
+      __i _ARG parent _ARG relativeDepth _ARG index)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getSubZoneAtIndex);
 
 extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneCRSCentroids);
 // C(Array) DGGRS_getSubZoneCRSCentroids(C(DGGRS) __i, C(DGGRSZone) parent, C(CRS) crs, int relativeDepth);
@@ -282,7 +320,13 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneCRSCentroids);
       __i _ARG parent _ARG crs _ARG relativeDepth)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getSubZoneCRSCentroids);
 
-extern THIS_LIB_IMPORT int (* DGGRS_getSubZoneIndex)(C(DGGRS) __this, C(DGGRSZone) parent, C(DGGRSZone) subZone);
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneIndex);
+// int64 DGGRS_getSubZoneIndex(C(DGGRS) __i, C(DGGRSZone) parent, C(DGGRSZone) subZone);
+#define DGGRS_getSubZoneIndex(__i, parent, subZone) \
+   VMETHOD(CO(DGGRS), DGGRS, getSubZoneIndex, __i, int64, \
+      C(DGGRS) _ARG C(DGGRSZone) _ARG C(DGGRSZone), \
+      __i _ARG parent _ARG subZone)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getSubZoneIndex);
 
 extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneWGS84Centroids);
 // C(Array) DGGRS_getSubZoneWGS84Centroids(C(DGGRS) __i, C(DGGRSZone) parent, int relativeDepth);
@@ -292,7 +336,13 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZoneWGS84Centroids);
       __i _ARG parent _ARG relativeDepth)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getSubZoneWGS84Centroids);
 
-extern THIS_LIB_IMPORT C(Array) (* DGGRS_getSubZones)(C(DGGRS) __this, C(DGGRSZone) parent, int relativeDepth);
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getSubZones);
+// C(Array) DGGRS_getSubZones(C(DGGRS) __i, C(DGGRSZone) parent, int relativeDepth);
+#define DGGRS_getSubZones(__i, parent, relativeDepth) \
+   VMETHOD(CO(DGGRS), DGGRS, getSubZones, __i, C(Array), \
+      C(DGGRS) _ARG C(DGGRSZone) _ARG int, \
+      __i _ARG parent _ARG relativeDepth)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getSubZones);
 
 extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getZoneArea);
 // double DGGRS_getZoneArea(C(DGGRS) __i, C(DGGRSZone) zone);
@@ -456,7 +506,7 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, isZoneCentroidChild);
       __i _ARG zone)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, isZoneCentroidChild);
 
-extern THIS_LIB_IMPORT C(bool) (* DGGRS_isZoneContainedIn)(C(DGGRS) __this, C(DGGRSZone) needle, C(DGGRSZone) haystack);
+extern THIS_LIB_IMPORT C(bool) (* DGGRS_isZoneContainedIn)(C(DGGRS) __this, C(DGGRSZone) needle, C(DGGRSZone) hayStack);
 
 extern THIS_LIB_IMPORT C(bool) (* DGGRS_isZoneDescendantOf)(C(DGGRS) __this, C(DGGRSZone) descendant, C(DGGRSZone) ancestor, int maxDepth);
 
@@ -471,6 +521,8 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, listZones);
       C(DGGRS) _ARG int _ARG const C(GeoExtent) *, \
       __i _ARG level _ARG bbox)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, listZones);
+
+extern THIS_LIB_IMPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
 #define DGGRSZONE_level_SHIFT                            59
 #define DGGRSZONE_level_MASK                             0xF800000000000000LL
@@ -662,7 +714,7 @@ struct CM(JSONSchema)
    C(Array) allOf;
    C(Array) anyOf;
    C(Array) oneOf;
-   C(JSONSchema) _not;
+   C(JSONSchema) Not;
    C(String) xogcrole;
    int xogcpropertySeq;
 };

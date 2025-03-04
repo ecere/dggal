@@ -303,7 +303,7 @@ public:
       }
    }
 
-   static bool isZoneAncestorOfWithTree(DGGRSZone ancestor, DGGRSZone descendant, int maxDepth, AVLTree<DGGRSZone> tree)
+   private static bool isZoneAncestorOfWithTree(DGGRSZone ancestor, DGGRSZone descendant, int maxDepth, AVLTree<DGGRSZone> tree)
    {
       int aLevel = getZoneLevel(ancestor), dLevel = getZoneLevel(descendant);
       if(dLevel > aLevel && (!maxDepth || dLevel - aLevel <= maxDepth))

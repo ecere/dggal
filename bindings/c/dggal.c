@@ -23,12 +23,16 @@ LIB_EXPORT C(Method) * METHOD(DGGRS, doZonesOverlap);
 LIB_EXPORT C(Method) * METHOD(DGGRS, doesZoneContain);
 LIB_EXPORT C(Method) * METHOD(DGGRS, get64KDepth);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getFirstSubZone);
+LIB_EXPORT C(Method) * METHOD(DGGRS, getIndexMaxDepth);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getLevelFromMetersPerSubZone);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getLevelFromPixelsAndExtent);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getLevelFromRefZoneArea);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getLevelFromScaleDenominator);
+LIB_EXPORT C(Method) * METHOD(DGGRS, getMaxChildren);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getMaxDGGRSZoneLevel);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getMaxDepth);
+LIB_EXPORT C(Method) * METHOD(DGGRS, getMaxNeighbors);
+LIB_EXPORT C(Method) * METHOD(DGGRS, getMaxParents);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getMetersPerSubZoneFromLevel);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getRefZoneArea);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getRefinementRatio);
@@ -64,6 +68,7 @@ LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneDescendantOf);
 LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneImmediateChildOf);
 LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneImmediateParentOf);
 LIB_EXPORT C(Method) * METHOD(DGGRS, listZones);
+LIB_EXPORT C(Method) * METHOD(DGGRS, zoneHasSubZone);
 
 LIB_EXPORT C(Method) * METHOD(FieldValue, compareInt);
 LIB_EXPORT C(Method) * METHOD(FieldValue, compareReal);
@@ -86,7 +91,7 @@ LIB_EXPORT C(Method) * METHOD(GeoExtent, intersects);
 LIB_EXPORT C(bool) (* DGGRS_areZonesNeighbors)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
 LIB_EXPORT C(bool) (* DGGRS_areZonesSiblings)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
 LIB_EXPORT C(bool) (* DGGRS_doZonesOverlap)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
-LIB_EXPORT C(bool) (* DGGRS_doesZoneContain)(C(DGGRS) __this, C(DGGRSZone) haystack, C(DGGRSZone) needle);
+LIB_EXPORT C(bool) (* DGGRS_doesZoneContain)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 LIB_EXPORT int (* DGGRS_get64KDepth)(C(DGGRS) __this);
 LIB_EXPORT int (* DGGRS_getLevelFromMetersPerSubZone)(C(DGGRS) __this, double physicalMetersPerSubZone, int relativeDepth);
 LIB_EXPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, C(Point) * pixels, int relativeDepth);
@@ -96,14 +101,12 @@ LIB_EXPORT int (* DGGRS_getMaxDepth)(C(DGGRS) __this);
 LIB_EXPORT double (* DGGRS_getMetersPerSubZoneFromLevel)(C(DGGRS) __this, int parentLevel, int relativeDepth);
 LIB_EXPORT double (* DGGRS_getRefZoneArea)(C(DGGRS) __this, int level);
 LIB_EXPORT double (* DGGRS_getScaleDenominatorFromLevel)(C(DGGRS) __this, int parentLevel, int relativeDepth, double mmPerPixel);
-LIB_EXPORT C(DGGRSZone) (* DGGRS_getSubZoneAtIndex)(C(DGGRS) __this, C(DGGRSZone) parent, int relativeDepth, int index);
-LIB_EXPORT int (* DGGRS_getSubZoneIndex)(C(DGGRS) __this, C(DGGRSZone) parent, C(DGGRSZone) subZone);
-LIB_EXPORT C(Array) (* DGGRS_getSubZones)(C(DGGRS) __this, C(DGGRSZone) parent, int relativeDepth);
 LIB_EXPORT C(bool) (* DGGRS_isZoneAncestorOf)(C(DGGRS) __this, C(DGGRSZone) ancestor, C(DGGRSZone) descendant, int maxDepth);
-LIB_EXPORT C(bool) (* DGGRS_isZoneContainedIn)(C(DGGRS) __this, C(DGGRSZone) needle, C(DGGRSZone) haystack);
+LIB_EXPORT C(bool) (* DGGRS_isZoneContainedIn)(C(DGGRS) __this, C(DGGRSZone) needle, C(DGGRSZone) hayStack);
 LIB_EXPORT C(bool) (* DGGRS_isZoneDescendantOf)(C(DGGRS) __this, C(DGGRSZone) descendant, C(DGGRSZone) ancestor, int maxDepth);
 LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateChildOf)(C(DGGRS) __this, C(DGGRSZone) child, C(DGGRSZone) parent);
 LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateParentOf)(C(DGGRS) __this, C(DGGRSZone) parent, C(DGGRSZone) child);
+LIB_EXPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
 LIB_EXPORT int (* FieldValue_compareInt)(C(FieldValue) * __this, C(FieldValue) * other);
 LIB_EXPORT int (* FieldValue_compareReal)(C(FieldValue) * __this, C(FieldValue) * other);
@@ -209,10 +212,17 @@ LIB_EXPORT int M_VTBLID(DGGRS, countSubZones);
 LIB_EXPORT int M_VTBLID(DGGRS, countZoneEdges);
 LIB_EXPORT int M_VTBLID(DGGRS, countZones);
 LIB_EXPORT int M_VTBLID(DGGRS, getFirstSubZone);
+LIB_EXPORT int M_VTBLID(DGGRS, getIndexMaxDepth);
+LIB_EXPORT int M_VTBLID(DGGRS, getMaxChildren);
 LIB_EXPORT int M_VTBLID(DGGRS, getMaxDGGRSZoneLevel);
+LIB_EXPORT int M_VTBLID(DGGRS, getMaxNeighbors);
+LIB_EXPORT int M_VTBLID(DGGRS, getMaxParents);
 LIB_EXPORT int M_VTBLID(DGGRS, getRefinementRatio);
+LIB_EXPORT int M_VTBLID(DGGRS, getSubZoneAtIndex);
 LIB_EXPORT int M_VTBLID(DGGRS, getSubZoneCRSCentroids);
+LIB_EXPORT int M_VTBLID(DGGRS, getSubZoneIndex);
 LIB_EXPORT int M_VTBLID(DGGRS, getSubZoneWGS84Centroids);
+LIB_EXPORT int M_VTBLID(DGGRS, getSubZones);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneArea);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneCRSCentroid);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneCRSExtent);
@@ -308,6 +318,10 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(DGGRS, getFirstSubZone))
             M_VTBLID(DGGRS, getFirstSubZone) = METHOD(DGGRS, getFirstSubZone)->vid;
 
+         METHOD(DGGRS, getIndexMaxDepth) = Class_findMethod(CO(DGGRS), "getIndexMaxDepth", module);
+         if(METHOD(DGGRS, getIndexMaxDepth))
+            M_VTBLID(DGGRS, getIndexMaxDepth) = METHOD(DGGRS, getIndexMaxDepth)->vid;
+
          METHOD(DGGRS, getLevelFromMetersPerSubZone) = Class_findMethod(CO(DGGRS), "getLevelFromMetersPerSubZone", module);
          if(METHOD(DGGRS, getLevelFromMetersPerSubZone))
             DGGRS_getLevelFromMetersPerSubZone = (int (*)(C(DGGRS), double, int))METHOD(DGGRS, getLevelFromMetersPerSubZone)->function;
@@ -324,6 +338,10 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(DGGRS, getLevelFromScaleDenominator))
             DGGRS_getLevelFromScaleDenominator = (int (*)(C(DGGRS), double, int, double))METHOD(DGGRS, getLevelFromScaleDenominator)->function;
 
+         METHOD(DGGRS, getMaxChildren) = Class_findMethod(CO(DGGRS), "getMaxChildren", module);
+         if(METHOD(DGGRS, getMaxChildren))
+            M_VTBLID(DGGRS, getMaxChildren) = METHOD(DGGRS, getMaxChildren)->vid;
+
          METHOD(DGGRS, getMaxDGGRSZoneLevel) = Class_findMethod(CO(DGGRS), "getMaxDGGRSZoneLevel", module);
          if(METHOD(DGGRS, getMaxDGGRSZoneLevel))
             M_VTBLID(DGGRS, getMaxDGGRSZoneLevel) = METHOD(DGGRS, getMaxDGGRSZoneLevel)->vid;
@@ -331,6 +349,14 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          METHOD(DGGRS, getMaxDepth) = Class_findMethod(CO(DGGRS), "getMaxDepth", module);
          if(METHOD(DGGRS, getMaxDepth))
             DGGRS_getMaxDepth = (int (*)(C(DGGRS)))METHOD(DGGRS, getMaxDepth)->function;
+
+         METHOD(DGGRS, getMaxNeighbors) = Class_findMethod(CO(DGGRS), "getMaxNeighbors", module);
+         if(METHOD(DGGRS, getMaxNeighbors))
+            M_VTBLID(DGGRS, getMaxNeighbors) = METHOD(DGGRS, getMaxNeighbors)->vid;
+
+         METHOD(DGGRS, getMaxParents) = Class_findMethod(CO(DGGRS), "getMaxParents", module);
+         if(METHOD(DGGRS, getMaxParents))
+            M_VTBLID(DGGRS, getMaxParents) = METHOD(DGGRS, getMaxParents)->vid;
 
          METHOD(DGGRS, getMetersPerSubZoneFromLevel) = Class_findMethod(CO(DGGRS), "getMetersPerSubZoneFromLevel", module);
          if(METHOD(DGGRS, getMetersPerSubZoneFromLevel))
@@ -350,7 +376,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
          METHOD(DGGRS, getSubZoneAtIndex) = Class_findMethod(CO(DGGRS), "getSubZoneAtIndex", module);
          if(METHOD(DGGRS, getSubZoneAtIndex))
-            DGGRS_getSubZoneAtIndex = (C(DGGRSZone) (*)(C(DGGRS), C(DGGRSZone), int, int))METHOD(DGGRS, getSubZoneAtIndex)->function;
+            M_VTBLID(DGGRS, getSubZoneAtIndex) = METHOD(DGGRS, getSubZoneAtIndex)->vid;
 
          METHOD(DGGRS, getSubZoneCRSCentroids) = Class_findMethod(CO(DGGRS), "getSubZoneCRSCentroids", module);
          if(METHOD(DGGRS, getSubZoneCRSCentroids))
@@ -358,7 +384,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
          METHOD(DGGRS, getSubZoneIndex) = Class_findMethod(CO(DGGRS), "getSubZoneIndex", module);
          if(METHOD(DGGRS, getSubZoneIndex))
-            DGGRS_getSubZoneIndex = (int (*)(C(DGGRS), C(DGGRSZone), C(DGGRSZone)))METHOD(DGGRS, getSubZoneIndex)->function;
+            M_VTBLID(DGGRS, getSubZoneIndex) = METHOD(DGGRS, getSubZoneIndex)->vid;
 
          METHOD(DGGRS, getSubZoneWGS84Centroids) = Class_findMethod(CO(DGGRS), "getSubZoneWGS84Centroids", module);
          if(METHOD(DGGRS, getSubZoneWGS84Centroids))
@@ -366,7 +392,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
          METHOD(DGGRS, getSubZones) = Class_findMethod(CO(DGGRS), "getSubZones", module);
          if(METHOD(DGGRS, getSubZones))
-            DGGRS_getSubZones = (C(Array) (*)(C(DGGRS), C(DGGRSZone), int))METHOD(DGGRS, getSubZones)->function;
+            M_VTBLID(DGGRS, getSubZones) = METHOD(DGGRS, getSubZones)->vid;
 
          METHOD(DGGRS, getZoneArea) = Class_findMethod(CO(DGGRS), "getZoneArea", module);
          if(METHOD(DGGRS, getZoneArea))
@@ -471,6 +497,10 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          METHOD(DGGRS, listZones) = Class_findMethod(CO(DGGRS), "listZones", module);
          if(METHOD(DGGRS, listZones))
             M_VTBLID(DGGRS, listZones) = METHOD(DGGRS, listZones)->vid;
+
+         METHOD(DGGRS, zoneHasSubZone) = Class_findMethod(CO(DGGRS), "zoneHasSubZone", module);
+         if(METHOD(DGGRS, zoneHasSubZone))
+            DGGRS_zoneHasSubZone = (C(bool) (*)(C(DGGRS), C(DGGRSZone), C(DGGRSZone)))METHOD(DGGRS, zoneHasSubZone)->function;
       }
       CO(DGGRSZone) = eC_findClass(module, "DGGRSZone");
       CO(DGGSJSON) = eC_findClass(module, "DGGSJSON");

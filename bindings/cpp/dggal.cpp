@@ -243,6 +243,50 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
       });
 
 
+      addMethod(_cpp_class.impl, "getIndexMaxDepth", (void *) +[](/*1Aa*/C(DGGRS) o_)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getIndexMaxDepth);
+         DGGRS_getIndexMaxDepth_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getIndexMaxDepth_Functor::FunctionType) i->vTbl[vid];
+            int ret = fn(*i); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((int (*) (/*1Aa*/C(DGGRS) o_))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getIndexMaxDepth)]);
+            if(method) return method (o_);
+         }
+         return (int)1;
+      });
+
+
+      addMethod(_cpp_class.impl, "getMaxChildren", (void *) +[](/*1Aa*/C(DGGRS) o_)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getMaxChildren);
+         DGGRS_getMaxChildren_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getMaxChildren_Functor::FunctionType) i->vTbl[vid];
+            int ret = fn(*i); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((int (*) (/*1Aa*/C(DGGRS) o_))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getMaxChildren)]);
+            if(method) return method (o_);
+         }
+         return (int)1;
+      });
+
+
       addMethod(_cpp_class.impl, "getMaxDGGRSZoneLevel", (void *) +[](/*1Aa*/C(DGGRS) o_)
       {
          XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
@@ -259,6 +303,50 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
          else
          {
             auto method = ((int (*) (/*1Aa*/C(DGGRS) o_))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getMaxDGGRSZoneLevel)]);
+            if(method) return method (o_);
+         }
+         return (int)1;
+      });
+
+
+      addMethod(_cpp_class.impl, "getMaxNeighbors", (void *) +[](/*1Aa*/C(DGGRS) o_)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getMaxNeighbors);
+         DGGRS_getMaxNeighbors_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getMaxNeighbors_Functor::FunctionType) i->vTbl[vid];
+            int ret = fn(*i); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((int (*) (/*1Aa*/C(DGGRS) o_))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getMaxNeighbors)]);
+            if(method) return method (o_);
+         }
+         return (int)1;
+      });
+
+
+      addMethod(_cpp_class.impl, "getMaxParents", (void *) +[](/*1Aa*/C(DGGRS) o_)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getMaxParents);
+         DGGRS_getMaxParents_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getMaxParents_Functor::FunctionType) i->vTbl[vid];
+            int ret = fn(*i); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((int (*) (/*1Aa*/C(DGGRS) o_))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getMaxParents)]);
             if(method) return method (o_);
          }
          return (int)1;
@@ -287,6 +375,28 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
       });
 
 
+      addMethod(_cpp_class.impl, "getSubZoneAtIndex", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth, /*1Aa*/int64 index)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getSubZoneAtIndex);
+         DGGRS_getSubZoneAtIndex_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getSubZoneAtIndex_Functor::FunctionType) i->vTbl[vid];
+            C(DGGRSZone) ret = fn(*i, /*3Hd*/(DGGRSZone)parent, /*3Kd*/relativeDepth, /*3Kd*/index); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(DGGRSZone) (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth, /*1Aa*/int64 index))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getSubZoneAtIndex)]);
+            if(method) return method (o_, parent, relativeDepth, index);
+         }
+         return (C(DGGRSZone))1;
+      });
+
+
       addMethod(_cpp_class.impl, "getSubZoneCRSCentroids", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/C(CRS) crs, /*1Aa*/int relativeDepth)
       {
          XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
@@ -309,6 +419,28 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
       });
 
 
+      addMethod(_cpp_class.impl, "getSubZoneIndex", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/C(DGGRSZone) subZone)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getSubZoneIndex);
+         DGGRS_getSubZoneIndex_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getSubZoneIndex_Functor::FunctionType) i->vTbl[vid];
+            int64 ret = fn(*i, /*3Hd*/(DGGRSZone)parent, /*3Hd*/(DGGRSZone)subZone); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((int64 (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/C(DGGRSZone) subZone))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getSubZoneIndex)]);
+            if(method) return method (o_, parent, subZone);
+         }
+         return (int64)1;
+      });
+
+
       addMethod(_cpp_class.impl, "getSubZoneWGS84Centroids", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth)
       {
          XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
@@ -325,6 +457,28 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
          else
          {
             auto method = ((C(Array) (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getSubZoneWGS84Centroids)]);
+            if(method) return method (o_, parent, relativeDepth);
+         }
+         return (C(Array))null;
+      });
+
+
+      addMethod(_cpp_class.impl, "getSubZones", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getSubZones);
+         DGGRS_getSubZones_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getSubZones_Functor::FunctionType) i->vTbl[vid];
+            TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> ret = fn(*i, /*3Hd*/(DGGRSZone)parent, /*3Kd*/relativeDepth); return ret.impl;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(Array) (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) parent, /*1Aa*/int relativeDepth))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getSubZones)]);
             if(method) return method (o_, parent, relativeDepth);
          }
          return (C(Array))null;

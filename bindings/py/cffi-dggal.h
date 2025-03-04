@@ -136,13 +136,17 @@ extern eC_Method * method_DGGRS_countZones;
 
 extern eC_bool (* DGGRS_doZonesOverlap)(eC_DGGRS __this, eC_DGGRSZone a, eC_DGGRSZone b);
 
-extern eC_bool (* DGGRS_doesZoneContain)(eC_DGGRS __this, eC_DGGRSZone haystack, eC_DGGRSZone needle);
+extern eC_bool (* DGGRS_doesZoneContain)(eC_DGGRS __this, eC_DGGRSZone hayStack, eC_DGGRSZone needle);
 
 extern int (* DGGRS_get64KDepth)(eC_DGGRS __this);
 
 extern int DGGRS_getFirstSubZone_vTblID;
 eC_DGGRSZone DGGRS_getFirstSubZone(eC_DGGRS __i, eC_DGGRSZone zone, int relativeDepth);
 extern eC_Method * method_DGGRS_getFirstSubZone;
+
+extern int DGGRS_getIndexMaxDepth_vTblID;
+int DGGRS_getIndexMaxDepth(eC_DGGRS __i);
+extern eC_Method * method_DGGRS_getIndexMaxDepth;
 
 extern int (* DGGRS_getLevelFromMetersPerSubZone)(eC_DGGRS __this, double physicalMetersPerSubZone, int relativeDepth);
 
@@ -152,11 +156,23 @@ extern int (* DGGRS_getLevelFromRefZoneArea)(eC_DGGRS __this, double metersSquar
 
 extern int (* DGGRS_getLevelFromScaleDenominator)(eC_DGGRS __this, double scaleDenominator, int relativeDepth, double mmPerPixel);
 
+extern int DGGRS_getMaxChildren_vTblID;
+int DGGRS_getMaxChildren(eC_DGGRS __i);
+extern eC_Method * method_DGGRS_getMaxChildren;
+
 extern int DGGRS_getMaxDGGRSZoneLevel_vTblID;
 int DGGRS_getMaxDGGRSZoneLevel(eC_DGGRS __i);
 extern eC_Method * method_DGGRS_getMaxDGGRSZoneLevel;
 
 extern int (* DGGRS_getMaxDepth)(eC_DGGRS __this);
+
+extern int DGGRS_getMaxNeighbors_vTblID;
+int DGGRS_getMaxNeighbors(eC_DGGRS __i);
+extern eC_Method * method_DGGRS_getMaxNeighbors;
+
+extern int DGGRS_getMaxParents_vTblID;
+int DGGRS_getMaxParents(eC_DGGRS __i);
+extern eC_Method * method_DGGRS_getMaxParents;
 
 extern double (* DGGRS_getMetersPerSubZoneFromLevel)(eC_DGGRS __this, int parentLevel, int relativeDepth);
 
@@ -168,19 +184,25 @@ extern eC_Method * method_DGGRS_getRefinementRatio;
 
 extern double (* DGGRS_getScaleDenominatorFromLevel)(eC_DGGRS __this, int parentLevel, int relativeDepth, double mmPerPixel);
 
-extern eC_DGGRSZone (* DGGRS_getSubZoneAtIndex)(eC_DGGRS __this, eC_DGGRSZone parent, int relativeDepth, int index);
+extern int DGGRS_getSubZoneAtIndex_vTblID;
+eC_DGGRSZone DGGRS_getSubZoneAtIndex(eC_DGGRS __i, eC_DGGRSZone parent, int relativeDepth, int64 index);
+extern eC_Method * method_DGGRS_getSubZoneAtIndex;
 
 extern int DGGRS_getSubZoneCRSCentroids_vTblID;
 eC_Array DGGRS_getSubZoneCRSCentroids(eC_DGGRS __i, eC_DGGRSZone parent, eC_CRS crs, int relativeDepth);
 extern eC_Method * method_DGGRS_getSubZoneCRSCentroids;
 
-extern int (* DGGRS_getSubZoneIndex)(eC_DGGRS __this, eC_DGGRSZone parent, eC_DGGRSZone subZone);
+extern int DGGRS_getSubZoneIndex_vTblID;
+int64 DGGRS_getSubZoneIndex(eC_DGGRS __i, eC_DGGRSZone parent, eC_DGGRSZone subZone);
+extern eC_Method * method_DGGRS_getSubZoneIndex;
 
 extern int DGGRS_getSubZoneWGS84Centroids_vTblID;
 eC_Array DGGRS_getSubZoneWGS84Centroids(eC_DGGRS __i, eC_DGGRSZone parent, int relativeDepth);
 extern eC_Method * method_DGGRS_getSubZoneWGS84Centroids;
 
-extern eC_Array (* DGGRS_getSubZones)(eC_DGGRS __this, eC_DGGRSZone parent, int relativeDepth);
+extern int DGGRS_getSubZones_vTblID;
+eC_Array DGGRS_getSubZones(eC_DGGRS __i, eC_DGGRSZone parent, int relativeDepth);
+extern eC_Method * method_DGGRS_getSubZones;
 
 extern int DGGRS_getZoneArea_vTblID;
 double DGGRS_getZoneArea(eC_DGGRS __i, eC_DGGRSZone zone);
@@ -264,7 +286,7 @@ extern int DGGRS_isZoneCentroidChild_vTblID;
 eC_bool DGGRS_isZoneCentroidChild(eC_DGGRS __i, eC_DGGRSZone zone);
 extern eC_Method * method_DGGRS_isZoneCentroidChild;
 
-extern eC_bool (* DGGRS_isZoneContainedIn)(eC_DGGRS __this, eC_DGGRSZone needle, eC_DGGRSZone haystack);
+extern eC_bool (* DGGRS_isZoneContainedIn)(eC_DGGRS __this, eC_DGGRSZone needle, eC_DGGRSZone hayStack);
 
 extern eC_bool (* DGGRS_isZoneDescendantOf)(eC_DGGRS __this, eC_DGGRSZone descendant, eC_DGGRSZone ancestor, int maxDepth);
 
@@ -275,6 +297,8 @@ extern eC_bool (* DGGRS_isZoneImmediateParentOf)(eC_DGGRS __this, eC_DGGRSZone p
 extern int DGGRS_listZones_vTblID;
 eC_Array DGGRS_listZones(eC_DGGRS __i, int level, const eC_GeoExtent * bbox);
 extern eC_Method * method_DGGRS_listZones;
+
+extern eC_bool (* DGGRS_zoneHasSubZone)(eC_DGGRS __this, eC_DGGRSZone hayStack, eC_DGGRSZone needle);
 
 #define DGGRSZONE_level_SHIFT                            59
 #define DGGRSZONE_level_MASK                             0xF800000000000000LL
@@ -425,7 +449,7 @@ struct class_members_JSONSchema
    eC_Array allOf;
    eC_Array anyOf;
    eC_Array oneOf;
-   eC_JSONSchema not;
+   eC_JSONSchema Not;
    eC_String xogcrole;
    int xogcpropertySeq;
 };

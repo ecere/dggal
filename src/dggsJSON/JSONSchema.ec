@@ -69,7 +69,7 @@ public:
    Array<JSONSchema> allOf;
    Array<JSONSchema> anyOf;
    Array<JSONSchema> oneOf;
-   JSONSchema not;
+   JSONSchema Not;
    String xogcrole;  // id, primary-geometry, primary-instant
    int xogcpropertySeq;
 
@@ -120,7 +120,7 @@ private:
       if(allOf) allOf.Free(), delete allOf;
       if(anyOf) anyOf.Free(), delete anyOf;
       if(oneOf) oneOf.Free(), delete oneOf;
-      delete not;
+      delete Not;
       delete xogcrole;
       Default.OnFree();
    }

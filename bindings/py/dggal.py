@@ -27,24 +27,59 @@ def cb_DGGRS_getFirstSubZone(__e, zone, relativeDepth):
    return dggrs.fn_DGGRS_getFirstSubZone(dggrs, DGGRSZone(impl = zone), relativeDepth)
 
 @ffi.callback("int(eC_DGGRS)")
+def cb_DGGRS_getIndexMaxDepth(__e):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getIndexMaxDepth(dggrs)
+
+@ffi.callback("int(eC_DGGRS)")
+def cb_DGGRS_getMaxChildren(__e):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getMaxChildren(dggrs)
+
+@ffi.callback("int(eC_DGGRS)")
 def cb_DGGRS_getMaxDGGRSZoneLevel(__e):
    dggrs = pyOrNewObject(DGGRS, __e)
    return dggrs.fn_DGGRS_getMaxDGGRSZoneLevel(dggrs)
+
+@ffi.callback("int(eC_DGGRS)")
+def cb_DGGRS_getMaxNeighbors(__e):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getMaxNeighbors(dggrs)
+
+@ffi.callback("int(eC_DGGRS)")
+def cb_DGGRS_getMaxParents(__e):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getMaxParents(dggrs)
 
 @ffi.callback("int(eC_DGGRS)")
 def cb_DGGRS_getRefinementRatio(__e):
    dggrs = pyOrNewObject(DGGRS, __e)
    return dggrs.fn_DGGRS_getRefinementRatio(dggrs)
 
+@ffi.callback("eC_DGGRSZone(eC_DGGRS, eC_DGGRSZone, int, int64)")
+def cb_DGGRS_getSubZoneAtIndex(__e, parent, relativeDepth, index):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getSubZoneAtIndex(dggrs, DGGRSZone(impl = parent), relativeDepth, index)
+
 @ffi.callback("template_Array_Pointd(eC_DGGRS, eC_DGGRSZone, eC_CRS, int)")
 def cb_DGGRS_getSubZoneCRSCentroids(__e, parent, crs, relativeDepth):
    dggrs = pyOrNewObject(DGGRS, __e)
    return dggrs.fn_DGGRS_getSubZoneCRSCentroids(dggrs, DGGRSZone(impl = parent), CRS(impl = crs), relativeDepth)
 
+@ffi.callback("int64(eC_DGGRS, eC_DGGRSZone, eC_DGGRSZone)")
+def cb_DGGRS_getSubZoneIndex(__e, parent, subZone):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getSubZoneIndex(dggrs, DGGRSZone(impl = parent), DGGRSZone(impl = subZone))
+
 @ffi.callback("template_Array_GeoPoint(eC_DGGRS, eC_DGGRSZone, int)")
 def cb_DGGRS_getSubZoneWGS84Centroids(__e, parent, relativeDepth):
    dggrs = pyOrNewObject(DGGRS, __e)
    return dggrs.fn_DGGRS_getSubZoneWGS84Centroids(dggrs, DGGRSZone(impl = parent), relativeDepth)
+
+@ffi.callback("template_Array_DGGRSZone(eC_DGGRS, eC_DGGRSZone, int)")
+def cb_DGGRS_getSubZones(__e, parent, relativeDepth):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_getSubZones(dggrs, DGGRSZone(impl = parent), relativeDepth)
 
 @ffi.callback("double(eC_DGGRS, eC_DGGRSZone)")
 def cb_DGGRS_getZoneArea(__e, zone):
@@ -158,10 +193,17 @@ class DGGRS(Instance):
                       'countZoneEdges',
                       'countZones',
                       'getFirstSubZone',
+                      'getIndexMaxDepth',
+                      'getMaxChildren',
                       'getMaxDGGRSZoneLevel',
+                      'getMaxNeighbors',
+                      'getMaxParents',
                       'getRefinementRatio',
+                      'getSubZoneAtIndex',
                       'getSubZoneCRSCentroids',
+                      'getSubZoneIndex',
                       'getSubZoneWGS84Centroids',
+                      'getSubZones',
                       'getZoneArea',
                       'getZoneCRSCentroid',
                       'getZoneCRSExtent',
@@ -258,12 +300,12 @@ class DGGRS(Instance):
       if b is None: b = ffi.NULL
       return lib.DGGRS_doZonesOverlap(self.impl, a, b)
 
-   def doesZoneContain(self, haystack, needle):
-      if haystack is not None and not isinstance(haystack, DGGRSZone): haystack = DGGRSZone(haystack)
-      if haystack is None: haystack = ffi.NULL
+   def doesZoneContain(self, hayStack, needle):
+      if hayStack is not None and not isinstance(hayStack, DGGRSZone): hayStack = DGGRSZone(hayStack)
+      if hayStack is None: hayStack = ffi.NULL
       if needle is not None and not isinstance(needle, DGGRSZone): needle = DGGRSZone(needle)
       if needle is None: needle = ffi.NULL
-      return lib.DGGRS_doesZoneContain(self.impl, haystack, needle)
+      return lib.DGGRS_doesZoneContain(self.impl, hayStack, needle)
 
    def get64KDepth(self):
       return lib.DGGRS_get64KDepth(self.impl)
@@ -279,6 +321,18 @@ class DGGRS(Instance):
    def getFirstSubZone(self, value):
       self.fn_DGGRS_getFirstSubZone = value
       lib.Instance_setMethod(self.impl, "getFirstSubZone".encode('u8'), cb_DGGRS_getFirstSubZone)
+
+   def fn_unset_DGGRS_getIndexMaxDepth(self):
+      return lib.DGGRS_getIndexMaxDepth(self.impl)
+
+   @property
+   def getIndexMaxDepth(self):
+      if hasattr(self, 'fn_DGGRS_getIndexMaxDepth'): return self.fn_DGGRS_getIndexMaxDepth
+      else: return self.fn_unset_DGGRS_getIndexMaxDepth
+   @getIndexMaxDepth.setter
+   def getIndexMaxDepth(self, value):
+      self.fn_DGGRS_getIndexMaxDepth = value
+      lib.Instance_setMethod(self.impl, "getIndexMaxDepth".encode('u8'), cb_DGGRS_getIndexMaxDepth)
 
    def getLevelFromMetersPerSubZone(self, physicalMetersPerSubZone, relativeDepth):
       return lib.DGGRS_getLevelFromMetersPerSubZone(self.impl, physicalMetersPerSubZone, relativeDepth)
@@ -296,6 +350,18 @@ class DGGRS(Instance):
    def getLevelFromScaleDenominator(self, scaleDenominator, relativeDepth, mmPerPixel):
       return lib.DGGRS_getLevelFromScaleDenominator(self.impl, scaleDenominator, relativeDepth, mmPerPixel)
 
+   def fn_unset_DGGRS_getMaxChildren(self):
+      return lib.DGGRS_getMaxChildren(self.impl)
+
+   @property
+   def getMaxChildren(self):
+      if hasattr(self, 'fn_DGGRS_getMaxChildren'): return self.fn_DGGRS_getMaxChildren
+      else: return self.fn_unset_DGGRS_getMaxChildren
+   @getMaxChildren.setter
+   def getMaxChildren(self, value):
+      self.fn_DGGRS_getMaxChildren = value
+      lib.Instance_setMethod(self.impl, "getMaxChildren".encode('u8'), cb_DGGRS_getMaxChildren)
+
    def fn_unset_DGGRS_getMaxDGGRSZoneLevel(self):
       return lib.DGGRS_getMaxDGGRSZoneLevel(self.impl)
 
@@ -310,6 +376,30 @@ class DGGRS(Instance):
 
    def getMaxDepth(self):
       return lib.DGGRS_getMaxDepth(self.impl)
+
+   def fn_unset_DGGRS_getMaxNeighbors(self):
+      return lib.DGGRS_getMaxNeighbors(self.impl)
+
+   @property
+   def getMaxNeighbors(self):
+      if hasattr(self, 'fn_DGGRS_getMaxNeighbors'): return self.fn_DGGRS_getMaxNeighbors
+      else: return self.fn_unset_DGGRS_getMaxNeighbors
+   @getMaxNeighbors.setter
+   def getMaxNeighbors(self, value):
+      self.fn_DGGRS_getMaxNeighbors = value
+      lib.Instance_setMethod(self.impl, "getMaxNeighbors".encode('u8'), cb_DGGRS_getMaxNeighbors)
+
+   def fn_unset_DGGRS_getMaxParents(self):
+      return lib.DGGRS_getMaxParents(self.impl)
+
+   @property
+   def getMaxParents(self):
+      if hasattr(self, 'fn_DGGRS_getMaxParents'): return self.fn_DGGRS_getMaxParents
+      else: return self.fn_unset_DGGRS_getMaxParents
+   @getMaxParents.setter
+   def getMaxParents(self, value):
+      self.fn_DGGRS_getMaxParents = value
+      lib.Instance_setMethod(self.impl, "getMaxParents".encode('u8'), cb_DGGRS_getMaxParents)
 
    def getMetersPerSubZoneFromLevel(self, parentLevel, relativeDepth):
       return lib.DGGRS_getMetersPerSubZoneFromLevel(self.impl, parentLevel, relativeDepth)
@@ -332,10 +422,17 @@ class DGGRS(Instance):
    def getScaleDenominatorFromLevel(self, parentLevel, relativeDepth, mmPerPixel):
       return lib.DGGRS_getScaleDenominatorFromLevel(self.impl, parentLevel, relativeDepth, mmPerPixel)
 
-   def getSubZoneAtIndex(self, parent, relativeDepth, index):
-      if parent is not None and not isinstance(parent, DGGRSZone): parent = DGGRSZone(parent)
-      if parent is None: parent = ffi.NULL
-      return DGGRSZone(impl = lib.DGGRS_getSubZoneAtIndex(self.impl, parent, relativeDepth, index))
+   def fn_unset_DGGRS_getSubZoneAtIndex(self, parent, relativeDepth, index):
+      return lib.DGGRS_getSubZoneAtIndex(self.impl, parent, relativeDepth, index)
+
+   @property
+   def getSubZoneAtIndex(self):
+      if hasattr(self, 'fn_DGGRS_getSubZoneAtIndex'): return self.fn_DGGRS_getSubZoneAtIndex
+      else: return self.fn_unset_DGGRS_getSubZoneAtIndex
+   @getSubZoneAtIndex.setter
+   def getSubZoneAtIndex(self, value):
+      self.fn_DGGRS_getSubZoneAtIndex = value
+      lib.Instance_setMethod(self.impl, "getSubZoneAtIndex".encode('u8'), cb_DGGRS_getSubZoneAtIndex)
 
    def fn_unset_DGGRS_getSubZoneCRSCentroids(self, parent, crs, relativeDepth):
       return pyOrNewObject(Array, lib.DGGRS_getSubZoneCRSCentroids(self.impl, parent, crs, relativeDepth))
@@ -349,12 +446,17 @@ class DGGRS(Instance):
       self.fn_DGGRS_getSubZoneCRSCentroids = value
       lib.Instance_setMethod(self.impl, "getSubZoneCRSCentroids".encode('u8'), cb_DGGRS_getSubZoneCRSCentroids)
 
-   def getSubZoneIndex(self, parent, subZone):
-      if parent is not None and not isinstance(parent, DGGRSZone): parent = DGGRSZone(parent)
-      if parent is None: parent = ffi.NULL
-      if subZone is not None and not isinstance(subZone, DGGRSZone): subZone = DGGRSZone(subZone)
-      if subZone is None: subZone = ffi.NULL
+   def fn_unset_DGGRS_getSubZoneIndex(self, parent, subZone):
       return lib.DGGRS_getSubZoneIndex(self.impl, parent, subZone)
+
+   @property
+   def getSubZoneIndex(self):
+      if hasattr(self, 'fn_DGGRS_getSubZoneIndex'): return self.fn_DGGRS_getSubZoneIndex
+      else: return self.fn_unset_DGGRS_getSubZoneIndex
+   @getSubZoneIndex.setter
+   def getSubZoneIndex(self, value):
+      self.fn_DGGRS_getSubZoneIndex = value
+      lib.Instance_setMethod(self.impl, "getSubZoneIndex".encode('u8'), cb_DGGRS_getSubZoneIndex)
 
    def fn_unset_DGGRS_getSubZoneWGS84Centroids(self, parent, relativeDepth):
       return pyOrNewObject(Array, lib.DGGRS_getSubZoneWGS84Centroids(self.impl, parent, relativeDepth))
@@ -368,10 +470,17 @@ class DGGRS(Instance):
       self.fn_DGGRS_getSubZoneWGS84Centroids = value
       lib.Instance_setMethod(self.impl, "getSubZoneWGS84Centroids".encode('u8'), cb_DGGRS_getSubZoneWGS84Centroids)
 
-   def getSubZones(self, parent, relativeDepth):
-      if parent is not None and not isinstance(parent, DGGRSZone): parent = DGGRSZone(parent)
-      if parent is None: parent = ffi.NULL
-      return pyOrNewObject(Array, lib.DGGRS_getSubZones(self.impl, parent, relativeDepth), "<DGGRSZone>")
+   def fn_unset_DGGRS_getSubZones(self, parent, relativeDepth):
+      return pyOrNewObject(Array, lib.DGGRS_getSubZones(self.impl, parent, relativeDepth))
+
+   @property
+   def getSubZones(self):
+      if hasattr(self, 'fn_DGGRS_getSubZones'): return self.fn_DGGRS_getSubZones
+      else: return self.fn_unset_DGGRS_getSubZones
+   @getSubZones.setter
+   def getSubZones(self, value):
+      self.fn_DGGRS_getSubZones = value
+      lib.Instance_setMethod(self.impl, "getSubZones".encode('u8'), cb_DGGRS_getSubZones)
 
    def fn_unset_DGGRS_getZoneArea(self, zone):
       return lib.DGGRS_getZoneArea(self.impl, zone)
@@ -627,12 +736,12 @@ class DGGRS(Instance):
       self.fn_DGGRS_isZoneCentroidChild = value
       lib.Instance_setMethod(self.impl, "isZoneCentroidChild".encode('u8'), cb_DGGRS_isZoneCentroidChild)
 
-   def isZoneContainedIn(self, needle, haystack):
+   def isZoneContainedIn(self, needle, hayStack):
       if needle is not None and not isinstance(needle, DGGRSZone): needle = DGGRSZone(needle)
       if needle is None: needle = ffi.NULL
-      if haystack is not None and not isinstance(haystack, DGGRSZone): haystack = DGGRSZone(haystack)
-      if haystack is None: haystack = ffi.NULL
-      return lib.DGGRS_isZoneContainedIn(self.impl, needle, haystack)
+      if hayStack is not None and not isinstance(hayStack, DGGRSZone): hayStack = DGGRSZone(hayStack)
+      if hayStack is None: hayStack = ffi.NULL
+      return lib.DGGRS_isZoneContainedIn(self.impl, needle, hayStack)
 
    def isZoneDescendantOf(self, descendant, ancestor, maxDepth):
       if descendant is not None and not isinstance(descendant, DGGRSZone): descendant = DGGRSZone(descendant)
@@ -667,7 +776,103 @@ class DGGRS(Instance):
       self.fn_DGGRS_listZones = value
       lib.Instance_setMethod(self.impl, "listZones".encode('u8'), cb_DGGRS_listZones)
 
+   def zoneHasSubZone(self, hayStack, needle):
+      if hayStack is not None and not isinstance(hayStack, DGGRSZone): hayStack = DGGRSZone(hayStack)
+      if hayStack is None: hayStack = ffi.NULL
+      if needle is not None and not isinstance(needle, DGGRSZone): needle = DGGRSZone(needle)
+      if needle is None: needle = ffi.NULL
+      return lib.DGGRS_zoneHasSubZone(self.impl, hayStack, needle)
+
 class DGGRSZone(pyBaseClass):pass
+
+class GeoPoint(Struct):
+   def __init__(self, lat = 0, lon = 0, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_GeoPoint *", impl)
+      else:
+         if isinstance(lat, tuple):
+            __tuple = lat
+            lat = 0
+            if len(__tuple) > 0: lat = __tuple[0]
+            if len(__tuple) > 1: lon = __tuple[1]
+         if lat is not None:
+            if not isinstance(lat, Angle): lat = Degrees(lat)
+            lat = lat.impl
+         else:
+            lat = Degrees()
+         if lon is not None:
+            if not isinstance(lon, Angle): lon = Degrees(lon)
+            lon = lon.impl
+         else:
+            lon = Degrees()
+         self.impl = ffi.new("eC_GeoPoint *", { 'lat' : lat, 'lon' : lon })
+
+   @property
+   def lat(self): return Degrees(impl = self.impl.lat)
+   @lat.setter
+   def lat(self, value):
+      if not isinstance(value, Angle): value = Degrees(value)
+      self.impl.lat = value.impl
+
+   @property
+   def lon(self): return Degrees(impl = self.impl.lon)
+   @lon.setter
+   def lon(self, value):
+      if not isinstance(value, Angle): value = Degrees(value)
+      self.impl.lon = value.impl
+
+class GeoExtent(Struct):
+   def __init__(self, ll = None, ur = None, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_GeoExtent *", impl)
+      else:
+         if isinstance(ll, tuple):
+            __tuple = ll
+            ll = None
+            if len(__tuple) > 0: ll = __tuple[0]
+            if len(__tuple) > 1: ur = __tuple[1]
+         if ll is not None:
+            if not isinstance(ll, GeoPoint): ll = GeoPoint(ll)
+            ll = ll.impl[0]
+         else:
+            ll = GeoPoint()
+            ll = ll.impl[0]
+         if ur is not None:
+            if not isinstance(ur, GeoPoint): ur = GeoPoint(ur)
+            ur = ur.impl[0]
+         else:
+            ur = GeoPoint()
+            ur = ur.impl[0]
+         self.impl = ffi.new("eC_GeoExtent *", { 'll' : ll, 'ur' : ur })
+
+   @property
+   def ll(self): return GeoPoint(impl = self.impl.ll)
+   @ll.setter
+   def ll(self, value):
+      if not isinstance(value, GeoPoint): value = GeoPoint(value)
+      self.impl.ll = value.impl[0]
+
+   @property
+   def ur(self): return GeoPoint(impl = self.impl.ur)
+   @ur.setter
+   def ur(self, value):
+      if not isinstance(value, GeoPoint): value = GeoPoint(value)
+      self.impl.ur = value.impl[0]
+
+   @property
+   def geodeticArea(self): return lib.GeoExtent_get_geodeticArea(self.impl)
+
+   def clear(self):
+      lib.GeoExtent_clear(ffi.cast("eC_GeoExtent *", self.impl))
+
+   def intersects(self, b = None):
+      if b is not None and not isinstance(b, GeoExtent): b = GeoExtent(b)
+      b = ffi.NULL if b is None else b.impl
+      return lib.GeoExtent_intersects(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", b))
+
+wgs84Major = Meters ( 6378137.0 )
+
+wholeWorld = GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )
 
 class CRS(pyBaseClass):
    def __init__(self, registry = 0, crsID = 0, h = False, impl = None):
@@ -1145,95 +1350,6 @@ class GNOSISGlobalGrid(DGGRS):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
-class GeoPoint(Struct):
-   def __init__(self, lat = 0, lon = 0, impl = None):
-      if impl is not None:
-         self.impl = ffi.new("eC_GeoPoint *", impl)
-      else:
-         if isinstance(lat, tuple):
-            __tuple = lat
-            lat = 0
-            if len(__tuple) > 0: lat = __tuple[0]
-            if len(__tuple) > 1: lon = __tuple[1]
-         if lat is not None:
-            if not isinstance(lat, Angle): lat = Degrees(lat)
-            lat = lat.impl
-         else:
-            lat = Degrees()
-         if lon is not None:
-            if not isinstance(lon, Angle): lon = Degrees(lon)
-            lon = lon.impl
-         else:
-            lon = Degrees()
-         self.impl = ffi.new("eC_GeoPoint *", { 'lat' : lat, 'lon' : lon })
-
-   @property
-   def lat(self): return Degrees(impl = self.impl.lat)
-   @lat.setter
-   def lat(self, value):
-      if not isinstance(value, Angle): value = Degrees(value)
-      self.impl.lat = value.impl
-
-   @property
-   def lon(self): return Degrees(impl = self.impl.lon)
-   @lon.setter
-   def lon(self, value):
-      if not isinstance(value, Angle): value = Degrees(value)
-      self.impl.lon = value.impl
-
-class GeoExtent(Struct):
-   def __init__(self, ll = None, ur = None, impl = None):
-      if impl is not None:
-         self.impl = ffi.new("eC_GeoExtent *", impl)
-      else:
-         if isinstance(ll, tuple):
-            __tuple = ll
-            ll = None
-            if len(__tuple) > 0: ll = __tuple[0]
-            if len(__tuple) > 1: ur = __tuple[1]
-         if ll is not None:
-            if not isinstance(ll, GeoPoint): ll = GeoPoint(ll)
-            ll = ll.impl[0]
-         else:
-            ll = GeoPoint()
-            ll = ll.impl[0]
-         if ur is not None:
-            if not isinstance(ur, GeoPoint): ur = GeoPoint(ur)
-            ur = ur.impl[0]
-         else:
-            ur = GeoPoint()
-            ur = ur.impl[0]
-         self.impl = ffi.new("eC_GeoExtent *", { 'll' : ll, 'ur' : ur })
-
-   @property
-   def ll(self): return GeoPoint(impl = self.impl.ll)
-   @ll.setter
-   def ll(self, value):
-      if not isinstance(value, GeoPoint): value = GeoPoint(value)
-      self.impl.ll = value.impl[0]
-
-   @property
-   def ur(self): return GeoPoint(impl = self.impl.ur)
-   @ur.setter
-   def ur(self, value):
-      if not isinstance(value, GeoPoint): value = GeoPoint(value)
-      self.impl.ur = value.impl[0]
-
-   @property
-   def geodeticArea(self): return lib.GeoExtent_get_geodeticArea(self.impl)
-
-   def clear(self):
-      lib.GeoExtent_clear(ffi.cast("eC_GeoExtent *", self.impl))
-
-   def intersects(self, b = None):
-      if b is not None and not isinstance(b, GeoExtent): b = GeoExtent(b)
-      b = ffi.NULL if b is None else b.impl
-      return lib.GeoExtent_intersects(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", b))
-
-wgs84Major = Meters ( 6378137.0 )
-
-wholeWorld = GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )
-
 class ISEA3H(DGGRS):
    class_members = []
 
@@ -1371,7 +1487,7 @@ class JSONSchema(Instance):
                       'allOf',
                       'anyOf',
                       'oneOf',
-                      '_not',
+                      'Not',
                       'xogcrole',
                       'xogcpropertySeq',
                       'xogcpropertySeq',
@@ -1621,11 +1737,11 @@ class JSONSchema(Instance):
    def oneOf(self, value): IPTR(lib, ffi, self, JSONSchema).oneOf = value.impl
 
    @property
-   def _not(self): return pyOrNewObject(JSONSchema, IPTR(lib, ffi, self, JSONSchema)._not)
-   @_not.setter
-   def _not(self, value):
+   def Not(self): return pyOrNewObject(JSONSchema, IPTR(lib, ffi, self, JSONSchema).Not)
+   @Not.setter
+   def Not(self, value):
       if not isinstance(value, JSONSchema): value = JSONSchema(value)
-      IPTR(lib, ffi, self, JSONSchema)._not = value.impl
+      IPTR(lib, ffi, self, JSONSchema).Not = value.impl
 
    @property
    def xogcrole(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).xogcrole)
