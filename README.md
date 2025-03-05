@@ -32,10 +32,10 @@ The pre-built binaries for Linux and Windows include the `dgg` utility (as both 
 
 The [Ecere SDK](https://ecere.org) should be installed to use the dynamically linked version.
 
-### Version 0.0.0 - build #16
+### Version 0.0.1 - build #42
 
-* [Linux 64-bit](https://dggal.org/binaries/dggal-v0.0.0-b16-linux-x86_64.tar.gz)
-* [Windows 64-bit](https://dggal.org/binaries/dggal-v0.0.0-b16-windows-x86_64.tar.gz)
+* [Linux 64-bit](https://dggal.org/binaries/dggal-v0.0.1-b42-linux-x86_64.tar.gz)
+* [Windows 64-bit](https://dggal.org/binaries/dggal-v0.0.1-b42-windows-x86_64.tar.gz)
 
 ### Ecere SDK binaries (build 275)
 
