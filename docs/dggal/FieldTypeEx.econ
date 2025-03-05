@@ -1,0 +1,21 @@
+{
+   description = "Data type identifier with additional information such as format and memory allocation details",
+   also = "FieldValue",
+   fields = [
+      {"format", {
+         description = "Format identifier providing additional information about data representation"
+      }},
+      {"isDateTime", {
+         description = "True if the integer represents a date and time"
+      }},
+      {"isUnsigned", {
+         description = "True if an integer value is unsigned"
+      }},
+      {"mustFree", {
+         description = "True if the data of a FieldValue  is explicitly owned and must be freed"
+      }},
+      {"type", {
+         description = "Basic data type"
+      }}
+   ]
+}

@@ -1,0 +1,14 @@
+{
+   description = "Geospatial extent expressed in a particular CRS",
+   fields = [
+      {"br", {
+         description = "Bottom right coordinates of the extent in CRS units"
+      }},
+      {"crs", {
+         description = "CRS in which the extent is defined"
+      }},
+      {"tl", {
+         description = "Top left coordinates of the extent in CRS units"
+      }}
+   ]
+}

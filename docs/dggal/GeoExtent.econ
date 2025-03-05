@@ -1,0 +1,24 @@
+{
+   description = "Geospatial extent expressed in WGS84 geodetic coordinates",
+   fields = [
+      {"ll", {
+         description = "Coordinates of the lower-left corner of the extent"
+      }},
+      {"ur", {
+         description = "Coordinates of the upper-right corner of the extent"
+      }}
+   ],
+   properties = [
+      {"geodeticArea", {
+         description = "Property returning the geodetic extent of the extent based on the WGS84 ellipsoid"
+      }}
+   ],
+   methods = [
+      {"clear", {
+         description = "Clear the extent"
+      }},
+      {"intersects", {
+         description = "Checks whether the extent intersects with another"
+      }}
+   ]
+}

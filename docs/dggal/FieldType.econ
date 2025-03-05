@@ -1,0 +1,27 @@
+{
+   description = "Identifier for basic data types",
+   also = "FieldValue",
+   values = [
+      {"array", {
+         description = "array of values"
+      }},
+      {"blob", {
+         description = "arbitrary binary data"
+      }},
+      {"integer", {
+         description = "64-bit integer"
+      }},
+      {"map", {
+         description = "map of keys to values"
+      }},
+      {"nil", {
+         description = "null value"
+      }},
+      {"real", {
+         description = "64-bit double precision floating point number"
+      }},
+      {"text", {
+         description = "null-terminated string of characters"
+      }}
+   ]
+}

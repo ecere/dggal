@@ -1,0 +1,3 @@
+{
+   description = "Component of a DGGS-JSON data file describing the shape of data values (the number of data values in terms of zones and other dimensions)"
+}

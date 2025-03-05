@@ -1,0 +1,3 @@
+{
+   description = "DGGRS class for GNOSIS Global Grid, an axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions, corresponding to the OGC 2D Tile Matrix Set of the same name"
+}

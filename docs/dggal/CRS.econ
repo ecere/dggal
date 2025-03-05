@@ -1,0 +1,14 @@
+{
+   description = "Identifier for a Coordinate Reference System",
+   fields = [
+      {"crsID", {
+         description = "Numerical identifier of this CRS within the registry"
+      }},
+      {"h", {
+         description = "True for \"h\" version of the CRS (for, CRS84h)"
+      }},
+      {"registry", {
+         description = "Authoritative registry in which this CRS is defined"
+      }}
+   ]
+}

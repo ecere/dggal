@@ -1,0 +1,3 @@
+{
+   description = "Object representing the content of a DGGS-JSON file storing raster data quantized to a particular DGGRS for a specific DGGRS zone at one or more depths relative to that parent zone"
+}

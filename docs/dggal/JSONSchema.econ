@@ -1,0 +1,4 @@
+{
+   description = "Object representing a JSON Schema",
+   usage = "Used within DGGS-JSON to represent the logical schema of data values"
+}

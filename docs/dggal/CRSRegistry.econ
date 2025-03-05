@@ -1,0 +1,12 @@
+{
+   description = "Identifier for an authority defining a CRS",
+   also = "CRS",
+   values = [
+      {"epsg", {
+         description = "For CRS maintained by the IOGP Geomatics Committee in registry originating from the European Petroleum Survey Group"
+      }},
+      {"ogc", {
+         description = "For CRS defined by the Open Geospatial Consortium"
+      }}
+   ]
+}

@@ -1,0 +1,11 @@
+{
+   description = "Geospatial position expressed in geodetic coordinates",
+   fields = [
+      {"lat", {
+         description = "Geodetic latitude"
+      }},
+      {"lon", {
+         description = "Geodetic longitude"
+      }}
+   ]
+}

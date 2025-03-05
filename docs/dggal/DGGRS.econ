@@ -1,0 +1,746 @@
+{
+   description = "Main DGGAL classs for defining and querying a particular Discrete Global Grid Reference System",
+   methods = [
+      {"areZonesNeighbors", {
+         description = "Check whether two zones are neighbors ",
+         remarks = "This method does not consider zones sharing a partial or full boundary as neighbors if they are not of the same refinement level.",
+         parameters = [
+            {"a", {
+               description = "First zone",
+               position = 1
+            }},
+            {"b", {
+               description = "Second zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if the two zones are neighbors"
+      }},
+      {"areZonesSiblings", {
+         description = "Check whether two zones are siblings",
+         remarks = "Sibling zones are zones of the same refinement level sharing a parent zone.",
+         parameters = [
+            {"a", {
+               description = "First zone",
+               position = 1
+            }},
+            {"b", {
+               description = "Second zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if the two zones are siblings"
+      }},
+      {"compactZones", {
+         description = "Compact a list of zones by recursively replacing a full set of children of a parent zone by that parent zone",
+         parameters = [
+            {"zones", {
+               description = "The array of zones to compact",
+               position = 1
+            }}
+         ]
+      }},
+      {"countSubZones", {
+         description = "Return the number of sub-zones within a parent zone at a specific relative depth",
+         parameters = [
+            {"depth", {
+               description = "The relative depth at which to count sub-zones",
+               position = 2
+            }},
+            {"zone", {
+               description = "The parent zone for which to count sub-zones",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of sub-zones"
+      }},
+      {"countZoneEdges", {
+         description = "Return the number of edges for a zone",
+         parameters = [
+            {"zone", {
+               description = "The zone for which to count edges",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of edges"
+      }},
+      {"countZones", {
+         description = "Return the number of zones at a specific refinement level",
+         parameters = [
+            {"level", {
+               description = "The refinement level for which to count zones",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of zones"
+      }},
+      {"doZonesOverlap", {
+         description = "Check whether two zones overlap",
+         remarks = "Zones overlap if they are of a different refinement level and one is a sub-zone of the other.",
+         parameters = [
+            {"a", {
+               description = "First zone",
+               position = 1
+            }},
+            {"b", {
+               description = "Second zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if the two zones overlap"
+      }},
+      {"doesZoneContain", {
+         description = "Check whether a zone contain another zone ",
+         remarks = "A zone contains another if the contained zone is a sub-zone of the containing zone, and not a sub-zone of any neighbor of the containing zone.",
+         parameters = [
+            {"hayStack", {
+               description = "The parent zone",
+               position = 1
+            }},
+            {"needle", {
+               description = "The contained zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if hayStack contains needle."
+      }},
+      {"get64KDepth", {
+         description = "Return the relative depth at which a typical parent zone has around 64,000 sub-zones",
+         remarks = "The 64K depth is 8 for GNOSIS Gobal Grid, 10 for ISEA3H, and 5 for ISEA9R.",
+         returnValue = "The relative depth at which a typical parent zone has around 64,000 sub-zones"
+      }},
+      {"getFirstSubZone", {
+         description = "Return the first sub-zone of a parent zone at a particular relative depth based on the deterministic order of sub-zones",
+         parameters = [
+            {"relativeDepth", {
+               description = "The relative depth for which to return the first sub-zone",
+               position = 2
+            }},
+            {"zone", {
+               description = "The parent zone for which to return the first sub-zone",
+               position = 1
+            }}
+         ],
+         returnValue = "The first sub-zone"
+      }},
+      {"getIndexMaxDepth", {
+         description = "Return the maximum relative depth at which sub-zone indices can be queried and resolved for this DGGRS",
+         returnValue = "The maximum depth at which sub-zone indices can be queried and resolved for this DGGRS"
+      }},
+      {"getLevelFromMetersPerSubZone", {
+         description = "Return the refinement level of a parent zone corresponding to a specified meters per sub-zone for a particular relative depth",
+         remarks = "The meters per sub-zone is based on the side length of a square with the same area as a typical zone.",
+         parameters = [
+            {"physicalMetersPerSubZone", {
+               description = "The number of physical meters per sub-zone",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth",
+               position = 2
+            }}
+         ],
+         returnValue = "The refinement level of a parent zone corresponding to the physical meters per sub-zone and relative depth"
+      }},
+      {"getLevelFromPixelsAndExtent", {
+         description = "Return the refinement level of a parent zone corresponding to particular pixel dimensions, geographic extent and relative depth",
+         remarks = "This method may be used to select the refinement level of zones for which to request data to fill a visualization viewport.",
+         parameters = [
+            {"extent", {
+               description = "A geographic extent to consider",
+               position = 1
+            }},
+            {"pixels", {
+               description = "The pixel dimensions to consider",
+               position = 2
+            }},
+            {"relativeDepth", {
+               description = "The relative depth to consider",
+               position = 3
+            }}
+         ],
+         returnValue = "The refinement level of a parent zone corresponding to the specified pixel dimensions, geographic extent and relative depth"
+      }},
+      {"getLevelFromRefZoneArea", {
+         description = "Return the refinement level corresponding to the reference area specified in meters squared.",
+         remarks = "The reference zone area is the ellipsoid surface area divided by the number of zones at a particular refinement level.",
+         parameters = [
+            {"metersSquared", {
+               description = "The reference zone area",
+               position = 1
+            }}
+         ],
+         returnValue = "The refinement level corresponding to the reference area. "
+      }},
+      {"getLevelFromScaleDenominator", {
+         description = "Return the refinement level of a parent zone corresponding to a specified scale denominator for a particular relative depth and display resolution (in millimeters per pixel)",
+         parameters = [
+            {"mmPerPixel", {
+               description = "The display resolution in millimeters per pixels to consider",
+               position = 3
+            }},
+            {"relativeDepth", {
+               description = "The relative depth to consider",
+               position = 2
+            }},
+            {"scaleDenominator", {
+               description = "The scale denominator to consider",
+               position = 1
+            }}
+         ],
+         returnValue = "The refinement level of a parent zone corresponding to tje specified scale denominator, relative depth and display resolution"
+      }},
+      {"getMaxChildren", {
+         description = "Return the maximum number of children for this DGGRS",
+         returnValue = "The maximum number of children for this DGGRS"
+      }},
+      {"getMaxDGGRSZoneLevel", {
+         description = "Return the maximum refinement level which a DGGRSZone can identify for this DGGSRS",
+         returnValue = "The maximum refinement level which a DGGRSZone can identify for this DGGSRS"
+      }},
+      {"getMaxDepth", {
+         description = "Get the maximum depth at which a full list of sub-zones can be returned",
+         returnValue = "The maximum depth at which a full list of sub-zones can be returned"
+      }},
+      {"getMaxNeighbors", {
+         description = "Return the maximum number of neighbors for this DGGRS",
+         returnValue = "The maximum number of neighbors for this DGGRS"
+      }},
+      {"getMaxParents", {
+         description = "Return the maximum number of parents for this DGGRS",
+         returnValue = "The maximum number of parents for this DGGRS"
+      }},
+      {"getMetersPerSubZoneFromLevel", {
+         description = "Return the meters per sub-zone for the specified parent zone refinement level and relative depth",
+         remarks = "The meters per sub-zone is based on the side length of a square with the same area as a typical zone.",
+         parameters = [
+            {"parentLevel", {
+               description = "The parent zone refinement level to consider",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth to consider",
+               position = 2
+            }}
+         ],
+         returnValue = "The meters per sub-zone for the specified parent zone refinement level and relative depth"
+      }},
+      {"getRefZoneArea", {
+         description = "Return the reference area specified in meters squared for a particular refinement level",
+         remarks = "The reference zone area is the ellipsoid surface area divided by the number of zones at a paritcular refinement level.",
+         parameters = [
+            {"level", {
+               description = "The refinement level",
+               position = 1
+            }}
+         ],
+         returnValue = "The reference area specified in meters squared"
+      }},
+      {"getRefinementRatio", {
+         description = "Return the refinement ratio of this DGGRS",
+         remarks = "The refinement ratio is 4 for GNOSIS Global Grid, 3 for ISEA3H and 9 for ISEA9R.",
+         returnValue = "The refinement ratio of this DGGRS"
+      }},
+      {"getScaleDenominatorFromLevel", {
+         description = "Return the scale denominator for a particular relative depth and display resolution (in millimeters per pixel) associated with a specified parent zone refinement level",
+         parameters = [
+            {"mmPerPixel", {
+               description = "The display resolution to consider",
+               position = 3
+            }},
+            {"parentLevel", {
+               description = "The parent zone refinement level",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth to consider",
+               position = 2
+            }}
+         ],
+         returnValue = "The scale denominator associated with the specified refinement level"
+      }},
+      {"getSubZoneAtIndex", {
+         description = "Return a DGGRS zone for the sub-zone at a particular index and relative depth for a parent zone",
+         also = "getSubZoneIndex",
+         parameters = [
+            {"index", {
+               description = "The index within the detereministic order at which to return the sub-zone",
+               position = 3
+            }},
+            {"parent", {
+               description = "The zone for which to return the sub-zone",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth at which to return the sub-zone",
+               position = 2
+            }}
+         ],
+         returnValue = "The DGGRS zone at the specified index and relative depth"
+      }},
+      {"getSubZoneCRSCentroids", {
+         description = "Return the centroids (in a particular CRS or the default CRS) for all sub-zone of a parent zone at a particular relative depth in the deterministic order",
+         parameters = [
+            {"crs", {
+               description = "The CRS of the returned sub-zone centroids coordinates (0 for default CRS)",
+               position = 2
+            }},
+            {"parent", {
+               description = "The parent zone for which to return sub-zone centroids",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth at which to return sub-zone centroids",
+               position = 3
+            }}
+         ],
+         returnValue = "An array of sub-zone centroids in the deterministic sub-zone order using coordinates expressed in the requested CRS "
+      }},
+      {"getSubZoneIndex", {
+         description = "Return the index of a sub-zone in a parent's zone sub-zones based on the deterministic order",
+         also = "getSubZoneAtIndex",
+         parameters = [
+            {"parent", {
+               description = "The parent zone for which to query a sub-zone index",
+               position = 1
+            }},
+            {"subZone", {
+               description = "The sub-zone whose index will be returned",
+               position = 2
+            }}
+         ],
+         returnValue = "The index of the sub-zone in the deterministic sub-zone order of the parent zone (-1 if subZone is not a sub-zone of the parent)"
+      }},
+      {"getSubZoneWGS84Centroids", {
+         description = "Return the centroids (in WGS84 geodetic coordinates)  for all sub-zone of a parent zone at a particular relative depth in the deterministic order",
+         parameters = [
+            {"parent", {
+               description = "The parent zone for which to return sub-zone centroids",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth at which to return sub-zone centroids",
+               position = 2
+            }}
+         ],
+         returnValue = "An array of sub-zone centroids in the deterministic sub-zone order expressed in WGS84 geodetic coordinates"
+      }},
+      {"getSubZones", {
+         description = "Return the sub-zones of a parent zone at a particular relative depth",
+         parameters = [
+            {"parent", {
+               description = "The parent zone for which to return sub-zones",
+               position = 1
+            }},
+            {"relativeDepth", {
+               description = "The relative depth at which to return sub-zones",
+               position = 2
+            }}
+         ],
+         returnValue = "The sub-zones of the parent zone at the specified relative depth in the deterministic sub-zone order of the DGGRS"
+      }},
+      {"getZoneArea", {
+         description = "Return the geodetic area of a zone in meters squared",
+         parameters = [
+            {"zone", {
+               description = "The zone for which to return the area",
+               position = 1
+            }}
+         ],
+         returnValue = "The geodetic area of the zone in meters squared"
+      }},
+      {"getZoneCRSCentroid", {
+         description = "Return the centroid of a DGGRS zone (in a particular CRS or the default CRS)",
+         parameters = [
+            {"centroid", {
+               description = "The centroid of the DGGRS zone being returned",
+               position = 3
+            }},
+            {"crs", {
+               description = "The CRS in which to return the centroid coordinates (0 for the default)",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return the centroid",
+               position = 1
+            }}
+         ]
+      }},
+      {"getZoneCRSExtent", {
+         description = "Return the extent of a DGGRS zone (in a particular CRS or the default CRS)",
+         parameters = [
+            {"crs", {
+               description = "The CRS in which to return the extent (0 for the default)",
+               position = 2
+            }},
+            {"extent", {
+               description = "The extent of the DGGRS zone being returned",
+               position = 3
+            }},
+            {"zone", {
+               description = "The zone for which to return the extent",
+               position = 1
+            }}
+         ]
+      }},
+      {"getZoneCRSVertices", {
+         description = "Return the vertices of a DGGRS zone (in a particular CRS or the default CRS) ",
+         also = "countZoneEdges",
+         parameters = [
+            {"crs", {
+               description = "The CRS in which to return the vertices (0 for the default)",
+               position = 2
+            }},
+            {"vertices", {
+               description = "A pre-allocated buffer for returning the zone vertices",
+               position = 3
+            }},
+            {"zone", {
+               description = "The zone for which to return vertices",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of vertices returned"
+      }},
+      {"getZoneCentroidChild", {
+         description = "Return the centroid child zone of a DGGRS zone",
+         remarks = "nullZone will be returned for a DGGRS without centroid children.",
+         parameters = [
+            {"zone", {
+               description = "The parent zone for which to return the centroid child",
+               position = 1
+            }}
+         ],
+         returnValue = "Return the centroid child zone of a DGGRS zone"
+      }},
+      {"getZoneCentroidParent", {
+         description = "Return the parent zone of a DGGRS zone which parent is itself a centroid child ",
+         remarks = "nullZone will be returned for a DGGRS without centroid children.<br>"
+            "nullZone also currently returned for ISEA9R for which this is not yet implemented, even though ISEA9R zones technically have centroid children from the 3x3 refinement.",
+         parameters = [
+            {"zone", {
+               description = "The child zone for which to return the parent which is itself a centroid child",
+               position = 1
+            }}
+         ],
+         returnValue = "The parent zone of a DGGRS zone which parent is itself a centroid child "
+      }},
+      {"getZoneChildren", {
+         description = "Return the children zones of a DGGRS zone",
+         also = "getMaxChildren",
+         parameters = [
+            {"children", {
+               description = "A pre-allocated buffer in which to return the children zones",
+               position = 2
+            }},
+            {"zone", {
+               description = "The parent zone",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of children returned"
+      }},
+      {"getZoneFromCRSCentroid", {
+         description = "Return the DGGRS zone within which the specified coordinates (in a particular CRS or the default CRS) fall",
+         example = "ISEA3H isea3H { };<br>"
+            "DGGRSZone zone = isea3H.getZoneFromCRSCentroid(16, { epsg, 4326 }, { 45, -75 });",
+         remarks = "This method will likely be renamed to reflect the fact that the specified position no longer needs to be the centroid of a zone.",
+         parameters = [
+            {"centroid", {
+               description = "The position for which to return the zone within which it falls",
+               position = 3
+            }},
+            {"crs", {
+               description = "The CRS in which the position coordinates are expressed (0 for the default)",
+               position = 2
+            }},
+            {"level", {
+               description = "The refinement level of the zone to return",
+               position = 1
+            }}
+         ],
+         returnValue = "The zone in which the position falls"
+      }},
+      {"getZoneFromTextID", {
+         description = "Return the DGGRS zone associated with a textual identifier",
+         example = "ISEA3H isea3H { };<br>"
+            "DGGRSZone zone = isea3H.getZoneFromTextID(\"A4-0-A\");",
+         also = "nullZone",
+         parameters = [
+            {"zoneID", {
+               description = "The textual zone identifier",
+               position = 1
+            }}
+         ],
+         returnValue = "The DGGRS zone associated with the textual identifier (nullZone if textual identifier is invalid)"
+      }},
+      {"getZoneFromWGS84Centroid", {
+         description = "Return the DGGRS zone within which the specified coordinates (in WGS84 geodetic coordinates) fall",
+         example = "ISEA3H isea3H { };<br>"
+            "DGGRSZone zone = isea3H.getZoneFromCRSCentroid(16, { 45, -75 });",
+         remarks = "This method will likely be renamed to reflect the fact that the specified position no longer needs to be the centroid of a zone.",
+         parameters = [
+            {"centroid", {
+               description = "The geodetic position for which to return the zone within which it falls",
+               position = 2
+            }},
+            {"level", {
+               description = "The refinement level of the zone to return",
+               position = 1
+            }}
+         ],
+         returnValue = "The zone in which the position falls"
+      }},
+      {"getZoneLevel", {
+         description = "Return the refinement level of a DGGRS zone",
+         parameters = [
+            {"zone", {
+               description = "The zone for which to return the refinement level",
+               position = 1
+            }}
+         ],
+         returnValue = "The refinement level of the specified zone"
+      }},
+      {"getZoneNeighbors", {
+         description = "Return the neighboring zones of a DGGRS zone",
+         also = "getMaxNeighbors",
+         parameters = [
+            {"nbType", {
+               description = "An optional pointer to an integer buffer in which to return a type identifying the relative position of each neighbors",
+               position = 3
+            }},
+            {"neighbors", {
+               description = "A pre-allocated buffer in which to return neighbors",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return neighbors",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of neighbors returned"
+      }},
+      {"getZoneParents", {
+         description = "Return the parent zones of a DGGRS zone",
+         remarks = "All zones of GNOSIS Global Grid and ISEA9R have a single parents, whereas ISEA3H zones have one parent if they are a centroid child, and three parents otherwise if they are a vertex child.",
+         parameters = [
+            {"parents", {
+               description = "A pre-allocated buffer in which to return parents",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return parents",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of paerents returned"
+      }},
+      {"getZoneRefinedCRSVertices", {
+         description = "Return the vertices of a DGGRS zone (in a particular CRS or the default CRS), including intermediate points refining the geometry of the zone suitable for accurately representing this geometry",
+         remarks = "Custom edgeRefinement is currently only supported for ISEA3H and WGS84 CRSs.<br>"
+            "This function also adds extra vertices based on how the selected CRS wraps around  allowing to render the zone geometry correctly.",
+         parameters = [
+            {"crs", {
+               description = "The CRS in which the coordinates of the refined vertices are to be returned (0 for the default)",
+               position = 2
+            }},
+            {"edgeRefinement", {
+               description = "The number of refined vertices per zone edge (0 for automatic refinement based on the zone refinement level, resulting in more refinement vertices at coarser refinement levels)",
+               position = 3
+            }},
+            {"zone", {
+               description = "The zone for which to return refined vertices",
+               position = 1
+            }}
+         ],
+         returnValue = "An array containing the refined vertices"
+      }},
+      {"getZoneRefinedWGS84Vertices", {
+         description = "Return the vertices of a DGGRS zone (in WGS84 geodetic coordinates), including intermediate points refining the geometry of the zone suitable for accurately representing this geometry",
+         remarks = "Custom edgeRefinement is currently only supported for ISEA3H.<br>"
+            "This function also adds extra vertices based on wrapping around the anti-meridian allowing to render the zone geometry correctly.",
+         parameters = [
+            {"edgeRefinement", {
+               description = "The number of refined vertices per zone edge (0 for automatic refinement based on the zone refinement level, resulting in more refinement vertices at coarser refinement levels)",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return refined vertices",
+               position = 1
+            }}
+         ],
+         returnValue = "An array containing the refined vertices"
+      }},
+      {"getZoneTextID", {
+         description = "Return the textual identifier of a DGGRS zone",
+         parameters = [
+            {"zone", {
+               description = "The zone for which to return the textual identifier",
+               position = 1
+            }},
+            {"zoneID", {
+               description = "A pre-allocated buffer in which to return the textual identifier",
+               position = 2
+            }}
+         ]
+      }},
+      {"getZoneWGS84Centroid", {
+         description = "Return the centroid of a DGGRS zone (in WGS84 geodetic coordinates)",
+         parameters = [
+            {"centroid", {
+               description = "The centroid of the DGGRS zone being returned",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return the centroid",
+               position = 1
+            }}
+         ]
+      }},
+      {"getZoneWGS84Extent", {
+         description = "Return the extent of a DGGRS zone (in WGS84 geodetic coordinates)",
+         parameters = [
+            {"extent", {
+               description = "The extent of the DGGRS zone being returned",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return the extent",
+               position = 1
+            }}
+         ]
+      }},
+      {"getZoneWGS84Vertices", {
+         description = "Return the vertices of a DGGRS zone (in WGS84 geodetic coordinates)",
+         parameters = [
+            {"vertices", {
+               description = "A pre-allocated buffer for returning the zone vertices",
+               position = 2
+            }},
+            {"zone", {
+               description = "The zone for which to return vertices",
+               position = 1
+            }}
+         ],
+         returnValue = "The number of vertices returnned"
+      }},
+      {"isZoneAncestorOf", {
+         description = "Check whether a zone is an ancestor of another zone",
+         parameters = [
+            {"ancestor", {
+               description = "The ancestor zone",
+               position = 1
+            }},
+            {"descendant", {
+               description = "The descendant zone",
+               position = 2
+            }},
+            {"maxDepth", {
+               description = "The maximum relative depth to consider (0 for maximum)",
+               position = 3
+            }}
+         ],
+         returnValue = "True if the first zone is an ancestor of the second"
+      }},
+      {"isZoneCentroidChild", {
+         description = "Check whether the zone is the centroid child of a parent zone",
+         parameters = [
+            {"zone", {
+               description = "The zone to check whether it is a centroid child",
+               position = 1
+            }}
+         ],
+         returnValue = "True if the specified zone is the centroid child of a parent zone"
+      }},
+      {"isZoneContainedIn", {
+         description = "Check whether a zone is contained within another zone",
+         parameters = [
+            {"hayStack", {
+               description = "The containing zone",
+               position = 2
+            }},
+            {"needle", {
+               description = "The contained zone",
+               position = 1
+            }}
+         ],
+         returnValue = "True if the first zone is contained within the second"
+      }},
+      {"isZoneDescendantOf", {
+         description = "Check whether a zone is a descendant of another zone",
+         parameters = [
+            {"ancestor", {
+               description = "The ancestor zone",
+               position = 2
+            }},
+            {"descendant", {
+               description = "The descendant zone",
+               position = 1
+            }},
+            {"maxDepth", {
+               description = "The maximum relative depth to consider (0 for maximum)",
+               position = 3
+            }}
+         ],
+         returnValue = "Tue if the first zone is a decendant of the second"
+      }},
+      {"isZoneImmediateChildOf", {
+         description = "Check whether a zone is an immediate child of another zone",
+         parameters = [
+            {"child", {
+               description = "The child zone",
+               position = 1
+            }},
+            {"parent", {
+               description = "The parent zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if the first zone is an immediate child of the second"
+      }},
+      {"isZoneImmediateParentOf", {
+         description = "Check whether a zone is an immediate parent of another zone",
+         parameters = [
+            {"child", {
+               description = "The child zone",
+               position = 2
+            }},
+            {"parent", {
+               description = "The parent zone",
+               position = 1
+            }}
+         ],
+         returnValue = "True if the first zone is a parent of the second"
+      }},
+      {"listZones", {
+         description = "Return the list of zones at a particular refinement level within a bounding box expressed in WGS84 geodetic coordinates",
+         parameters = [
+            {"bbox", {
+               description = "The bounding box for which to return all zones whose geometry intersects with it",
+               position = 2
+            }},
+            {"level", {
+               description = "The refinement level at which to return zones",
+               position = 1
+            }}
+         ],
+         returnValue = "An array of DGGRS zones containing all zones of specified refinement level fall whose geometry intersects the specified bounding box"
+      }},
+      {"zoneHasSubZone", {
+         description = "Check whether a zone has another zone as a sub-zone",
+         remarks = "A descendant zone is a sub-zone of an ancestor zone if the descendant zone if fully or partially contained within the ancestor zone.",
+         also = "getSubZoneIndex",
+         parameters = [
+            {"hayStack", {
+               description = "The parent zone",
+               position = 1
+            }},
+            {"needle", {
+               description = "The sub-zone",
+               position = 2
+            }}
+         ],
+         returnValue = "True if the first zone has the second zone as a sub-zone"
+      }}
+   ]
+}

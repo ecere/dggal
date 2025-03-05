@@ -1,0 +1,44 @@
+{
+   description = "DGGAL, the Discrete Global Grid Abstraction Library, provides a common interface to perform various operations on Discrete Global Grid Reference Systems (DGGRS), facilitating the implementation of Discrete Global Grid Systems (DGGS), including implementing Web APIs based on the OGC API - DGGS Standard.",
+   defines = [
+      {"nullZone", {
+         description = "Special DGGRSZone value representing a null zone"
+      }},
+      {"wgs84InvFlattening", {
+         description = "The inverse flattening of the WGS84 ellispsoid"
+      }},
+      {"wgs84Major", {
+         description = "Length of the WGS84 ellipsoid major radius in meters"
+      }},
+      {"wgs84Minor", {
+         description = "Length of the WGS84 ellipsoid minor radius in meters"
+      }},
+      {"wholeWorld", {
+         description = "The geographic extent for the whole world"
+      }}
+   ],
+   functions = [
+      {"readDGGSJSON", {
+         description = "Function to read DGGS-JSON data files, storing raster data quantized to a particular DGGRS for a specific DGGRS zone at one or more depths relative to that parent zone",
+         example = "   File f = FileOpen(\"someFile.dggs.json\", read);<br>"
+            "   if(f)<br>"
+            "   {<br>"
+            "      DGGSJSON dggsJSON = readDGGSJSON(f);<br>"
+            "      if(dggsJSON)<br>"
+            "      {<br>"
+            "         // See DGGAL/commands/togeo.ec for full example converting DGGS-JSON to GeoJSON<br>"
+            "         delete dggsJSON;<br>"
+            "      }<br>"
+            "      delete f;<br>"
+            "   }",
+         also = "FileOpen",
+         parameters = [
+            {"f", {
+               description = "Opened file object",
+               position = 1
+            }}
+         ],
+         returnValue = "An object representing the DGGS-JSON data"
+      }}
+   ]
+}

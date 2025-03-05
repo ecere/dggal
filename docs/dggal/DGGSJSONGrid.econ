@@ -1,0 +1,3 @@
+{
+   description = "Component of a DGGS-JSON data file describing a regular or irregular grid for dimensions not part of the DGGRS"
+}

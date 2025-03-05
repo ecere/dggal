@@ -1,0 +1,3 @@
+{
+   description = "DGGRS class for ISEA9R, an equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones"
+}

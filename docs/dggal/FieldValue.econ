@@ -1,0 +1,26 @@
+{
+   description = "Data type for holding field values including type identifier",
+   fields = [
+      {"a", {
+         description = "For array values"
+      }},
+      {"b", {
+         description = "For blob values"
+      }},
+      {"i", {
+         description = "For integer values"
+      }},
+      {"m", {
+         description = "For map values"
+      }},
+      {"r", {
+         description = "For real values"
+      }},
+      {"s", {
+         description = "For text values"
+      }},
+      {"type", {
+         description = "Data type of this value"
+      }}
+   ]
+}

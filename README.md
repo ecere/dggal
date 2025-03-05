@@ -1,4 +1,4 @@
-[![DGGAL docs](https://img.shields.io/badge/docs-being_improved-yellow.svg)](https://dggal.org/docs/html/dggal/Classes/DGGRS.html)<br>
+[![DGGAL docs](https://img.shields.io/badge/docs-API_documentation-green.svg)](https://dggal.org/docs/html/dggal/Classes/DGGRS.html)<br>
 
 # DGGAL, the Discrete Global Grid Abstraction Library
 
