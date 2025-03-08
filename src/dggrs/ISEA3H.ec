@@ -1331,18 +1331,14 @@ private:
       return i;
    }
 
-   Array<Pointd> getRefinedVertices(CRS crs, int edgeRefinement, bool useGeoPoint)   // 0 for 1-20 based on level
+   int getBaseRefinedVertices(bool crs84, Pointd * vertices)
    {
-      Array<Pointd> rVertices = null;
-      Pointd vertices[9];
       int numPoints = 0;
-      int i;
       int row, col, level = iseaLRCFromLRtI((char)('A' + levelISEA9R), rootRhombus, rhombusIX, &row, &col);
       int subHex = this.subHex;
       bool result = true;
       uint64 p = POW3(level);
       double d =  1.0 / p;
-      bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
       Pointd v;
       Pointd tl = ISEA9RZone { level, row, col }.isea5x6Extent.tl;
 
@@ -1527,12 +1523,21 @@ private:
          default:
             result = false;
       }
+      return result ? numPoints : 0;
+   }
 
-      if(result)
+   Array<Pointd> getRefinedVertices(CRS crs, int edgeRefinement, bool useGeoPoint)   // 0 for 1-20 based on level
+   {
+      Array<Pointd> rVertices = null;
+      bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
+      Pointd vertices[9];
+      int numPoints = getBaseRefinedVertices(crs84, vertices);
+      if(numPoints)
       {
          Array<Pointd> ap = null;
          bool geodesic = false; //true;
          bool refine = subHex < 3;  // Only use refinement for ISEA for even levels
+         int i;
 
          if(crs84)
          {

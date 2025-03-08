@@ -56,11 +56,14 @@ _ECSOURCES = \
 	src/dggrs/ISEA3H.ec \
 	src/dggrs/ISEA3HSubZones.ec \
 	src/dggrs/ISEA9R.ec \
+	src/dggrs/IGP3H.ec \
 	src/isea/isea5x6.ec \
 	src/isea/isea.ec \
 	src/dggsJSON/dggsJSON.ec \
 	src/dggsJSON/JSONSchema.ec \
 	$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec \
+	src/ecere3D/Plane.ec \
+	src/ecere3D/Vector3D.ec \
 	src/GeoExtent.ec \
 	src/dggrs.ec
 
@@ -176,6 +179,9 @@ $(OBJ)ISEA3HSubZones.sym: src/dggrs/ISEA3HSubZones.ec
 $(OBJ)ISEA9R.sym: src/dggrs/ISEA9R.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA9R.ec) -o $(call quote_path,$@)
 
+$(OBJ)IGP3H.sym: src/dggrs/IGP3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IGP3H.ec) -o $(call quote_path,$@)
+
 $(OBJ)isea5x6.sym: src/isea/isea5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/isea/isea5x6.ec) -o $(call quote_path,$@)
 
@@ -190,6 +196,12 @@ $(OBJ)JSONSchema.sym: src/dggsJSON/JSONSchema.ec
 
 $(OBJ)fieldValue.sym: $(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec) -o $(call quote_path,$@)
+
+$(OBJ)Plane.sym: src/ecere3D/Plane.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@)
+
+$(OBJ)Vector3D.sym: src/ecere3D/Vector3D.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Vector3D.ec) -o $(call quote_path,$@)
 
 $(OBJ)GeoExtent.sym: src/GeoExtent.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@)
@@ -211,6 +223,9 @@ $(OBJ)ISEA3HSubZones.c: src/dggrs/ISEA3HSubZones.ec $(OBJ)ISEA3HSubZones.sym | $
 $(OBJ)ISEA9R.c: src/dggrs/ISEA9R.ec $(OBJ)ISEA9R.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)IGP3H.c: src/dggrs/IGP3H.ec $(OBJ)IGP3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IGP3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)isea5x6.c: src/isea/isea5x6.ec $(OBJ)isea5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/isea/isea5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -225,6 +240,12 @@ $(OBJ)JSONSchema.c: src/dggsJSON/JSONSchema.ec $(OBJ)JSONSchema.sym | $(SYMBOLS)
 
 $(OBJ)fieldValue.c: $(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec $(OBJ)fieldValue.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Plane.c: src/ecere3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Vector3D.c: src/ecere3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Vector3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)GeoExtent.c: src/GeoExtent.ec $(OBJ)GeoExtent.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -246,6 +267,9 @@ $(OBJ)ISEA3HSubZones$(O): $(OBJ)ISEA3HSubZones.c
 $(OBJ)ISEA9R$(O): $(OBJ)ISEA9R.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA9R.c) -o $(call quote_path,$@)
 
+$(OBJ)IGP3H$(O): $(OBJ)IGP3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IGP3H.c) -o $(call quote_path,$@)
+
 $(OBJ)isea5x6$(O): $(OBJ)isea5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)isea5x6.c) -o $(call quote_path,$@)
 
@@ -260,6 +284,12 @@ $(OBJ)JSONSchema$(O): $(OBJ)JSONSchema.c
 
 $(OBJ)fieldValue$(O): $(OBJ)fieldValue.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fieldValue.c) -o $(call quote_path,$@)
+
+$(OBJ)Plane$(O): $(OBJ)Plane.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Plane.c) -o $(call quote_path,$@)
+
+$(OBJ)Vector3D$(O): $(OBJ)Vector3D.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Vector3D.c) -o $(call quote_path,$@)
 
 $(OBJ)GeoExtent$(O): $(OBJ)GeoExtent.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GeoExtent.c) -o $(call quote_path,$@)

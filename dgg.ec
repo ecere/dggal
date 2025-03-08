@@ -23,7 +23,7 @@ static void showSyntax()
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
       "Supported DGGRSs:\n"
-      "   GNOSIS (Global Grid), ISEA3H, ISEA9R\n"
+      "   GNOSIS (Global Grid), ISEA3H, ISEA9R, IGP3H\n"
       "\n"
       "Commands:\n"
       "   info       [zone]\n"
@@ -60,7 +60,7 @@ static void showSyntax()
       "   -depth <relative depth>\n"
       "      For sub, specify relative depth\n"
       "      Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels\n"
-      "        default: depth corresponding to ~64K sub-zones (ISEA: 5, ISEA3H: 10, GNOSIS: 8)\n"
+      "        default: depth corresponding to ~64K sub-zones (ISEA: 5, ISEA3H/IGP3H: 10, GNOSIS: 8)\n"
       "   -bbox <llLat,llLon,urLat,urLon>\n"
       "      Specify extent for which to list zones, generate grid, or reference extent for -pixels\n"
       "      example: -bbox 60,-120,62,-118 -- specified in EPSG:4326 (lat,lon)\n"
@@ -104,6 +104,7 @@ class DGGAL : Application
            if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsClass = class(ISEA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsClass = class(GNOSISGlobalGrid), cmdArg = 1;
+      else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "igp3h"))  dggrsClass = class(IGP3H), cmdArg = 1;
 
       for(a = 1; !syntaxError && a < argc; a++)
       {
@@ -132,6 +133,7 @@ class DGGAL : Application
                   if(!strncasecmp(arg, "GNOSIS", 6)) dggrsClass = class(GNOSISGlobalGrid);
                   else if(!strcmpi(arg, "ISEA3H"))   dggrsClass = class(ISEA3H);
                   else if(!strcmpi(arg, "ISEA9R"))   dggrsClass = class(ISEA9R);
+                  else if(!strcmpi(arg, "IGP3H"))    dggrsClass = class(IGP3H);
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
                   else

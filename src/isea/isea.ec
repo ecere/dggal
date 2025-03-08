@@ -122,7 +122,7 @@ private static inline Radians latGeodeticToAuthalic(const double cp[2][AUTH_ORDE
 }
 
 // https://arxiv.org/pdf/2212.05818
-private static define AUTH_ORDER = 6;
+private /*static */define AUTH_ORDER = 6;
 
 static const double Cxiphi[21] = // Cξφ (A19) - coefficients to convert geodetic latitude to authalic latitude
 {
@@ -159,7 +159,7 @@ static void precomputeCoefficients(double a, double b, const double C[21], doubl
    cp[5] =                                                                      C[20]  * d;
 }
 
-static inline Radians applyCoefficients(const double * cp, Radians phi)
+/*static inline */Radians applyCoefficients(const double * cp, Radians phi)
 {
    // Using Clenshaw summation algorithm (order 6)
    double szeta = sin(phi), czeta = cos(phi);
@@ -175,7 +175,7 @@ static inline Radians applyCoefficients(const double * cp, Radians phi)
    return phi + /* sin(2*zeta) * u0 */ 2 * szeta * czeta * u0;
 }
 
-static void authalicSetup(double a, double b, double cp[2][AUTH_ORDER])
+/*static */void authalicSetup(double a, double b, double cp[2][AUTH_ORDER])
 {
    precomputeCoefficients(a, b, Cxiphi, cp[0]); // geodetic -> authalic
    precomputeCoefficients(a, b, Cphixi, cp[1]); // authalic -> geodetic
@@ -198,7 +198,7 @@ struct ISEAFacePoint
 
 class ISEAPlanarProjection
 {
-   double cp[2][6]; // 0: geodetic -> authalic; 1: authalic -> geodetic
+   double cp[2][AUTH_ORDER]; // 0: geodetic -> authalic; 1: authalic -> geodetic
 
    ISEAPlanarProjection()
    {

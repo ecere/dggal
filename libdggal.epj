@@ -84,7 +84,8 @@
                   "GNOSISGlobalGrid.ec",
                   "ISEA3H.ec",
                   "ISEA3HSubZones.ec",
-                  "ISEA9R.ec"
+                  "ISEA9R.ec",
+                  "IGP3H.ec"
                ]
             },
             {
@@ -100,6 +101,24 @@
                   "dggsJSON.ec",
                   "JSONSchema.ec",
                   "$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec"
+               ]
+            },
+            {
+               "Folder" : "ecere3D",
+               "Files" : [
+                  "Plane.ec",
+                  "Vector3D.ec"
+               ],
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               },
+               "Configurations" : [
+                  {
+                     "Name" : "Static",
+                     "Options" : {
+                        "ExcludeFromBuild" : false
+                     }
+                  }
                ]
             },
             "GeoExtent.ec",
