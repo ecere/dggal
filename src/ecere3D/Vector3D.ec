@@ -37,4 +37,6 @@ public struct DGGVector3D
       else
          x = y = z = 0;
    }
+
+   property double length { get { return (double)sqrt(x * x + y * y + z * z); } };
 };

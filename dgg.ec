@@ -23,7 +23,7 @@ static void showSyntax()
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
       "Supported DGGRSs:\n"
-      "   GNOSIS (Global Grid), ISEA3H, ISEA9R, IGP3H\n"
+      "   GNOSIS (Global Grid), ISEA3H, ISEA9R, IVEA3H, IVEA9R, GPP3H, BCTA3H\n"
       "\n"
       "Commands:\n"
       "   info       [zone]\n"
@@ -104,7 +104,10 @@ class DGGAL : Application
            if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsClass = class(ISEA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsClass = class(GNOSISGlobalGrid), cmdArg = 1;
-      else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "igp3h"))  dggrsClass = class(IGP3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "gpp3h"))  dggrsClass = class(GPP3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "b3h") || !strcmpi(argv[0], "bcta3h")) dggrsClass = class(BCTA3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsClass = class(IVEA3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
 
       for(a = 1; !syntaxError && a < argc; a++)
       {
@@ -133,7 +136,10 @@ class DGGAL : Application
                   if(!strncasecmp(arg, "GNOSIS", 6)) dggrsClass = class(GNOSISGlobalGrid);
                   else if(!strcmpi(arg, "ISEA3H"))   dggrsClass = class(ISEA3H);
                   else if(!strcmpi(arg, "ISEA9R"))   dggrsClass = class(ISEA9R);
-                  else if(!strcmpi(arg, "IGP3H"))    dggrsClass = class(IGP3H);
+                  else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
+                  else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
+                  else if(!strcmpi(arg, "IVEA3H"))   dggrsClass = class(IVEA3H);
+                  else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
                   else

@@ -4,11 +4,10 @@ private:
 import "GeoExtent"
 
 import "dggrs"
-import "isea5x6"
-import "ISEA3H"
+import "RI3H"
 
 /*
-   28 ISEA3H Sub Zones Cases
+   28 I3H Sub Zones Cases
    =========================                                               -- EXAMPLES --
          PARENT    SUB-ZONE  DEPTH     N/S    START   SCANLINES          | PARENT      P LEVEL  SZ LEVEL    DEPTH    SZ COUNT    FIRST
    Basic hexagons
@@ -98,11 +97,11 @@ import "ISEA3H"
 
 #define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
 
-void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
+void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
 {
    Pointd vertices[6];
    __attribute__((unused)) int nv = zone.getVertices(vertices);
-   int subHex = zone.subHex, levelISEA9R = zone.levelISEA9R;
+   int subHex = zone.subHex, levelI9R = zone.levelI9R;
    uint64 rhombusIX = zone.rhombusIX;
    bool oddDepth = rDepth & 1, oddParent = subHex > 2;
    bool southRhombus = zone.rootRhombus & 1;
@@ -227,7 +226,7 @@ void getISEA3HFirstSubZoneCentroid(ISEA3HZone zone, int rDepth, Pointd c)
             else if(top == 1 || right == 1)  ix = 0;
 #else
             int ix = subHex == 1 ? 0 : (nv == 6) ? 5 : 4;
-            int divs = (int)POW3(levelISEA9R);
+            int divs = (int)POW3(levelI9R);
             bool edgeHex = nv == 6 && rhombusIX && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
             if(edgeHex && southRhombus)
                ix = 4;
@@ -286,11 +285,11 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
 
       // Computing start of scanline
       if(polarPentagon)
-         moveISEAVertex(rc, firstCentroid, (southPentagon ? -r : r) * u, (southPentagon ? -r : r) * u);
+         move5x6Vertex(rc, firstCentroid, (southPentagon ? -r : r) * u, (southPentagon ? -r : r) * u);
       else if(northPentagon || (edgeHex && !southRhombus))
-         moveISEAVertex(rc, firstCentroid, 0, r * u);
+         move5x6Vertex(rc, firstCentroid, 0, r * u);
       else
-         moveISEAVertex(rc, firstCentroid, -r * u, 0);
+         move5x6Vertex(rc, firstCentroid, -r * u, 0);
 
       // Iterating through scanline
       for(col = 0; keepGoing && col < nCols; col++)
@@ -307,8 +306,8 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
             int a = Min(col, r), b = col - a;
             Pointd t;
 
-            // REVIEW: Using moveISEAVertex() breaks things here
-            /*(b ? moveISEAVertex : */moveISEAVertex3/*)*/(t, rc, 0, (southPentagon ? a : -a) * u);
+            // REVIEW: Using move5x6Vertex() breaks things here
+            /*(b ? move5x6Vertex : */move5x6Vertex3/*)*/(t, rc, 0, (southPentagon ? a : -a) * u);
 
             if(b)
             {
@@ -318,13 +317,13 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
                if(b > maxB)
                   c = b - maxB, b = maxB;
 
-               crossISEAInterruption(  t, i2, southPentagon, northPentagon || r >= nHalfRows);
-               (c ? moveISEAVertex : moveISEAVertex3)(centroid, i2, (southPentagon ? b : -b) * u, (southPentagon ? b : -b) * u);
+               cross5x6Interruption(  t, i2, southPentagon, northPentagon || r >= nHalfRows);
+               (c ? move5x6Vertex : move5x6Vertex3)(centroid, i2, (southPentagon ? b : -b) * u, (southPentagon ? b : -b) * u);
 
                if(c)
                {
-                  crossISEAInterruption(centroid, i2, southPentagon, northPentagon || r >= nHalfRows);
-                  moveISEAVertex3(centroid, i2,
+                  cross5x6Interruption(centroid, i2, southPentagon, northPentagon || r >= nHalfRows);
+                  move5x6Vertex3(centroid, i2,
                      southPentagon ? (r >= nHalfRows ? 0 : c * u) : -c * u,
                      southPentagon && r >= nHalfRows ? -c * u : 0);
                }
@@ -336,19 +335,19 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
          {
             int a = Min(col, nHalfRows), b = col - a;
             Pointd t;
-            (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, southRhombus ? a * u : 0);
+            (b ? move5x6Vertex : move5x6Vertex3)(t, rc, a * u, southRhombus ? a * u : 0);
 
             if(b)
             {
                Pointd i2;
-               crossISEAInterruption(t, i2, southRhombus, false);
-               moveISEAVertex3(centroid, i2, b * u, southRhombus ? 0 : b * u);
+               cross5x6Interruption(t, i2, southRhombus, false);
+               move5x6Vertex3(centroid, i2, b * u, southRhombus ? 0 : b * u);
             }
             else
                centroid = t;
          }
          else
-            moveISEAVertex(centroid, rc, col * u, col * u);//, false);
+            move5x6Vertex(centroid, rc, col * u, col * u);//, false);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -367,11 +366,11 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
 
       if(index != -1 && i + nCols <= index);  // nCols is not always the actual number of indices
       else if(polarPentagon)
-         moveISEAVertex(rc, firstCentroid, southPentagon ? (-1 - r * u) : (1 + r * u), southPentagon ? (-1 -r * u) : (1 + r * u));
+         move5x6Vertex(rc, firstCentroid, southPentagon ? (-1 - r * u) : (1 + r * u), southPentagon ? (-1 -r * u) : (1 + r * u));
       else if(northPentagon || (edgeHex && !southRhombus))
-         moveISEAVertex(rc, firstCentroid, r * u, (r + nHalfRows) * u);
+         move5x6Vertex(rc, firstCentroid, r * u, (r + nHalfRows) * u);
       else
-         moveISEAVertex(rc, firstCentroid, -nHalfRows * u, r * u);
+         move5x6Vertex(rc, firstCentroid, -nHalfRows * u, r * u);
 
       // Iterating through scanline
       for(col = 0; keepGoing && col < nCols; col++)
@@ -387,19 +386,19 @@ static int64 generateOddParentOddDepth(void * context, bool (* centroidCallback)
                   if(polarPentagon || edgeHex)
                   {
                      Pointd i2;
-                     moveISEAVertex(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
-                     crossISEAInterruption(t, i2, southRhombus, southPentagon && polarPentagon);
+                     move5x6Vertex(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+                     cross5x6Interruption(t, i2, southRhombus, southPentagon && polarPentagon);
                      t = i2;
                   }
                   else
-                     moveISEAVertex3(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
-                  moveISEAVertex(centroid, t, polarPentagon ? 0 : b * u, southRhombus ? (polarPentagon ? -b * u : 0) : b * u);
+                     move5x6Vertex3(t, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+                  move5x6Vertex(centroid, t, polarPentagon ? 0 : b * u, southRhombus ? (polarPentagon ? -b * u : 0) : b * u);
                }
                else
-                  moveISEAVertex3(centroid, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
+                  move5x6Vertex3(centroid, rc, (polarPentagon && southPentagon ? -a : a) * u, southRhombus && !polarPentagon ? a * u : 0);
             }
             else
-               moveISEAVertex(centroid, rc, col * u, col * u);//, false);
+               move5x6Vertex(centroid, rc, col * u, col * u);//, false);
 
             if((keepGoing = centroidCallback(context, i, centroid))) i++;
          }
@@ -490,13 +489,13 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
             int a = nHalfRows/2, b = r - (a + 1);
             Pointd i1;
 
-            // REVIEW: Avoid calling moveISEAVertex3() before crossISEAInterruption()
-            moveISEAVertex(rc, firstCentroid, (a * 2 + 1) * (southPentagon ?-1:1) * u / 3, (a * 1 + 1) * (southPentagon ?-1:1) * u / 3);
-            crossISEAInterruption(rc, i1, southPentagon, southPentagon);
-            moveISEAVertex3(rc, i1, (1 + b * 1) * (southPentagon ?-1:1) * u / 3, (1 + b * 2) * (southPentagon ?-1:1) * u / 3);
+            // REVIEW: Avoid calling move5x6Vertex3() before cross5x6Interruption()
+            move5x6Vertex(rc, firstCentroid, (a * 2 + 1) * (southPentagon ?-1:1) * u / 3, (a * 1 + 1) * (southPentagon ?-1:1) * u / 3);
+            cross5x6Interruption(rc, i1, southPentagon, southPentagon);
+            move5x6Vertex3(rc, i1, (1 + b * 1) * (southPentagon ?-1:1) * u / 3, (1 + b * 2) * (southPentagon ?-1:1) * u / 3);
          }
          else
-            moveISEAVertex(rc, firstCentroid, r * (southPentagon ?-2:2) * u / 3, r * (southPentagon ?-1:1) * u / 3);
+            move5x6Vertex(rc, firstCentroid, r * (southPentagon ?-2:2) * u / 3, r * (southPentagon ?-1:1) * u / 3);
       }
       else if(southRhombus && (edgeHex || southPentagon) && r > nHalfRows / 2)
       {
@@ -506,7 +505,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
          Pointd i1 { i0.y - 1, iy + 1 + (ix + 1 - i0.x) };
          int b = r - nHalfRows / 2 - 1;
 
-         moveISEAVertex3(rc, i1, (b * 2 + 1) * u / 3, ((nHalfRows + 1)/2 + b) * u / 3);
+         move5x6Vertex3(rc, i1, (b * 2 + 1) * u / 3, ((nHalfRows + 1)/2 + b) * u / 3);
 
          /*
             B5-3-A
@@ -523,7 +522,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
          */
       }
       else
-         moveISEAVertex(rc, firstCentroid, r * u / 3, r * 2 * u / 3);
+         move5x6Vertex(rc, firstCentroid, r * u / 3, r * 2 * u / 3);
 
       // Iterating through scanline
       for(col = 0; keepGoing && col < nCols; col++)
@@ -548,12 +547,12 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                a = Min(col, n);
                colRem = col - a;
 
-               // REVIEW: Avoid calling moveISEAVertex3() before crossISEAInterruption()
-               (colRem ? moveISEAVertex : moveISEAVertex3)(start, rc, a * (southPentagon ?-1:1) * u/3, -1 * a * (southPentagon ?-1:1) * u/3);
+               // REVIEW: Avoid calling move5x6Vertex3() before cross5x6Interruption()
+               (colRem ? move5x6Vertex : move5x6Vertex3)(start, rc, a * (southPentagon ?-1:1) * u/3, -1 * a * (southPentagon ?-1:1) * u/3);
                if(colRem)
                {
                   n = (nHalfRows-r)/2 + (nHalfRows-r);
-                  crossISEAInterruption(start, t, southPentagon, crossingLeft);
+                  cross5x6Interruption(start, t, southPentagon, crossingLeft);
                   start = t;
                }
             }
@@ -568,7 +567,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                int a = Min(colRem, n), b = colRem - a;
                Pointd i2;
 
-               (b ? moveISEAVertex : moveISEAVertex3)(t, start, -a * (southPentagon ?-1:1) * u/3, -2*a * (southPentagon ?-1:1) * u/3);
+               (b ? move5x6Vertex : move5x6Vertex3)(t, start, -a * (southPentagon ?-1:1) * u/3, -2*a * (southPentagon ?-1:1) * u/3);
                if(b)
                {
                   bool oddRow = r&1;
@@ -577,7 +576,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                      b--;
                      t.x -= (southPentagon ?-1:1) * u/3, t.y -= (southPentagon ?-1:1) * u/3;
                   }
-                  crossISEAInterruption(t, i2, southPentagon, crossingLeft);
+                  cross5x6Interruption(t, i2, southPentagon, crossingLeft);
                   if(!oddRow)
                      i2.x -= (southPentagon ?-1:1) * u/3, i2.y -= (southPentagon ?-1:1) * u/3;
 
@@ -585,15 +584,15 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                   {
                      a = Min(b, n);
                      b -= a;
-                     (a ? moveISEAVertex : moveISEAVertex3)(t, i2, a * (southPentagon ?-1:1) * -2*u/3, -a * (southPentagon ?-1:1) * u/3);
+                     (a ? move5x6Vertex : move5x6Vertex3)(t, i2, a * (southPentagon ?-1:1) * -2*u/3, -a * (southPentagon ?-1:1) * u/3);
                      if(a)
-                        crossISEAInterruption(t, i2, southPentagon, crossingLeft);
+                        cross5x6Interruption(t, i2, southPentagon, crossingLeft);
                      else
                         i2 = t;
-                     moveISEAVertex3(centroid, i2, -b * (southPentagon ?-1:1) * u/3, b * (southPentagon ?-1:1) * u/3);
+                     move5x6Vertex3(centroid, i2, -b * (southPentagon ?-1:1) * u/3, b * (southPentagon ?-1:1) * u/3);
                   }
                   else
-                     moveISEAVertex3(centroid, i2, b * -2* (southPentagon ?-1:1) * u/3, -b * (southPentagon ?-1:1) * u/3);
+                     move5x6Vertex3(centroid, i2, b * -2* (southPentagon ?-1:1) * u/3, -b * (southPentagon ?-1:1) * u/3);
                }
                else
                   centroid = t;
@@ -613,15 +612,15 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                Pointd i2;
                if(!southPentagon || r < nHalfRows) // REVIEW: crossing when at intersection corner
                {
-                  moveISEAVertex(t, rc, -a * u/3, -2 * a * u/3);
-                  crossISEAInterruption(t, i2, true, true);
+                  move5x6Vertex(t, rc, -a * u/3, -2 * a * u/3);
+                  cross5x6Interruption(t, i2, true, true);
                }
                else
-                  moveISEAVertex3(i2, rc, -a * u/3, -2 * a * u/3);
-               moveISEAVertex3(centroid, i2, b * u/3, -b * u/3);
+                  move5x6Vertex3(i2, rc, -a * u/3, -2 * a * u/3);
+               move5x6Vertex3(centroid, i2, b * u/3, -b * u/3);
             }
             else
-               moveISEAVertex3(centroid, rc, -a * u/3, -2 * a * u/3);
+               move5x6Vertex3(centroid, rc, -a * u/3, -2 * a * u/3);
          }
          else if(northPentagon && r > nHalfRows / 2)
          {
@@ -629,18 +628,18 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u/3, -a * u/3);
+            (b ? move5x6Vertex : move5x6Vertex3)(t, rc, a * u/3, -a * u/3);
             if(b)
             {
                Pointd i2;
-               crossISEAInterruption(t, i2, false, false);
-               moveISEAVertex3(centroid, i2, b * 2*u/3, b * u/3);
+               cross5x6Interruption(t, i2, false, false);
+               move5x6Vertex3(centroid, i2, b * 2*u/3, b * u/3);
             }
             else
                centroid = t;
          }
          else
-            moveISEAVertex3(centroid, rc, col * u/3, -col * u/3);
+            move5x6Vertex3(centroid, rc, col * u/3, -col * u/3);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -664,15 +663,15 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
          int a = nHalfRows/2, b = nHalfRows - (a + 1), aa = Min(r, nHalfRows/2);
          Pointd i1;
 
-         moveISEAVertex(rc, firstCentroid, (a * 2 + 1) * (southPentagon ?-1:1) * u / 3, (a + 1) * (southPentagon ?-1:1) * u / 3);
-         crossISEAInterruption(rc, i1, southPentagon, southPentagon);
-         moveISEAVertex3(rc, i1, (1 + b + aa * 2) * (southPentagon ?-1:1) * u / 3, (1 + b * 2 + aa) * (southPentagon ?-1:1) * u / 3);
+         move5x6Vertex(rc, firstCentroid, (a * 2 + 1) * (southPentagon ?-1:1) * u / 3, (a + 1) * (southPentagon ?-1:1) * u / 3);
+         cross5x6Interruption(rc, i1, southPentagon, southPentagon);
+         move5x6Vertex3(rc, i1, (1 + b + aa * 2) * (southPentagon ?-1:1) * u / 3, (1 + b * 2 + aa) * (southPentagon ?-1:1) * u / 3);
          if(r > nHalfRows/2)
          {
             int bb = (r > nHalfRows/2) ? r - (aa + 1) : 0;
             rc.x += (southPentagon ?-1:1) * u / 3, rc.y += (southPentagon ?-1:1) * u / 3;
-            crossISEAInterruption(rc, i1, southPentagon, southPentagon);
-            moveISEAVertex3(rc, i1, (1 + bb) * (southPentagon ?-1:1) * u / 3, (1 + bb * 2) * (southPentagon ?-1:1) * u / 3);
+            cross5x6Interruption(rc, i1, southPentagon, southPentagon);
+            move5x6Vertex3(rc, i1, (1 + bb) * (southPentagon ?-1:1) * u / 3, (1 + bb * 2) * (southPentagon ?-1:1) * u / 3);
          }
       }
       else if(southRhombus && (edgeHex || southPentagon))
@@ -683,7 +682,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
          Pointd i1 { i0.y - 1, iy + 1 + (ix + 1 - i0.x) };
          int b = nHalfRows - nHalfRows / 2 - 1;
 
-         moveISEAVertex3(rc, i1, u / 3 + b * 2 * u / 3 + r * u / 3, (nHalfRows + 1)/2.0 * u / 3 + b * u / 3 - r * u / 3);
+         move5x6Vertex3(rc, i1, u / 3 + b * 2 * u / 3 + r * u / 3, (nHalfRows + 1)/2.0 * u / 3 + b * u / 3 - r * u / 3);
       }
       else if(!southRhombus && edgeHex && r > nHalfRows / 2)
       {
@@ -692,7 +691,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
          int iy = (int)(ii.y - 1E-11);
          Pointd t { iy + 2 - (ii.y - iy), ii.x };
 
-         moveISEAVertex(rc, t,
+         move5x6Vertex(rc, t,
             -(nHalfRows - 1)/2.0 * u / 3 + i * u / 3,
             u / 3 + i * 2 * u / 3
          );
@@ -703,7 +702,7 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
       {
          double dx = nHalfRows *     u / 3 + r * 2 * u / 3;
          double dy = nHalfRows * 2 * u / 3 + r     * u / 3;
-         moveISEAVertex(rc, firstCentroid, dx, dy);
+         move5x6Vertex(rc, firstCentroid, dx, dy);
       }
 
       // Iterating through scanline
@@ -726,10 +725,10 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                a = Min(col, n);
                b = col - a;
 
-               (b ? moveISEAVertex : moveISEAVertex3)(t, rc, (southPentagon ? -1 : 1) * a * u/3, (southPentagon ? -1 : 1) *  -a * u/3);
+               (b ? move5x6Vertex : move5x6Vertex3)(t, rc, (southPentagon ? -1 : 1) * a * u/3, (southPentagon ? -1 : 1) *  -a * u/3);
                if(b)
                {
-                  crossISEAInterruption(t, i2, southPentagon, southPentagon);
+                  cross5x6Interruption(t, i2, southPentagon, southPentagon);
                   t = i2;
                   n = r;
                }
@@ -746,29 +745,29 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
                {
                   a = Min(b, n);
                   b -= a;
-                  moveISEAVertex3(i2, t, (southPentagon ? -1 : 1) * a * 2*u/3, (southPentagon ? -1 : 1) * a * u/3);
+                  move5x6Vertex3(i2, t, (southPentagon ? -1 : 1) * a * 2*u/3, (southPentagon ? -1 : 1) * a * u/3);
 
                   if(b > n)
                   {
                      a = Min(b, n);
                      b -= a;
-                     // REVIEW: moveISEAVertex3() currently crosses on arrival, so should not be used followed by crossISEAInterruption() ?
-                     moveISEAVertex(t, i2, (southPentagon ? -1 : 1) * a * u/3, (southPentagon ? -1 : 1) * a * 2*u/3);
-                     crossISEAInterruption(t, i2, southPentagon, southPentagon);
+                     // REVIEW: move5x6Vertex3() currently crosses on arrival, so should not be used followed by cross5x6Interruption() ?
+                     move5x6Vertex(t, i2, (southPentagon ? -1 : 1) * a * u/3, (southPentagon ? -1 : 1) * a * 2*u/3);
+                     cross5x6Interruption(t, i2, southPentagon, southPentagon);
 
-                     moveISEAVertex3(centroid, i2, (southPentagon ? -1 : 1) * -b * u/3, (southPentagon ? -1 : 1) * b * u/3);
+                     move5x6Vertex3(centroid, i2, (southPentagon ? -1 : 1) * -b * u/3, (southPentagon ? -1 : 1) * b * u/3);
                   }
                   else
-                     moveISEAVertex3(centroid, i2, (southPentagon ? -1 : 1) * b * u/3, (southPentagon ? -1 : 1) * b * 2*u/3);
+                     move5x6Vertex3(centroid, i2, (southPentagon ? -1 : 1) * b * u/3, (southPentagon ? -1 : 1) * b * 2*u/3);
                }
                else
-                  moveISEAVertex3(centroid, t, (southPentagon ? -1 : 1) * b * 2*u/3, (southPentagon ? -1 : 1) * b * u/3);
+                  move5x6Vertex3(centroid, t, (southPentagon ? -1 : 1) * b * 2*u/3, (southPentagon ? -1 : 1) * b * u/3);
             }
             else
                centroid = t;
          }
          else if(crosses)
-            moveISEAVertex(centroid, rc, col * 2*u/3, col * u/3);
+            move5x6Vertex(centroid, rc, col * 2*u/3, col * u/3);
          else if(southRhombus && (edgeHex || southPentagon))
          {
             int n = southPentagon ? nHalfRows - r : nCols - (nHalfRows - 2*r)-1;
@@ -779,16 +778,16 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
             {
                Pointd i2;
                if(southPentagon)
-                  moveISEAVertex3(i2, rc, -a * u/3, -2 * a * u/3);
+                  move5x6Vertex3(i2, rc, -a * u/3, -2 * a * u/3);
                else
                {
-                  moveISEAVertex(t, rc, -a * u/3, -2 * a * u/3);
-                  crossISEAInterruption(t, i2, true, true);
+                  move5x6Vertex(t, rc, -a * u/3, -2 * a * u/3);
+                  cross5x6Interruption(t, i2, true, true);
                }
-               moveISEAVertex3(centroid, i2, b * u/3, -b * u/3);
+               move5x6Vertex3(centroid, i2, b * u/3, -b * u/3);
             }
             else
-               moveISEAVertex3(centroid, rc, -a * u/3, -2 * a * u/3);
+               move5x6Vertex3(centroid, rc, -a * u/3, -2 * a * u/3);
          }
          else if(northPentagon)
          {
@@ -796,14 +795,14 @@ static int64 generateEvenParentOddDepth(void * context, bool (* centroidCallback
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            moveISEAVertex3(t, rc, a * u/3, -a * u/3);
+            move5x6Vertex3(t, rc, a * u/3, -a * u/3);
             if(b)
-               moveISEAVertex3(centroid, t, b * 2*u/3, b * u/3);
+               move5x6Vertex3(centroid, t, b * 2*u/3, b * u/3);
             else
                centroid = t;
          }
          else
-            moveISEAVertex3(centroid, rc, col * u/3, -col * u/3);
+            move5x6Vertex3(centroid, rc, col * u/3, -col * u/3);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -862,12 +861,12 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
          if(r > nCapRows / 2)
          {
             Pointd t, i2;
-            moveISEAVertex(t, firstCentroid, -nCapRows * u, -(nCapRows - r) * u);
-            crossISEAInterruption(t, i2, true, true);
-            moveISEAVertex(rc, i2, 0, -(2*(r - nCapRows/2)-1) * u);
+            move5x6Vertex(t, firstCentroid, -nCapRows * u, -(nCapRows - r) * u);
+            cross5x6Interruption(t, i2, true, true);
+            move5x6Vertex(rc, i2, 0, -(2*(r - nCapRows/2)-1) * u);
          }
          else
-            moveISEAVertex3(rc, firstCentroid, -2*r * u, -r * u);
+            move5x6Vertex3(rc, firstCentroid, -2*r * u, -r * u);
       }
       else if((edgeHex || nv == 5) && !southRhombus)
       {
@@ -876,18 +875,18 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             if(r > nCapRows / 2)
             {
                Pointd t, i2;
-               moveISEAVertex(t, firstCentroid, nCapRows * u, (nCapRows - r) * u);
-               crossISEAInterruption(t, i2, false, false);
-               moveISEAVertex(rc, i2, 0, (2*(r - nCapRows/2)-1) * u);
+               move5x6Vertex(t, firstCentroid, nCapRows * u, (nCapRows - r) * u);
+               cross5x6Interruption(t, i2, false, false);
+               move5x6Vertex(rc, i2, 0, (2*(r - nCapRows/2)-1) * u);
             }
             else
-               moveISEAVertex(rc, firstCentroid, 2*r * u, r * u);
+               move5x6Vertex(rc, firstCentroid, 2*r * u, r * u);
          }
          else
-            moveISEAVertex(rc, firstCentroid, -r * u, r * u);
+            move5x6Vertex(rc, firstCentroid, -r * u, r * u);
       }
       else
-         moveISEAVertex(rc, firstCentroid, r * -2 * u, r * -1 * u);
+         move5x6Vertex(rc, firstCentroid, r * -2 * u, r * -1 * u);
 
       // Iterating through scanline
       for(col = 0; keepGoing && col < nCols; col++)
@@ -906,39 +905,39 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
                int a = Min(col, n), b = col - a;
                Pointd t;
 
-               // REVIEW: Avoid calling moveISEAVertex3() before crossISEAInterruption()
-               if(polarPentagon) // moveISEAVertex() breaks things here
-                  (b ? moveISEAVertex : moveISEAVertex3)(t, rc, 0, -a * u);
+               // REVIEW: Avoid calling move5x6Vertex3() before cross5x6Interruption()
+               if(polarPentagon) // move5x6Vertex() breaks things here
+                  (b ? move5x6Vertex : move5x6Vertex3)(t, rc, 0, -a * u);
                else
-                  (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, 0);
+                  (b ? move5x6Vertex : move5x6Vertex3)(t, rc, a * u, 0);
                if(b)
                {
                   Pointd i2;
-                  crossISEAInterruption(t, i2, false, polarPentagon);
+                  cross5x6Interruption(t, i2, false, polarPentagon);
                   if(polarPentagon)
                   {
                      int nb = 2*nCapRows - r, c = col - (a + (b = Min(b, nb)));
                      Pointd t2;
 
-                     (c ? moveISEAVertex : moveISEAVertex3)(t2, i2, -b * u, -b * u);
+                     (c ? move5x6Vertex : move5x6Vertex3)(t2, i2, -b * u, -b * u);
                      if(c)
                      {
-                        crossISEAInterruption(t2, i2, false, true);
-                        moveISEAVertex3(centroid, i2, -c * u, 0);
+                        cross5x6Interruption(t2, i2, false, true);
+                        move5x6Vertex3(centroid, i2, -c * u, 0);
                      }
                      else
                         centroid = t2;
                   }
                   else
-                     moveISEAVertex3(centroid, i2, b * u, b * u);
+                     move5x6Vertex3(centroid, i2, b * u, b * u);
                }
                else
                   centroid = t;
             }
             else if(polarPentagon)
-               moveISEAVertex(centroid, rc, -col * u, -col * u);
+               move5x6Vertex(centroid, rc, -col * u, -col * u);
             else
-               moveISEAVertex(centroid, rc, col * u, 0);
+               move5x6Vertex(centroid, rc, col * u, 0);
          }
          else if((edgeHex || nv == 5) && southRhombus)
          {
@@ -949,40 +948,40 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
                Pointd t;
 
                if(polarPentagon)
-                  (b ? moveISEAVertex : moveISEAVertex3)(t, rc, 0, a * u);
+                  (b ? move5x6Vertex : move5x6Vertex3)(t, rc, 0, a * u);
                else
-                  (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, a * u);
+                  (b ? move5x6Vertex : move5x6Vertex3)(t, rc, a * u, a * u);
                if(b)
                {
                   Pointd i2;
-                  crossISEAInterruption(t, i2, true, false);
+                  cross5x6Interruption(t, i2, true, false);
 
                   if(polarPentagon)
                   {
                      int nb = 2*nCapRows - r, c = col - (a + (b = Min(b, nb)));
                      Pointd t2;
 
-                     // REVIEW: Avoid calling moveISEAVertex3() before crossISEAInterruption()
-                     (c ? moveISEAVertex : moveISEAVertex3)(t2, i2, b * u, b * u);
+                     // REVIEW: Avoid calling move5x6Vertex3() before cross5x6Interruption()
+                     (c ? move5x6Vertex : move5x6Vertex3)(t2, i2, b * u, b * u);
                      if(c)
                      {
-                        crossISEAInterruption(t2, i2, true, false);
-                        moveISEAVertex3(centroid, i2, c * u, 0);
+                        cross5x6Interruption(t2, i2, true, false);
+                        move5x6Vertex3(centroid, i2, c * u, 0);
                      }
                      else
                         centroid = t2;
                   }
                   else
-                     moveISEAVertex3(centroid, nv == 5 ? t : i2, b * u, nv == 5 ? b * u : 0);
+                     move5x6Vertex3(centroid, nv == 5 ? t : i2, b * u, nv == 5 ? b * u : 0);
                }
                else
                   centroid = t;
             }
             else
-               moveISEAVertex(centroid, rc, col * u, col * u);
+               move5x6Vertex(centroid, rc, col * u, col * u);
          }
          else
-            moveISEAVertex(centroid, rc, col * u, col * u);
+            move5x6Vertex(centroid, rc, col * u, col * u);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -1005,13 +1004,13 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
          Pointd t, i2, t2;
          int a = Min(r, nCapRows), b = r - a;
 
-         moveISEAVertex(t, firstCentroid, -nCapRows * u, 0);
-         crossISEAInterruption(t, i2, true, true);
-         moveISEAVertex(t2, i2, -a * u, -(a/2 + nCapRows) * u);
+         move5x6Vertex(t, firstCentroid, -nCapRows * u, 0);
+         cross5x6Interruption(t, i2, true, true);
+         move5x6Vertex(t2, i2, -a * u, -(a/2 + nCapRows) * u);
          if(b)
          {
-            crossISEAInterruption(t2, i2, true, true);
-            moveISEAVertex(rc, i2, -(b/2) * u, -b * u);
+            cross5x6Interruption(t2, i2, true, true);
+            move5x6Vertex(rc, i2, -(b/2) * u, -b * u);
          }
          else
             rc = t2;
@@ -1023,24 +1022,24 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             Pointd t, i2, t2;
             int a = Min(r, nCapRows), b = r - a;
 
-            moveISEAVertex(t, firstCentroid, nCapRows * u, 0);
-            crossISEAInterruption(t, i2, false, false);
-            moveISEAVertex(t2, i2, a * u, (a/2 + nCapRows) * u);
+            move5x6Vertex(t, firstCentroid, nCapRows * u, 0);
+            cross5x6Interruption(t, i2, false, false);
+            move5x6Vertex(t2, i2, a * u, (a/2 + nCapRows) * u);
             if(b)
             {
-               crossISEAInterruption(t2, i2, false, false);
-               moveISEAVertex(rc, i2, (b/2) * u, b * u);
+               cross5x6Interruption(t2, i2, false, false);
+               move5x6Vertex(rc, i2, (b/2) * u, b * u);
             }
             else
                rc = t2;
          }
          else
-            moveISEAVertex(rc, firstCentroid,
+            move5x6Vertex(rc, firstCentroid,
                 nCapRows * -u + ((r+1) >> 1) * u,
                 nCapRows *  u + r * u);
       }
       else
-         moveISEAVertex(rc, firstCentroid,
+         move5x6Vertex(rc, firstCentroid,
              nCapRows * -2 * u + (r >> 1) * -u,
              nCapRows * -1 * u + (r >> 1) *  u + (r & 1) * u);
 
@@ -1060,9 +1059,9 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             if(col <= jumpCol)
             {
                if(polarPentagon)
-                  moveISEAVertex(centroid, rc, -col * u, 0);
+                  move5x6Vertex(centroid, rc, -col * u, 0);
                else
-                  moveISEAVertex(centroid, rc, col * u, col * u);
+                  move5x6Vertex(centroid, rc, col * u, col * u);
             }
             else
             {
@@ -1071,20 +1070,20 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
                if(polarPentagon)
                {
                   Pointd i2;
-                  moveISEAVertex(t, rc, -jumpCol * u, 0);
-                  crossISEAInterruption(t, i2, true, true);
-                  moveISEAVertex(centroid, i2, 0, -(col - jumpCol) * u);
+                  move5x6Vertex(t, rc, -jumpCol * u, 0);
+                  cross5x6Interruption(t, i2, true, true);
+                  move5x6Vertex(centroid, i2, 0, -(col - jumpCol) * u);
                }
                else
                {
                   int startShift = colSkip + jumpCol + 1;
                   int extraCols = col - jumpCol - 1;
-                  moveISEAVertex(t, rc, startShift * u, startShift * u);
-                  moveISEAVertex(centroid, t, extraCols * u, extraCols * u);
+                  move5x6Vertex(t, rc, startShift * u, startShift * u);
+                  move5x6Vertex(centroid, t, extraCols * u, extraCols * u);
                }
 
-               // REVIEW: This might have worked, but while moveISEAVertex() seems to be fine with it for the cap it is not here...
-               // moveISEAVertex(centroid, rc, (jumpCol + extraCols + 1) * u, (jumpCol + extraCols + 1) * u);
+               // REVIEW: This might have worked, but while move5x6Vertex() seems to be fine with it for the cap it is not here...
+               // move5x6Vertex(centroid, rc, (jumpCol + extraCols + 1) * u, (jumpCol + extraCols + 1) * u);
             }
          }
          else if((edgeHex || nv == 5) && !southRhombus)
@@ -1093,46 +1092,46 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            // REVIEW: Issues with moveISEAVertex3() followed by crossISEAInterruption()
+            // REVIEW: Issues with move5x6Vertex3() followed by cross5x6Interruption()
             if(!b || (nv == 5 && r > nMidRows/2))
             {
                if(polarPentagon && r <= nCapRows)
-                  moveISEAVertex3(t, rc, 0, -a * u);
+                  move5x6Vertex3(t, rc, 0, -a * u);
                else
-                  moveISEAVertex3(t, rc, a * u, 0);
+                  move5x6Vertex3(t, rc, a * u, 0);
             }
             else
             {
                if(polarPentagon && r <= nCapRows)
-                  moveISEAVertex(t, rc, 0, -a * u);
+                  move5x6Vertex(t, rc, 0, -a * u);
                else
-                  moveISEAVertex(t, rc, a * u, 0);
+                  move5x6Vertex(t, rc, a * u, 0);
             }
 
             if(b)
             {
                if(nv == 5 && r > nMidRows/2)
-                  moveISEAVertex(centroid, t, polarPentagon ? 0 : b * u, b * u);
+                  move5x6Vertex(centroid, t, polarPentagon ? 0 : b * u, b * u);
                else
                {
                   Pointd i2;
-                  crossISEAInterruption(t, i2, false, polarPentagon);
+                  cross5x6Interruption(t, i2, false, polarPentagon);
                   if(polarPentagon)
                   {
                      int nb = nCapRows - r, c = col - (a + (b = Min(b, nb)));
                      Pointd t2;
 
-                     moveISEAVertex(t2, i2, -b * u, -b * u);
+                     move5x6Vertex(t2, i2, -b * u, -b * u);
                      if(c)
                      {
-                        crossISEAInterruption(t2, i2, false, true);
-                        moveISEAVertex3(centroid, i2, -c * u, 0);
+                        cross5x6Interruption(t2, i2, false, true);
+                        move5x6Vertex3(centroid, i2, -c * u, 0);
                      }
                      else
                         centroid = t2;
                   }
                   else
-                     moveISEAVertex(centroid, i2, b * u, b * u);
+                     move5x6Vertex(centroid, i2, b * u, b * u);
                }
             }
             else
@@ -1148,42 +1147,42 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             {
                if(nv == 5 && r <= nMidRows/2 && !polarPentagon)
                {
-                  moveISEAVertex3(t, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
-                  moveISEAVertex(centroid, t, b * u, b * u);
+                  move5x6Vertex3(t, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
+                  move5x6Vertex(centroid, t, b * u, b * u);
                }
                else
                {
                   Pointd i2;
-                  // REVIEW: moveISEAVertex3() is required here
-                  moveISEAVertex3(t, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
-                  crossISEAInterruption(t, i2, true, polarPentagon && r >= nMidRows/2);
+                  // REVIEW: move5x6Vertex3() is required here
+                  move5x6Vertex3(t, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
+                  cross5x6Interruption(t, i2, true, polarPentagon && r >= nMidRows/2);
 
                   if(polarPentagon)
                   {
                      int nb = nCapRows - r, c = col - (a + (b = Min(b, nb)));
                      Pointd t2;
 
-                     moveISEAVertex(t2, i2, b * u, b * u);
+                     move5x6Vertex(t2, i2, b * u, b * u);
                      if(c)
                      {
-                        crossISEAInterruption(t2, i2, true, r >= nMidRows/2);
+                        cross5x6Interruption(t2, i2, true, r >= nMidRows/2);
                         if(r >= nMidRows/2)
-                           moveISEAVertex3(centroid, i2, 0, -c * u);
+                           move5x6Vertex3(centroid, i2, 0, -c * u);
                         else
-                           moveISEAVertex3(centroid, i2, c * u, 0);
+                           move5x6Vertex3(centroid, i2, c * u, 0);
                      }
                      else
                         centroid = t2;
                   }
                   else
-                     moveISEAVertex(centroid, i2, b * u, nv == 5 ? b * u : 0);
+                     move5x6Vertex(centroid, i2, b * u, nv == 5 ? b * u : 0);
                }
             }
             else
-               moveISEAVertex3(centroid, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
+               move5x6Vertex3(centroid, rc, polarPentagon && r <= nCapRows ? 0 : a * u, a * u);
          }
          else
-            moveISEAVertex(centroid, rc, col * u, col * u);
+            move5x6Vertex(centroid, rc, col * u, col * u);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -1202,12 +1201,12 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
          if(southRhombus)
          {
             Pointd i2 { 2 + nCapRows*u, 4 - nCapRows*u };
-            moveISEAVertex(rc, i2, -(r + 1) * 2 * u, -(r + 1) * u);
+            move5x6Vertex(rc, i2, -(r + 1) * 2 * u, -(r + 1) * u);
          }
          else
          {
             Pointd i2 { 3 - nCapRows*u, 2 + nCapRows*u };
-            moveISEAVertex(rc, i2, (r + 1) * 2 * u, (r + 1) * u);
+            move5x6Vertex(rc, i2, (r + 1) * 2 * u, (r + 1) * u);
          }
       }
       else if((edgeHex || nv == 5) && !southRhombus)
@@ -1217,13 +1216,13 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
          {
             int a = Min(r + 1, nCapRows / 2), b = r + 1 - a;
 
-            moveISEAVertex(t, firstCentroid,
+            move5x6Vertex(t, firstCentroid,
                 nCapRows * -u + (nMidRows >> 1) * u + a * 2 * u,
                 nCapRows *  u + (nMidRows-1)    * u + a * u);
             if(b)
             {
-               crossISEAInterruption(t, i2, false, false);
-               moveISEAVertex(rc, i2, b * 2 * u, b * u);
+               cross5x6Interruption(t, i2, false, false);
+               move5x6Vertex(rc, i2, b * 2 * u, b * u);
             }
             else
                rc = t;
@@ -1233,9 +1232,9 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
             int a = nCapRows, ay = 3 * nCapRows - 1 - r;
             int b = 1 + 2 * (r - nCapRows / 2);
 
-            moveISEAVertex(t, firstCentroid, a * u, a * u);
-            crossISEAInterruption(t, i2, false, false);
-            moveISEAVertex3(rc, i2, -ay * u, b * u);
+            move5x6Vertex(t, firstCentroid, a * u, a * u);
+            cross5x6Interruption(t, i2, false, false);
+            move5x6Vertex3(rc, i2, -ay * u, b * u);
          }
       }
       else if((edgeHex || nv == 5) && southRhombus && r >= nCapRows / 2)
@@ -1244,12 +1243,12 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
          int a = nCapRows, ay = 2 * nCapRows + r + 1;
          int b = 1 + 2 * (r - nCapRows / 2);
 
-         moveISEAVertex(t, firstCentroid, 0, a * u);
-         crossISEAInterruption(t, i2, true, false);
-         moveISEAVertex3(rc, i2, b * u, ay * u);
+         move5x6Vertex(t, firstCentroid, 0, a * u);
+         cross5x6Interruption(t, i2, true, false);
+         move5x6Vertex3(rc, i2, b * u, ay * u);
       }
       else
-         moveISEAVertex3(rc, firstCentroid,
+         move5x6Vertex3(rc, firstCentroid,
             nCapRows * -2 * u + ((nMidRows-1) >> 1) * -u + (r + 1) *     u,
             nCapRows * -1 * u + ((nMidRows-1) >> 1) *  u + (r + 1) * 2 * u);
 
@@ -1274,27 +1273,27 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
                         b -= (nCols/2 - n/2) + r + r / 2 + 1;
                         if(polarPentagon)
                         {
-                           moveISEAVertex(t, rc, a * u, 0);
-                           crossISEAInterruption(t, i2, false, false);
+                           move5x6Vertex(t, rc, a * u, 0);
+                           cross5x6Interruption(t, i2, false, false);
                         }
                         else
-                           moveISEAVertex3(i2, rc, a * u, 0);
+                           move5x6Vertex3(i2, rc, a * u, 0);
                      }
                      else
                      {
-                        moveISEAVertex(t, rc, a * u, 0);
-                        crossISEAInterruption(t, i2, false, false);
+                        move5x6Vertex(t, rc, a * u, 0);
+                        cross5x6Interruption(t, i2, false, false);
                      }
                      if(polarPentagon)
-                        moveISEAVertex3(centroid, i2, 0, b * u);
+                        move5x6Vertex3(centroid, i2, 0, b * u);
                      else
-                        moveISEAVertex3(centroid, i2, b * u, b * u);
+                        move5x6Vertex3(centroid, i2, b * u, b * u);
                   }
                   else
-                     moveISEAVertex3(centroid, rc, a * u, 0);
+                     move5x6Vertex3(centroid, rc, a * u, 0);
                }
                else
-                  moveISEAVertex3(centroid, rc, b * u, b * u);
+                  move5x6Vertex3(centroid, rc, b * u, b * u);
             }
             else if((edgeHex || nv == 5) && southRhombus)
             {
@@ -1303,34 +1302,34 @@ static int64 generateEvenParentEvenDepth(void * context, bool (* centroidCallbac
                if(a)
                {
                   Pointd t;
-                  if(polarPentagon) // REVIEW: moveISEAVertex3() breaks things here
-                     moveISEAVertex(t, rc, -a * u, 0);
+                  if(polarPentagon) // REVIEW: move5x6Vertex3() breaks things here
+                     move5x6Vertex(t, rc, -a * u, 0);
                   else
-                     // REVIEW: Avoid using moveISEAVertex3() before crossISEAInterruption()
-                     (b ? moveISEAVertex : moveISEAVertex3)(t, rc, a * u, a * u);
+                     // REVIEW: Avoid using move5x6Vertex3() before cross5x6Interruption()
+                     (b ? move5x6Vertex : move5x6Vertex3)(t, rc, a * u, a * u);
                   if(b)
                   {
                      Pointd i2;
-                     crossISEAInterruption(t, i2, true, polarPentagon);
+                     cross5x6Interruption(t, i2, true, polarPentagon);
                      if(nv == 5)
                      {
                         b -= (nCols/2 - n/2) + r + r / 2 + 1;
                         if(polarPentagon)
-                           moveISEAVertex3(centroid, i2, 0, -b * u);
+                           move5x6Vertex3(centroid, i2, 0, -b * u);
                         else
-                           moveISEAVertex3(centroid, i2, b * u, b * u);
+                           move5x6Vertex3(centroid, i2, b * u, b * u);
                      }
                      else
-                        moveISEAVertex3(centroid, i2, b * u, 0);
+                        move5x6Vertex3(centroid, i2, b * u, 0);
                   }
                   else
                      centroid = t;
                }
                else
-                  moveISEAVertex3(centroid, rc, b * u, 0);
+                  move5x6Vertex3(centroid, rc, b * u, 0);
             }
             else
-               moveISEAVertex(centroid, rc, col * u, col * u);
+               move5x6Vertex(centroid, rc, col * u, col * u);
 
             if((keepGoing = centroidCallback(context, i, centroid))) i++;
          }
@@ -1429,9 +1428,9 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
 
       // Compute start of scanline
       if(polarPentagon)
-         moveISEAVertex(rc, firstCentroid, (southPentagon?-1:1) * r * u, (southPentagon?-1:1) * r * u);
+         move5x6Vertex(rc, firstCentroid, (southPentagon?-1:1) * r * u, (southPentagon?-1:1) * r * u);
       else
-         moveISEAVertex(rc, firstCentroid, 0, r * u);
+         move5x6Vertex(rc, firstCentroid, 0, r * u);
 
       // Iterate through scanline
       for(col = 0; keepGoing && col < nCols; col++)
@@ -1448,24 +1447,24 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            moveISEAVertex(t, rc, (southPentagon?-1:1) * -a * u/3, (southPentagon?-1:1) * -2*a * u/3);
+            move5x6Vertex(t, rc, (southPentagon?-1:1) * -a * u/3, (southPentagon?-1:1) * -2*a * u/3);
             if(b)
             {
                Pointd i2;
                if(r & 1)
                {
                   b--;
-                  moveISEAVertex(i2, t, (southPentagon?-1:1) * -u/3, (southPentagon?-1:1) * -u/3);
+                  move5x6Vertex(i2, t, (southPentagon?-1:1) * -u/3, (southPentagon?-1:1) * -u/3);
                   t = i2;
                }
-               crossISEAInterruption(t, i2, southPentagon, !southPentagon);
-               moveISEAVertex(centroid, i2, (southPentagon?-1:1) * (-b * 2 - (r&1)) *u/3, (southPentagon?-1:1) * (-b - (r&1)) * u/3);
+               cross5x6Interruption(t, i2, southPentagon, !southPentagon);
+               move5x6Vertex(centroid, i2, (southPentagon?-1:1) * (-b * 2 - (r&1)) *u/3, (southPentagon?-1:1) * (-b - (r&1)) * u/3);
             }
             else
                centroid = t;
          }
          else
-            moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
+            move5x6Vertex(centroid, rc, col * u/3, -col * u/3);
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
    }
@@ -1486,12 +1485,12 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
       {
          Pointd t, i2;
 
-         moveISEAVertex(t, firstCentroid, (southPentagon?-1:1) * nCapRows * u, (southPentagon?-1:1) * nCapRows * u);
-         crossISEAInterruption(t, i2, southPentagon, southPentagon);
+         move5x6Vertex(t, firstCentroid, (southPentagon?-1:1) * nCapRows * u, (southPentagon?-1:1) * nCapRows * u);
+         cross5x6Interruption(t, i2, southPentagon, southPentagon);
          if(r)
          {
             int a = r >> 1, b = r & 1;
-            moveISEAVertex(rc, i2,
+            move5x6Vertex(rc, i2,
                            (southPentagon?-1:1) * a * u + (southPentagon?-1:1) * b * 2 * u / 3,
                            (southPentagon?-1:1) * a * u + (southPentagon?-1:1) * b *     u / 3);
          }
@@ -1503,25 +1502,25 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
          int a = r / 2, b = r & 1;
          Pointd t;
 
-         moveISEAVertex(t, firstCentroid, nCapRows * u, nCapRows * u); // This is the pentagon centroid
-         moveISEAVertex(rc, t, a * u + b * u / 3, nCapRows * u - b * u/3);
+         move5x6Vertex(t, firstCentroid, nCapRows * u, nCapRows * u); // This is the pentagon centroid
+         move5x6Vertex(rc, t, a * u + b * u / 3, nCapRows * u - b * u/3);
       }
       else if((edgeHex || southPentagon) && southRhombus && r)
       {
          int n = r + r/2;
          Pointd t, i2;
 
-         moveISEAVertex(t, firstCentroid,
+         move5x6Vertex(t, firstCentroid,
             (nCapRows + r) * 2 * u / 3 - (2*nCapRows - r) * u / 3,
             (nCapRows + r) *     u / 3 + (2*nCapRows - r) * u / 3);
          if(nv == 5 && r > nCapRows)
             i2 = t;
          else
-            crossISEAInterruption(t, i2, true, false);
-         moveISEAVertex(rc, i2, n * u / 3, n * 2 * u / 3);
+            cross5x6Interruption(t, i2, true, false);
+         move5x6Vertex(rc, i2, n * u / 3, n * 2 * u / 3);
       }
       else
-         moveISEAVertex(rc, firstCentroid,
+         move5x6Vertex(rc, firstCentroid,
                         (r >> 1) * u + (r & 1) * 2 * u / 3,
             (nCapRows + (r >> 1)) * u + (r & 1) * u / 3);
 
@@ -1542,7 +1541,7 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
             Pointd t;
 
             if(a)
-               moveISEAVertex(t, rc, (southPentagon?-1:1) * a * u/3, (southPentagon?-1:1) * -a * u/3);
+               move5x6Vertex(t, rc, (southPentagon?-1:1) * a * u/3, (southPentagon?-1:1) * -a * u/3);
             else
                t = rc;
             if(b)
@@ -1554,11 +1553,11 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
                if(b > maxB)
                   c = b - maxB, b = maxB;
 
-               crossISEAInterruption(t, i2, southPentagon, crossingLeft);
+               cross5x6Interruption(t, i2, southPentagon, crossingLeft);
                if(r >= nCapRows)
-                  moveISEAVertex(centroid, i2, (southPentagon?-1:1) * b * 2*u/3, (southPentagon?-1:1) * b * u/3);
+                  move5x6Vertex(centroid, i2, (southPentagon?-1:1) * b * 2*u/3, (southPentagon?-1:1) * b * u/3);
                else
-                  moveISEAVertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * -b * 2*u/3);
+                  move5x6Vertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * -b * 2*u/3);
 
                if(r < nCapRows)
                {
@@ -1569,22 +1568,22 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
                      if(!oddR)
                      {
                         c--;
-                        moveISEAVertex(i2, centroid, (southPentagon?-1:1) * -u/3, (southPentagon?-1:1) * -u/3);
+                        move5x6Vertex(i2, centroid, (southPentagon?-1:1) * -u/3, (southPentagon?-1:1) * -u/3);
                         centroid = i2;
                      }
-                     crossISEAInterruption(centroid, i2, southPentagon, northPentagon);
+                     cross5x6Interruption(centroid, i2, southPentagon, northPentagon);
 
                      if(c > maxB)
                      {
                         a = Min(c, maxB);
                         b = c - a;
-                        moveISEAVertex(t, i2, (southPentagon?-1:1) * (-a * 2 - (1-oddR)) * u/3, (southPentagon?-1:1) * (-a - (1-oddR)) * u/3);
-                        crossISEAInterruption(t, i2, southPentagon, northPentagon);
+                        move5x6Vertex(t, i2, (southPentagon?-1:1) * (-a * 2 - (1-oddR)) * u/3, (southPentagon?-1:1) * (-a - (1-oddR)) * u/3);
+                        cross5x6Interruption(t, i2, southPentagon, northPentagon);
 
-                        moveISEAVertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * b * u/3);
+                        move5x6Vertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * b * u/3);
                      }
                      else
-                        moveISEAVertex(centroid, i2, (southPentagon?-1:1) * (-c * 2 - (1-oddR)) *u/3, (southPentagon?-1:1) * (-c - (1-oddR)) * u/3);
+                        move5x6Vertex(centroid, i2, (southPentagon?-1:1) * (-c * 2 - (1-oddR)) *u/3, (southPentagon?-1:1) * (-c - (1-oddR)) * u/3);
                   }
                }
                else
@@ -1594,13 +1593,13 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
                   {
                      a = Min(c, maxB);
                      b = c - a;
-                     moveISEAVertex(t, i2, (southPentagon?-1:1) * a * u/3, (southPentagon?-1:1) * a * 2*u/3);
-                     crossISEAInterruption(t, i2, southPentagon, crossingLeft);
+                     move5x6Vertex(t, i2, (southPentagon?-1:1) * a * u/3, (southPentagon?-1:1) * a * 2*u/3);
+                     cross5x6Interruption(t, i2, southPentagon, crossingLeft);
 
-                     moveISEAVertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * b * u/3);
+                     move5x6Vertex(centroid, i2, (southPentagon?-1:1) * -b * u/3, (southPentagon?-1:1) * b * u/3);
                   }
                   else
-                     moveISEAVertex(centroid, i2, (southPentagon?-1:1) * c *u/3, (southPentagon?-1:1) * c * 2*u/3);
+                     move5x6Vertex(centroid, i2, (southPentagon?-1:1) * c *u/3, (southPentagon?-1:1) * c * 2*u/3);
                }
             }
             else
@@ -1612,15 +1611,15 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            moveISEAVertex(t, rc, a * u/3, -a * u/3);
+            move5x6Vertex(t, rc, a * u/3, -a * u/3);
             if(b)
             {
                Pointd i2;
                if(northPentagon && r > nCapRows)
                   i2 = t;
                else
-                  crossISEAInterruption(t, i2, false, false);
-               moveISEAVertex(centroid, i2, b * 2*u/3, b * u/3);
+                  cross5x6Interruption(t, i2, false, false);
+               move5x6Vertex(centroid, i2, b * 2*u/3, b * u/3);
             }
             else
                centroid = t;
@@ -1631,21 +1630,21 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
             int a = Min(col, n), b = col - a;
             Pointd t;
 
-            moveISEAVertex(t, rc, -a * u/3, -a * 2*u/3);
+            move5x6Vertex(t, rc, -a * u/3, -a * 2*u/3);
             if(b)
             {
                Pointd i2;
                if(southPentagon && r >= nCapRows)
                   i2 = t;
                else
-                  crossISEAInterruption(t, i2, true, true);
-               moveISEAVertex(centroid, i2, b * u/3, -b * u/3);
+                  cross5x6Interruption(t, i2, true, true);
+               move5x6Vertex(centroid, i2, b * u/3, -b * u/3);
             }
             else
                centroid = t;
          }
          else
-            moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
+            move5x6Vertex(centroid, rc, col * u/3, -col * u/3);
 
          if((keepGoing = centroidCallback(context, i, centroid))) i++;
       }
@@ -1664,37 +1663,37 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
          Pointd t, i2;
          int r2 = nMidRows-1, a = r2 >> 1, b = r2 & 1;
 
-         moveISEAVertex(t, firstCentroid, (southPentagon?-1:1) * nCapRows * u, (southPentagon?-1:1) * nCapRows * u);
-         crossISEAInterruption(t, i2, southPentagon, southPentagon);
-         moveISEAVertex(t, i2,
+         move5x6Vertex(t, firstCentroid, (southPentagon?-1:1) * nCapRows * u, (southPentagon?-1:1) * nCapRows * u);
+         cross5x6Interruption(t, i2, southPentagon, southPentagon);
+         move5x6Vertex(t, i2,
                         (southPentagon?-1:1) * a * u + (southPentagon?-1:1) * b * 2 * u / 3,
                         (southPentagon?-1:1) * a * u + (southPentagon?-1:1) * b *     u / 3);
-         crossISEAInterruption(t, i2, southPentagon, southPentagon);
-         moveISEAVertex(rc, i2, (southPentagon?-1:1) * (r + 1) * u, (southPentagon?-1:1) * (r + 1) * u);
+         cross5x6Interruption(t, i2, southPentagon, southPentagon);
+         move5x6Vertex(rc, i2, (southPentagon?-1:1) * (r + 1) * u, (southPentagon?-1:1) * (r + 1) * u);
       }
       else if(southPentagon)
       {
          Pointd t;
 
-         moveISEAVertex(t, firstCentroid, nCapRows * u, nCapRows * u); // This is the pentagon centroid
-         moveISEAVertex(rc, t, (nMidRows / 2) * u, (nCapRows - r - 1) * u);
+         move5x6Vertex(t, firstCentroid, nCapRows * u, nCapRows * u); // This is the pentagon centroid
+         move5x6Vertex(rc, t, (nMidRows / 2) * u, (nCapRows - r - 1) * u);
       }
       else if(edgeHex && !southRhombus)
       {
          Pointd t, i2;
-         moveISEAVertex(t, firstCentroid, 3 * nCapRows * u/3, 3 * nCapRows * 2*u/3);
-         crossISEAInterruption(t, i2, false, false);
-         moveISEAVertex(rc, i2, (r + 1) * u, (r + 1) * u);
+         move5x6Vertex(t, firstCentroid, 3 * nCapRows * u/3, 3 * nCapRows * 2*u/3);
+         cross5x6Interruption(t, i2, false, false);
+         move5x6Vertex(rc, i2, (r + 1) * u, (r + 1) * u);
       }
       else if(edgeHex && southRhombus)
       {
          Pointd t, i2;
-         moveISEAVertex(t, firstCentroid, 3 * nCapRows * 2*u/3, 3 * nCapRows * u/3);
-         crossISEAInterruption(t, i2, true, false);
-         moveISEAVertex(rc, i2, 3 * nCapRows * u / 3, 3 * nCapRows * 2 * u / 3 - (r + 1) * u);
+         move5x6Vertex(t, firstCentroid, 3 * nCapRows * 2*u/3, 3 * nCapRows * u/3);
+         cross5x6Interruption(t, i2, true, false);
+         move5x6Vertex(rc, i2, 3 * nCapRows * u / 3, 3 * nCapRows * 2 * u / 3 - (r + 1) * u);
       }
       else
-         moveISEAVertex(rc, firstCentroid,
+         move5x6Vertex(rc, firstCentroid,
             ((nMidRows+1) / 2 + r) * u,
             (nCapRows + ((nMidRows-1) >> 1)) * u);
 
@@ -1716,25 +1715,25 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
          {
             if(polarPentagon)
             {
-               moveISEAVertex(t, rc, (southPentagon?-1:1) * a * 2*u/3, (southPentagon?-1:1) * a * u/3);
-               moveISEAVertex(centroid, t, (southPentagon?-1:1) * b * u/3, (southPentagon?-1:1) * b * 2*u/3);
+               move5x6Vertex(t, rc, (southPentagon?-1:1) * a * 2*u/3, (southPentagon?-1:1) * a * u/3);
+               move5x6Vertex(centroid, t, (southPentagon?-1:1) * b * u/3, (southPentagon?-1:1) * b * 2*u/3);
             }
             else if(northPentagon)
             {
-               moveISEAVertex(t, rc, a * u/3, -a * u/3);
-               moveISEAVertex(centroid, t, b * 2*u/3, b * u/3);
+               move5x6Vertex(t, rc, a * u/3, -a * u/3);
+               move5x6Vertex(centroid, t, b * 2*u/3, b * u/3);
             }
             else if(southPentagon)
             {
-               moveISEAVertex(t, rc, -a * u/3, -2*a * u/3);
-               moveISEAVertex(centroid, t, b * u/3, -b * u/3);
+               move5x6Vertex(t, rc, -a * u/3, -2*a * u/3);
+               move5x6Vertex(centroid, t, b * u/3, -b * u/3);
             }
             else if(edgeHex && !southRhombus)
-               moveISEAVertex(centroid, rc, col * 2*u/3, col * u/3);
+               move5x6Vertex(centroid, rc, col * 2*u/3, col * u/3);
             else if(edgeHex && southRhombus)
-               moveISEAVertex(centroid, rc, -col * u/3, -2*col * u/3);
+               move5x6Vertex(centroid, rc, -col * u/3, -2*col * u/3);
             else
-               moveISEAVertex(centroid, rc, col * u/3, -col * u/3);
+               move5x6Vertex(centroid, rc, col * u/3, -col * u/3);
 
             if((keepGoing = centroidCallback(context, i, centroid))) i++;
          }
@@ -1770,7 +1769,7 @@ static inline bool addCentroid(Array<Pointd> centroids, uint64 index, Pointd cen
    return true;
 }
 
-Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
+Array<Pointd> getI3HSubZoneCentroids(I3HZone zone, int rDepth)
 {
    // Even refinement level: Left-To-Right Scanlines (top-to-bottom scanline order)
    // Odd refinement level: Bottom-To-Top Scanlines (left-to-right scanline order)
@@ -1783,7 +1782,7 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
       Array<Pointd> centroids { size = (uint)nSubZones };
 
       if(rDepth > 0)
-         iterateISEA3HSubZones(zone, rDepth, centroids, addCentroid, -1);
+         iterateI3HSubZones(zone, rDepth, centroids, addCentroid, -1);
       else
          centroids[0] = zone.centroid;
 #if 0 //def _DEBUG
@@ -1797,12 +1796,12 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
    return null;
 }
 
-/*static */int64 iterateISEA3HSubZones(ISEA3HZone zone, int rDepth, void * context,
+/*static */int64 iterateI3HSubZones(I3HZone zone, int rDepth, void * context,
    bool (* centroidCallback)(void * context, uint64 index, Pointd centroid), int64 index)
 {
    int64 stopIndex;
    Pointd firstCentroid;
-   int level = zone.level, levelISEA9R = zone.levelISEA9R;
+   int level = zone.level, levelI9R = zone.levelI9R;
    int nv = zone.nPoints, subHex = zone.subHex, rootRhombus = zone.rootRhombus;
    uint64 rhombusIX = zone.rhombusIX;
    bool oddDepth = rDepth & 1, oddParent = subHex > 2;
@@ -1810,7 +1809,7 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
    double u = 1.0 / POW3((szLevel / 2));
    bool southRhombus = rootRhombus & 1;
    bool polarPentagon = subHex == 1 || subHex == 2 || subHex == 6 || subHex == 7;
-   int divs = (int)POW3(levelISEA9R);
+   int divs = (int)POW3(levelI9R);
    // Edge Hexagons are either -A or -D
    bool edgeHex = nv == 6 && rhombusIX && (subHex == 0 || subHex == 3) && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
 
@@ -1818,7 +1817,7 @@ Array<Pointd> getISEA3HSubZoneCentroids(ISEA3HZone zone, int rDepth)
 
 #if 0 //def _DEBUG
    {
-      ISEA3HZone cKey = ISEA3HZone::fromCentroid(szLevel, firstCentroid);
+      I3HZone cKey = I3HZone::fromCentroid(szLevel, firstCentroid);
       char zoneId[100];
       cKey.getZoneID(zoneId);
       PrintLn(zoneId);

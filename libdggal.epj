@@ -81,18 +81,27 @@
             {
                "Folder" : "dggrs",
                "Files" : [
+                  "I3HSubZones.ec",
+                  "RI3H.ec",
+                  "RI9R.ec",
                   "GNOSISGlobalGrid.ec",
-                  "ISEA3H.ec",
-                  "ISEA3HSubZones.ec",
                   "ISEA9R.ec",
-                  "IGP3H.ec"
+                  "ISEA3H.ec",
+                  "GPP3H.ec",
+                  "IVEA3H.ec",
+                  "IVEA9R.ec",
+                  "BCTA3H.ec"
                ]
             },
             {
-               "Folder" : "isea",
+               "Folder" : "projections",
                "Files" : [
                   "isea5x6.ec",
-                  "isea.ec"
+                  "isea.ec",
+                  "ri5x6.ec",
+                  "authalic.ec",
+                  "barycentric5x6.ec",
+                  "icoVertexGreatCircle.ec"
                ]
             },
             {

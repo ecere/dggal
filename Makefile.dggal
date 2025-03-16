@@ -52,13 +52,22 @@ TARGET_NAME := dggal
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(TARGET_NAME)$(OUT)
 
 _ECSOURCES = \
+	src/dggrs/I3HSubZones.ec \
+	src/dggrs/RI3H.ec \
+	src/dggrs/RI9R.ec \
 	src/dggrs/GNOSISGlobalGrid.ec \
-	src/dggrs/ISEA3H.ec \
-	src/dggrs/ISEA3HSubZones.ec \
 	src/dggrs/ISEA9R.ec \
-	src/dggrs/IGP3H.ec \
-	src/isea/isea5x6.ec \
-	src/isea/isea.ec \
+	src/dggrs/ISEA3H.ec \
+	src/dggrs/GPP3H.ec \
+	src/dggrs/IVEA3H.ec \
+	src/dggrs/IVEA9R.ec \
+	src/dggrs/BCTA3H.ec \
+	src/projections/isea5x6.ec \
+	src/projections/isea.ec \
+	src/projections/ri5x6.ec \
+	src/projections/authalic.ec \
+	src/projections/barycentric5x6.ec \
+	src/projections/icoVertexGreatCircle.ec \
 	src/dggsJSON/dggsJSON.ec \
 	src/dggsJSON/JSONSchema.ec \
 	$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec \
@@ -187,26 +196,53 @@ endif
 
 # SYMBOL RULES
 
+$(OBJ)I3HSubZones.sym: src/dggrs/I3HSubZones.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/I3HSubZones.ec) -o $(call quote_path,$@)
+
+$(OBJ)RI3H.sym: src/dggrs/RI3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RI3H.ec) -o $(call quote_path,$@)
+
+$(OBJ)RI9R.sym: src/dggrs/RI9R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RI9R.ec) -o $(call quote_path,$@)
+
 $(OBJ)GNOSISGlobalGrid.sym: src/dggrs/GNOSISGlobalGrid.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/GNOSISGlobalGrid.ec) -o $(call quote_path,$@)
-
-$(OBJ)ISEA3H.sym: src/dggrs/ISEA3H.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA3H.ec) -o $(call quote_path,$@)
-
-$(OBJ)ISEA3HSubZones.sym: src/dggrs/ISEA3HSubZones.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA3HSubZones.ec) -o $(call quote_path,$@)
 
 $(OBJ)ISEA9R.sym: src/dggrs/ISEA9R.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA9R.ec) -o $(call quote_path,$@)
 
-$(OBJ)IGP3H.sym: src/dggrs/IGP3H.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IGP3H.ec) -o $(call quote_path,$@)
+$(OBJ)ISEA3H.sym: src/dggrs/ISEA3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA3H.ec) -o $(call quote_path,$@)
 
-$(OBJ)isea5x6.sym: src/isea/isea5x6.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/isea/isea5x6.ec) -o $(call quote_path,$@)
+$(OBJ)GPP3H.sym: src/dggrs/GPP3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/GPP3H.ec) -o $(call quote_path,$@)
 
-$(OBJ)isea.sym: src/isea/isea.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/isea/isea.ec) -o $(call quote_path,$@)
+$(OBJ)IVEA3H.sym: src/dggrs/IVEA3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IVEA3H.ec) -o $(call quote_path,$@)
+
+$(OBJ)IVEA9R.sym: src/dggrs/IVEA9R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IVEA9R.ec) -o $(call quote_path,$@)
+
+$(OBJ)BCTA3H.sym: src/dggrs/BCTA3H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/BCTA3H.ec) -o $(call quote_path,$@)
+
+$(OBJ)isea5x6.sym: src/projections/isea5x6.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/isea5x6.ec) -o $(call quote_path,$@)
+
+$(OBJ)isea.sym: src/projections/isea.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/isea.ec) -o $(call quote_path,$@)
+
+$(OBJ)ri5x6.sym: src/projections/ri5x6.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
+
+$(OBJ)authalic.sym: src/projections/authalic.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/authalic.ec) -o $(call quote_path,$@)
+
+$(OBJ)barycentric5x6.sym: src/projections/barycentric5x6.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/barycentric5x6.ec) -o $(call quote_path,$@)
+
+$(OBJ)icoVertexGreatCircle.sym: src/projections/icoVertexGreatCircle.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/icoVertexGreatCircle.ec) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON.sym: src/dggsJSON/dggsJSON.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@)
@@ -225,26 +261,53 @@ $(OBJ)dggrs.sym: src/dggrs.ec
 
 # C OBJECT RULES
 
+$(OBJ)I3HSubZones.c: src/dggrs/I3HSubZones.ec $(OBJ)I3HSubZones.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/I3HSubZones.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)RI3H.c: src/dggrs/RI3H.ec $(OBJ)RI3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RI3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)RI9R.c: src/dggrs/RI9R.ec $(OBJ)RI9R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RI9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)GNOSISGlobalGrid.c: src/dggrs/GNOSISGlobalGrid.ec $(OBJ)GNOSISGlobalGrid.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/GNOSISGlobalGrid.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-$(OBJ)ISEA3H.c: src/dggrs/ISEA3H.ec $(OBJ)ISEA3H.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-$(OBJ)ISEA3HSubZones.c: src/dggrs/ISEA3HSubZones.ec $(OBJ)ISEA3HSubZones.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA3HSubZones.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)ISEA9R.c: src/dggrs/ISEA9R.ec $(OBJ)ISEA9R.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)IGP3H.c: src/dggrs/IGP3H.ec $(OBJ)IGP3H.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IGP3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)ISEA3H.c: src/dggrs/ISEA3H.ec $(OBJ)ISEA3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)isea5x6.c: src/isea/isea5x6.ec $(OBJ)isea5x6.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/isea/isea5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)GPP3H.c: src/dggrs/GPP3H.ec $(OBJ)GPP3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/GPP3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)isea.c: src/isea/isea.ec $(OBJ)isea.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/isea/isea.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)IVEA3H.c: src/dggrs/IVEA3H.ec $(OBJ)IVEA3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IVEA3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)IVEA9R.c: src/dggrs/IVEA9R.ec $(OBJ)IVEA9R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IVEA9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BCTA3H.c: src/dggrs/BCTA3H.ec $(OBJ)BCTA3H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/BCTA3H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)isea5x6.c: src/projections/isea5x6.ec $(OBJ)isea5x6.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/isea5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)isea.c: src/projections/isea.ec $(OBJ)isea.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/isea.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)authalic.c: src/projections/authalic.ec $(OBJ)authalic.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/authalic.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)barycentric5x6.c: src/projections/barycentric5x6.ec $(OBJ)barycentric5x6.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/barycentric5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)icoVertexGreatCircle.c: src/projections/icoVertexGreatCircle.ec $(OBJ)icoVertexGreatCircle.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/icoVertexGreatCircle.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)dggsJSON.c: src/dggsJSON/dggsJSON.ec $(OBJ)dggsJSON.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -263,26 +326,53 @@ $(OBJ)dggrs.c: src/dggrs.ec $(OBJ)dggrs.sym | $(SYMBOLS)
 
 # OBJECT RULES
 
+$(OBJ)I3HSubZones$(O): $(OBJ)I3HSubZones.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)I3HSubZones.c) -o $(call quote_path,$@)
+
+$(OBJ)RI3H$(O): $(OBJ)RI3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RI3H.c) -o $(call quote_path,$@)
+
+$(OBJ)RI9R$(O): $(OBJ)RI9R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RI9R.c) -o $(call quote_path,$@)
+
 $(OBJ)GNOSISGlobalGrid$(O): $(OBJ)GNOSISGlobalGrid.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GNOSISGlobalGrid.c) -o $(call quote_path,$@)
-
-$(OBJ)ISEA3H$(O): $(OBJ)ISEA3H.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA3H.c) -o $(call quote_path,$@)
-
-$(OBJ)ISEA3HSubZones$(O): $(OBJ)ISEA3HSubZones.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA3HSubZones.c) -o $(call quote_path,$@)
 
 $(OBJ)ISEA9R$(O): $(OBJ)ISEA9R.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA9R.c) -o $(call quote_path,$@)
 
-$(OBJ)IGP3H$(O): $(OBJ)IGP3H.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IGP3H.c) -o $(call quote_path,$@)
+$(OBJ)ISEA3H$(O): $(OBJ)ISEA3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA3H.c) -o $(call quote_path,$@)
+
+$(OBJ)GPP3H$(O): $(OBJ)GPP3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GPP3H.c) -o $(call quote_path,$@)
+
+$(OBJ)IVEA3H$(O): $(OBJ)IVEA3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IVEA3H.c) -o $(call quote_path,$@)
+
+$(OBJ)IVEA9R$(O): $(OBJ)IVEA9R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IVEA9R.c) -o $(call quote_path,$@)
+
+$(OBJ)BCTA3H$(O): $(OBJ)BCTA3H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BCTA3H.c) -o $(call quote_path,$@)
 
 $(OBJ)isea5x6$(O): $(OBJ)isea5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)isea5x6.c) -o $(call quote_path,$@)
 
 $(OBJ)isea$(O): $(OBJ)isea.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)isea.c) -o $(call quote_path,$@)
+
+$(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)
+
+$(OBJ)authalic$(O): $(OBJ)authalic.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)authalic.c) -o $(call quote_path,$@)
+
+$(OBJ)barycentric5x6$(O): $(OBJ)barycentric5x6.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)barycentric5x6.c) -o $(call quote_path,$@)
+
+$(OBJ)icoVertexGreatCircle$(O): $(OBJ)icoVertexGreatCircle.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)icoVertexGreatCircle.c) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON$(O): $(OBJ)dggsJSON.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dggsJSON.c) -o $(call quote_path,$@)

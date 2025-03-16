@@ -2,7 +2,11 @@ public import IMPORT_STATIC "ecere"
 
 private:
 
-import "GeoExtent"
+import "ri5x6"
+
+// TODO: We'll probably want to replace the ISEA5x6Projection and ISEAPlanarProjection classes completely
+//       by the Slice & Dice approach in VertexGreatCircleIcosahedralProjection
+
 
 /*
    This module includes code adapted from Java to eC from
@@ -53,7 +57,7 @@ import "GeoExtent"
  * Springer, 2012. pp. 134–148. doi:10.1007/978-3-642-32663-9_8
  */
 
-static define phi = (1 + sqrt(5)) / 2;
+// static define phi = (1 + sqrt(5)) / 2;
 // radius
 static define a2 = wgs84Major * wgs84Major;
 static define c2 = wgs84Minor * wgs84Minor;
@@ -104,87 +108,6 @@ static define cosG = cos(Degrees { 36 });
 static define sinGcosSDC2VoS = sin(Degrees { 36 }) * cos(sdc2vos); // sin G cos g
 static define westVertexLon = Degrees { -144 };
 static const double yOffsets[4] = { -2*centerToBase, -4*centerToBase, -5*centerToBase, -7*centerToBase };
-
-define ISEA_ANCHORS = 33;
-
-private static inline double q(Radians phi)
-{
-   static const double e2 = eccentricity * eccentricity;
-   double sp = sin(phi);
-   return
-      (1-e2) * sp / (1-(e2*sp*sp)) -
-      (1-e2)      / (2*eccentricity) * log((1-eccentricity*sp) / (1+eccentricity*sp));
-}
-
-private static inline Radians latGeodeticToAuthalic(const double cp[2][AUTH_ORDER], Radians phi)
-{
-   return applyCoefficients(cp[0], phi);
-}
-
-// https://arxiv.org/pdf/2212.05818
-private /*static */define AUTH_ORDER = 6;
-
-static const double Cxiphi[21] = // Cξφ (A19) - coefficients to convert geodetic latitude to authalic latitude
-{
-   -4/3.0,    -4/45.0,    88/ 315.0,       538/ 4725.0,     20824/467775.0,      -44732/   2837835.0,
-              34/45.0,     8/ 105.0,     -2482/14175.0,    -37192/467775.0,   -12467764/ 212837625.0,
-                       -1532/2835.0,      -898/14175.0,     54968/467775.0,   100320856/1915538625.0,
-                                          6007/14175.0,     24496/467775.0,    -5884124/  70945875.0,
-                                                           -23356/ 66825.0,     -839792/  19348875.0,
-                                                                              570284222/1915538625.0
-};
-
-static const double Cphixi[21] = // Cφξ (A20) - coefficients to convert authalic latitude to geodetic latitude
-{
-   4 / 3.0,  4 / 45.0,   -16/35.0,  -2582 /14175.0,  60136 /467775.0,    28112932/ 212837625.0,
-            46 / 45.0,  152/945.0, -11966 /14175.0, -21016 / 51975.0,   251310128/ 638512875.0,
-                      3044/2835.0,   3802 /14175.0, -94388 / 66825.0,    -8797648/  10945935.0,
-                                     6059 / 4725.0,  41072 / 93555.0, -1472637812/ 638512875.0,
-                                                    768272 /467775.0,  -455935736/ 638512875.0,
-                                                                       4210684958/1915538625.0
-};
-
-// ∆η(ζ) = S^(L)(ζ) · Cηζ · P^(M) (n) + O(n^L+1)    -- (20)
-static void precomputeCoefficients(double a, double b, const double C[21], double cp[AUTH_ORDER])
-{
-   // Precomputing coefficients based on Horner's method
-   double n = (a - b) / (a + b);  // Third flattening
-   double d = n;
-
-   cp[0] = (((((C[ 5] * n + C[ 4]) * n + C[ 3]) * n + C[ 2]) * n + C[ 1]) * n + C[ 0]) * d, d *= n;
-   cp[1] = ((((             C[10]  * n + C[ 9]) * n + C[ 8]) * n + C[ 7]) * n + C[ 6]) * d, d *= n;
-   cp[2] = (((                           C[14]  * n + C[13]) * n + C[12]) * n + C[11]) * d, d *= n;
-   cp[3] = ((                                         C[17]  * n + C[16]) * n + C[15]) * d, d *= n;
-   cp[4] = (                                                       C[19]  * n + C[18]) * d, d *= n;
-   cp[5] =                                                                      C[20]  * d;
-}
-
-/*static inline */Radians applyCoefficients(const double * cp, Radians phi)
-{
-   // Using Clenshaw summation algorithm (order 6)
-   double szeta = sin(phi), czeta = cos(phi);
-   double X = 2 * (czeta - szeta) * (czeta + szeta); // 2 * cos(2*zeta)
-   double u0, u1; // accumulators for sum
-
-   u0 = X * cp[5]   + cp[4];
-   u1 = X * u0      + cp[3];
-   u0 = X * u1 - u0 + cp[2];
-   u1 = X * u0 - u1 + cp[1];
-   u0 = X * u1 - u0 + cp[0];
-
-   return phi + /* sin(2*zeta) * u0 */ 2 * szeta * czeta * u0;
-}
-
-/*static */void authalicSetup(double a, double b, double cp[2][AUTH_ORDER])
-{
-   precomputeCoefficients(a, b, Cxiphi, cp[0]); // geodetic -> authalic
-   precomputeCoefficients(a, b, Cphixi, cp[1]); // authalic -> geodetic
-}
-
-static inline Radians latAuthalicToGeodetic(const double cp[2][AUTH_ORDER], Radians phi)
-{
-   return applyCoefficients(cp[1], phi);
-}
 
 struct ISEAFacePoint
 {
@@ -471,7 +394,7 @@ public:
          Radians maxLon = wgs84Extent.ur.lon + (wgs84Extent.ur.lon < wgs84Extent.ll.lon ? 2*Pi : 0);
          Radians dLat = wgs84Extent.ur.lat - wgs84Extent.ll.lat;
          Radians dLon = maxLon - wgs84Extent.ll.lon;
-         Radians latInc = dLat / ISEA_ANCHORS, lonInc = dLon / ISEA_ANCHORS;
+         Radians latInc = dLat / ANCHORS_5x6, lonInc = dLon / ANCHORS_5x6;
          bool isPlanar = _class == class(ISEAPlanarProjection);
          GeoPoint leftX, topY, rightX, bottomY;
 
@@ -567,7 +490,7 @@ public:
          if(dx < 1E-7 && dy < 1E-7) // REVIEW:
             numAnchors = 1;
          else
-            numAnchors = ISEA_ANCHORS;
+            numAnchors = ANCHORS_5x6;
 
          xi = dx / numAnchors, yi = dy / numAnchors;
 

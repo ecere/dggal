@@ -26,8 +26,29 @@ static double earthArea = 0; // 5.100656217240885092949E14;
 static define stdMetersPerPixel = Meters { 0.00028 };       // 0.28 mm/pixels -- following standard WMS 1.3.0 [OGC 06-042], SE and WMTS
 static define metersPerDegree = wgs84Major * (double)Pi/180;
 
+define wgs84Authalic = 6371007.180918473897976252;
+
+// #define USE_GEOGRAPHIC_LIB
+
+#ifdef USE_GEOGRAPHIC_LIB
+#include <geodesic.h>
+
+struct geod_geodesic g;
+struct geod_geodesic as;
+#endif
+
 public class DGGRS
 {
+#ifdef USE_GEOGRAPHIC_LIB
+   DGGRS()
+   {
+      if(!g.a)
+         geod_init(&g, wgs84Major, (wgs84Major - wgs84Minor) / wgs84Major);
+      if(!as.a)
+         geod_init(&as, wgs84Authalic, 0);
+   }
+#endif
+
 public:
    // DGGH
    virtual uint64 countZones(int level) { return 0; }
@@ -417,4 +438,33 @@ public:
    {
       return doesZoneContain(hayStack, needle);
    }
+
+#ifdef USE_GEOGRAPHIC_LIB
+   // DGGH
+   private
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
+   double computeGeodesisZoneArea(DGGRSZone zone)
+   {
+      // REVIEW: Is this Goldberg Polyhedra space exactly equal area?
+      double area = 0, perimeter = 0;
+
+      Array<Pointd> points = getZoneRefinedCRSVertices(zone, CRS { ogc, 84 }, 1024);
+      int i;
+      double * lats = new double[points.count];
+      double * lons = new double[points.count];
+
+      for(i = 0; i < points.count; i++)
+         lats[i] = points[i].y, lons[i] = points[i].x;
+
+      geod_polygonarea(&g, lats, lons, points.count, &area, &perimeter);
+      if(area < 0)
+         area = -area;   // FIXME: Polar zones are in opposite order
+      delete points;
+      delete lats;
+      delete lons;
+
+      PrintLn("Computed geodesic area: ", area);
+      return area;
+   }
+#endif
 }
