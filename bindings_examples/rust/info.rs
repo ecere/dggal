@@ -1,3 +1,7 @@
+#![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+#![allow(unused_variables)]
+
 // *********** DGGAL rust bindings *********************
 use std::env;
 use std::ffi::CString;
@@ -6,7 +10,7 @@ use std::ffi::c_void;
 use std::f64::consts::PI;
 use std::slice;
 
-mod dggal;
+#[allow(warnings)] mod dggal;
 
 // *** This code should be moved to / generated inside the DGGAL rust bindings
 const nullZone : dggal::DGGRSZone = 0xFFFFFFFFFFFFFFFFu64;
@@ -14,7 +18,7 @@ const nullCStr : * const i8 = 0 as * const i8;
 const nullInst : dggal::Instance = 0 as dggal::Instance;
 const nullPtr : *mut *mut c_void = 0 as *mut *mut c_void;
 
-// TODO: Could we use rust function generating macros?
+// TODO: Could we use rust function-generating macros?
 
 // DGGRS::getZoneFromTextID()
 fn DGGRS_getZoneFromTextID(dggrs: dggal::DGGRS, zoneID: * const i8) -> dggal::DGGRSZone
@@ -24,9 +28,9 @@ fn DGGRS_getZoneFromTextID(dggrs: dggal::DGGRS, zoneID: * const i8) -> dggal::DG
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zoneID: * const i8) -> dggal::DGGRSZone =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneFromTextID_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneFromTextID_vTblID as usize));
+      if cMethod != 0usize {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zoneID: * const i8) -> dggal::DGGRSZone = std::mem::transmute(cMethod);
          zone = method(dggrs, zoneID);
       }
    }
@@ -41,9 +45,9 @@ fn DGGRS_getZoneLevel(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32 =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneLevel_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneLevel_vTblID as usize));
+      if cMethod != 0usize {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32 = std::mem::transmute(cMethod);
          level = method(dggrs, zone);
       }
    }
@@ -58,9 +62,9 @@ fn DGGRS_countZoneEdges(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32 =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_countZoneEdges_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_countZoneEdges_vTblID as usize));
+      if cMethod != 0usize {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> i32 = std::mem::transmute(cMethod);
          level = method(dggrs, zone);
       }
    }
@@ -88,9 +92,9 @@ fn DGGRS_getRefinementRatio(dggrs: dggal::DGGRS) -> i32
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS) -> i32 =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getRefinementRatio_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getRefinementRatio_vTblID as usize));
+      if cMethod != 0usize {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS) -> i32 = std::mem::transmute(cMethod);
          depth = method(dggrs);
       }
    }
@@ -105,9 +109,9 @@ fn DGGRS_getMaxDGGRSZoneLevel(dggrs: dggal::DGGRS) -> i32
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS) -> i32 =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getMaxDGGRSZoneLevel_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getMaxDGGRSZoneLevel_vTblID as usize));
+      if cMethod != 0usize {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS) -> i32 = std::mem::transmute(cMethod);
          depth = method(dggrs);
       }
    }
@@ -122,9 +126,9 @@ fn DGGRS_getZoneWGS84Centroid(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dg
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, centroid: *mut dggal::GeoPoint) =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Centroid_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Centroid_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, centroid: *mut dggal::GeoPoint) = std::mem::transmute(cMethod);
          method(dggrs, zone, std::ptr::from_mut(&mut centroid));
       }
    }
@@ -135,21 +139,205 @@ fn DGGRS_getZoneWGS84Centroid(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dg
 fn DGGRS_getZoneWGS84Vertices(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> Vec<dggal::GeoPoint>
 {
    let mut n: i32 = 0;
-   let mut vertices: Vec<dggal::GeoPoint>;
+   let vertices: Vec<dggal::GeoPoint>;
    unsafe
    {
       let c = dggal::class_DGGRS;
       let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
       let mut v: [dggal::GeoPoint; 6] = [dggal::GeoPoint { lat: 0.0, lon: 0.0 }; 6]; // REVIEW: Anyway to avoid this initialization?
-      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, vertices: *mut dggal::GeoPoint) -> i32 =
-         std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Vertices_vTblID as usize));
-      if method != std::mem::transmute(0usize) {
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Vertices_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, vertices: *mut dggal::GeoPoint) -> i32 = std::mem::transmute(cMethod);
          n = method(dggrs, zone, std::ptr::from_mut(&mut v[0]));
       }
       vertices = slice::from_raw_parts(&v[0], n as usize).to_vec();
    }
    vertices
 }
+
+// DGGRS::getZoneArea()
+fn DGGRS_getZoneArea(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> f64
+{
+   let mut area = 0.0;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneArea_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> f64 = std::mem::transmute(cMethod);
+         area = method(dggrs, zone);
+      }
+   }
+   area
+}
+
+// DGGRS::countSubZones()
+fn DGGRS_countSubZones(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, depth: i32) -> u64
+{
+   let mut count = 0;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_countSubZones_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, depth: i32) -> u64 = std::mem::transmute(cMethod);
+         count = method(dggrs, zone, depth);
+      }
+   }
+   count
+}
+
+// DGGRS::getZoneTextID()
+fn DGGRS_getZoneTextID(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> String
+{
+   let id: String;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let mut zoneID = [0i8; 256]; // REVIEW: Anyway to avoid this initialization?
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneTextID_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, zoneID: *mut i8) = std::mem::transmute(cMethod);
+         method(dggrs, zone, std::ptr::from_mut(&mut zoneID[0]));
+      }
+      id = CStr::from_ptr(zoneID.as_ptr()).to_str().unwrap().to_string();
+   }
+   id
+}
+
+// DGGRS::getZoneParents()
+fn DGGRS_getZoneParents(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> Vec<dggal::DGGRSZone>
+{
+   let mut n: i32 = 0;
+   let parents: Vec<dggal::DGGRSZone>;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let mut p = [nullZone; 3]; // REVIEW: Anyway to avoid this initialization?
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneParents_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, parents: *mut dggal::DGGRSZone) -> i32 = std::mem::transmute(cMethod);
+         n = method(dggrs, zone, std::ptr::from_mut(&mut p[0]));
+      }
+      parents = slice::from_raw_parts(&p[0], n as usize).to_vec();
+   }
+   parents
+}
+
+// DGGRS::getZoneChildren()
+fn DGGRS_getZoneChildren(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> Vec<dggal::DGGRSZone>
+{
+   let mut n: i32 = 0;
+   let children: Vec<dggal::DGGRSZone>;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let mut ch = [nullZone; 9]; // REVIEW: Anyway to avoid this initialization?
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneChildren_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, children: *mut dggal::DGGRSZone) -> i32 = std::mem::transmute(cMethod);
+         n = method(dggrs, zone, std::ptr::from_mut(&mut ch[0]));
+      }
+      children = slice::from_raw_parts(&ch[0], n as usize).to_vec();
+   }
+   children
+}
+
+// DGGRS::getZoneNeighbors()
+fn DGGRS_getZoneNeighbors(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, nbTypes: &mut [i32; 6]) -> Vec<dggal::DGGRSZone>
+{
+   let mut n: i32 = 0;
+   let neighbors: Vec<dggal::DGGRSZone>;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let mut nb = [nullZone; 6]; // REVIEW: Anyway to avoid this initialization?
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneNeighbors_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, neighbors: *mut dggal::DGGRSZone, nbTypes: *mut i32) -> i32 = std::mem::transmute(cMethod);
+         n = method(dggrs, zone, std::ptr::from_mut(&mut nb[0]), std::ptr::from_mut(&mut nbTypes[0]));
+      }
+      neighbors = slice::from_raw_parts(&nb[0], n as usize).to_vec();
+   }
+   neighbors
+}
+
+// DGGRS::getZoneCentroidParent()
+fn DGGRS_getZoneCentroidParent(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dggal::DGGRSZone
+{
+   let mut centroidParent: dggal::DGGRSZone = nullZone;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneCentroidParent_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dggal::DGGRSZone = std::mem::transmute(cMethod);
+         centroidParent = method(dggrs, zone);
+      }
+   }
+   centroidParent
+}
+
+// DGGRS::getZoneCentroidChild()
+fn DGGRS_getZoneCentroidChild(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dggal::DGGRSZone
+{
+   let mut centroidChild: dggal::DGGRSZone = nullZone;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneCentroidChild_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dggal::DGGRSZone = std::mem::transmute(cMethod);
+         centroidChild = method(dggrs, zone);
+      }
+   }
+   centroidChild
+}
+
+// DGGRS::isZoneCentroidChild()
+fn DGGRS_isZoneCentroidChild(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> bool
+{
+   let mut isZoneCentroidChild: bool = false;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_isZoneCentroidChild_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> u32 = std::mem::transmute(cMethod);
+         isZoneCentroidChild = method(dggrs, zone) != 0;
+      }
+   }
+   isZoneCentroidChild
+}
+
+// DGGRS::getZoneWGS84Extent()
+fn DGGRS_getZoneWGS84Extent(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dggal::GeoExtent
+{
+   let mut extent: dggal::GeoExtent = dggal::GeoExtent {    // REVIEW: Anyway to avoid this initialization?
+      ll: dggal::GeoPoint { lat: 0.0, lon: 0.0 },
+      ur: dggal::GeoPoint { lat: 0.0, lon: 0.0 } };
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let cMethod: usize = std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Extent_vTblID as usize));
+      if cMethod != std::mem::transmute(0usize) {
+         let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, vertices: *mut dggal::GeoExtent) = std::mem::transmute(cMethod);
+         method(dggrs, zone, std::ptr::from_mut(&mut extent));
+      }
+   }
+   extent
+}
+
 // *********** (end of) DGGAL rust bindings *********************
 
 /*
@@ -166,29 +354,20 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    let level = DGGRS_getZoneLevel(dggrs, zone);
    let nEdges = DGGRS_countZoneEdges(dggrs, zone);
    let centroid = DGGRS_getZoneWGS84Centroid(dggrs, zone);
-   let extent: dggal::GeoExtent;
+   let extent: dggal::GeoExtent = DGGRS_getZoneWGS84Extent(dggrs, zone);
    let vertices: Vec<dggal::GeoPoint> = DGGRS_getZoneWGS84Vertices(dggrs, zone);
-   let mut zoneID: [i8; 256];
-   /*
+   let zoneID: String = DGGRS_getZoneTextID(dggrs, zone);
    let area: f64 = DGGRS_getZoneArea(dggrs, zone);
    let areaKM2: f64 = area / 1000000.0;
    let depth: i32 = DGGRS_get64KDepth(dggrs);
-   */
-   let mut parents: [dggal::DGGRSZone; 3];
-   let mut neighbors: [dggal::DGGRSZone; 6];
-   let mut children: [dggal::DGGRSZone; 9];
-   /*
-   let nParents: i32 = DGGRS_getZoneParents(dggrs, zone, parents);
-   let nbTypes: [i32; 6];
-   let nNeighbors: i32 = DGGRS_getZoneNeighbors(dggrs, zone, neighbors, nbTypes);
-   let nChildren: i32 = DGGRS_getZoneChildren(dggrs, zone, children);
+   let parents = DGGRS_getZoneParents(dggrs, zone);
+   let mut nbTypes: [i32; 6] = [0; 6];
+   let neighbors = DGGRS_getZoneNeighbors(dggrs, zone, &mut nbTypes);
+   let children = DGGRS_getZoneChildren(dggrs, zone);
    let centroidParent: dggal::DGGRSZone = DGGRS_getZoneCentroidParent(dggrs, zone);
    let centroidChild: dggal::DGGRSZone = DGGRS_getZoneCentroidChild(dggrs, zone);
-   */
-   let isCentroidChild = false; //DGGRS_isZoneCentroidChild(dggrs, zone);
-   let i: i32;
+   let isCentroidChild = DGGRS_isZoneCentroidChild(dggrs, zone);
    let crs = (c"EPSG:4326").as_ptr();
-   let nSubZones: i64;
 
    /*
    constString depthOption = ptr::null();
@@ -211,79 +390,78 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    }
    */
 
-   //nSubZones = DGGRS_countSubZones(dggrs, zone, depth);
+   let nSubZones: u64 = DGGRS_countSubZones(dggrs, zone, depth);
 
-   /*
-   DGGRS_getZoneWGS84Extent(dggrs, zone, &extent);
-   DGGRS_getZoneTextID(dggrs, zone, zoneID);
+   println!("Textual Zone ID: {zoneID}");
+   println!("64-bit integer ID: {zone} (0x{zone:X})");
+   println!("");
 
-   printLn(CO(CString), $("Textual Zone ID: "), CO(CString), zoneID, ptr::null());
-   printx(CO(CString), $("64-bit integer ID: "), CO(uint64), &zone, CO(CString), " (", ptr::null());
-
-   printf(FORMAT64HEX, zone);
-   printLn(CO(CString), ")", ptr::null());
-   printLn(CO(CString), "", ptr::null());
-   */
    let sCChild = if isCentroidChild { ", centroid child" } else { "" };
    println!("Level {level} zone ({nEdges} edges{sCChild})");
 
-
-   // printLn(CO(double), &area, CO(CString), " m² (", CO(double), &areaKM2, CO(CString), " km²)", ptr::null());
-   // printLn(CO(int64), &nSubZones, CO(CString), $(" sub-zones at depth "), CO(i32), &depth, ptr::null());
+   println!("{area} m² ({areaKM2} km²)");
+   println!("{nSubZones} sub-zones at depth {depth}");
 
    let cLat = centroid.lat * 180.0 / PI;
    let cLon = centroid.lon * 180.0 / PI;
    println!("WGS84 Centroid (lat, lon): {cLat}, {cLon}");
-   /*
-   printLn(
-      CO(CString), $("WGS84 Extent (lat, lon): { "),
-      CO(Degrees), &extent.ll.lat, CO(CString), ", ",
-      CO(Degrees), &extent.ll.lon, CO(CString), " }, { ",
-      CO(Degrees), &extent.ur.lat, CO(CString), ", ",
-      CO(Degrees), &extent.ur.lon, CO(CString), " }", ptr::null());
 
-   printLn(CO(CString), "", ptr::null());
-   if(nParents)
+   let llLat = extent.ll.lat * 180.0 / PI;
+   let llLon = extent.ll.lon * 180.0 / PI;
+   let urLat = extent.ur.lat * 180.0 / PI;
+   let urLon = extent.ur.lon * 180.0 / PI;
+   println!("WGS84 Extent (lat, lon): {{ {llLat}, {llLon} }}, {{ {urLat}, {urLon} }}");
+
+   println!("");
+
+   let nParents = parents.len();
+   if nParents != 0
    {
-      printLn(CO(CString), $("Parent"), CO(CString), nParents > 1 ? "s" : "", CO(CString), " (", CO(i32), &nParents, CO(CString), "):", ptr::null());
-      for(i = 0; i < nParents; i+=1)
+      let pPlural = if nParents > 1 { "s" } else { "" };
+      println!("Parent{pPlural} ({nParents}):");
+      for p in parents
       {
-         char pID[256];
-         DGGRS_getZoneTextID(dggrs, parents[i], pID);
-         printx(CO(CString), "   ", CO(CString), pID, ptr::null());
-         if(centroidParent == parents[i])
-            printx(CO(CString), $(" (centroid child)"), ptr::null());
-         printLn(CO(CString), "", ptr::null());
+         let pID = DGGRS_getZoneTextID(dggrs, p);
+         print!("   {pID}");
+         if centroidParent == p {
+            print!(" (centroid child)");
+         }
+         println!("");
       }
    }
-   else
-      printLn(CO(CString), $("No parent"), ptr::null());
-
-   printLn(CO(CString), "", ptr::null());
-   printLn(CO(CString), $("Children ("), CO(i32), &nChildren, CO(CString), "):", ptr::null());
-   for(i = 0; i < nChildren; i+=1)
-   {
-      char cID[256];
-      DGGRS_getZoneTextID(dggrs, children[i], cID);
-      printx(CO(CString), "   ", CO(CString), cID, ptr::null());
-      if(centroidChild == children[i])
-         printx(CO(CString), $(" (centroid)"), ptr::null());
-      printLn(CO(CString), "", ptr::null());
+   else {
+      println!("No parent");
    }
+   println!("");
 
-   printLn(CO(CString), "", ptr::null());
-   printLn(CO(CString), $("Neighbors ("), CO(i32), &nNeighbors, CO(CString), "):", ptr::null());
-   for(i = 0; i < nNeighbors; i+=1)
+   let nChildren = children.len();
+   println!("Children ({nChildren}):");
+   for c in children
    {
-      char nID[256];
-      DGGRS_getZoneTextID(dggrs, neighbors[i], nID);
-      printLn(CO(CString), $("   (direction "), CO(i32), &nbTypes[i], CO(CString), "): ", CO(CString), nID, ptr::null());
+      let cID = DGGRS_getZoneTextID(dggrs, c);
+      print!("   {cID}");
+      if centroidChild == c {
+         print!(" (centroid)");
+      }
+      println!("");
    }
-*/
+   println!("");
+
+   let nNeighbors = neighbors.len();
+   println!("Neighbors ({nNeighbors}):");
+
+   let mut i: usize = 0;
+   for n in neighbors
+   {
+      let nID = DGGRS_getZoneTextID(dggrs, n);
+      let nt = nbTypes[i];
+      println!("   (direction {nt}): {nID}");
+      i += 1;
+   }
    println!("");
    let sCRS = unsafe { CStr::from_ptr(crs).to_str().unwrap() };
    let nVertices = vertices.len();
-   println!("[{sCRS} Vertices ({nVertices}):");
+   println!("[{sCRS}] Vertices ({nVertices}):");
 
    for v in vertices
    {
@@ -333,7 +511,8 @@ fn main()
       let mut dggrsName: *const i8 = nullCStr;
       let mut a : usize = 1;
       let mut zoneID: *const i8 = nullCStr;
-      let arg0 : *const i8 = CString::new(args[0].clone()).unwrap().as_ptr();
+      let arg0CStr = CString::new(args[0].clone()).unwrap();
+      let arg0 : *const i8 = arg0CStr.as_ptr();
       let options : dggal::Instance = nullInst; // Map<String, const String>
 
       /*
@@ -369,7 +548,8 @@ fn main()
          a+=1;
          if *key == '-' as i8 && a < argc
          {
-            let value = CString::new(args[a].clone()).unwrap().as_ptr();
+            let strValue = CString::new(args[a].clone()).unwrap();
+            let value = strValue.as_ptr();
             a+=1;
             /*
             T(MapIterator, CString, constString) it = { options };
