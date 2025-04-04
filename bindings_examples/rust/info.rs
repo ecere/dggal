@@ -4,6 +4,7 @@ use std::ffi::CString;
 use std::ffi::CStr;
 use std::ffi::c_void;
 use std::f64::consts::PI;
+use std::slice;
 
 mod dggal;
 
@@ -129,6 +130,26 @@ fn DGGRS_getZoneWGS84Centroid(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dg
    }
    centroid
 }
+
+// DGGRS::getZoneWGS84Vertices()
+fn DGGRS_getZoneWGS84Vertices(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> Vec<dggal::GeoPoint>
+{
+   let mut n: i32 = 0;
+   let mut vertices: Vec<dggal::GeoPoint>;
+   unsafe
+   {
+      let c = dggal::class_DGGRS;
+      let vTbl = if dggrs != nullInst && (*dggrs)._vTbl != nullPtr { (*dggrs)._vTbl } else { (*c)._vTbl };
+      let mut v: [dggal::GeoPoint; 6] = [dggal::GeoPoint { lat: 0.0, lon: 0.0 }; 6]; // REVIEW: Anyway to avoid this initialization?
+      let method : unsafe extern "C" fn(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, vertices: *mut dggal::GeoPoint) -> i32 =
+         std::mem::transmute(*vTbl.add(dggal::DGGRS_getZoneWGS84Vertices_vTblID as usize));
+      if method != std::mem::transmute(0usize) {
+         n = method(dggrs, zone, std::ptr::from_mut(&mut v[0]));
+      }
+      vertices = slice::from_raw_parts(&v[0], n as usize).to_vec();
+   }
+   vertices
+}
 // *********** (end of) DGGAL rust bindings *********************
 
 /*
@@ -145,26 +166,31 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    let level = DGGRS_getZoneLevel(dggrs, zone);
    let nEdges = DGGRS_countZoneEdges(dggrs, zone);
    let centroid = DGGRS_getZoneWGS84Centroid(dggrs, zone);
+   let extent: dggal::GeoExtent;
+   let vertices: Vec<dggal::GeoPoint> = DGGRS_getZoneWGS84Vertices(dggrs, zone);
+   let mut zoneID: [i8; 256];
    /*
-   GeoExtent extent;
-   GeoPoint vertices[6];
-   i32 nVertices = DGGRS_getZoneWGS84Vertices(dggrs, zone, vertices);
-   char zoneID[256];
-   double area = DGGRS_getZoneArea(dggrs, zone), areaKM2 = area / 1000000;
-   i32 depth = DGGRS_get64KDepth(dggrs);
-   DGGRSZone parents[3], neighbors[6], children[9];
-   i32 nParents = DGGRS_getZoneParents(dggrs, zone, parents);
-   i32 nbTypes[6];
-   i32 nNeighbors = DGGRS_getZoneNeighbors(dggrs, zone, neighbors, nbTypes);
-   i32 nChildren = DGGRS_getZoneChildren(dggrs, zone, children);
-   DGGRSZone centroidParent = DGGRS_getZoneCentroidParent(dggrs, zone);
-   DGGRSZone centroidChild = DGGRS_getZoneCentroidChild(dggrs, zone);
+   let area: f64 = DGGRS_getZoneArea(dggrs, zone);
+   let areaKM2: f64 = area / 1000000.0;
+   let depth: i32 = DGGRS_get64KDepth(dggrs);
    */
-   let isCentroidChild = false; // TODO: DGGRS_isZoneCentroidChild(dggrs, zone);
+   let mut parents: [dggal::DGGRSZone; 3];
+   let mut neighbors: [dggal::DGGRSZone; 6];
+   let mut children: [dggal::DGGRSZone; 9];
    /*
-   i32 i;
-   const CString crs = "EPSG:4326";
-   int64 nSubZones;
+   let nParents: i32 = DGGRS_getZoneParents(dggrs, zone, parents);
+   let nbTypes: [i32; 6];
+   let nNeighbors: i32 = DGGRS_getZoneNeighbors(dggrs, zone, neighbors, nbTypes);
+   let nChildren: i32 = DGGRS_getZoneChildren(dggrs, zone, children);
+   let centroidParent: dggal::DGGRSZone = DGGRS_getZoneCentroidParent(dggrs, zone);
+   let centroidChild: dggal::DGGRSZone = DGGRS_getZoneCentroidChild(dggrs, zone);
+   */
+   let isCentroidChild = false; //DGGRS_isZoneCentroidChild(dggrs, zone);
+   let i: i32;
+   let crs = (c"EPSG:4326").as_ptr();
+   let nSubZones: i64;
+
+   /*
    constString depthOption = ptr::null();
    if(options)
    {
@@ -183,9 +209,9 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
          return 1;
       }
    }
-
-   nSubZones = DGGRS_countSubZones(dggrs, zone, depth);
    */
+
+   //nSubZones = DGGRS_countSubZones(dggrs, zone, depth);
 
    /*
    DGGRS_getZoneWGS84Extent(dggrs, zone, &extent);
@@ -253,13 +279,18 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
       DGGRS_getZoneTextID(dggrs, neighbors[i], nID);
       printLn(CO(CString), $("   (direction "), CO(i32), &nbTypes[i], CO(CString), "): ", CO(CString), nID, ptr::null());
    }
+*/
+   println!("");
+   let sCRS = unsafe { CStr::from_ptr(crs).to_str().unwrap() };
+   let nVertices = vertices.len();
+   println!("[{sCRS} Vertices ({nVertices}):");
 
-   printLn(CO(CString), "", ptr::null());
-   printLn(CO(CString), "[", CO(CString), crs, CO(CString), $("] Vertices ("), CO(i32), &nVertices, CO(CString), "):", ptr::null());
-
-   for(i = 0; i < nVertices; i+=1)
-      printLn(CO(CString), "   ", CO(Degrees), &vertices[i].lat, CO(CString), ", ", CO(Degrees), &vertices[i].lon, ptr::null());
-   */
+   for v in vertices
+   {
+      let lat = v.lat * 180.0 / PI;
+      let lon = v.lon * 180.0 / PI;
+      println!("   {lat}, {lon}");
+   }
 
    0 // No error
 }
@@ -363,9 +394,17 @@ fn main()
 
          if zoneID != nullCStr {
             zone = DGGRS_getZoneFromTextID(dggrs, zoneID);
+            if zone == nullZone
+            {
+               let za = CStr::from_ptr(zoneID).to_str().unwrap();
+               println!("Invalid {dn} zone identifier: {za}");
+               exitCode = 1;
+            }
          }
 
-         displayInfo(dggrs, zone, options);
+         if exitCode == 0 {
+            displayInfo(dggrs, zone, options);
+         }
 
          dggal::__ecereNameSpace__ecere__com__eInstance_DecRef(dggrs as dggal::Instance);
       }
