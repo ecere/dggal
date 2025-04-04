@@ -1,6 +1,6 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
-#![allow(unused_variables)]
+//#![allow(unused_variables)]
 
 // *********** DGGAL rust bindings *********************
 use std::env;
@@ -9,6 +9,7 @@ use std::ffi::CStr;
 use std::ffi::c_void;
 use std::f64::consts::PI;
 use std::slice;
+use std::collections::HashMap;
 
 #[allow(warnings)] mod dggal;
 
@@ -79,6 +80,19 @@ fn DGGRS_get64KDepth(dggrs: dggal::DGGRS) -> i32
    {
       if dggrs != nullInst {
          depth = dggal::DGGRS_get64KDepth.unwrap()(dggrs);
+      }
+   }
+   depth
+}
+
+// DGGRS::getMaxDepth() -- (not currently a virtual method)
+fn DGGRS_getMaxDepth(dggrs: dggal::DGGRS) -> i32
+{
+   let mut depth = -1;
+   unsafe
+   {
+      if dggrs != nullInst {
+         depth = dggal::DGGRS_getMaxDepth.unwrap()(dggrs);
       }
    }
    depth
@@ -340,16 +354,7 @@ fn DGGRS_getZoneWGS84Extent(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone) -> dgga
 
 // *********** (end of) DGGAL rust bindings *********************
 
-/*
-// parameterized templates in C! (for options map)
-typedef Map T(Map, CString, constString);
-typedef MapIterator T(MapIterator, CString, constString);
-
-// For looking up internationalized strings
-#define MODULE_NAME "info"
-*/
-
-fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instance /*Map<String, const String>*/) -> i32
+fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: HashMap<&str, &str>) -> i32
 {
    let level = DGGRS_getZoneLevel(dggrs, zone);
    let nEdges = DGGRS_countZoneEdges(dggrs, zone);
@@ -359,7 +364,7 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    let zoneID: String = DGGRS_getZoneTextID(dggrs, zone);
    let area: f64 = DGGRS_getZoneArea(dggrs, zone);
    let areaKM2: f64 = area / 1000000.0;
-   let depth: i32 = DGGRS_get64KDepth(dggrs);
+   let mut depth: i32 = DGGRS_get64KDepth(dggrs);
    let parents = DGGRS_getZoneParents(dggrs, zone);
    let mut nbTypes: [i32; 6] = [0; 6];
    let neighbors = DGGRS_getZoneNeighbors(dggrs, zone, &mut nbTypes);
@@ -368,27 +373,18 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    let centroidChild: dggal::DGGRSZone = DGGRS_getZoneCentroidChild(dggrs, zone);
    let isCentroidChild = DGGRS_isZoneCentroidChild(dggrs, zone);
    let crs = (c"EPSG:4326").as_ptr();
+   let depthOption = options.get(&"depth");
 
-   /*
-   constString depthOption = ptr::null();
-   if(options)
+   if depthOption != None
    {
-      T(MapIterator, CString, constString) it = { options };
-      if(Iterator_index((Iterator *)&it, TAp((void *)"depth"), false))
-         depthOption = pTA(const char, Iterator_getData((Iterator *)&it));
-   }
-
-   if(depthOption)
-   {
-      i32 maxDepth = DGGRS_getMaxDepth(dggrs);
-      _onGetDataFromString(CO(i32), &depth, depthOption);
-      if(depth > maxDepth)
+      let maxDepth: i32 = DGGRS_getMaxDepth(dggrs);
+      depth = depthOption.unwrap().parse::<i32>().unwrap();
+      if depth > maxDepth
       {
-         printLn(CO(CString), $("Invalid depth (maximum: "), CO(i32), maxDepth, ")", ptr::null());
+         println!("Invalid depth (maximum: {maxDepth})");
          return 1;
       }
    }
-   */
 
    let nSubZones: u64 = DGGRS_countSubZones(dggrs, zone, depth);
 
@@ -473,7 +469,7 @@ fn zoneInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instanc
    0 // No error
 }
 
-fn dggrsInfo(dggrs: dggal::DGGRS, options: dggal::Instance /*Map<String, const String>*/) -> i32
+fn dggrsInfo(dggrs: dggal::DGGRS, _options: HashMap<&str, &str>) -> i32
 {
    let depth64k = DGGRS_get64KDepth(dggrs);
    let ratio = DGGRS_getRefinementRatio(dggrs);
@@ -485,7 +481,7 @@ fn dggrsInfo(dggrs: dggal::DGGRS, options: dggal::Instance /*Map<String, const S
    0 // No error
 }
 
-fn displayInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Instance /*Map<String, const String>*/) -> i32
+fn displayInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: HashMap<&str, &str>) -> i32
 {
    if zone != nullZone {
       zoneInfo(dggrs, zone, options)
@@ -494,8 +490,6 @@ fn displayInfo(dggrs: dggal::DGGRS, zone: dggal::DGGRSZone, options: dggal::Inst
    }
 }
 
-// Class * class_Map_String_constString;
-
 fn main()
 {
    unsafe
@@ -503,8 +497,8 @@ fn main()
       let args: Vec<String> = env::args().collect();
       let argc = args.len();
       let app = dggal::eC_init(nullInst, true as u32, false as u32, 0,
-         0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8); // TOOD: argc, args);
-      let mEcere = dggal::ecere_init(app);
+         0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8); // TODO: argc, args);
+      let _mEcere = dggal::ecere_init(app);
       let mDGGAL = dggal::dggal_init(app);
       let mut exitCode: i32 = 0;
       let mut show_syntax = false;
@@ -513,12 +507,7 @@ fn main()
       let mut zoneID: *const i8 = nullCStr;
       let arg0CStr = CString::new(args[0].clone()).unwrap();
       let arg0 : *const i8 = arg0CStr.as_ptr();
-      let options : dggal::Instance = nullInst; // Map<String, const String>
-
-      /*
-      class_Map_String_constString = eC_findClass(app, "Map<CString, const CString>");
-      options = newi(Map, CString, constString);
-      */
+      let mut options = HashMap::<&str, &str>::new();
 
            if 0 == dggal::strcasecmp(arg0, (c"i3h").as_ptr()) { dggrsName = (c"ISEA3H").as_ptr(); }
       else if 0 == dggal::strcasecmp(arg0, (c"i9r").as_ptr()) { dggrsName = (c"ISEA9R").as_ptr(); }
@@ -543,19 +532,12 @@ fn main()
 
       while a < argc
       {
-         let keycs = CString::new(args[a].clone()).unwrap(); // Needs to stay alive
-         let key: *const i8 = keycs.as_ptr();
+         let key = &args[a];
          a+=1;
-         if *key == '-' as i8 && a < argc
+         if key.as_bytes()[0] == '-' as u8 && a < argc
          {
-            let strValue = CString::new(args[a].clone()).unwrap();
-            let value = strValue.as_ptr();
+            options.insert(&key[1..], &args[a]);
             a+=1;
-            /*
-            T(MapIterator, CString, constString) it = { options };
-            Iterator_index((Iterator *)&it, TAp((void *)(key+1)), true);
-            Iterator_setData((Iterator *)&it, TAp((void *)value));
-            */
          }
          else
          {
@@ -593,8 +575,6 @@ fn main()
          show_syntax = true;
          exitCode = 1;
       }
-
-      dggal::__ecereNameSpace__ecere__com__eInstance_DecRef(options);
 
       if show_syntax {
          println!("Syntax:");
