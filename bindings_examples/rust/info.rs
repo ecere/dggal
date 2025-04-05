@@ -10,7 +10,6 @@ use std::ffi::c_void;
 use std::f64::consts::PI;
 use std::slice;
 use std::collections::HashMap;
-use std::sync::OnceLock;
 
 #[allow(warnings)] mod dggal;
 
@@ -20,38 +19,51 @@ const nullCStr : * const i8 = 0 as * const i8;
 const nullInst : dggal::Instance = 0 as dggal::Instance;
 const nullPtr : *mut *mut c_void = 0 as *mut *mut c_void;
 
-struct Module {
-   imp: dggal::Module
-}
-unsafe impl Sync for Module { }
-unsafe impl Send for Module { }
-
 struct DGGRS {
    imp: dggal::DGGRS
 }
 
-static app: OnceLock<Module> = OnceLock::new();
-static mDGGAL: OnceLock<Module> = OnceLock::new();
-static mEcere: OnceLock<Module> = OnceLock::new();
-
-fn DGGAL_init(_args: &Vec<String>)
-{
-   unsafe {
-      let _ = app.set(Module { imp: dggal::eC_init(nullInst, true as u32, false as u32, 0,
-         0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8) }); // TODO: argc, args);
-      let _ = mEcere.set(Module { imp: dggal::ecere_init(app.get().unwrap().imp) });
-      let _ = mDGGAL.set(Module { imp: dggal::dggal_init(app.get().unwrap().imp) });
+struct Application {
+   app: dggal::Application,
+   _mEcere: dggal::Module
+}
+impl Drop for Application {
+   fn drop(&mut self) {
+      unsafe {
+         dggal::__ecereNameSpace__ecere__com__eInstance_DecRef(self.app);
+      }
    }
 }
 
-impl DGGRS {
-   // TODO: Could we use rust function-generating macros?
+impl Application {
+   fn new(_args: &Vec<String>) -> Application
+   {
+      unsafe {
+         let app = dggal::eC_init(nullInst, true as u32, false as u32, 0,
+               0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8); // TODO: argc, args);
+         Application { app: app, _mEcere: dggal::ecere_init(app) }
+      }
+   }
+}
 
-   fn byName(name: &str) -> Option<DGGRS>
+struct DGGAL {
+   mDGGAL: dggal::Module
+}
+
+impl DGGAL {
+   fn new(app: &Application) -> DGGAL
+   {
+      unsafe {
+         DGGAL { mDGGAL: dggal::dggal_init(app.app) }
+      }
+   }
+
+   fn newDGGRS(&self, name: &str) -> Option<DGGRS>
    {
       let dggrsName = CString::new(name).unwrap();
       unsafe {
-         let c = dggal::__ecereNameSpace__ecere__com__eSystem_FindClass(mDGGAL.get().unwrap().imp, dggrsName.as_ptr());
+         let c = dggal::__ecereNameSpace__ecere__com__eSystem_FindClass(self.mDGGAL, dggrsName.as_ptr());
+
          if c != nullPtr as * mut dggal::Class {
             Some(DGGRS { imp: dggal::__ecereNameSpace__ecere__com__eInstance_New(c) as dggal::DGGRS })
          }
@@ -60,6 +72,11 @@ impl DGGRS {
          }
       }
    }
+
+}
+
+impl DGGRS {
+   // TODO: Could we use rust function-generating macros?
 
    fn getZoneFromTextID(&self, zoneID: * const i8) -> dggal::DGGRSZone
    {
@@ -528,8 +545,8 @@ fn main()
    {
       let args: Vec<String> = env::args().collect();
       let argc = args.len();
-      DGGAL_init(&args);
-
+      let myApp = Application::new(&args);
+      let dggal = DGGAL::new(&myApp);
       let mut exitCode: i32 = 0;
       let mut show_syntax = false;
       let mut dggrsName: *const i8 = nullCStr;
@@ -579,7 +596,7 @@ fn main()
       if dggrsName != nullCStr && exitCode == 0
       {
          let dn = CStr::from_ptr(dggrsName).to_str().unwrap();
-         let dggrs: DGGRS = DGGRS::byName(dn).expect("Unknown DGGRS");
+         let dggrs: DGGRS = dggal.newDGGRS(dn).expect("Unknown DGGRS");
          let mut zone = nullZone;
 
          println!("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/{dn}");
@@ -609,7 +626,6 @@ fn main()
          println!("   info <dggrs> [zone] [options]");
          println!("where dggrs is one of gnosis, isea3h or isea9r");
       }
-      dggal::__ecereNameSpace__ecere__com__eInstance_DecRef(app.get().unwrap().imp);
 
       std::process::exit(exitCode)
    }
