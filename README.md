@@ -24,7 +24,8 @@ The DGGAL library also allows to resolve a sub-zone index at a particular depth 
 A very early draft of the API documentation can be [found here](https://dggal.org/docs/html/dggal/Classes/DGGRS.html).
 
 While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's [`bgen` tool](https://github.com/ecere/ecere-sdk/tree/latest/bgen) are provided. Support for additional languages may be added in the future.
+Ecere SDK's [`bgen` tool](https://github.com/ecere/ecere-sdk/tree/latest/bgen) are provided. Partial bindings for rust are available as well.
+Support for additional languages may be added in the future.
 
 ## Pre-built binaries
 
@@ -68,6 +69,12 @@ A C++ example implementing the `dgg info` command using the DGGAL C++ bindings i
 Python bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/py).
 
 A Python example using the DGGAL Python bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/py/info.py).
+
+### rust Bindings
+
+rust bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/rust).
+
+A rust example using the DGGAL rust bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/rust/info.rs).
 
 ## `dgg` tool
 
