@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 // Authalic / Geodetic latitude conversion as defined by Charles Karney's "On auxiliary latitudes"

@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
 int displayInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> options)

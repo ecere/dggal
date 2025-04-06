@@ -52,7 +52,7 @@
             "isea3HTests.ec"
          ]
       },
-      "$(ECERE_SDK_SRC)/extras/testing/testingFramework.ec",
+      "$(EC_SDK_SRC)/extras/testing/testingFramework.ec",
       "dggalTest.ec",
       "dggrsTestCase.ec"
    ],
