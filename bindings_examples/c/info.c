@@ -150,8 +150,7 @@ Class * class_Map_String_constString;
 
 int main(int argc, char * argv[])
 {
-   Application app = eC_init(null, true, false, argc, argv);
-   __attribute__((unused)) Module mEcere = ecere_init(app);
+   Application app = ecrt_init(null, true, false, argc, argv);
    Module mDGGAL = dggal_init(app);
    int exitCode = 0;
    bool showSyntax = false;

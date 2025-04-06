@@ -2,11 +2,11 @@
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 
 # TARGETS

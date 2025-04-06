@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
 void generateZoneFeature(DGGRS dggrs, DGGRSZone zone, CRS crs, int64 id, bool centroids, bool fc, Map<String, FieldValue> properties)

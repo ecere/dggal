@@ -22,7 +22,7 @@ extern "C" {
 //////////////////////////////////////////////////////////////////////////////// ////////////////
 //////////////////////////////////////////////////////////////////////////////// ////////////////
 
-#include "ecere.h"
+#include "ecrt.h"
 
 
 #if !defined(DGGAL_MODULE_NAME)
@@ -46,24 +46,16 @@ extern "C" {
 
 
 // start -- moved backwards outputs
-typedef int C(FieldTypeEx);
-struct C(FieldValue)
-{
-   C(FieldTypeEx) type;
-   union
-   {
-      int64 i;
-      double r;
-      C(String) s;
-      void * b;
-      C(Array) a;
-      C(Map) m;
-   };
-};
 struct C(GeoPoint)
 {
    C(Angle) lat;
    C(Angle) lon;
+};
+struct C(Vector3D)
+{
+   double x;
+   double y;
+   double z;
 };
 typedef uint64 C(CRS);
 typedef struct C(CRSExtent) C(CRSExtent);
@@ -71,7 +63,6 @@ typedef C(Instance) C(DGGRS);
 typedef uint64 C(DGGRSZone);
 typedef C(Instance) C(DGGSJSON);
 typedef C(Instance) C(DGGSJSONShape);
-typedef struct C(FieldValue) C(FieldValue);
 typedef struct C(GeoExtent) C(GeoExtent);
 typedef struct C(GeoPoint) C(GeoPoint);
 typedef C(Instance) C(JSONSchema);
@@ -92,8 +83,12 @@ enum C(JSONSchemaType)
    JSONSchemaType_string = 0x7
 };
 
+typedef struct C(Plane) C(Plane);
+typedef C(DGGRS) C(RhombicIcosahedral3H);
+typedef C(DGGRS) C(RhombicIcosahedral9R);
+typedef struct C(Vector3D) C(Vector3D);
 // end -- moved backwards outputs
-#define nullZone ((C(DGGRSZone))(0xFFFFFFFFFFFFFFFFLL))
+#define nullZone ((C(DGGRSZone))0xFFFFFFFFFFFFFFFFLL)
 
 #define wgs84InvFlattening (298.257223563)
 
@@ -103,6 +98,7 @@ enum C(JSONSchemaType)
 
 #define wholeWorld (__extension__ ({ C(GeoExtent) __simpleStruct0 = {  { -1.5707963267948966, -3.1415926535897931 }, { 1.5707963267948966, 3.1415926535897931 } };  __simpleStruct0; }))
 
+typedef C(RhombicIcosahedral3H) C(BCTA3H);
 #if CPP11
 enum C(CRSRegistry) : int
 #else
@@ -116,52 +112,20 @@ enum C(CRSRegistry)
 
 typedef C(Instance) C(DGGSJSONDepth);
 typedef C(Instance) C(DGGSJSONGrid);
-#if CPP11
-enum C(FieldType) : int
-#else
-typedef int C(FieldType);
-enum C(FieldType)
-#endif
-{
-   FieldType_integer = 0x1,
-   FieldType_real = 0x2,
-   FieldType_text = 0x3,
-   FieldType_blob = 0x4,
-   FieldType_nil = 0x5,
-   FieldType_array = 0x6,
-   FieldType_map = 0x7
-};
-
-#if CPP11
-enum C(FieldValueFormat) : int
-#else
-typedef int C(FieldValueFormat);
-enum C(FieldValueFormat)
-#endif
-{
-   FieldValueFormat_decimal = 0x0,
-   FieldValueFormat_unset = 0x0,
-   FieldValueFormat_hex = 0x1,
-   FieldValueFormat_octal = 0x2,
-   FieldValueFormat_binary = 0x3,
-   FieldValueFormat_exponential = 0x4,
-   FieldValueFormat_boolean = 0x5,
-   FieldValueFormat_textObj = 0x6,
-   FieldValueFormat_color = 0x7
-};
-
 typedef uint64 C(GGGZone);
 typedef C(DGGRS) C(GNOSISGlobalGrid);
-typedef C(DGGRS) C(ISEA3H);
-typedef uint64 C(ISEA3HZone);
-typedef C(DGGRS) C(ISEA9R);
-typedef uint64 C(ISEA9RZone);
+typedef C(RhombicIcosahedral3H) C(GPP3H);
+typedef uint64 C(I3HZone);
+typedef uint64 C(I9RZone);
+typedef C(RhombicIcosahedral3H) C(ISEA3H);
+typedef C(RhombicIcosahedral9R) C(ISEA9R);
+typedef C(RhombicIcosahedral3H) C(IVEA3H);
+typedef C(RhombicIcosahedral9R) C(IVEA9R);
 typedef C(Array) T(Array, JSONSchema);
 typedef C(Map) T(Map, String, JSONSchema);
 typedef C(Array) T(Array, String);
 typedef C(Array) T(Array, FieldValue);
 typedef C(Array) T(Array, double);
-typedef C(Map) T(Map, String, FieldValue);
 typedef C(Map) T(Map, String, int);
 typedef C(Array) T(Array, DGGSJSONDepth);
 typedef C(Map) T(Map, String, template_Array_DGGSJSONDepth);
@@ -570,47 +534,6 @@ struct CM(DGGSJSONShape)
    int subZones;
    C(Map) dimensions;
 };
-#define FIELDTYPEEX_type_SHIFT                           0
-#define FIELDTYPEEX_type_MASK                            0x7
-#define FIELDTYPEEX_type(x)                              ((((C(FieldTypeEx))(x)) & FIELDTYPEEX_type_MASK) >> FIELDTYPEEX_type_SHIFT)
-#define FIELDTYPEEX_SET_type(x, type)                       (x) = ((C(FieldTypeEx))(x) & ~((C(FieldTypeEx))FIELDTYPEEX_type_MASK)) | (((C(FieldTypeEx))(type)) << FIELDTYPEEX_type_SHIFT)
-#define FIELDTYPEEX_mustFree_SHIFT                       3
-#define FIELDTYPEEX_mustFree_MASK                        0x8
-#define FIELDTYPEEX_mustFree(x)                          ((((C(FieldTypeEx))(x)) & FIELDTYPEEX_mustFree_MASK) >> FIELDTYPEEX_mustFree_SHIFT)
-#define FIELDTYPEEX_SET_mustFree(x, mustFree)                   (x) = ((C(FieldTypeEx))(x) & ~((C(FieldTypeEx))FIELDTYPEEX_mustFree_MASK)) | (((C(FieldTypeEx))(mustFree)) << FIELDTYPEEX_mustFree_SHIFT)
-#define FIELDTYPEEX_format_SHIFT                         4
-#define FIELDTYPEEX_format_MASK                          0xF0
-#define FIELDTYPEEX_format(x)                            ((((C(FieldTypeEx))(x)) & FIELDTYPEEX_format_MASK) >> FIELDTYPEEX_format_SHIFT)
-#define FIELDTYPEEX_SET_format(x, format)                     (x) = ((C(FieldTypeEx))(x) & ~((C(FieldTypeEx))FIELDTYPEEX_format_MASK)) | (((C(FieldTypeEx))(format)) << FIELDTYPEEX_format_SHIFT)
-#define FIELDTYPEEX_isUnsigned_SHIFT                     8
-#define FIELDTYPEEX_isUnsigned_MASK                      0x100
-#define FIELDTYPEEX_isUnsigned(x)                        ((((C(FieldTypeEx))(x)) & FIELDTYPEEX_isUnsigned_MASK) >> FIELDTYPEEX_isUnsigned_SHIFT)
-#define FIELDTYPEEX_SET_isUnsigned(x, isUnsigned)                 (x) = ((C(FieldTypeEx))(x) & ~((C(FieldTypeEx))FIELDTYPEEX_isUnsigned_MASK)) | (((C(FieldTypeEx))(isUnsigned)) << FIELDTYPEEX_isUnsigned_SHIFT)
-#define FIELDTYPEEX_isDateTime_SHIFT                     9
-#define FIELDTYPEEX_isDateTime_MASK                      0x200
-#define FIELDTYPEEX_isDateTime(x)                        ((((C(FieldTypeEx))(x)) & FIELDTYPEEX_isDateTime_MASK) >> FIELDTYPEEX_isDateTime_SHIFT)
-#define FIELDTYPEEX_SET_isDateTime(x, isDateTime)                 (x) = ((C(FieldTypeEx))(x) & ~((C(FieldTypeEx))FIELDTYPEEX_isDateTime_MASK)) | (((C(FieldTypeEx))(isDateTime)) << FIELDTYPEEX_isDateTime_SHIFT)
-#define FIELDTYPEEX(type, mustFree, format, isUnsigned, isDateTime)                         (((((((C(FieldTypeEx))(type)) << FIELDTYPEEX_type_SHIFT) | ((C(FieldTypeEx))(mustFree)) << FIELDTYPEEX_mustFree_SHIFT) | ((C(FieldTypeEx))(format)) << FIELDTYPEEX_format_SHIFT) | ((C(FieldTypeEx))(isUnsigned)) << FIELDTYPEEX_isUnsigned_SHIFT) | ((C(FieldTypeEx))(isDateTime)) << FIELDTYPEEX_isDateTime_SHIFT)
-
-
-extern THIS_LIB_IMPORT int (* FieldValue_compareInt)(C(FieldValue) * __this, C(FieldValue) * other);
-
-extern THIS_LIB_IMPORT int (* FieldValue_compareReal)(C(FieldValue) * __this, C(FieldValue) * other);
-
-extern THIS_LIB_IMPORT int (* FieldValue_compareText)(C(FieldValue) * __this, C(FieldValue) * other);
-
-extern THIS_LIB_IMPORT C(String) (* FieldValue_formatArray)(C(FieldValue) * __this, char * tempString, void * fieldData, C(ObjectNotationType) * onType);
-
-extern THIS_LIB_IMPORT C(String) (* FieldValue_formatFloat)(C(FieldValue) * __this, char * stringOutput, C(bool) fixDot);
-
-extern THIS_LIB_IMPORT C(String) (* FieldValue_formatInteger)(C(FieldValue) * __this, char * stringOutput);
-
-extern THIS_LIB_IMPORT C(String) (* FieldValue_formatMap)(C(FieldValue) * __this, char * tempString, void * fieldData, C(ObjectNotationType) * onType);
-
-extern THIS_LIB_IMPORT C(bool) (* FieldValue_getArrayOrMap)(const char * string, C(Class) * destClass, void ** destination);
-
-extern THIS_LIB_IMPORT C(String) (* FieldValue_stringify)(C(FieldValue) * __this);
-
 #define GGGZONE_level_SHIFT                              59
 #define GGGZONE_level_MASK                               0xF800000000000000LL
 #define GGGZONE_level(x)                                 ((((C(GGGZone))(x)) & GGGZONE_level_MASK) >> GGGZONE_level_SHIFT)
@@ -638,38 +561,38 @@ extern THIS_LIB_IMPORT C(bool) (* GeoExtent_intersects)(C(GeoExtent) * __this, c
 extern THIS_LIB_IMPORT C(Property) * PROPERTY(GeoExtent, geodeticArea);
 extern THIS_LIB_IMPORT double (* GeoExtent_get_geodeticArea)(const C(GeoExtent) * g);
 
-#define ISEA3HZONE_levelISEA9R_SHIFT                     58
-#define ISEA3HZONE_levelISEA9R_MASK                      0x7C00000000000000LL
-#define ISEA3HZONE_levelISEA9R(x)                        ((((C(ISEA3HZone))(x)) & ISEA3HZONE_levelISEA9R_MASK) >> ISEA3HZONE_levelISEA9R_SHIFT)
-#define ISEA3HZONE_SET_levelISEA9R(x, levelISEA9R)                 (x) = ((C(ISEA3HZone))(x) & ~((C(ISEA3HZone))ISEA3HZONE_levelISEA9R_MASK)) | (((C(ISEA3HZone))(levelISEA9R)) << ISEA3HZONE_levelISEA9R_SHIFT)
-#define ISEA3HZONE_rootRhombus_SHIFT                     54
-#define ISEA3HZONE_rootRhombus_MASK                      0x3C0000000000000LL
-#define ISEA3HZONE_rootRhombus(x)                        ((((C(ISEA3HZone))(x)) & ISEA3HZONE_rootRhombus_MASK) >> ISEA3HZONE_rootRhombus_SHIFT)
-#define ISEA3HZONE_SET_rootRhombus(x, rootRhombus)                 (x) = ((C(ISEA3HZone))(x) & ~((C(ISEA3HZone))ISEA3HZONE_rootRhombus_MASK)) | (((C(ISEA3HZone))(rootRhombus)) << ISEA3HZONE_rootRhombus_SHIFT)
-#define ISEA3HZONE_rhombusIX_SHIFT                       3
-#define ISEA3HZONE_rhombusIX_MASK                        0x3FFFFFFFFFFFF8LL
-#define ISEA3HZONE_rhombusIX(x)                          ((((C(ISEA3HZone))(x)) & ISEA3HZONE_rhombusIX_MASK) >> ISEA3HZONE_rhombusIX_SHIFT)
-#define ISEA3HZONE_SET_rhombusIX(x, rhombusIX)                   (x) = ((C(ISEA3HZone))(x) & ~((C(ISEA3HZone))ISEA3HZONE_rhombusIX_MASK)) | (((C(ISEA3HZone))(rhombusIX)) << ISEA3HZONE_rhombusIX_SHIFT)
-#define ISEA3HZONE_subHex_SHIFT                          0
-#define ISEA3HZONE_subHex_MASK                           0x7
-#define ISEA3HZONE_subHex(x)                             ((((C(ISEA3HZone))(x)) & ISEA3HZONE_subHex_MASK) >> ISEA3HZONE_subHex_SHIFT)
-#define ISEA3HZONE_SET_subHex(x, subHex)                      (x) = ((C(ISEA3HZone))(x) & ~((C(ISEA3HZone))ISEA3HZONE_subHex_MASK)) | (((C(ISEA3HZone))(subHex)) << ISEA3HZONE_subHex_SHIFT)
-#define ISEA3HZONE(levelISEA9R, rootRhombus, rhombusIX, subHex)                            ((((((C(ISEA3HZone))(levelISEA9R)) << ISEA3HZONE_levelISEA9R_SHIFT) | ((C(ISEA3HZone))(rootRhombus)) << ISEA3HZONE_rootRhombus_SHIFT) | ((C(ISEA3HZone))(rhombusIX)) << ISEA3HZONE_rhombusIX_SHIFT) | ((C(ISEA3HZone))(subHex)) << ISEA3HZONE_subHex_SHIFT)
+#define I3HZONE_levelI9R_SHIFT                           58
+#define I3HZONE_levelI9R_MASK                            0x7C00000000000000LL
+#define I3HZONE_levelI9R(x)                              ((((C(I3HZone))(x)) & I3HZONE_levelI9R_MASK) >> I3HZONE_levelI9R_SHIFT)
+#define I3HZONE_SET_levelI9R(x, levelI9R)                       (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_levelI9R_MASK)) | (((C(I3HZone))(levelI9R)) << I3HZONE_levelI9R_SHIFT)
+#define I3HZONE_rootRhombus_SHIFT                        54
+#define I3HZONE_rootRhombus_MASK                         0x3C0000000000000LL
+#define I3HZONE_rootRhombus(x)                           ((((C(I3HZone))(x)) & I3HZONE_rootRhombus_MASK) >> I3HZONE_rootRhombus_SHIFT)
+#define I3HZONE_SET_rootRhombus(x, rootRhombus)                    (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_rootRhombus_MASK)) | (((C(I3HZone))(rootRhombus)) << I3HZONE_rootRhombus_SHIFT)
+#define I3HZONE_rhombusIX_SHIFT                          3
+#define I3HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
+#define I3HZONE_rhombusIX(x)                             ((((C(I3HZone))(x)) & I3HZONE_rhombusIX_MASK) >> I3HZONE_rhombusIX_SHIFT)
+#define I3HZONE_SET_rhombusIX(x, rhombusIX)                      (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_rhombusIX_MASK)) | (((C(I3HZone))(rhombusIX)) << I3HZONE_rhombusIX_SHIFT)
+#define I3HZONE_subHex_SHIFT                             0
+#define I3HZONE_subHex_MASK                              0x7
+#define I3HZONE_subHex(x)                                ((((C(I3HZone))(x)) & I3HZONE_subHex_MASK) >> I3HZONE_subHex_SHIFT)
+#define I3HZONE_SET_subHex(x, subHex)                         (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_subHex_MASK)) | (((C(I3HZone))(subHex)) << I3HZONE_subHex_SHIFT)
+#define I3HZONE(levelI9R, rootRhombus, rhombusIX, subHex)                               ((((((C(I3HZone))(levelI9R)) << I3HZONE_levelI9R_SHIFT) | ((C(I3HZone))(rootRhombus)) << I3HZONE_rootRhombus_SHIFT) | ((C(I3HZone))(rhombusIX)) << I3HZONE_rhombusIX_SHIFT) | ((C(I3HZone))(subHex)) << I3HZONE_subHex_SHIFT)
 
 
-#define ISEA9RZONE_level_SHIFT                           59
-#define ISEA9RZONE_level_MASK                            0xF800000000000000LL
-#define ISEA9RZONE_level(x)                              ((((C(ISEA9RZone))(x)) & ISEA9RZONE_level_MASK) >> ISEA9RZONE_level_SHIFT)
-#define ISEA9RZONE_SET_level(x, level)                       (x) = ((C(ISEA9RZone))(x) & ~((C(ISEA9RZone))ISEA9RZONE_level_MASK)) | (((C(ISEA9RZone))(level)) << ISEA9RZONE_level_SHIFT)
-#define ISEA9RZONE_row_SHIFT                             30
-#define ISEA9RZONE_row_MASK                              0x7FFFFFFC0000000LL
-#define ISEA9RZONE_row(x)                                ((((C(ISEA9RZone))(x)) & ISEA9RZONE_row_MASK) >> ISEA9RZONE_row_SHIFT)
-#define ISEA9RZONE_SET_row(x, row)                         (x) = ((C(ISEA9RZone))(x) & ~((C(ISEA9RZone))ISEA9RZONE_row_MASK)) | (((C(ISEA9RZone))(row)) << ISEA9RZONE_row_SHIFT)
-#define ISEA9RZONE_col_SHIFT                             0
-#define ISEA9RZONE_col_MASK                              0x3FFFFFFF
-#define ISEA9RZONE_col(x)                                ((((C(ISEA9RZone))(x)) & ISEA9RZONE_col_MASK) >> ISEA9RZONE_col_SHIFT)
-#define ISEA9RZONE_SET_col(x, col)                         (x) = ((C(ISEA9RZone))(x) & ~((C(ISEA9RZone))ISEA9RZONE_col_MASK)) | (((C(ISEA9RZone))(col)) << ISEA9RZONE_col_SHIFT)
-#define ISEA9RZONE(level, row, col)                              (((((C(ISEA9RZone))(level)) << ISEA9RZONE_level_SHIFT) | ((C(ISEA9RZone))(row)) << ISEA9RZONE_row_SHIFT) | ((C(ISEA9RZone))(col)) << ISEA9RZONE_col_SHIFT)
+#define I9RZONE_level_SHIFT                              59
+#define I9RZONE_level_MASK                               0xF800000000000000LL
+#define I9RZONE_level(x)                                 ((((C(I9RZone))(x)) & I9RZONE_level_MASK) >> I9RZONE_level_SHIFT)
+#define I9RZONE_SET_level(x, level)                          (x) = ((C(I9RZone))(x) & ~((C(I9RZone))I9RZONE_level_MASK)) | (((C(I9RZone))(level)) << I9RZONE_level_SHIFT)
+#define I9RZONE_row_SHIFT                                30
+#define I9RZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define I9RZONE_row(x)                                   ((((C(I9RZone))(x)) & I9RZONE_row_MASK) >> I9RZONE_row_SHIFT)
+#define I9RZONE_SET_row(x, row)                            (x) = ((C(I9RZone))(x) & ~((C(I9RZone))I9RZONE_row_MASK)) | (((C(I9RZone))(row)) << I9RZONE_row_SHIFT)
+#define I9RZONE_col_SHIFT                                0
+#define I9RZONE_col_MASK                                 0x3FFFFFFF
+#define I9RZONE_col(x)                                   ((((C(I9RZone))(x)) & I9RZONE_col_MASK) >> I9RZONE_col_SHIFT)
+#define I9RZONE_SET_col(x, col)                            (x) = ((C(I9RZone))(x) & ~((C(I9RZone))I9RZONE_col_MASK)) | (((C(I9RZone))(col)) << I9RZONE_col_SHIFT)
+#define I9RZONE(level, row, col)                                 (((((C(I9RZone))(level)) << I9RZONE_level_SHIFT) | ((C(I9RZone))(row)) << I9RZONE_row_SHIFT) | ((C(I9RZone))(col)) << I9RZONE_col_SHIFT)
 
 
 struct CM(JSONSchema)
@@ -756,7 +679,35 @@ extern THIS_LIB_IMPORT C(bool) (* JSONSchema_isSet_xogcpropertySeq)(const C(JSON
 extern THIS_LIB_IMPORT C(Property) * PROPERTY(JSONSchema, Default);
 extern THIS_LIB_IMPORT C(bool) (* JSONSchema_isSet_Default)(const C(JSONSchema) j);
 
+struct C(Plane)
+{
+   union
+   {
+      struct
+      {
+         double a;
+         double b;
+         double c;
+      };
+      C(Vector3D) normal;
+   };
+   double d;
+};
+extern THIS_LIB_IMPORT void (* Plane_fromPoints)(C(Plane) * __this, const C(Vector3D) * v1, const C(Vector3D) * v2, const C(Vector3D) * v3);
+
+extern THIS_LIB_IMPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
+
+extern THIS_LIB_IMPORT double (* Vector3D_dotProduct)(C(Vector3D) * __this, const C(Vector3D) * vector2);
+
+extern THIS_LIB_IMPORT void (* Vector3D_normalize)(C(Vector3D) * __this, const C(Vector3D) * source);
+
+extern THIS_LIB_IMPORT void (* Vector3D_subtract)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
+
+extern THIS_LIB_IMPORT C(Property) * PROPERTY(Vector3D, length);
+extern THIS_LIB_IMPORT double (* Vector3D_get_length)(const C(Vector3D) * v);
+
 extern THIS_LIB_IMPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
+extern THIS_LIB_IMPORT C(Class) * CO(BCTA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(CRS);
 extern THIS_LIB_IMPORT C(Class) * CO(CRSExtent);
 extern THIS_LIB_IMPORT C(Class) * CO(CRSRegistry);
@@ -766,20 +717,23 @@ extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSON);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONDepth);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONGrid);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONShape);
-extern THIS_LIB_IMPORT C(Class) * CO(FieldType);
-extern THIS_LIB_IMPORT C(Class) * CO(FieldTypeEx);
-extern THIS_LIB_IMPORT C(Class) * CO(FieldValue);
-extern THIS_LIB_IMPORT C(Class) * CO(FieldValueFormat);
 extern THIS_LIB_IMPORT C(Class) * CO(GGGZone);
 extern THIS_LIB_IMPORT C(Class) * CO(GNOSISGlobalGrid);
+extern THIS_LIB_IMPORT C(Class) * CO(GPP3H);
 extern THIS_LIB_IMPORT C(Class) * CO(GeoExtent);
 extern THIS_LIB_IMPORT C(Class) * CO(GeoPoint);
+extern THIS_LIB_IMPORT C(Class) * CO(I3HZone);
+extern THIS_LIB_IMPORT C(Class) * CO(I9RZone);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA3H);
-extern THIS_LIB_IMPORT C(Class) * CO(ISEA3HZone);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA9R);
-extern THIS_LIB_IMPORT C(Class) * CO(ISEA9RZone);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEA3H);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEA9R);
 extern THIS_LIB_IMPORT C(Class) * CO(JSONSchema);
 extern THIS_LIB_IMPORT C(Class) * CO(JSONSchemaType);
+extern THIS_LIB_IMPORT C(Class) * CO(Plane);
+extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral3H);
+extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral9R);
+extern THIS_LIB_IMPORT C(Class) * CO(Vector3D);
 
 extern THIS_LIB_IMPORT C(Module) dggal_init(C(Module) fromModule);
 

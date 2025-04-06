@@ -31,13 +31,13 @@ CONSOLE = -mconsole
 
 # INCLUDES
 
-DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../../
+DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 ifndef WINDOWS_HOST
@@ -57,16 +57,14 @@ TARGET_NAME := info
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(TARGET_NAME)$(OUT)
 
 _OBJECTS = \
-	$(OBJ)eC$(O) \
-	$(OBJ)ecere$(O) \
+	$(OBJ)ecrt$(O) \
 	$(OBJ)dggal$(O) \
 	$(OBJ)info$(O)
 
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	../../bindings/c/eC.c \
-	../../bindings/c/ecere.c \
+	../../bindings/c/ecrt.c \
 	../../bindings/c/dggal.c \
 	info.c
 
@@ -82,12 +80,12 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-	$(call _L,ecereVanilla)
+	$(call _L,ecrtStatic)
 endif
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -DECERE_STATIC \
+			 -DEC_STATIC \
 			 -I../../bindings/c
 
 ECFLAGS += -module $(MODULE)
@@ -98,11 +96,9 @@ ifdef WINDOWS_TARGET
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,kernel32) \
-	$(call _L,gdi32) \
 	$(call _L,user32) \
 	$(call _L,winmm) \
 	$(call _L,mpr) \
-	$(call _L,imm32) \
 	$(call _L,z) \
 	$(call _L,dggalStatic)
 endif
@@ -113,13 +109,9 @@ ifdef LINUX_TARGET
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,dggalStatic) \
-	$(call _L,X11) \
-	$(call _L,Xext) \
-	$(call _L,Xrender) \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,pthread) \
-	$(call _L,curses) \
 	$(call _L,z)
 endif
 
@@ -130,7 +122,8 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_CONFIG))
+	 -L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib)
 endif
 
 # TARGETS
@@ -173,11 +166,8 @@ endif
 
 # OBJECT RULES
 
-$(OBJ)eC$(O): ../../bindings/c/eC.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/eC.c) -o $(call quote_path,$@)
-
-$(OBJ)ecere$(O): ../../bindings/c/ecere.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecere.c) -o $(call quote_path,$@)
+$(OBJ)ecrt$(O): ../../bindings/c/ecrt.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecrt.c) -o $(call quote_path,$@)
 
 $(OBJ)dggal$(O): ../../bindings/c/dggal.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/dggal.c) -o $(call quote_path,$@)

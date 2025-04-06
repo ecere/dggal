@@ -1,28 +1,44 @@
 #include "dggal.hpp"
 
+TCPPClass<BCTA3H> BCTA3H::_cpp_class;
 TCPPClass<DGGRS> DGGRS::_cpp_class;
 TCPPClass<DGGSJSON> DGGSJSON::_cpp_class;
 TCPPClass<DGGSJSONDepth> DGGSJSONDepth::_cpp_class;
 TCPPClass<DGGSJSONGrid> DGGSJSONGrid::_cpp_class;
 TCPPClass<DGGSJSONShape> DGGSJSONShape::_cpp_class;
 TCPPClass<GNOSISGlobalGrid> GNOSISGlobalGrid::_cpp_class;
+TCPPClass<GPP3H> GPP3H::_cpp_class;
 TCPPClass<ISEA3H> ISEA3H::_cpp_class;
 TCPPClass<ISEA9R> ISEA9R::_cpp_class;
+TCPPClass<IVEA3H> IVEA3H::_cpp_class;
+TCPPClass<IVEA9R> IVEA9R::_cpp_class;
 TCPPClass<JSONSchema> JSONSchema::_cpp_class;
+TCPPClass<RhombicIcosahedral3H> RhombicIcosahedral3H::_cpp_class;
+TCPPClass<RhombicIcosahedral9R> RhombicIcosahedral9R::_cpp_class;
 
 int dggal_cpp_init(const Module & module)
 {
-   if(!JSONSchema::_cpp_class.impl)
+   if(!RhombicIcosahedral9R::_cpp_class.impl)
    {
 #ifdef _DEBUG
       // printf("%s_cpp_init\n", "dggal");
 #endif
 
    TStruct<CRSExtent>::_class = CO(CRSExtent);
-   TStruct<FieldValue>::_class = CO(FieldValue);
    TStruct<GeoExtent>::_class = CO(GeoExtent);
    TStruct<GeoPoint>::_class = CO(GeoPoint);
+   TStruct<Plane>::_class = CO(Plane);
+   TStruct<Vector3D>::_class = CO(Vector3D);
 
+   BCTA3H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "BCTA3H", "BCTA3H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) BCTA3H::constructor,
+               (void(*)(void *)) BCTA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    DGGRS::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -77,6 +93,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) GNOSISGlobalGrid::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   GPP3H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "GPP3H", "GPP3H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) GPP3H::constructor,
+               (void(*)(void *)) GPP3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    ISEA3H::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -95,6 +120,24 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) ISEA9R::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEA3H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEA3H", "IVEA3H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEA3H::constructor,
+               (void(*)(void *)) IVEA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEA9R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEA9R", "IVEA9R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEA9R::constructor,
+               (void(*)(void *)) IVEA9R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    JSONSchema::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -102,6 +145,24 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) JSONSchema::constructor,
                (void(*)(void *)) JSONSchema::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RhombicIcosahedral3H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RhombicIcosahedral3H", "RhombicIcosahedral3H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RhombicIcosahedral3H::constructor,
+               (void(*)(void *)) RhombicIcosahedral3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RhombicIcosahedral9R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RhombicIcosahedral9R", "RhombicIcosahedral9R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RhombicIcosahedral9R::constructor,
+               (void(*)(void *)) RhombicIcosahedral9R::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    }
@@ -126,9 +187,12 @@ int dggal_cpp_init(const Module & module)
 #undef wholeWorld
 GeoExtent wholeWorld = GeoExtent {  { -90, -180 },  { 90, 180 } };
 
+void BCTA3H::class_registration(CPPClass & _cpp_class)
+{
+}
    CRS_::CRS_(CRSRegistry registry, int crsID, bool h)
    {
-      impl = CRS(registry, crsID, h);
+      impl = CRS_(registry, crsID, h);
    }
 void DGGRS::class_registration(CPPClass & _cpp_class)
 {
@@ -406,7 +470,7 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
          DGGRS_getSubZoneCRSCentroids_Functor::FunctionType fn;
          if(i && i->vTbl && i->vTbl[vid])
          {
-            fn = (DGGRS_getSubZoneCRSCentroids_Functor::FunctionType) i->vTbl[vid];           // FIXME: underscore missing here
+            fn = (DGGRS_getSubZoneCRSCentroids_Functor::FunctionType) i->vTbl[vid];
             TArray<Pointd _ARG int _ARG Pointd> ret = fn(*i, /*3Hd*/(DGGRSZone)parent, /*3Hd*/(CRS_)crs, /*3Kd*/relativeDepth); return ret.impl;
          }
          // 'cp2' is empty
@@ -960,11 +1024,10 @@ void DGGSJSONGrid::class_registration(CPPClass & _cpp_class)
 void DGGSJSONShape::class_registration(CPPClass & _cpp_class)
 {
 }
-   FieldTypeEx::FieldTypeEx(FieldType type, bool mustFree, FieldValueFormat format, bool isUnsigned, bool isDateTime)
-   {
-      impl = FIELDTYPEEX(type, mustFree, format, isUnsigned, isDateTime);
-   }
 void GNOSISGlobalGrid::class_registration(CPPClass & _cpp_class)
+{
+}
+void GPP3H::class_registration(CPPClass & _cpp_class)
 {
 }
 void ISEA3H::class_registration(CPPClass & _cpp_class)
@@ -973,6 +1036,18 @@ void ISEA3H::class_registration(CPPClass & _cpp_class)
 void ISEA9R::class_registration(CPPClass & _cpp_class)
 {
 }
+void IVEA3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void IVEA9R::class_registration(CPPClass & _cpp_class)
+{
+}
 void JSONSchema::class_registration(CPPClass & _cpp_class)
+{
+}
+void RhombicIcosahedral3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void RhombicIcosahedral9R::class_registration(CPPClass & _cpp_class)
 {
 }
