@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
 int levelInfo(DGGRS dggrs, int level, Map<String, const String> options, bool asTable)

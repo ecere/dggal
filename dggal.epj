@@ -6,7 +6,7 @@
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "dggal",
       "Libraries" : [
-         "ecere"
+         "ecrt"
       ]
    },
    "Platforms" : [
@@ -108,8 +108,7 @@
                "Folder" : "dggsJSON",
                "Files" : [
                   "dggsJSON.ec",
-                  "JSONSchema.ec",
-                  "$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec"
+                  "JSONSchema.ec"
                ]
             },
             {
@@ -119,9 +118,6 @@
                   "Vector3D.ec",
                   "Quaternion.ec"
                ],
-               "Options" : {
-                  "ExcludeFromBuild" : true
-               },
                "Configurations" : [
                   {
                      "Name" : "Static",

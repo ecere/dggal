@@ -85,22 +85,16 @@
    However, the signs of the numerator and denumerator are negated here, which results in the correct angle when using atan2()
 */
 
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 import "ri5x6"
+import "Vector3D"
 
 // Define this to use the vectorial approach based on Brenton R S Recht's blog entry at
 // https://brsr.github.io/2021/08/31/snyder-equal-area.html
 // with further replacement of trigonometry by vector operation for the inverse as well
  #define USE_VECTORS
-
-#ifdef ECERE_STATIC
-// 3D Math is excluded from libecere's static config
-import "Vector3D"
-
-#define Vector3D DGGVector3D
-#endif
 
 public enum VGCRadialVertex { isea, ivea, rtea };
 

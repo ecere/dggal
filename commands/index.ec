@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
 int subZoneIndex(DGGRS dggrs, DGGRSZone parent, DGGRSZone subZone, Map<String, const String> options)

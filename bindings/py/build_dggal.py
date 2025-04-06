@@ -4,24 +4,10 @@ import platform
 from distutils.util import get_platform;
 from os import path
 
-def isDirESDK(testpath):
-   if path.isfile(path.join(testpath, 'crossplatform.mk')):
-      if path.isfile(path.join(testpath, 'default.cf')):
-         return True
-   return False
+dggalDir = path.join(os.getcwd(), '../../')
+esdkDir = path.join(dggalDir, '../eC/')
 
-def getDirESDK(startpath):
-   itpath = startpath
-   while 1:
-      if isDirESDK(itpath) == True:
-         return itpath
-      itpath, removed = path.split(itpath)
-      if removed == '':
-         break
-   return 'badpath'
-
-esdkDir = getDirESDK(os.getcwd())
-if esdkDir.find('pip-req-build-') == -1 or esdkDir.find('pip-install-of') == -1:
+if dggalDir.find('pip-req-build-') == -1 or dggalDir.find('pip-install-of') == -1:
    inPipInstallBuild = False #True
 else:
    inPipInstallBuild = False
@@ -41,13 +27,13 @@ dir = path.abspath(path.dirname(__file__))
 owd = os.getcwd()
 cpath = path.join('..', 'c')
 if os.path.isdir(cpath) != True:
-   cpath = path.join(esdkDir, 'bindings', 'c')
+   cpath = path.join(dggalDir, 'bindings', 'c')
    if os.path.isdir(cpath) != True:
       print('error: unable to find path to C bindings!')
 rel = '' if os.path.isfile(os.path.join(owd, 'build_dggal.py')) == True else path.join('bindings', 'py')
 sysdir = 'win32' if sys.platform == 'win32' else 'linux'
 syslibdir = 'bin' if sys.platform == 'win32' else 'lib'
-incdir = path.join(esdkDir, 'bindings', 'c')
+incdir = path.join(dggalDir, 'bindings', 'c')
 if rel == '':
    libdir = path.join('..', '..', 'obj', sysdir, syslibdir)
 else:
@@ -79,29 +65,28 @@ def cdefpath(filename):
          return fullpath
    return 'badpath'
 
-from build_ecere import FFI, ffi_eC, ffi_ecere
+from build_ecrt import FFI, ffi_ecrt
 from distutils.sysconfig import get_config_var
 
 ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUFFIX')
 
 ffi_dggal = FFI()
-ffi_dggal.include(ffi_ecere)
+ffi_dggal.include(ffi_ecrt)
 ffi_dggal.cdef(open(cdefpath('cffi-dggal.h')).read())
 PY_BINDINGS_EMBEDDED_C_DISABLE = os.getenv('PY_BINDINGS_EMBEDDED_C_DISABLE')
-_embedded_c = False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True
+_embedded_c = True # False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True
 
 srcs = []
 if _embedded_c == True:
-   srcs.append(path.join(cpath, 'eC.c'))
-   srcs.append(path.join(cpath, 'ecere.c'))
+   #srcs.append(path.join(cpath, 'ecrt.c'))
    srcs.append(path.join(cpath, 'dggal.c'))
 
 libs = []
 
-libs.append('ecere')
-libs.append('dggal')
+libs.append('ecrt')
+#libs.append('dggal')
 if _embedded_c == False:
-   libs.append('ecere_c')
+   #libs.append('ecrt_c')
    libs.append('dggal_c')
 ffi_dggal.set_source('_pydggal',
                '#include "dggal.h"',
@@ -110,8 +95,8 @@ ffi_dggal.set_source('_pydggal',
                extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
                include_dirs=[path.join(owd, rel), incdir],
                libraries=libs,
-               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/EcereSDK/lib",path.join(esdkDir, blddir, '_pyecere' + ext), path.join(esdkDir, blddir, '_pyeC' + ext), '-DMS_WIN64', '-O2'],
-               library_dirs=[path.join(owd, libdir)],
+               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/eCSDK/lib",path.join(dggalDir, blddir, '_pyecrt' + ext), '-DMS_WIN64', '-O2'],
+               library_dirs=[path.join(owd, libdir), path.join(esdkDir, 'obj', sysdir, syslibdir), path.join(dggalDir, 'obj', 'release.' + sysdir)],
                py_limited_api=False)
 if __name__ == '__main__':
    V = os.getenv('V')

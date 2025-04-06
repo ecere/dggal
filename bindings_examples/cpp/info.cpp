@@ -140,7 +140,7 @@ class DGGALInfoApp : Application
 public:
    eC_Module mDGGAL;
 
-   DGGALInfoApp() : Application(eC_init(null, true, false, null, null))
+   DGGALInfoApp() : Application(ecrt_init(null, true, false, null, null))
    {
       mDGGAL = dggal_init(__thisModule);
       dggal_cpp_init(Module(__thisModule));

@@ -23,13 +23,12 @@ pub struct DGGRS {
 }
 
 pub struct Application {
-   app: dggal_cffi::Application,
-   _mEcere: dggal_cffi::Module
+   app: dggal_cffi::Application
 }
 impl Drop for Application {
    fn drop(&mut self) {
       unsafe {
-         dggal_cffi::__ecereNameSpace__ecere__com__eInstance_DecRef(self.app);
+         dggal_cffi::__eCNameSpace__eC__types__eInstance_DecRef(self.app);
       }
    }
 }
@@ -38,9 +37,9 @@ impl Application {
    pub fn new(_args: &Vec<String>) -> Application
    {
       unsafe {
-         let app = dggal_cffi::eC_init(nullInst, true as u32, false as u32, 0,
+         let app = dggal_cffi::ecrt_init(nullInst, true as u32, false as u32, 0,
                0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8); // TODO: argc, args);
-         Application { app: app, _mEcere: dggal_cffi::ecere_init(app) }
+         Application { app: app }
       }
    }
 }
@@ -61,10 +60,10 @@ impl DGGAL {
    {
       let dggrsName = CString::new(name).unwrap();
       unsafe {
-         let c = dggal_cffi::__ecereNameSpace__ecere__com__eSystem_FindClass(self.mDGGAL, dggrsName.as_ptr());
+         let c = dggal_cffi::__eCNameSpace__eC__types__eSystem_FindClass(self.mDGGAL, dggrsName.as_ptr());
 
          if c != nullPtr as * mut dggal_cffi::Class {
-            Some(DGGRS { imp: dggal_cffi::__ecereNameSpace__ecere__com__eInstance_New(c) as dggal_cffi::DGGRS })
+            Some(DGGRS { imp: dggal_cffi::__eCNameSpace__eC__types__eInstance_New(c) as dggal_cffi::DGGRS })
          }
          else {
             None
@@ -396,7 +395,7 @@ impl Drop for DGGRS {
    fn drop(&mut self)
    {
       unsafe {
-         dggal_cffi::__ecereNameSpace__ecere__com__eInstance_DecRef(self.imp as dggal_cffi::Instance);
+         dggal_cffi::__eCNameSpace__eC__types__eInstance_DecRef(self.imp as dggal_cffi::Instance);
       }
    }
 }

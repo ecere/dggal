@@ -9,7 +9,7 @@
       "TargetType" : "Executable",
       "TargetFileName" : "info",
       "Libraries" : [
-         "ecere"
+         "ecrt"
       ],
       "LibraryDirs" : [
          "../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)"
@@ -41,10 +41,10 @@
          "Options" : {
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
-               "ECERE_STATIC"
+               "EC_STATIC"
             ],
             "Libraries" : [
-               "ecereVanilla"
+               "ecrtStatic"
             ],
             "LibraryDirs" : [
                "../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
@@ -90,10 +90,8 @@
       {
          "Folder" : "bindings",
          "Files" : [
-            "../../bindings/c/eC.c",
-            "../../bindings/c/eC.h",
-            "../../bindings/c/ecere.c",
-            "../../bindings/c/ecere.h",
+            "../../bindings/c/ecrt.c",
+            "../../bindings/c/ecrt.h",
             "../../bindings/c/dggal.c",
             "../../bindings/c/dggal.h"
          ]

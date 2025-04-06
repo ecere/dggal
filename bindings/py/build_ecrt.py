@@ -4,29 +4,15 @@ import platform
 from distutils.util import get_platform;
 from os import path
 
-def isDirESDK(testpath):
-   if path.isfile(path.join(testpath, 'crossplatform.mk')):
-      if path.isfile(path.join(testpath, 'default.cf')):
-         return True
-   return False
+dggalDir = path.join(os.getcwd(), '../../')
+esdkDir = path.join(dggalDir, '../eC/')
 
-def getDirESDK(startpath):
-   itpath = startpath
-   while 1:
-      if isDirESDK(itpath) == True:
-         return itpath
-      itpath, removed = path.split(itpath)
-      if removed == '':
-         break
-   return 'badpath'
-
-esdkDir = getDirESDK(os.getcwd())
-if esdkDir.find('pip-req-build-') == -1 or esdkDir.find('pip-install-of') == -1:
+if dggalDir.find('pip-req-build-') == -1 or dggalDir.find('pip-install-of') == -1:
    inPipInstallBuild = False #True
 else:
    inPipInstallBuild = False
 
-# print(' -- before eC extension build -- ')
+# print(' -- before ecrt extension build -- ')
 pver = platform.python_version()
 # print('arg zero: ', sys.argv[0])
 # print('count: ', len(sys.argv))
@@ -42,19 +28,19 @@ dir = path.abspath(path.dirname(__file__))
 owd = os.getcwd()
 cpath = path.join('..', 'c')
 if os.path.isdir(cpath) != True:
-   cpath = path.join(esdkDir, 'bindings', 'c')
+   cpath = path.join(dggalDir, 'bindings', 'c')
    if os.path.isdir(cpath) != True:
       print('error: unable to find path to C bindings!')
-rel = '' if os.path.isfile(os.path.join(owd, 'build_eC.py')) == True else path.join('bindings', 'py')
+rel = '' if os.path.isfile(os.path.join(owd, 'build_ecrt.py')) == True else path.join('bindings', 'py')
 sysdir = 'win32' if sys.platform == 'win32' else 'linux'
 syslibdir = 'bin' if sys.platform == 'win32' else 'lib'
-incdir = path.join(esdkDir, 'bindings', 'c')
+incdir = path.join(dggalDir, 'bindings', 'c')
 if rel == '':
    libdir = path.join('..', '..', 'obj', sysdir, syslibdir)
 else:
    libdir = path.join('obj', sysdir, syslibdir)
 
-if os.path.isfile(path.join(rel, 'cffi-eC.h')) != True:
+if os.path.isfile(path.join(rel, 'cffi-ecrt.h')) != True:
    print('problem! -- owd:', owd, ' rel:', rel)
 
 if dnf != '':
@@ -80,34 +66,34 @@ def cdefpath(filename):
          return fullpath
    return 'badpath'
 
-ffi_eC = FFI()
-ffi_eC.cdef(open(cdefpath('cffi-eC.h')).read())
+ffi_ecrt = FFI()
+ffi_ecrt.cdef(open(cdefpath('cffi-ecrt.h')).read())
 PY_BINDINGS_EMBEDDED_C_DISABLE = os.getenv('PY_BINDINGS_EMBEDDED_C_DISABLE')
-_embedded_c = False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True
+_embedded_c = True # False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True
 
 srcs = []
 if _embedded_c == True:
-   srcs.append(path.join(cpath, 'eC.c'))
+   srcs.append(path.join(cpath, 'ecrt.c'))
 
 libs = []
 
-libs.append('ecere')
+libs.append('ecrt')
 if _embedded_c == False:
-   libs.append('ecere_c')
-ffi_eC.set_source('_pyeC',
-               '#include "eC.h"',
+   libs.append('ecrt_c')
+ffi_ecrt.set_source('_pyecrt',
+               '#include "ecrt.h"',
                sources=srcs,
-               define_macros=[('BINDINGS_SHARED', None), ('EC_EXPORT', None)],
+               define_macros=[('BINDINGS_SHARED', None), ('ECRT_EXPORT', None)],
                extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
                include_dirs=[path.join(owd, rel), incdir],
                libraries=libs,
-               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/EcereSDK/lib",],
-               library_dirs=[path.join(owd, libdir)],
+               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/eCSDK/lib",],
+               library_dirs=[path.join(owd, libdir), path.join(esdkDir, 'obj', sysdir, syslibdir)],
                py_limited_api=False)
 if __name__ == '__main__':
    V = os.getenv('V')
    v = True if V == '1' or V == 'y' else False
-   ffi_eC.compile(verbose=v,tmpdir='.',debug=True)
+   ffi_ecrt.compile(verbose=v,tmpdir='.',debug=True)
 
 if dnf != '':
    os.chdir(owd)

@@ -42,58 +42,29 @@ jobs:
         dpkg -i mingw-w64_6.0.0-3_all.deb
       - apt -y install make
       - apt -y install zlib1g-dev
-      - apt -y install libpng-dev
-      - apt -y install libjpeg62-dev
-      - apt -y install libgif-dev
-      - apt -y install libncurses5-dev
-      - apt -y install libgpm-dev
-      - apt -y install libfreetype6-dev
-      - apt -y install libx11-dev
-      - apt -y install libxrender-dev
-      - apt -y install libgl1-mesa-dev
-      - apt -y install libxext-dev
-      - apt -y install libsqlite3-dev
-      - apt -y install libssl-dev
-      - apt -y install libffi-dev
-      - apt -y install libasound2-dev
-      - apt -y install libfontconfig1-dev
-      - apt -y install liblzma-dev
-      - apt -y install libnghttp2-dev
-      - apt -y install libbrotli-dev
-      - apt -y install libzstd-dev
-      - apt -y install librtmp-dev
-      - apt -y install libpsl-dev
-      - apt -y install libidn2-dev
       - apt -y install git
       - apt -y install wine-stable
       - apt -y install wine64
       - update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
       - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100
-      - tar xf ecere-sdk/*output-linux*.tar.gz -C / &&
-        tar xf ecere-sdk/*extras*.tar.gz -C ecere-sdk/ &&
-        tar xf ecere-sdk/*deps*.tar.gz -C ecere-sdk/ &&
-        mkdir ecere-sdk/obj/ && tar xf ecere-sdk/*binaries-linux-x86_64.tar.gz -C ecere-sdk/obj/ &&
-        tar xf ecere-sdk/*binaries-windows-x86_64.tar.gz -C ecere-sdk/obj/ &&
-        tar xf ecere-sdk/*binaries-linux-i686.tar.gz -C ecere-sdk/obj/ &&
-        tar xf ecere-sdk/*binaries-windows-i686.tar.gz -C ecere-sdk/obj/ &&
+      - tar xf eC/*output-linux*.tar.gz -C / &&
+        tar xf eC/*extras*.tar.gz -C eC/ &&
+        tar xf eC/*deps*.tar.gz -C eC/ &&
+        mkdir eC/obj/ && tar xf eC/*binaries-linux-x86_64.tar.gz -C eC/obj/ &&
+        tar xf eC/*binaries-windows-x86_64.tar.gz -C eC/obj/ &&
+        tar xf eC/*binaries-linux-i686.tar.gz -C eC/obj/ &&
+        tar xf eC/*binaries-windows-i686.tar.gz -C eC/obj/ &&
         tar xf win32-patches/*.tar.gz &&
-        tar xf OpenSSL-win32/OpenSSL-win32*.tar.gz -C $(pwd)/win32 &&
         tar xf upx/*linux-x86_64.tar.gz -C /usr/bin &&
-        tar xf curl/curl*linux-x86_64.tar.gz -C ecere-sdk/deps &&
-        tar xf curl/curl*linux-i686.tar.gz -C ecere-sdk/deps &&
-        tar xf curl/curl*windows-x86_64.tar.gz -C ecere-sdk/deps &&
-        tar xf curl/curl*windows-i686.tar.gz -C ecere-sdk/deps &&
-        ln -s $(pwd)/ecere-sdk/deps/curl-7.86.0/obj/release.linux/libcurl.so.4 /usr/lib/x86_64-linux-gnu/ &&
-        ln -s $(pwd)/ecere-sdk/deps/curl-7.86.0/obj/release.linux/libcurl.so /usr/lib/x86_64-linux-gnu/ &&
         mkdir $(pwd)/.wine && export WINEPREFIX=$(pwd)/.wine &&
         git config --global --add safe.directory '*' &&
-        export ECERE_SDK_SRC=$(pwd)/ecere-sdk &&
+        export EC_SDK_SRC=$(pwd)/eC &&
         make STATIC_SYSLIBS=y -j2 && make test && mkdir linux && mkdir linux/bin && mkdir linux/lib &&
         cp obj/release.linux/libdggal.so linux/lib &&
         cp obj/static.linux/libdggalStatic.a linux/lib &&
         cp obj/static.linux/dgg linux/bin && cp obj/release.linux/dgg linux/bin/dgg-dynamic &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-x86_64.tar.gz linux &&
-        make PLATFORM=win32 -j2 && make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg test &&
+        make PLATFORM=win32 -j2 && make PLATFORM=win32 test &&
         mkdir windows && mkdir windows/bin && mkdir windows/lib &&
         cp obj/release.win32/dggal.dll windows/bin &&
         cp obj/static.win32/libdggalStatic.a windows/lib &&
@@ -131,27 +102,13 @@ jobs:
     artifacts: '**'
     accessTokenSecret: ecere-sdk-access
     destinationPath: win32-patches
-  - projectPath: ecere-sdk
+  - projectPath: eC
     buildProvider: !LastFinishedBuild
       jobName: Build
       refName: refs/heads/latest
     artifacts: '**'
     accessTokenSecret: ecere-sdk-access
-    destinationPath: ecere-sdk
-  - projectPath: OpenSSL-win32
-    buildProvider: !LastFinishedBuild
-      jobName: Build
-      refName: refs/heads/master
-    artifacts: '**'
-    accessTokenSecret: ecere-sdk-access
-    destinationPath: OpenSSL-win32
-  - projectPath: curl
-    buildProvider: !LastFinishedBuild
-      jobName: Build
-      refName: refs/heads/master
-    artifacts: '**'
-    accessTokenSecret: ecere-sdk-access
-    destinationPath: curl
+    destinationPath: eC
   - projectPath: upx
     buildProvider: !LastFinishedBuild
       jobName: Build

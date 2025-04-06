@@ -33,11 +33,11 @@ CONSOLE = -mconsole
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 ifndef WINDOWS_HOST
@@ -109,7 +109,7 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-	$(call _L,ecere)
+	$(call _L,ecrt)
 endif
 
 PRJ_CFLAGS += \
@@ -121,9 +121,11 @@ ECFLAGS += -module $(MODULE)
 
 ifdef WINDOWS_TARGET
 OFLAGS += \
-	$(if $(ECERE_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX),-L$(call quote_path,$(ECERE_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)),) \
-	$(if $(ECERE_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin,-L$(call quote_path,$(ECERE_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin),) \
+	$(if $(EC_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX),-L$(call quote_path,$(EC_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)),) \
+	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin),) \
 	-static-libgcc
+else
+OFLAGS += $(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),)
 endif
 
 CECFLAGS += -cpp $(_CPP)
@@ -134,8 +136,8 @@ all: objdir $(TARGET)
 
 objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(EC_SDK_SRC),$(if $(wildcard $(call escspace,$(EC_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of EC_SDK_SRC is pointing to an incorrect ($(EC_SDK_SRC)) location.)),)
+	$(if $(EC_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define EC_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -155,25 +157,9 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
-ifndef STATIC_LIBRARY_TARGET
 	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
-endif
-else
-ifdef WINDOWS_HOST
-	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
-else
-	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
-endif
-endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
 endif
 
 # SYMBOL RULES
@@ -307,14 +293,6 @@ cleantarget:
 	$(call rm,$(OBJ)symbols.lst)
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

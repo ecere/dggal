@@ -1,19 +1,19 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 
 import "Vector3D"
 
-public struct DGGPlane
+public struct Plane
 {
    union
    {
       struct { double a, b, c; };
-      DGGVector3D normal;
+      Vector3D normal;
    };
    double d;
 
-   void FromPoints(const DGGVector3D v1, const DGGVector3D v2, const DGGVector3D v3)
+   void FromPoints(const Vector3D v1, const Vector3D v2, const Vector3D v3)
    {
-      DGGVector3D a, b;
+      Vector3D a, b;
 
       a.Subtract(v3, v1);
       b.Subtract(v2, v1);

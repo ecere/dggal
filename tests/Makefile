@@ -33,23 +33,23 @@ CONSOLE = -mconsole
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
 RUNNER =
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 ifndef WINDOWS_HOST
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 ifdef WINDOWS_TARGET
-export WINEPATH := $(WINEPATH);$(DGGAL_ABSPATH)obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/;$(ECERE_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin/;$(ECERE_SDK_SRC)/deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX);$(OPENSSL_BIN_DIR)
+export WINEPATH := $(WINEPATH);$(DGGAL_ABSPATH)obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/;$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin/;$(EC_SDK_SRC)/deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX);$(OPENSSL_BIN_DIR)
 RUNNER = wine
 endif
 else
-export PATH := $(PATH);$(ECERE_SDK_SRC)/obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)/bin/;$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+export PATH := $(PATH);$(EC_SDK_SRC)/obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)/bin/;$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 endif
 
 # POST-INCLUDES VARIABLES
@@ -64,7 +64,7 @@ TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(TARGET_NAM
 
 _ECSOURCES = \
 	dggrs/isea3HTests.ec \
-	$(ECERE_SDK_SRC)/extras/testing/testingFramework.ec \
+	$(EC_SDK_SRC)/extras/testing/testingFramework.ec \
 	dggalTest.ec \
 	dggrsTestCase.ec
 
@@ -106,7 +106,7 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-	$(call _L,ecere)
+	$(call _L,ecrt)
 endif
 
 PRJ_CFLAGS += \
@@ -118,9 +118,11 @@ ECFLAGS += -module $(MODULE)
 
 ifdef WINDOWS_TARGET
 OFLAGS += \
-	$(if $(ECERE_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX),-L$(call quote_path,$(ECERE_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)),) \
-	$(if $(ECERE_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin,-L$(call quote_path,$(ECERE_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin),) \
+	$(if $(EC_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX),-L$(call quote_path,$(EC_SDK_SRC)/deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)),) \
+	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin),) \
 	-static-libgcc
+else
+OFLAGS += $(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),)
 endif
 
 ifdef LINUX_TARGET
@@ -136,8 +138,8 @@ all: objdir $(TARGET)
 
 objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(EC_SDK_SRC),$(if $(wildcard $(call escspace,$(EC_SDK_SRC)/crossplatform.mk)),,@$(call echo,eC SDK Source Warning: The value of EC_SDK_SRC is pointing to an incorrect ($(EC_SDK_SRC)) location.)),)
+	$(if $(EC_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define EC_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -183,8 +185,8 @@ endif
 $(OBJ)isea3HTests.sym: dggrs/isea3HTests.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,dggrs/isea3HTests.ec) -o $(call quote_path,$@)
 
-$(OBJ)testingFramework.sym: $(ECERE_SDK_SRC)/extras/testing/testingFramework.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(ECERE_SDK_SRC)/extras/testing/testingFramework.ec) -o $(call quote_path,$@)
+$(OBJ)testingFramework.sym: $(EC_SDK_SRC)/extras/testing/testingFramework.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(EC_SDK_SRC)/extras/testing/testingFramework.ec) -o $(call quote_path,$@)
 
 $(OBJ)dggalTest.sym: dggalTest.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,dggalTest.ec) -o $(call quote_path,$@)
@@ -197,8 +199,8 @@ $(OBJ)dggrsTestCase.sym: dggrsTestCase.ec
 $(OBJ)isea3HTests.c: dggrs/isea3HTests.ec $(OBJ)isea3HTests.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,dggrs/isea3HTests.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)testingFramework.c: $(ECERE_SDK_SRC)/extras/testing/testingFramework.ec $(OBJ)testingFramework.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(ECERE_SDK_SRC)/extras/testing/testingFramework.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)testingFramework.c: $(EC_SDK_SRC)/extras/testing/testingFramework.ec $(OBJ)testingFramework.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(EC_SDK_SRC)/extras/testing/testingFramework.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)dggalTest.c: dggalTest.ec $(OBJ)dggalTest.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,dggalTest.ec) -o $(call quote_path,$@) -symbols $(OBJ)

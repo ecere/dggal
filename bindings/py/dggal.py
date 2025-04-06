@@ -1,5 +1,41 @@
-from EcereSDK.ecere import *
+from eCSDK.ecrt import *
 from _pydggal import *
+
+class GeoPoint(Struct):
+   def __init__(self, lat = 0, lon = 0, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_GeoPoint *", impl)
+      else:
+         if isinstance(lat, tuple):
+            __tuple = lat
+            lat = 0
+            if len(__tuple) > 0: lat = __tuple[0]
+            if len(__tuple) > 1: lon = __tuple[1]
+         if lat is not None:
+            if not isinstance(lat, Angle): lat = Degrees(lat)
+            lat = lat.impl
+         else:
+            lat = Degrees()
+         if lon is not None:
+            if not isinstance(lon, Angle): lon = Degrees(lon)
+            lon = lon.impl
+         else:
+            lon = Degrees()
+         self.impl = ffi.new("eC_GeoPoint *", { 'lat' : lat, 'lon' : lon })
+
+   @property
+   def lat(self): return Degrees(impl = self.impl.lat)
+   @lat.setter
+   def lat(self, value):
+      if not isinstance(value, Angle): value = Degrees(value)
+      self.impl.lat = value.impl
+
+   @property
+   def lon(self): return Degrees(impl = self.impl.lon)
+   @lon.setter
+   def lon(self, value):
+      if not isinstance(value, Angle): value = Degrees(value)
+      self.impl.lon = value.impl
 
 @ffi.callback("void(eC_DGGRS, eC_Array)")
 def cb_DGGRS_compactZones(__e, zones):
@@ -831,42 +867,6 @@ class DGGRS(Instance):
 
 class DGGRSZone(pyBaseClass):pass
 
-class GeoPoint(Struct):
-   def __init__(self, lat = 0, lon = 0, impl = None):
-      if impl is not None:
-         self.impl = ffi.new("eC_GeoPoint *", impl)
-      else:
-         if isinstance(lat, tuple):
-            __tuple = lat
-            lat = 0
-            if len(__tuple) > 0: lat = __tuple[0]
-            if len(__tuple) > 1: lon = __tuple[1]
-         if lat is not None:
-            if not isinstance(lat, Angle): lat = Degrees(lat)
-            lat = lat.impl
-         else:
-            lat = Degrees()
-         if lon is not None:
-            if not isinstance(lon, Angle): lon = Degrees(lon)
-            lon = lon.impl
-         else:
-            lon = Degrees()
-         self.impl = ffi.new("eC_GeoPoint *", { 'lat' : lat, 'lon' : lon })
-
-   @property
-   def lat(self): return Degrees(impl = self.impl.lat)
-   @lat.setter
-   def lat(self, value):
-      if not isinstance(value, Angle): value = Degrees(value)
-      self.impl.lat = value.impl
-
-   @property
-   def lon(self): return Degrees(impl = self.impl.lon)
-   @lon.setter
-   def lon(self, value):
-      if not isinstance(value, Angle): value = Degrees(value)
-      self.impl.lon = value.impl
-
 class GeoExtent(Struct):
    def __init__(self, ll = None, ur = None, impl = None):
       if impl is not None:
@@ -916,9 +916,30 @@ class GeoExtent(Struct):
       b = ffi.NULL if b is None else b.impl
       return lib.GeoExtent_intersects(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", b))
 
+class RhombicIcosahedral3H(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral3H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RhombicIcosahedral9R(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 wgs84Major = Meters ( 6378137.0 )
 
 wholeWorld = GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )
+
+class BCTA3H(RhombicIcosahedral3H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(BCTA3H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
 
 class CRS(pyBaseClass):
    def __init__(self, registry = 0, crsID = 0, h = False, impl = None):
@@ -1169,193 +1190,6 @@ class DGGSJSONShape(Instance):
    @dimensions.setter
    def dimensions(self, value): IPTR(lib, ffi, self, DGGSJSONShape).dimensions = value.impl
 
-class FieldType:
-   integer = lib.FieldType_integer
-   real    = lib.FieldType_real
-   text    = lib.FieldType_text
-   blob    = lib.FieldType_blob
-   nil     = lib.FieldType_nil
-   array   = lib.FieldType_array
-   map     = lib.FieldType_map
-
-class FieldTypeEx:
-   def __init__(self, type = 0, mustFree = False, format = 0, isUnsigned = False, isDateTime = False, impl = None):
-      if impl is not None:
-         self.impl = impl
-      elif isinstance(type, FieldTypeEx):
-         self.impl = type.impl
-      else:
-         if isinstance(type, tuple):
-            __tuple = type
-            type = 0
-            if len(__tuple) > 0: type = __tuple[0]
-            if len(__tuple) > 1: mustFree = __tuple[1]
-            if len(__tuple) > 2: format = __tuple[2]
-            if len(__tuple) > 3: isUnsigned = __tuple[3]
-            if len(__tuple) > 4: isDateTime = __tuple[4]
-         self.impl = (
-            (type       << lib.FIELDTYPEEX_type_SHIFT)       |
-            (mustFree   << lib.FIELDTYPEEX_mustFree_SHIFT)   |
-            (format     << lib.FIELDTYPEEX_format_SHIFT)     |
-            (isUnsigned << lib.FIELDTYPEEX_isUnsigned_SHIFT) |
-            (isDateTime << lib.FIELDTYPEEX_isDateTime_SHIFT) )
-
-   @property
-   def type(self): return ((((self.impl)) & lib.FIELDTYPEEX_type_MASK) >> lib.FIELDTYPEEX_type_SHIFT)
-   @type.setter
-   def type(self, value): self.impl = ((self.impl) & ~(lib.FIELDTYPEEX_type_MASK)) | (((value)) << lib.FIELDTYPEEX_type_SHIFT)
-
-   @property
-   def mustFree(self): return ((((self.impl)) & lib.FIELDTYPEEX_mustFree_MASK) >> lib.FIELDTYPEEX_mustFree_SHIFT)
-   @mustFree.setter
-   def mustFree(self, value): self.impl = ((self.impl) & ~(lib.FIELDTYPEEX_mustFree_MASK)) | (((value)) << lib.FIELDTYPEEX_mustFree_SHIFT)
-
-   @property
-   def format(self): return ((((self.impl)) & lib.FIELDTYPEEX_format_MASK) >> lib.FIELDTYPEEX_format_SHIFT)
-   @format.setter
-   def format(self, value): self.impl = ((self.impl) & ~(lib.FIELDTYPEEX_format_MASK)) | (((value)) << lib.FIELDTYPEEX_format_SHIFT)
-
-   @property
-   def isUnsigned(self): return ((((self.impl)) & lib.FIELDTYPEEX_isUnsigned_MASK) >> lib.FIELDTYPEEX_isUnsigned_SHIFT)
-   @isUnsigned.setter
-   def isUnsigned(self, value): self.impl = ((self.impl) & ~(lib.FIELDTYPEEX_isUnsigned_MASK)) | (((value)) << lib.FIELDTYPEEX_isUnsigned_SHIFT)
-
-   @property
-   def isDateTime(self): return ((((self.impl)) & lib.FIELDTYPEEX_isDateTime_MASK) >> lib.FIELDTYPEEX_isDateTime_SHIFT)
-   @isDateTime.setter
-   def isDateTime(self, value): self.impl = ((self.impl) & ~(lib.FIELDTYPEEX_isDateTime_MASK)) | (((value)) << lib.FIELDTYPEEX_isDateTime_SHIFT)
-
-class FieldValue(Struct):
-   def __init__(self, type = None, i = None, r = None, s = None, b = None, a = None, m = None, impl = None):
-      if impl is not None:
-         self.impl = ffi.new("eC_FieldValue *", impl)
-      else:
-         if type is not None:
-            if not isinstance(type, FieldTypeEx): type = FieldTypeEx(type)
-         if s is not None:
-            if not isinstance(s, String): s = String(s)
-         __members = { }
-         if type is not None: __members['type'] = type.impl
-         if i is not None:    __members['i']    = i
-         if r is not None:    __members['r']    = r
-         if s is not None:    __members['s']    = s
-         if b is not None:    __members['b']    = b
-         if a is not None:    __members['a']    = a.impl
-         if m is not None:    __members['m']    = m.impl
-         self.impl = ffi.new("eC_FieldValue *", __members)
-
-   @property
-   def type(self): return FieldTypeEx(impl = self.impl.type)
-   @type.setter
-   def type(self, value):
-      if not isinstance(value, FieldTypeEx): value = FieldTypeEx(value)
-      self.impl.type = value.impl
-
-   @property
-   def i(self): return self.impl.i
-   @i.setter
-   def i(self, value): self.impl.i = value
-
-   @property
-   def r(self): return self.impl.r
-   @r.setter
-   def r(self, value): self.impl.r = value
-
-   @property
-   def s(self): return String(self.impl.s)
-   @s.setter
-   def s(self, value):
-      if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
-      elif value is None: value = ffi.NULL
-      self.impl.s = value
-
-   @property
-   def b(self): return self.impl.b
-   @b.setter
-   def b(self, value): self.impl.b = value
-
-   @property
-   def a(self): return pyOrNewObject(Array, self.impl.a)
-   @a.setter
-   def a(self, value): self.impl.a = value.impl
-
-   @property
-   def m(self): return pyOrNewObject(Map, self.impl.m)
-   @m.setter
-   def m(self, value): self.impl.m = value.impl
-
-   def compareInt(self, other = None):
-      if other is not None and not isinstance(other, FieldValue): other = FieldValue(other)
-      other = ffi.NULL if other is None else other.impl
-      return lib.FieldValue_compareInt(ffi.cast("eC_FieldValue *", self.impl), ffi.cast("eC_FieldValue *", other))
-
-   def compareReal(self, other = None):
-      if other is not None and not isinstance(other, FieldValue): other = FieldValue(other)
-      other = ffi.NULL if other is None else other.impl
-      return lib.FieldValue_compareReal(ffi.cast("eC_FieldValue *", self.impl), ffi.cast("eC_FieldValue *", other))
-
-   def compareText(self, other = None):
-      if other is not None and not isinstance(other, FieldValue): other = FieldValue(other)
-      other = ffi.NULL if other is None else other.impl
-      return lib.FieldValue_compareText(ffi.cast("eC_FieldValue *", self.impl), ffi.cast("eC_FieldValue *", other))
-
-   def formatArray(self, tempString, fieldData, onType):
-      if isinstance(tempString, str): tempString = ffi.new("char[]", tempString.encode('u8'))
-      elif tempString is None: tempString = ffi.NULL
-      if hasattr(fieldData, 'impl'): fieldData = fieldData.impl
-      if fieldData is None: fieldData = ffi.NULL
-      return pyOrNewObject(String, lib.FieldValue_formatArray(self.impl, tempString, fieldData, onType))
-
-   def formatFloat(self, stringOutput, fixDot):
-      if isinstance(stringOutput, str): stringOutput = ffi.new("char[]", stringOutput.encode('u8'))
-      elif stringOutput is None: stringOutput = ffi.NULL
-      return pyOrNewObject(String, lib.FieldValue_formatFloat(self.impl, stringOutput, fixDot))
-
-   def formatInteger(self, stringOutput):
-      if isinstance(stringOutput, str): stringOutput = ffi.new("char[]", stringOutput.encode('u8'))
-      elif stringOutput is None: stringOutput = ffi.NULL
-      return pyOrNewObject(String, lib.FieldValue_formatInteger(self.impl, stringOutput))
-
-   def formatMap(self, tempString, fieldData, onType):
-      if isinstance(tempString, str): tempString = ffi.new("char[]", tempString.encode('u8'))
-      elif tempString is None: tempString = ffi.NULL
-      if hasattr(fieldData, 'impl'): fieldData = fieldData.impl
-      if fieldData is None: fieldData = ffi.NULL
-      return pyOrNewObject(String, lib.FieldValue_formatMap(self.impl, tempString, fieldData, onType))
-
-   def getArrayOrMap(string, destClass = None):
-      if isinstance(string, str): string = ffi.new("char[]", string.encode('u8'))
-      elif string is None: string = ffi.NULL
-      if destClass is not None and not isinstance(destClass, Class): destClass = Class(destClass)
-      destClass = ffi.NULL if destClass is None else destClass.impl
-      destination = ffi.new("void * *")
-      r = lib.FieldValue_getArrayOrMap(string, ffi.cast("struct eC_Class *", destClass), destination)
-      if destination[0] == ffi.NULL: _destination = None
-      else:
-         if destClass.type == ClassType.normalClass:
-            i = ffi.cast("eC_Instance", destination[0])
-            n = ffi.string(i._class.name).decode('u8')
-         else:
-            n = ffi.string(destClass.name).decode('u8')
-         t = pyTypeByName(n)
-         ct = n + " * " if destClass.type == ClassType.noHeadClass else n
-         _destination = t(impl = pyFFI().cast(ct, destination[0]))
-      return r, _destination
-
-   def stringify(self):
-      return pyOrNewObject(String, lib.FieldValue_stringify(self.impl))
-
-class FieldValueFormat:
-   decimal     = lib.FieldValueFormat_decimal
-   unset       = lib.FieldValueFormat_unset
-   hex         = lib.FieldValueFormat_hex
-   octal       = lib.FieldValueFormat_octal
-   binary      = lib.FieldValueFormat_binary
-   exponential = lib.FieldValueFormat_exponential
-   boolean     = lib.FieldValueFormat_boolean
-   textObj     = lib.FieldValueFormat_textObj
-   color       = lib.FieldValueFormat_color
-
 class GGGZone(DGGRSZone):
    def __init__(self, level = 0, row = 0, col = 0, impl = None):
       if impl is not None:
@@ -1396,65 +1230,58 @@ class GNOSISGlobalGrid(DGGRS):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
-class ISEA3H(DGGRS):
+class GPP3H(RhombicIcosahedral3H):
    class_members = []
 
-   def init_args(self, args, kwArgs): init_args(ISEA3H, self, args, kwArgs)
+   def init_args(self, args, kwArgs): init_args(GPP3H, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
-class ISEA3HZone(DGGRSZone):
-   def __init__(self, levelISEA9R = 0, rootRhombus = 0, rhombusIX = 0, subHex = 0, impl = None):
+class I3HZone(DGGRSZone):
+   def __init__(self, levelI9R = 0, rootRhombus = 0, rhombusIX = 0, subHex = 0, impl = None):
       if impl is not None:
          self.impl = impl
-      elif isinstance(levelISEA9R, ISEA3HZone):
-         self.impl = levelISEA9R.impl
+      elif isinstance(levelI9R, I3HZone):
+         self.impl = levelI9R.impl
       else:
-         if isinstance(levelISEA9R, tuple):
-            __tuple = levelISEA9R
-            levelISEA9R = 0
-            if len(__tuple) > 0: levelISEA9R = __tuple[0]
+         if isinstance(levelI9R, tuple):
+            __tuple = levelI9R
+            levelI9R = 0
+            if len(__tuple) > 0: levelI9R = __tuple[0]
             if len(__tuple) > 1: rootRhombus = __tuple[1]
             if len(__tuple) > 2: rhombusIX = __tuple[2]
             if len(__tuple) > 3: subHex = __tuple[3]
          self.impl = (
-            (levelISEA9R << lib.ISEA3HZONE_levelISEA9R_SHIFT) |
-            (rootRhombus << lib.ISEA3HZONE_rootRhombus_SHIFT) |
-            (rhombusIX   << lib.ISEA3HZONE_rhombusIX_SHIFT)   |
-            (subHex      << lib.ISEA3HZONE_subHex_SHIFT)      )
+            (levelI9R    << lib.I3HZONE_levelI9R_SHIFT)    |
+            (rootRhombus << lib.I3HZONE_rootRhombus_SHIFT) |
+            (rhombusIX   << lib.I3HZONE_rhombusIX_SHIFT)   |
+            (subHex      << lib.I3HZONE_subHex_SHIFT)      )
 
    @property
-   def levelISEA9R(self): return ((((self.impl)) & lib.ISEA3HZONE_levelISEA9R_MASK) >> lib.ISEA3HZONE_levelISEA9R_SHIFT)
-   @levelISEA9R.setter
-   def levelISEA9R(self, value): self.impl = ((self.impl) & ~(lib.ISEA3HZONE_levelISEA9R_MASK)) | (((value)) << lib.ISEA3HZONE_levelISEA9R_SHIFT)
+   def levelI9R(self): return ((((self.impl)) & lib.I3HZONE_levelI9R_MASK) >> lib.I3HZONE_levelI9R_SHIFT)
+   @levelI9R.setter
+   def levelI9R(self, value): self.impl = ((self.impl) & ~(lib.I3HZONE_levelI9R_MASK)) | (((value)) << lib.I3HZONE_levelI9R_SHIFT)
 
    @property
-   def rootRhombus(self): return ((((self.impl)) & lib.ISEA3HZONE_rootRhombus_MASK) >> lib.ISEA3HZONE_rootRhombus_SHIFT)
+   def rootRhombus(self): return ((((self.impl)) & lib.I3HZONE_rootRhombus_MASK) >> lib.I3HZONE_rootRhombus_SHIFT)
    @rootRhombus.setter
-   def rootRhombus(self, value): self.impl = ((self.impl) & ~(lib.ISEA3HZONE_rootRhombus_MASK)) | (((value)) << lib.ISEA3HZONE_rootRhombus_SHIFT)
+   def rootRhombus(self, value): self.impl = ((self.impl) & ~(lib.I3HZONE_rootRhombus_MASK)) | (((value)) << lib.I3HZONE_rootRhombus_SHIFT)
 
    @property
-   def rhombusIX(self): return ((((self.impl)) & lib.ISEA3HZONE_rhombusIX_MASK) >> lib.ISEA3HZONE_rhombusIX_SHIFT)
+   def rhombusIX(self): return ((((self.impl)) & lib.I3HZONE_rhombusIX_MASK) >> lib.I3HZONE_rhombusIX_SHIFT)
    @rhombusIX.setter
-   def rhombusIX(self, value): self.impl = ((self.impl) & ~(lib.ISEA3HZONE_rhombusIX_MASK)) | (((value)) << lib.ISEA3HZONE_rhombusIX_SHIFT)
+   def rhombusIX(self, value): self.impl = ((self.impl) & ~(lib.I3HZONE_rhombusIX_MASK)) | (((value)) << lib.I3HZONE_rhombusIX_SHIFT)
 
    @property
-   def subHex(self): return ((((self.impl)) & lib.ISEA3HZONE_subHex_MASK) >> lib.ISEA3HZONE_subHex_SHIFT)
+   def subHex(self): return ((((self.impl)) & lib.I3HZONE_subHex_MASK) >> lib.I3HZONE_subHex_SHIFT)
    @subHex.setter
-   def subHex(self, value): self.impl = ((self.impl) & ~(lib.ISEA3HZONE_subHex_MASK)) | (((value)) << lib.ISEA3HZONE_subHex_SHIFT)
+   def subHex(self, value): self.impl = ((self.impl) & ~(lib.I3HZONE_subHex_MASK)) | (((value)) << lib.I3HZONE_subHex_SHIFT)
 
-class ISEA9R(DGGRS):
-   class_members = []
-
-   def init_args(self, args, kwArgs): init_args(ISEA9R, self, args, kwArgs)
-   def __init__(self, *args, **kwArgs):
-      self.init_args(list(args), kwArgs)
-
-class ISEA9RZone(DGGRSZone):
+class I9RZone(DGGRSZone):
    def __init__(self, level = 0, row = 0, col = 0, impl = None):
       if impl is not None:
          self.impl = impl
-      elif isinstance(level, ISEA9RZone):
+      elif isinstance(level, I9RZone):
          self.impl = level.impl
       else:
          if isinstance(level, tuple):
@@ -1464,24 +1291,52 @@ class ISEA9RZone(DGGRSZone):
             if len(__tuple) > 1: row = __tuple[1]
             if len(__tuple) > 2: col = __tuple[2]
          self.impl = (
-            (level << lib.ISEA9RZONE_level_SHIFT) |
-            (row   << lib.ISEA9RZONE_row_SHIFT)   |
-            (col   << lib.ISEA9RZONE_col_SHIFT)   )
+            (level << lib.I9RZONE_level_SHIFT) |
+            (row   << lib.I9RZONE_row_SHIFT)   |
+            (col   << lib.I9RZONE_col_SHIFT)   )
 
    @property
-   def level(self): return ((((self.impl)) & lib.ISEA9RZONE_level_MASK) >> lib.ISEA9RZONE_level_SHIFT)
+   def level(self): return ((((self.impl)) & lib.I9RZONE_level_MASK) >> lib.I9RZONE_level_SHIFT)
    @level.setter
-   def level(self, value): self.impl = ((self.impl) & ~(lib.ISEA9RZONE_level_MASK)) | (((value)) << lib.ISEA9RZONE_level_SHIFT)
+   def level(self, value): self.impl = ((self.impl) & ~(lib.I9RZONE_level_MASK)) | (((value)) << lib.I9RZONE_level_SHIFT)
 
    @property
-   def row(self): return ((((self.impl)) & lib.ISEA9RZONE_row_MASK) >> lib.ISEA9RZONE_row_SHIFT)
+   def row(self): return ((((self.impl)) & lib.I9RZONE_row_MASK) >> lib.I9RZONE_row_SHIFT)
    @row.setter
-   def row(self, value): self.impl = ((self.impl) & ~(lib.ISEA9RZONE_row_MASK)) | (((value)) << lib.ISEA9RZONE_row_SHIFT)
+   def row(self, value): self.impl = ((self.impl) & ~(lib.I9RZONE_row_MASK)) | (((value)) << lib.I9RZONE_row_SHIFT)
 
    @property
-   def col(self): return ((((self.impl)) & lib.ISEA9RZONE_col_MASK) >> lib.ISEA9RZONE_col_SHIFT)
+   def col(self): return ((((self.impl)) & lib.I9RZONE_col_MASK) >> lib.I9RZONE_col_SHIFT)
    @col.setter
-   def col(self, value): self.impl = ((self.impl) & ~(lib.ISEA9RZONE_col_MASK)) | (((value)) << lib.ISEA9RZONE_col_SHIFT)
+   def col(self, value): self.impl = ((self.impl) & ~(lib.I9RZONE_col_MASK)) | (((value)) << lib.I9RZONE_col_SHIFT)
+
+class ISEA3H(RhombicIcosahedral3H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEA3H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class ISEA9R(RhombicIcosahedral9R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEA9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class IVEA3H(RhombicIcosahedral3H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(IVEA3H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class IVEA9R(RhombicIcosahedral9R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(IVEA9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
 
 class JSONSchema(Instance):
    class_members = [
@@ -1817,6 +1672,117 @@ class JSONSchemaType:
    object  = lib.JSONSchemaType_object
    string  = lib.JSONSchemaType_string
 
+class Plane(Struct):
+   def __init__(self, a = None, b = None, c = None, d = None, normal = None, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_Plane *", impl)
+      else:
+         if isinstance(a, tuple):
+            __tuple = a
+            a = 0.0
+            if len(__tuple) > 0: a      = __tuple[0]
+            if len(__tuple) > 1: d      = __tuple[1]
+         if normal is not None:
+            if not isinstance(normal, Vector3D): normal = Vector3D(normal)
+         __members = { }
+         if a is not None:      __members['a']      = a
+         if b is not None:      __members['b']      = b
+         if c is not None:      __members['c']      = c
+         if d is not None:      __members['d']      = d
+         if normal is not None: __members['normal'] = normal.impl[0]
+         self.impl = ffi.new("eC_Plane *", __members)
+
+   @property
+   def a(self): return self.impl.a
+   @a.setter
+   def a(self, value): self.impl.a = value
+
+   @property
+   def b(self): return self.impl.b
+   @b.setter
+   def b(self, value): self.impl.b = value
+
+   @property
+   def c(self): return self.impl.c
+   @c.setter
+   def c(self, value): self.impl.c = value
+
+   @property
+   def normal(self): return Vector3D(impl = self.impl.normal)
+   @normal.setter
+   def normal(self, value):
+      if not isinstance(value, Vector3D): value = Vector3D(value)
+      self.impl.normal = value.impl[0]
+
+   @property
+   def d(self): return self.impl.d
+   @d.setter
+   def d(self, value): self.impl.d = value
+
+   def fromPoints(self, v1 = None, v2 = None, v3 = None):
+      if v1 is not None and not isinstance(v1, Vector3D): v1 = Vector3D(v1)
+      v1 = ffi.NULL if v1 is None else v1.impl
+      if v2 is not None and not isinstance(v2, Vector3D): v2 = Vector3D(v2)
+      v2 = ffi.NULL if v2 is None else v2.impl
+      if v3 is not None and not isinstance(v3, Vector3D): v3 = Vector3D(v3)
+      v3 = ffi.NULL if v3 is None else v3.impl
+      lib.Plane_fromPoints(ffi.cast("eC_Plane *", self.impl), ffi.cast("eC_Vector3D *", v1), ffi.cast("eC_Vector3D *", v2), ffi.cast("eC_Vector3D *", v3))
+
+class Vector3D(Struct):
+   def __init__(self, x = 0.0, y = 0.0, z = 0.0, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_Vector3D *", impl)
+      else:
+         if isinstance(x, tuple):
+            __tuple = x
+            x = 0.0
+            if len(__tuple) > 0: x = __tuple[0]
+            if len(__tuple) > 1: y = __tuple[1]
+            if len(__tuple) > 2: z = __tuple[2]
+         self.impl = ffi.new("eC_Vector3D *", { 'x' : x, 'y' : y, 'z' : z })
+
+   @property
+   def x(self): return self.impl.x
+   @x.setter
+   def x(self, value): self.impl.x = value
+
+   @property
+   def y(self): return self.impl.y
+   @y.setter
+   def y(self, value): self.impl.y = value
+
+   @property
+   def z(self): return self.impl.z
+   @z.setter
+   def z(self, value): self.impl.z = value
+
+   @property
+   def length(self): return lib.Vector3D_get_length(self.impl)
+
+   def crossProduct(self, vector1 = None, vector2 = None):
+      if vector1 is not None and not isinstance(vector1, Vector3D): vector1 = Vector3D(vector1)
+      vector1 = ffi.NULL if vector1 is None else vector1.impl
+      if vector2 is not None and not isinstance(vector2, Vector3D): vector2 = Vector3D(vector2)
+      vector2 = ffi.NULL if vector2 is None else vector2.impl
+      lib.Vector3D_crossProduct(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector1), ffi.cast("eC_Vector3D *", vector2))
+
+   def dotProduct(self, vector2 = None):
+      if vector2 is not None and not isinstance(vector2, Vector3D): vector2 = Vector3D(vector2)
+      vector2 = ffi.NULL if vector2 is None else vector2.impl
+      return lib.Vector3D_dotProduct(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector2))
+
+   def normalize(self, source = None):
+      if source is not None and not isinstance(source, Vector3D): source = Vector3D(source)
+      source = ffi.NULL if source is None else source.impl
+      lib.Vector3D_normalize(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", source))
+
+   def subtract(self, vector1 = None, vector2 = None):
+      if vector1 is not None and not isinstance(vector1, Vector3D): vector1 = Vector3D(vector1)
+      vector1 = ffi.NULL if vector1 is None else vector1.impl
+      if vector2 is not None and not isinstance(vector2, Vector3D): vector2 = Vector3D(vector2)
+      vector2 = ffi.NULL if vector2 is None else vector2.impl
+      lib.Vector3D_subtract(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector1), ffi.cast("eC_Vector3D *", vector2))
+
 def readDGGSJSON(f = None):
    if f is not None and not isinstance(f, File): f = File(f)
    f = ffi.NULL if f is None else f.impl
@@ -1825,12 +1791,18 @@ def readDGGSJSON(f = None):
 def pydggal_setup(app):
    app.appGlobals.append(globals())
    if lib.dggal_init(app.impl) == ffi.NULL: raise Exception("Failed to load library")
+   app.registerClass(BCTA3H, True)
    app.registerClass(DGGRS, True)
    app.registerClass(DGGSJSON, True)
    app.registerClass(DGGSJSONDepth, True)
    app.registerClass(DGGSJSONGrid, True)
    app.registerClass(DGGSJSONShape, True)
    app.registerClass(GNOSISGlobalGrid, True)
+   app.registerClass(GPP3H, True)
    app.registerClass(ISEA3H, True)
    app.registerClass(ISEA9R, True)
+   app.registerClass(IVEA3H, True)
+   app.registerClass(IVEA9R, True)
    app.registerClass(JSONSchema, True)
+   app.registerClass(RhombicIcosahedral3H, True)
+   app.registerClass(RhombicIcosahedral9R, True)

@@ -144,7 +144,12 @@ pub const _STRING_H: u32 = 1;
 pub const _BITS_TYPES_LOCALE_T_H: u32 = 1;
 pub const _BITS_TYPES___LOCALE_T_H: u32 = 1;
 pub const _STRINGS_H: u32 = 1;
+pub const ECRT_MODULE_NAME: &[u8; 5] = b"ecrt\0";
 pub const __runtimePlatform: u32 = 2;
+pub const MAXBYTE: u32 = 255;
+pub const MAXDWORD: u32 = 4294967295;
+pub const MAXQWORD: i32 = -1;
+pub const MAXWORD: u32 = 65535;
 pub const MAX_DIRECTORY: u32 = 534;
 pub const MAX_EXTENSION: u32 = 17;
 pub const MAX_FILENAME: u32 = 274;
@@ -160,94 +165,17 @@ pub const ESCAPECSTRINGOPTIONS_multiLine_SHIFT: u32 = 3;
 pub const ESCAPECSTRINGOPTIONS_multiLine_MASK: u32 = 8;
 pub const ESCAPECSTRINGOPTIONS_indent_SHIFT: u32 = 4;
 pub const ESCAPECSTRINGOPTIONS_indent_MASK: u32 = 1048560;
-pub const MAXBYTE: u32 = 255;
-pub const MAXDWORD: u32 = 4294967295;
-pub const MAXQWORD: i32 = -1;
-pub const MAXWORD: u32 = 65535;
 pub const jsonIndentWidth: u32 = 3;
-pub const LIGHTSHIFT: u32 = 5;
-pub const LIGHTSTEPS: u32 = 32;
-pub const BLOCKENTRY_start_SHIFT: u32 = 32;
-pub const BLOCKENTRY_start_MASK: i64 = -4294967296;
-pub const BLOCKENTRY_end_SHIFT: u32 = 0;
-pub const BLOCKENTRY_end_MASK: u32 = 4294967295;
-pub const DEFAULTSHADERBITS_lighting_SHIFT: u32 = 0;
-pub const DEFAULTSHADERBITS_lighting_MASK: u32 = 1;
-pub const DEFAULTSHADERBITS_nonLocalViewer_SHIFT: u32 = 1;
-pub const DEFAULTSHADERBITS_nonLocalViewer_MASK: u32 = 2;
-pub const DEFAULTSHADERBITS_twoSided_SHIFT: u32 = 2;
-pub const DEFAULTSHADERBITS_twoSided_MASK: u32 = 4;
-pub const DEFAULTSHADERBITS_specular_SHIFT: u32 = 3;
-pub const DEFAULTSHADERBITS_specular_MASK: u32 = 8;
-pub const DEFAULTSHADERBITS_separateSpecular_SHIFT: u32 = 4;
-pub const DEFAULTSHADERBITS_separateSpecular_MASK: u32 = 16;
-pub const DEFAULTSHADERBITS_blinnSpecular_SHIFT: u32 = 5;
-pub const DEFAULTSHADERBITS_blinnSpecular_MASK: u32 = 32;
-pub const DEFAULTSHADERBITS_lightBits_SHIFT: u32 = 6;
-pub const DEFAULTSHADERBITS_lightBits_MASK: u32 = 1073741760;
-pub const DEFAULTSHADERBITS_perVertexColor_SHIFT: u32 = 30;
-pub const DEFAULTSHADERBITS_perVertexColor_MASK: u32 = 1073741824;
-pub const DEFAULTSHADERBITS_swizzle_SHIFT: u32 = 31;
-pub const DEFAULTSHADERBITS_swizzle_MASK: u64 = 6442450944;
-pub const DEFAULTSHADERBITS_textureMatrix_SHIFT: u32 = 33;
-pub const DEFAULTSHADERBITS_textureMatrix_MASK: u64 = 8589934592;
-pub const DEFAULTSHADERBITS_texturing_SHIFT: u32 = 34;
-pub const DEFAULTSHADERBITS_texturing_MASK: u64 = 17179869184;
-pub const DEFAULTSHADERBITS_alphaTest_SHIFT: u32 = 35;
-pub const DEFAULTSHADERBITS_alphaTest_MASK: u64 = 34359738368;
-pub const DEFAULTSHADERBITS_cubeMap_SHIFT: u32 = 36;
-pub const DEFAULTSHADERBITS_cubeMap_MASK: u64 = 68719476736;
-pub const DEFAULTSHADERBITS_modelView_SHIFT: u32 = 37;
-pub const DEFAULTSHADERBITS_modelView_MASK: u64 = 137438953472;
-pub const DEFAULTSHADERBITS_fog_SHIFT: u32 = 38;
-pub const DEFAULTSHADERBITS_fog_MASK: u64 = 274877906944;
-pub const DEFAULTSHADERBITS_normalsMapping_SHIFT: u32 = 39;
-pub const DEFAULTSHADERBITS_normalsMapping_MASK: u64 = 549755813888;
-pub const DEFAULTSHADERBITS_specularMapping_SHIFT: u32 = 40;
-pub const DEFAULTSHADERBITS_specularMapping_MASK: u64 = 1099511627776;
-pub const DEFAULTSHADERBITS_environmentMapping_SHIFT: u32 = 41;
-pub const DEFAULTSHADERBITS_environmentMapping_MASK: u64 = 2199023255552;
-pub const DEFAULTSHADERBITS_reflection_SHIFT: u32 = 42;
-pub const DEFAULTSHADERBITS_reflection_MASK: u64 = 4398046511104;
-pub const DEFAULTSHADERBITS_reflectionMap_SHIFT: u32 = 43;
-pub const DEFAULTSHADERBITS_reflectionMap_MASK: u64 = 8796093022208;
-pub const DEFAULTSHADERBITS_refraction_SHIFT: u32 = 44;
-pub const DEFAULTSHADERBITS_refraction_MASK: u64 = 17592186044416;
-pub const DEFAULTSHADERBITS_debugging_SHIFT: u32 = 45;
-pub const DEFAULTSHADERBITS_debugging_MASK: u64 = 35184372088832;
-pub const DEFAULTSHADERBITS_constantColor_SHIFT: u32 = 46;
-pub const DEFAULTSHADERBITS_constantColor_MASK: u64 = 70368744177664;
-pub const DEFAULTSHADERBITS_normalsInvScale2_SHIFT: u32 = 47;
-pub const DEFAULTSHADERBITS_normalsInvScale2_MASK: u64 = 140737488355328;
-pub const DEFAULTSHADERBITS_externalTexture_SHIFT: u32 = 48;
-pub const DEFAULTSHADERBITS_externalTexture_MASK: u64 = 281474976710656;
-pub const DEFAULTSHADERBITS_blackTint_SHIFT: u32 = 49;
-pub const DEFAULTSHADERBITS_blackTint_MASK: u64 = 562949953421312;
-pub const DEFAULTSHADERBITS_textureArray_SHIFT: u32 = 50;
-pub const DEFAULTSHADERBITS_textureArray_MASK: u64 = 1125899906842624;
-pub const DEFAULTSHADERBITS_multiDraw_SHIFT: u32 = 51;
-pub const DEFAULTSHADERBITS_multiDraw_MASK: u64 = 2251799813685248;
-pub const DEFAULTSHADERBITS_transform3D_SHIFT: u32 = 52;
-pub const DEFAULTSHADERBITS_transform3D_MASK: u64 = 4503599627370496;
-pub const DEFAULTSHADERBITS_squishFactor_SHIFT: u32 = 53;
-pub const DEFAULTSHADERBITS_squishFactor_MASK: u64 = 9007199254740992;
-pub const DEFAULTSHADERBITS_bones_SHIFT: u32 = 54;
-pub const DEFAULTSHADERBITS_bones_MASK: u64 = 18014398509481984;
-pub const SHADERMODIFIEDUNIFORMS_matMV_SHIFT: u32 = 0;
-pub const SHADERMODIFIEDUNIFORMS_matMV_MASK: u32 = 1;
-pub const SHADERMODIFIEDUNIFORMS_light_SHIFT: u32 = 1;
-pub const SHADERMODIFIEDUNIFORMS_light_MASK: u32 = 2;
-pub const SHADERMODIFIEDUNIFORMS_material_SHIFT: u32 = 2;
-pub const SHADERMODIFIEDUNIFORMS_material_MASK: u32 = 4;
-pub const SHADERMODIFIEDUNIFORMS_matPrj_SHIFT: u32 = 3;
-pub const SHADERMODIFIEDUNIFORMS_matPrj_MASK: u32 = 8;
-pub const SHADERMODIFIEDUNIFORMS_matTex_SHIFT: u32 = 4;
-pub const SHADERMODIFIEDUNIFORMS_matTex_MASK: u32 = 16;
-pub const SHADERMODIFIEDUNIFORMS_pos_SHIFT: u32 = 5;
-pub const SHADERMODIFIEDUNIFORMS_pos_MASK: u32 = 32;
-pub const SHADERMODIFIEDUNIFORMS_layer_SHIFT: u32 = 6;
-pub const SHADERMODIFIEDUNIFORMS_layer_MASK: u32 = 64;
-pub const unicodeCompatibilityMappings: u32 = 4294967295;
+pub const FIELDTYPEEX_type_SHIFT: u32 = 0;
+pub const FIELDTYPEEX_type_MASK: u32 = 7;
+pub const FIELDTYPEEX_mustFree_SHIFT: u32 = 3;
+pub const FIELDTYPEEX_mustFree_MASK: u32 = 8;
+pub const FIELDTYPEEX_format_SHIFT: u32 = 4;
+pub const FIELDTYPEEX_format_MASK: u32 = 240;
+pub const FIELDTYPEEX_isUnsigned_SHIFT: u32 = 8;
+pub const FIELDTYPEEX_isUnsigned_MASK: u32 = 256;
+pub const FIELDTYPEEX_isDateTime_SHIFT: u32 = 9;
+pub const FIELDTYPEEX_isDateTime_MASK: u32 = 512;
 pub const ARCHIVEOPENFLAGS_writeAccess_SHIFT: u32 = 0;
 pub const ARCHIVEOPENFLAGS_writeAccess_MASK: u32 = 1;
 pub const ARCHIVEOPENFLAGS_buffered_SHIFT: u32 = 1;
@@ -256,6 +184,59 @@ pub const ARCHIVEOPENFLAGS_exclusive_SHIFT: u32 = 2;
 pub const ARCHIVEOPENFLAGS_exclusive_MASK: u32 = 4;
 pub const ARCHIVEOPENFLAGS_waitLock_SHIFT: u32 = 3;
 pub const ARCHIVEOPENFLAGS_waitLock_MASK: u32 = 8;
+pub const ERRORCODE_level_SHIFT: u32 = 12;
+pub const ERRORCODE_level_MASK: u32 = 12288;
+pub const ERRORCODE_code_SHIFT: u32 = 0;
+pub const ERRORCODE_code_MASK: u32 = 4095;
+pub const FILEATTRIBS_isFile_SHIFT: u32 = 0;
+pub const FILEATTRIBS_isFile_MASK: u32 = 1;
+pub const FILEATTRIBS_isArchive_SHIFT: u32 = 1;
+pub const FILEATTRIBS_isArchive_MASK: u32 = 2;
+pub const FILEATTRIBS_isHidden_SHIFT: u32 = 2;
+pub const FILEATTRIBS_isHidden_MASK: u32 = 4;
+pub const FILEATTRIBS_isReadOnly_SHIFT: u32 = 3;
+pub const FILEATTRIBS_isReadOnly_MASK: u32 = 8;
+pub const FILEATTRIBS_isSystem_SHIFT: u32 = 4;
+pub const FILEATTRIBS_isSystem_MASK: u32 = 16;
+pub const FILEATTRIBS_isTemporary_SHIFT: u32 = 5;
+pub const FILEATTRIBS_isTemporary_MASK: u32 = 32;
+pub const FILEATTRIBS_isDirectory_SHIFT: u32 = 6;
+pub const FILEATTRIBS_isDirectory_MASK: u32 = 64;
+pub const FILEATTRIBS_isDrive_SHIFT: u32 = 7;
+pub const FILEATTRIBS_isDrive_MASK: u32 = 128;
+pub const FILEATTRIBS_isCDROM_SHIFT: u32 = 8;
+pub const FILEATTRIBS_isCDROM_MASK: u32 = 256;
+pub const FILEATTRIBS_isRemote_SHIFT: u32 = 9;
+pub const FILEATTRIBS_isRemote_MASK: u32 = 512;
+pub const FILEATTRIBS_isRemovable_SHIFT: u32 = 10;
+pub const FILEATTRIBS_isRemovable_MASK: u32 = 1024;
+pub const FILEATTRIBS_isServer_SHIFT: u32 = 11;
+pub const FILEATTRIBS_isServer_MASK: u32 = 2048;
+pub const FILEATTRIBS_isShare_SHIFT: u32 = 12;
+pub const FILEATTRIBS_isShare_MASK: u32 = 4096;
+pub const FILECHANGE_created_SHIFT: u32 = 0;
+pub const FILECHANGE_created_MASK: u32 = 1;
+pub const FILECHANGE_renamed_SHIFT: u32 = 1;
+pub const FILECHANGE_renamed_MASK: u32 = 2;
+pub const FILECHANGE_modified_SHIFT: u32 = 2;
+pub const FILECHANGE_modified_MASK: u32 = 4;
+pub const FILECHANGE_deleted_SHIFT: u32 = 3;
+pub const FILECHANGE_deleted_MASK: u32 = 8;
+pub const FILECHANGE_attribs_SHIFT: u32 = 4;
+pub const FILECHANGE_attribs_MASK: u32 = 16;
+pub const MOVEFILEOPTIONS_overwrite_SHIFT: u32 = 0;
+pub const MOVEFILEOPTIONS_overwrite_MASK: u32 = 1;
+pub const MOVEFILEOPTIONS_sync_SHIFT: u32 = 1;
+pub const MOVEFILEOPTIONS_sync_MASK: u32 = 2;
+pub const PIPEOPENMODE_output_SHIFT: u32 = 0;
+pub const PIPEOPENMODE_output_MASK: u32 = 1;
+pub const PIPEOPENMODE_error_SHIFT: u32 = 1;
+pub const PIPEOPENMODE_error_MASK: u32 = 2;
+pub const PIPEOPENMODE_input_SHIFT: u32 = 2;
+pub const PIPEOPENMODE_input_MASK: u32 = 4;
+pub const PIPEOPENMODE_showWindow_SHIFT: u32 = 3;
+pub const PIPEOPENMODE_showWindow_MASK: u32 = 8;
+pub const unicodeCompatibilityMappings: u32 = 4294967295;
 pub const CHARCATEGORIES_none_SHIFT: u32 = 0;
 pub const CHARCATEGORIES_none_MASK: u32 = 1;
 pub const CHARCATEGORIES_markNonSpacing_SHIFT: u32 = 1;
@@ -318,74 +299,6 @@ pub const CHARCATEGORIES_symbolModifier_SHIFT: u32 = 29;
 pub const CHARCATEGORIES_symbolModifier_MASK: u32 = 536870912;
 pub const CHARCATEGORIES_symbolOther_SHIFT: u32 = 30;
 pub const CHARCATEGORIES_symbolOther_MASK: u32 = 1073741824;
-pub const ERRORCODE_level_SHIFT: u32 = 12;
-pub const ERRORCODE_level_MASK: u32 = 12288;
-pub const ERRORCODE_code_SHIFT: u32 = 0;
-pub const ERRORCODE_code_MASK: u32 = 4095;
-pub const FILEATTRIBS_isFile_SHIFT: u32 = 0;
-pub const FILEATTRIBS_isFile_MASK: u32 = 1;
-pub const FILEATTRIBS_isArchive_SHIFT: u32 = 1;
-pub const FILEATTRIBS_isArchive_MASK: u32 = 2;
-pub const FILEATTRIBS_isHidden_SHIFT: u32 = 2;
-pub const FILEATTRIBS_isHidden_MASK: u32 = 4;
-pub const FILEATTRIBS_isReadOnly_SHIFT: u32 = 3;
-pub const FILEATTRIBS_isReadOnly_MASK: u32 = 8;
-pub const FILEATTRIBS_isSystem_SHIFT: u32 = 4;
-pub const FILEATTRIBS_isSystem_MASK: u32 = 16;
-pub const FILEATTRIBS_isTemporary_SHIFT: u32 = 5;
-pub const FILEATTRIBS_isTemporary_MASK: u32 = 32;
-pub const FILEATTRIBS_isDirectory_SHIFT: u32 = 6;
-pub const FILEATTRIBS_isDirectory_MASK: u32 = 64;
-pub const FILEATTRIBS_isDrive_SHIFT: u32 = 7;
-pub const FILEATTRIBS_isDrive_MASK: u32 = 128;
-pub const FILEATTRIBS_isCDROM_SHIFT: u32 = 8;
-pub const FILEATTRIBS_isCDROM_MASK: u32 = 256;
-pub const FILEATTRIBS_isRemote_SHIFT: u32 = 9;
-pub const FILEATTRIBS_isRemote_MASK: u32 = 512;
-pub const FILEATTRIBS_isRemovable_SHIFT: u32 = 10;
-pub const FILEATTRIBS_isRemovable_MASK: u32 = 1024;
-pub const FILEATTRIBS_isServer_SHIFT: u32 = 11;
-pub const FILEATTRIBS_isServer_MASK: u32 = 2048;
-pub const FILEATTRIBS_isShare_SHIFT: u32 = 12;
-pub const FILEATTRIBS_isShare_MASK: u32 = 4096;
-pub const FILECHANGE_created_SHIFT: u32 = 0;
-pub const FILECHANGE_created_MASK: u32 = 1;
-pub const FILECHANGE_renamed_SHIFT: u32 = 1;
-pub const FILECHANGE_renamed_MASK: u32 = 2;
-pub const FILECHANGE_modified_SHIFT: u32 = 2;
-pub const FILECHANGE_modified_MASK: u32 = 4;
-pub const FILECHANGE_deleted_SHIFT: u32 = 3;
-pub const FILECHANGE_deleted_MASK: u32 = 8;
-pub const FILECHANGE_attribs_SHIFT: u32 = 4;
-pub const FILECHANGE_attribs_MASK: u32 = 16;
-pub const JSONTYPEOPTIONS_numbersUseOGDFS_SHIFT: u32 = 0;
-pub const JSONTYPEOPTIONS_numbersUseOGDFS_MASK: u32 = 1;
-pub const JSONTYPEOPTIONS_boolUseOGDFS_SHIFT: u32 = 1;
-pub const JSONTYPEOPTIONS_boolUseOGDFS_MASK: u32 = 2;
-pub const JSONTYPEOPTIONS_nullUseOGDFS_SHIFT: u32 = 2;
-pub const JSONTYPEOPTIONS_nullUseOGDFS_MASK: u32 = 4;
-pub const JSONTYPEOPTIONS_stringUseOGDFS_SHIFT: u32 = 3;
-pub const JSONTYPEOPTIONS_stringUseOGDFS_MASK: u32 = 8;
-pub const JSONTYPEOPTIONS_arrayUseOGDFS_SHIFT: u32 = 4;
-pub const JSONTYPEOPTIONS_arrayUseOGDFS_MASK: u32 = 16;
-pub const JSONTYPEOPTIONS_objectUseOGDFS_SHIFT: u32 = 5;
-pub const JSONTYPEOPTIONS_objectUseOGDFS_MASK: u32 = 32;
-pub const JSONTYPEOPTIONS_stripQuotesForOGDFS_SHIFT: u32 = 6;
-pub const JSONTYPEOPTIONS_stripQuotesForOGDFS_MASK: u32 = 64;
-pub const JSONTYPEOPTIONS_strictOGDFS_SHIFT: u32 = 7;
-pub const JSONTYPEOPTIONS_strictOGDFS_MASK: u32 = 128;
-pub const MOVEFILEOPTIONS_overwrite_SHIFT: u32 = 0;
-pub const MOVEFILEOPTIONS_overwrite_MASK: u32 = 1;
-pub const MOVEFILEOPTIONS_sync_SHIFT: u32 = 1;
-pub const MOVEFILEOPTIONS_sync_MASK: u32 = 2;
-pub const PIPEOPENMODE_output_SHIFT: u32 = 0;
-pub const PIPEOPENMODE_output_MASK: u32 = 1;
-pub const PIPEOPENMODE_error_SHIFT: u32 = 1;
-pub const PIPEOPENMODE_error_MASK: u32 = 2;
-pub const PIPEOPENMODE_input_SHIFT: u32 = 2;
-pub const PIPEOPENMODE_input_MASK: u32 = 4;
-pub const PIPEOPENMODE_showWindow_SHIFT: u32 = 3;
-pub const PIPEOPENMODE_showWindow_MASK: u32 = 8;
 pub const UNICODEDECOMPOSITION_canonical_SHIFT: u32 = 0;
 pub const UNICODEDECOMPOSITION_canonical_MASK: u32 = 1;
 pub const UNICODEDECOMPOSITION_compat_SHIFT: u32 = 1;
@@ -420,298 +333,24 @@ pub const UNICODEDECOMPOSITION_wide_SHIFT: u32 = 15;
 pub const UNICODEDECOMPOSITION_wide_MASK: u32 = 32768;
 pub const UNICODEDECOMPOSITION_narrow_SHIFT: u32 = 16;
 pub const UNICODEDECOMPOSITION_narrow_MASK: u32 = 65536;
-pub const MAX_BONES: u32 = 10;
-pub const NO_BONE: u32 = 255;
-pub const FRAMETRACKBITS_type_SHIFT: u32 = 0;
-pub const FRAMETRACKBITS_type_MASK: u32 = 65535;
-pub const FRAMETRACKBITS_loop_SHIFT: u32 = 16;
-pub const FRAMETRACKBITS_loop_MASK: u32 = 65536;
-pub const FRAMETRACKBITS_rotationOrder_SHIFT: u32 = 17;
-pub const FRAMETRACKBITS_rotationOrder_MASK: u32 = 33423360;
-pub const MATERIALFLAGS_doubleSided_SHIFT: u32 = 0;
-pub const MATERIALFLAGS_doubleSided_MASK: u32 = 1;
-pub const MATERIALFLAGS_translucent_SHIFT: u32 = 1;
-pub const MATERIALFLAGS_translucent_MASK: u32 = 2;
-pub const MATERIALFLAGS_tile_SHIFT: u32 = 2;
-pub const MATERIALFLAGS_tile_MASK: u32 = 4;
-pub const MATERIALFLAGS_noFog_SHIFT: u32 = 3;
-pub const MATERIALFLAGS_noFog_MASK: u32 = 8;
-pub const MATERIALFLAGS_singleSideLight_SHIFT: u32 = 4;
-pub const MATERIALFLAGS_singleSideLight_MASK: u32 = 16;
-pub const MATERIALFLAGS_separateSpecular_SHIFT: u32 = 5;
-pub const MATERIALFLAGS_separateSpecular_MASK: u32 = 32;
-pub const MATERIALFLAGS_cubeMap_SHIFT: u32 = 6;
-pub const MATERIALFLAGS_cubeMap_MASK: u32 = 64;
-pub const MATERIALFLAGS_noLighting_SHIFT: u32 = 7;
-pub const MATERIALFLAGS_noLighting_MASK: u32 = 128;
-pub const MATERIALFLAGS_partlyTransparent_SHIFT: u32 = 8;
-pub const MATERIALFLAGS_partlyTransparent_MASK: u32 = 256;
-pub const MATERIALFLAGS_setupTextures_SHIFT: u32 = 9;
-pub const MATERIALFLAGS_setupTextures_MASK: u32 = 512;
-pub const MATERIALFLAGS_update_SHIFT: u32 = 10;
-pub const MATERIALFLAGS_update_MASK: u32 = 1024;
-pub const MATERIALFLAGS_constantColor_SHIFT: u32 = 11;
-pub const MATERIALFLAGS_constantColor_MASK: u32 = 2048;
-pub const MESHFEATURES_vertices_SHIFT: u32 = 0;
-pub const MESHFEATURES_vertices_MASK: u32 = 1;
-pub const MESHFEATURES_normals_SHIFT: u32 = 1;
-pub const MESHFEATURES_normals_MASK: u32 = 2;
-pub const MESHFEATURES_texCoords1_SHIFT: u32 = 2;
-pub const MESHFEATURES_texCoords1_MASK: u32 = 4;
-pub const MESHFEATURES_texCoords2_SHIFT: u32 = 3;
-pub const MESHFEATURES_texCoords2_MASK: u32 = 8;
-pub const MESHFEATURES_doubleNormals_SHIFT: u32 = 4;
-pub const MESHFEATURES_doubleNormals_MASK: u32 = 16;
-pub const MESHFEATURES_doubleVertices_SHIFT: u32 = 5;
-pub const MESHFEATURES_doubleVertices_MASK: u32 = 32;
-pub const MESHFEATURES_colors_SHIFT: u32 = 6;
-pub const MESHFEATURES_colors_MASK: u32 = 64;
-pub const MESHFEATURES_lightVectors_SHIFT: u32 = 7;
-pub const MESHFEATURES_lightVectors_MASK: u32 = 128;
-pub const MESHFEATURES_tangents_SHIFT: u32 = 8;
-pub const MESHFEATURES_tangents_MASK: u32 = 256;
-pub const MESHFEATURES_intVertices_SHIFT: u32 = 9;
-pub const MESHFEATURES_intVertices_MASK: u32 = 512;
-pub const MESHFEATURES_memAllocOnly_SHIFT: u32 = 10;
-pub const MESHFEATURES_memAllocOnly_MASK: u32 = 1024;
-pub const MESHFEATURES_interleaved_SHIFT: u32 = 11;
-pub const MESHFEATURES_interleaved_MASK: u32 = 2048;
-pub const MESHFEATURES_ownMEAB_SHIFT: u32 = 12;
-pub const MESHFEATURES_ownMEAB_MASK: u32 = 4096;
-pub const MESHFEATURES_bones_SHIFT: u32 = 13;
-pub const MESHFEATURES_bones_MASK: u32 = 8192;
-pub const OBJECTFLAGS_root_SHIFT: u32 = 0;
-pub const OBJECTFLAGS_root_MASK: u32 = 1;
-pub const OBJECTFLAGS_viewSpace_SHIFT: u32 = 1;
-pub const OBJECTFLAGS_viewSpace_MASK: u32 = 2;
-pub const OBJECTFLAGS_ownMesh_SHIFT: u32 = 2;
-pub const OBJECTFLAGS_ownMesh_MASK: u32 = 4;
-pub const OBJECTFLAGS_translucent_SHIFT: u32 = 3;
-pub const OBJECTFLAGS_translucent_MASK: u32 = 8;
-pub const OBJECTFLAGS_flipWindings_SHIFT: u32 = 4;
-pub const OBJECTFLAGS_flipWindings_MASK: u32 = 16;
-pub const OBJECTFLAGS_keysLoaded_SHIFT: u32 = 5;
-pub const OBJECTFLAGS_keysLoaded_MASK: u32 = 32;
-pub const OBJECTFLAGS_transform_SHIFT: u32 = 6;
-pub const OBJECTFLAGS_transform_MASK: u32 = 64;
-pub const OBJECTFLAGS_mesh_SHIFT: u32 = 7;
-pub const OBJECTFLAGS_mesh_MASK: u32 = 128;
-pub const OBJECTFLAGS_light_SHIFT: u32 = 8;
-pub const OBJECTFLAGS_light_MASK: u32 = 256;
-pub const OBJECTFLAGS_camera_SHIFT: u32 = 9;
-pub const OBJECTFLAGS_camera_MASK: u32 = 512;
-pub const OBJECTFLAGS_localMatrixSet_SHIFT: u32 = 10;
-pub const OBJECTFLAGS_localMatrixSet_MASK: u32 = 1024;
-pub const OBJECTFLAGS_computeLightVectors_SHIFT: u32 = 11;
-pub const OBJECTFLAGS_computeLightVectors_MASK: u32 = 2048;
-pub const OBJECTFLAGS_skinApplied_SHIFT: u32 = 12;
-pub const OBJECTFLAGS_skinApplied_MASK: u32 = 4096;
-pub const OBJECTFLAGS_hide_SHIFT: u32 = 13;
-pub const OBJECTFLAGS_hide_MASK: u32 = 8192;
-pub const OBJECTFLAGS_skeleton_SHIFT: u32 = 14;
-pub const OBJECTFLAGS_skeleton_MASK: u32 = 16384;
-pub const OBJECTFLAGS_bone_SHIFT: u32 = 15;
-pub const OBJECTFLAGS_bone_MASK: u32 = 32768;
-pub const OBJECTFLAGS_hierarchy_SHIFT: u32 = 16;
-pub const OBJECTFLAGS_hierarchy_MASK: u32 = 4294901760;
-pub const PRIMITIVEGROUPTYPE_primitiveType_SHIFT: u32 = 0;
-pub const PRIMITIVEGROUPTYPE_primitiveType_MASK: u32 = 255;
-pub const PRIMITIVEGROUPTYPE_vertexRange_SHIFT: u32 = 8;
-pub const PRIMITIVEGROUPTYPE_vertexRange_MASK: u32 = 256;
-pub const PRIMITIVEGROUPTYPE_indices32bit_SHIFT: u32 = 9;
-pub const PRIMITIVEGROUPTYPE_indices32bit_MASK: u32 = 512;
-pub const PRIMITIVEGROUPTYPE_sharedIndices_SHIFT: u32 = 10;
-pub const PRIMITIVEGROUPTYPE_sharedIndices_MASK: u32 = 1024;
-pub const PRIMITIVEGROUPTYPE_hide_SHIFT: u32 = 11;
-pub const PRIMITIVEGROUPTYPE_hide_MASK: u32 = 2048;
-pub const NumberOfLights: u32 = 8;
-pub const COLOR_r_SHIFT: u32 = 16;
-pub const COLOR_r_MASK: u32 = 16711680;
-pub const COLOR_g_SHIFT: u32 = 8;
-pub const COLOR_g_MASK: u32 = 65280;
-pub const COLOR_b_SHIFT: u32 = 0;
-pub const COLOR_b_MASK: u32 = 255;
-pub const COLOR444_r_SHIFT: u32 = 8;
-pub const COLOR444_r_MASK: u32 = 3840;
-pub const COLOR444_g_SHIFT: u32 = 4;
-pub const COLOR444_g_MASK: u32 = 240;
-pub const COLOR444_b_SHIFT: u32 = 0;
-pub const COLOR444_b_MASK: u32 = 15;
-pub const COLOR555_r_SHIFT: u32 = 10;
-pub const COLOR555_r_MASK: u32 = 31744;
-pub const COLOR555_g_SHIFT: u32 = 5;
-pub const COLOR555_g_MASK: u32 = 992;
-pub const COLOR555_b_SHIFT: u32 = 0;
-pub const COLOR555_b_MASK: u32 = 31;
-pub const COLOR565_r_SHIFT: u32 = 11;
-pub const COLOR565_r_MASK: u32 = 63488;
-pub const COLOR565_g_SHIFT: u32 = 5;
-pub const COLOR565_g_MASK: u32 = 2016;
-pub const COLOR565_b_SHIFT: u32 = 0;
-pub const COLOR565_b_MASK: u32 = 31;
-pub const COLORALPHA_a_SHIFT: u32 = 24;
-pub const COLORALPHA_a_MASK: u32 = 4278190080;
-pub const COLORALPHA_color_SHIFT: u32 = 0;
-pub const COLORALPHA_color_MASK: u32 = 16777215;
-pub const COLORRGBA_r_SHIFT: u32 = 0;
-pub const COLORRGBA_r_MASK: u32 = 255;
-pub const COLORRGBA_g_SHIFT: u32 = 8;
-pub const COLORRGBA_g_MASK: u32 = 65280;
-pub const COLORRGBA_b_SHIFT: u32 = 16;
-pub const COLORRGBA_b_MASK: u32 = 16711680;
-pub const COLORRGBA_a_SHIFT: u32 = 24;
-pub const COLORRGBA_a_MASK: u32 = 4278190080;
-pub const DISPLAYFLAGS_fullScreen_SHIFT: u32 = 0;
-pub const DISPLAYFLAGS_fullScreen_MASK: u32 = 1;
-pub const DISPLAYFLAGS_flipping_SHIFT: u32 = 1;
-pub const DISPLAYFLAGS_flipping_MASK: u32 = 2;
-pub const DISPLAYFLAGS_alpha_SHIFT: u32 = 2;
-pub const DISPLAYFLAGS_alpha_MASK: u32 = 4;
-pub const DISPLAYFLAGS_memBackBuffer_SHIFT: u32 = 3;
-pub const DISPLAYFLAGS_memBackBuffer_MASK: u32 = 8;
-pub const DISPLAYFLAGS_text_SHIFT: u32 = 4;
-pub const DISPLAYFLAGS_text_MASK: u32 = 16;
-pub const DISPLAYFLAGS_scrolling_SHIFT: u32 = 5;
-pub const DISPLAYFLAGS_scrolling_MASK: u32 = 32;
-pub const DISPLAYFLAGS_printer_SHIFT: u32 = 6;
-pub const DISPLAYFLAGS_printer_MASK: u32 = 64;
-pub const FMTEXTALIGNMENT_horzAlignment_SHIFT: u32 = 0;
-pub const FMTEXTALIGNMENT_horzAlignment_MASK: u32 = 3;
-pub const FMTEXTALIGNMENT_vertAlignment_SHIFT: u32 = 2;
-pub const FMTEXTALIGNMENT_vertAlignment_MASK: u32 = 12;
-pub const FONTFLAGS_bold_SHIFT: u32 = 0;
-pub const FONTFLAGS_bold_MASK: u32 = 1;
-pub const FONTFLAGS_italic_SHIFT: u32 = 1;
-pub const FONTFLAGS_italic_MASK: u32 = 2;
-pub const FONTFLAGS_underline_SHIFT: u32 = 2;
-pub const FONTFLAGS_underline_MASK: u32 = 4;
-pub const GLCAPABILITIES_compatible_SHIFT: u32 = 0;
-pub const GLCAPABILITIES_compatible_MASK: u32 = 1;
-pub const GLCAPABILITIES_vertexBuffer_SHIFT: u32 = 1;
-pub const GLCAPABILITIES_vertexBuffer_MASK: u32 = 2;
-pub const GLCAPABILITIES_quads_SHIFT: u32 = 2;
-pub const GLCAPABILITIES_quads_MASK: u32 = 4;
-pub const GLCAPABILITIES_intAndDouble_SHIFT: u32 = 3;
-pub const GLCAPABILITIES_intAndDouble_MASK: u32 = 8;
-pub const GLCAPABILITIES_legacyFormats_SHIFT: u32 = 4;
-pub const GLCAPABILITIES_legacyFormats_MASK: u32 = 16;
-pub const GLCAPABILITIES_nonPow2Textures_SHIFT: u32 = 5;
-pub const GLCAPABILITIES_nonPow2Textures_MASK: u32 = 32;
-pub const GLCAPABILITIES_vertexPointer_SHIFT: u32 = 6;
-pub const GLCAPABILITIES_vertexPointer_MASK: u32 = 64;
-pub const GLCAPABILITIES_legacy_SHIFT: u32 = 7;
-pub const GLCAPABILITIES_legacy_MASK: u32 = 128;
-pub const GLCAPABILITIES_shaders_SHIFT: u32 = 8;
-pub const GLCAPABILITIES_shaders_MASK: u32 = 256;
-pub const GLCAPABILITIES_fixedFunction_SHIFT: u32 = 9;
-pub const GLCAPABILITIES_fixedFunction_MASK: u32 = 512;
-pub const GLCAPABILITIES_immediate_SHIFT: u32 = 10;
-pub const GLCAPABILITIES_immediate_MASK: u32 = 1024;
-pub const GLCAPABILITIES_frameBuffer_SHIFT: u32 = 11;
-pub const GLCAPABILITIES_frameBuffer_MASK: u32 = 2048;
-pub const GLCAPABILITIES_pointSize_SHIFT: u32 = 12;
-pub const GLCAPABILITIES_pointSize_MASK: u32 = 4096;
-pub const GLCAPABILITIES_vao_SHIFT: u32 = 13;
-pub const GLCAPABILITIES_vao_MASK: u32 = 8192;
-pub const GLCAPABILITIES_select_SHIFT: u32 = 14;
-pub const GLCAPABILITIES_select_MASK: u32 = 16384;
-pub const GLCAPABILITIES_debug_SHIFT: u32 = 15;
-pub const GLCAPABILITIES_debug_MASK: u32 = 32768;
-pub const GLCAPABILITIES_gpuCommands_SHIFT: u32 = 16;
-pub const GLCAPABILITIES_gpuCommands_MASK: u32 = 65536;
-pub const GLCAPABILITIES_mdei_SHIFT: u32 = 17;
-pub const GLCAPABILITIES_mdei_MASK: u32 = 131072;
-pub const GLCAPABILITIES_samples_SHIFT: u32 = 18;
-pub const GLCAPABILITIES_samples_MASK: u32 = 1835008;
-pub const LIGHTFLAGS_off_SHIFT: u32 = 0;
-pub const LIGHTFLAGS_off_MASK: u32 = 1;
-pub const LIGHTFLAGS_spot_SHIFT: u32 = 1;
-pub const LIGHTFLAGS_spot_MASK: u32 = 2;
-pub const LIGHTFLAGS_omni_SHIFT: u32 = 2;
-pub const LIGHTFLAGS_omni_MASK: u32 = 4;
-pub const LIGHTFLAGS_attenuation_SHIFT: u32 = 3;
-pub const LIGHTFLAGS_attenuation_MASK: u32 = 8;
-pub const drawIDAttribute: u32 = 7;
-pub const posOffsetAttribute: u32 = 8;
-pub const transform0Attribute: u32 = 9;
-pub const transform1Attribute: u32 = 10;
-pub const transform2Attribute: u32 = 11;
-pub const transform3Attribute: u32 = 12;
-pub const DATADISPLAYFLAGS_selected_SHIFT: u32 = 0;
-pub const DATADISPLAYFLAGS_selected_MASK: u32 = 1;
-pub const DATADISPLAYFLAGS_fullRow_SHIFT: u32 = 1;
-pub const DATADISPLAYFLAGS_fullRow_MASK: u32 = 2;
-pub const DATADISPLAYFLAGS_current_SHIFT: u32 = 2;
-pub const DATADISPLAYFLAGS_current_MASK: u32 = 4;
-pub const DATADISPLAYFLAGS_active_SHIFT: u32 = 3;
-pub const DATADISPLAYFLAGS_active_MASK: u32 = 8;
-pub const DATADISPLAYFLAGS_dropBox_SHIFT: u32 = 4;
-pub const DATADISPLAYFLAGS_dropBox_MASK: u32 = 16;
-pub const DATADISPLAYFLAGS_header_SHIFT: u32 = 5;
-pub const DATADISPLAYFLAGS_header_MASK: u32 = 32;
-pub const DATADISPLAYFLAGS_firstField_SHIFT: u32 = 6;
-pub const DATADISPLAYFLAGS_firstField_MASK: u32 = 64;
-pub const BORDERBITS_contour_SHIFT: u32 = 0;
-pub const BORDERBITS_contour_MASK: u32 = 1;
-pub const BORDERBITS_fixed_SHIFT: u32 = 1;
-pub const BORDERBITS_fixed_MASK: u32 = 2;
-pub const BORDERBITS_sizable_SHIFT: u32 = 2;
-pub const BORDERBITS_sizable_MASK: u32 = 4;
-pub const BORDERBITS_deep_SHIFT: u32 = 3;
-pub const BORDERBITS_deep_MASK: u32 = 8;
-pub const BORDERBITS_bevel_SHIFT: u32 = 4;
-pub const BORDERBITS_bevel_MASK: u32 = 16;
-pub const BORDERBITS_thin_SHIFT: u32 = 5;
-pub const BORDERBITS_thin_MASK: u32 = 32;
-pub const KEY_code_SHIFT: u32 = 0;
-pub const KEY_code_MASK: u32 = 65535;
-pub const KEY_shift_SHIFT: u32 = 16;
-pub const KEY_shift_MASK: u32 = 65536;
-pub const KEY_ctrl_SHIFT: u32 = 17;
-pub const KEY_ctrl_MASK: u32 = 131072;
-pub const KEY_alt_SHIFT: u32 = 18;
-pub const KEY_alt_MASK: u32 = 262144;
-pub const KEY_cmd_SHIFT: u32 = 19;
-pub const KEY_cmd_MASK: u32 = 524288;
-pub const KEY_modifiers_SHIFT: u32 = 16;
-pub const KEY_modifiers_MASK: u32 = 4294901760;
-pub const MODIFIERS_shift_SHIFT: u32 = 0;
-pub const MODIFIERS_shift_MASK: u32 = 1;
-pub const MODIFIERS_ctrl_SHIFT: u32 = 1;
-pub const MODIFIERS_ctrl_MASK: u32 = 2;
-pub const MODIFIERS_alt_SHIFT: u32 = 2;
-pub const MODIFIERS_alt_MASK: u32 = 4;
-pub const MODIFIERS_cmd_SHIFT: u32 = 3;
-pub const MODIFIERS_cmd_MASK: u32 = 8;
-pub const MODIFIERS_left_SHIFT: u32 = 4;
-pub const MODIFIERS_left_MASK: u32 = 16;
-pub const MODIFIERS_middle_SHIFT: u32 = 5;
-pub const MODIFIERS_middle_MASK: u32 = 32;
-pub const MODIFIERS_right_SHIFT: u32 = 6;
-pub const MODIFIERS_right_MASK: u32 = 64;
-pub const MODIFIERS_isActivate_SHIFT: u32 = 7;
-pub const MODIFIERS_isActivate_MASK: u32 = 128;
-pub const MODIFIERS_isSideEffect_SHIFT: u32 = 8;
-pub const MODIFIERS_isSideEffect_MASK: u32 = 256;
-pub const MODIFIERS_closingDropDown_SHIFT: u32 = 9;
-pub const MODIFIERS_closingDropDown_MASK: u32 = 512;
-pub const MOUSEBUTTONS_left_SHIFT: u32 = 0;
-pub const MOUSEBUTTONS_left_MASK: u32 = 1;
-pub const MOUSEBUTTONS_right_SHIFT: u32 = 1;
-pub const MOUSEBUTTONS_right_MASK: u32 = 2;
-pub const MOUSEBUTTONS_middle_SHIFT: u32 = 2;
-pub const MOUSEBUTTONS_middle_MASK: u32 = 4;
-pub const SMARTKEY_code_SHIFT: u32 = 0;
-pub const SMARTKEY_code_MASK: u32 = 65535;
-pub const SMARTKEY_shift_SHIFT: u32 = 16;
-pub const SMARTKEY_shift_MASK: u32 = 65536;
-pub const SMARTKEY_ctrl_SHIFT: u32 = 17;
-pub const SMARTKEY_ctrl_MASK: u32 = 131072;
-pub const SMARTKEY_alt_SHIFT: u32 = 18;
-pub const SMARTKEY_alt_MASK: u32 = 262144;
-pub const SMARTKEY_modifiers_SHIFT: u32 = 16;
-pub const SMARTKEY_modifiers_MASK: u32 = 4294901760;
+pub const JSONTYPEOPTIONS_numbersUseOGDFS_SHIFT: u32 = 0;
+pub const JSONTYPEOPTIONS_numbersUseOGDFS_MASK: u32 = 1;
+pub const JSONTYPEOPTIONS_boolUseOGDFS_SHIFT: u32 = 1;
+pub const JSONTYPEOPTIONS_boolUseOGDFS_MASK: u32 = 2;
+pub const JSONTYPEOPTIONS_nullUseOGDFS_SHIFT: u32 = 2;
+pub const JSONTYPEOPTIONS_nullUseOGDFS_MASK: u32 = 4;
+pub const JSONTYPEOPTIONS_stringUseOGDFS_SHIFT: u32 = 3;
+pub const JSONTYPEOPTIONS_stringUseOGDFS_MASK: u32 = 8;
+pub const JSONTYPEOPTIONS_arrayUseOGDFS_SHIFT: u32 = 4;
+pub const JSONTYPEOPTIONS_arrayUseOGDFS_MASK: u32 = 16;
+pub const JSONTYPEOPTIONS_objectUseOGDFS_SHIFT: u32 = 5;
+pub const JSONTYPEOPTIONS_objectUseOGDFS_MASK: u32 = 32;
+pub const JSONTYPEOPTIONS_stripQuotesForOGDFS_SHIFT: u32 = 6;
+pub const JSONTYPEOPTIONS_stripQuotesForOGDFS_MASK: u32 = 64;
+pub const JSONTYPEOPTIONS_strictOGDFS_SHIFT: u32 = 7;
+pub const JSONTYPEOPTIONS_strictOGDFS_MASK: u32 = 128;
 pub const DGGAL_MODULE_NAME: &[u8; 6] = b"dggal\0";
+pub const nullZone: i32 = -1;
 pub const wgs84InvFlattening: f64 = 298.257223563;
 pub const CRS_registry_SHIFT: u32 = 0;
 pub const CRS_registry_MASK: u32 = 1073741823;
@@ -725,36 +364,26 @@ pub const DGGRSZONE_row_SHIFT: u32 = 30;
 pub const DGGRSZONE_row_MASK: u64 = 576460751229681664;
 pub const DGGRSZONE_col_SHIFT: u32 = 0;
 pub const DGGRSZONE_col_MASK: u32 = 1073741823;
-pub const FIELDTYPEEX_type_SHIFT: u32 = 0;
-pub const FIELDTYPEEX_type_MASK: u32 = 7;
-pub const FIELDTYPEEX_mustFree_SHIFT: u32 = 3;
-pub const FIELDTYPEEX_mustFree_MASK: u32 = 8;
-pub const FIELDTYPEEX_format_SHIFT: u32 = 4;
-pub const FIELDTYPEEX_format_MASK: u32 = 240;
-pub const FIELDTYPEEX_isUnsigned_SHIFT: u32 = 8;
-pub const FIELDTYPEEX_isUnsigned_MASK: u32 = 256;
-pub const FIELDTYPEEX_isDateTime_SHIFT: u32 = 9;
-pub const FIELDTYPEEX_isDateTime_MASK: u32 = 512;
 pub const GGGZONE_level_SHIFT: u32 = 59;
 pub const GGGZONE_level_MASK: i64 = -576460752303423488;
 pub const GGGZONE_row_SHIFT: u32 = 30;
 pub const GGGZONE_row_MASK: u64 = 576460751229681664;
 pub const GGGZONE_col_SHIFT: u32 = 0;
 pub const GGGZONE_col_MASK: u32 = 1073741823;
-pub const ISEA3HZONE_levelISEA9R_SHIFT: u32 = 58;
-pub const ISEA3HZONE_levelISEA9R_MASK: u64 = 8935141660703064064;
-pub const ISEA3HZONE_rootRhombus_SHIFT: u32 = 54;
-pub const ISEA3HZONE_rootRhombus_MASK: u64 = 270215977642229760;
-pub const ISEA3HZONE_rhombusIX_SHIFT: u32 = 3;
-pub const ISEA3HZONE_rhombusIX_MASK: u64 = 18014398509481976;
-pub const ISEA3HZONE_subHex_SHIFT: u32 = 0;
-pub const ISEA3HZONE_subHex_MASK: u32 = 7;
-pub const ISEA9RZONE_level_SHIFT: u32 = 59;
-pub const ISEA9RZONE_level_MASK: i64 = -576460752303423488;
-pub const ISEA9RZONE_row_SHIFT: u32 = 30;
-pub const ISEA9RZONE_row_MASK: u64 = 576460751229681664;
-pub const ISEA9RZONE_col_SHIFT: u32 = 0;
-pub const ISEA9RZONE_col_MASK: u32 = 1073741823;
+pub const I3HZONE_levelI9R_SHIFT: u32 = 58;
+pub const I3HZONE_levelI9R_MASK: u64 = 8935141660703064064;
+pub const I3HZONE_rootRhombus_SHIFT: u32 = 54;
+pub const I3HZONE_rootRhombus_MASK: u64 = 270215977642229760;
+pub const I3HZONE_rhombusIX_SHIFT: u32 = 3;
+pub const I3HZONE_rhombusIX_MASK: u64 = 18014398509481976;
+pub const I3HZONE_subHex_SHIFT: u32 = 0;
+pub const I3HZONE_subHex_MASK: u32 = 7;
+pub const I9RZONE_level_SHIFT: u32 = 59;
+pub const I9RZONE_level_MASK: i64 = -576460752303423488;
+pub const I9RZONE_row_SHIFT: u32 = 30;
+pub const I9RZONE_row_MASK: u64 = 576460751229681664;
+pub const I9RZONE_col_SHIFT: u32 = 0;
+pub const I9RZONE_col_MASK: u32 = 1073741823;
 pub type __gnuc_va_list = __builtin_va_list;
 pub type __u_char = ::std::os::raw::c_uchar;
 pub type __u_short = ::std::os::raw::c_ushort;
@@ -1950,138 +1579,7 @@ const _: () = {
     ["Offset of field: Size::w"][::std::mem::offset_of!(Size, w) - 0usize];
     ["Offset of field: Size::h"][::std::mem::offset_of!(Size, h) - 4usize];
 };
-pub type typed_object_class_ptr = *mut Class;
-pub type IOChannel = Instance;
-pub type uint = u32;
-pub type bool_ = uint;
-pub const boolean_true_: boolean = 1;
-pub const boolean_false_: boolean = 0;
-pub type boolean = ::std::os::raw::c_uint;
-pub type ObjectNotationType = bool_;
-pub const ObjectNotationType_ObjectNotationType_none: ObjectNotationType = 0;
-pub const ObjectNotationType_ObjectNotationType_econ: ObjectNotationType = 1;
-pub const ObjectNotationType_ObjectNotationType_json: ObjectNotationType = 2;
-pub type String = *mut ::std::os::raw::c_char;
-pub type byte = u8;
-pub type int64 = i64;
-pub type intptr = isize;
-pub type intsize = isize;
-pub type uint16 = u16;
-pub type uint32 = u32;
-pub type uint64 = u64;
 pub type uintptr = usize;
-pub type uintsize = usize;
-pub type unichar = u32;
-unsafe extern "C" {
-    pub static mut class_onCompare_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onCompare: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onCopy_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onCopy: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onDisplay_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onDisplay: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onEdit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onEdit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onFree_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onFree: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onGetDataFromString_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onGetDataFromString: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onGetString_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onGetString: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onSaveEdit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onSaveEdit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onSerialize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onSerialize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut class_onUnserialize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_class_onUnserialize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut double_inf: ::std::option::Option<unsafe extern "C" fn() -> f64>;
-}
-unsafe extern "C" {
-    pub static mut double_nan: ::std::option::Option<unsafe extern "C" fn() -> f64>;
-}
-unsafe extern "C" {
-    pub static mut property_double_isNan: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut double_get_isNan: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_double_isInf: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut double_get_isInf: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_double_signBit: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut double_get_signBit:
-        ::std::option::Option<unsafe extern "C" fn(d: f64) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut float_inf: ::std::option::Option<unsafe extern "C" fn() -> f32>;
-}
-unsafe extern "C" {
-    pub static mut float_nan: ::std::option::Option<unsafe extern "C" fn() -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_float_isNan: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut float_get_isNan: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_float_isInf: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut float_get_isInf: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_float_signBit: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut float_get_signBit:
-        ::std::option::Option<unsafe extern "C" fn(f: f32) -> ::std::os::raw::c_int>;
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct BTNode {
@@ -2127,953 +1625,6 @@ const _: () = {
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct Item {
-    pub prev: *mut Item,
-    pub next: *mut Item,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Item"][::std::mem::size_of::<Item>() - 16usize];
-    ["Alignment of Item"][::std::mem::align_of::<Item>() - 8usize];
-    ["Offset of field: Item::prev"][::std::mem::offset_of!(Item, prev) - 0usize];
-    ["Offset of field: Item::next"][::std::mem::offset_of!(Item, next) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct NamedItem {
-    pub prev: *mut NamedItem,
-    pub next: *mut NamedItem,
-    pub name: *mut ::std::os::raw::c_char,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of NamedItem"][::std::mem::size_of::<NamedItem>() - 24usize];
-    ["Alignment of NamedItem"][::std::mem::align_of::<NamedItem>() - 8usize];
-    ["Offset of field: NamedItem::prev"][::std::mem::offset_of!(NamedItem, prev) - 0usize];
-    ["Offset of field: NamedItem::next"][::std::mem::offset_of!(NamedItem, next) - 8usize];
-    ["Offset of field: NamedItem::name"][::std::mem::offset_of!(NamedItem, name) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct NamedLink {
-    pub prev: *mut NamedLink,
-    pub next: *mut NamedLink,
-    pub name: *mut ::std::os::raw::c_char,
-    pub data: *mut ::std::os::raw::c_void,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of NamedLink"][::std::mem::size_of::<NamedLink>() - 32usize];
-    ["Alignment of NamedLink"][::std::mem::align_of::<NamedLink>() - 8usize];
-    ["Offset of field: NamedLink::prev"][::std::mem::offset_of!(NamedLink, prev) - 0usize];
-    ["Offset of field: NamedLink::next"][::std::mem::offset_of!(NamedLink, next) - 8usize];
-    ["Offset of field: NamedLink::name"][::std::mem::offset_of!(NamedLink, name) - 16usize];
-    ["Offset of field: NamedLink::data"][::std::mem::offset_of!(NamedLink, data) - 24usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct NamedLink64 {
-    pub prev: *mut NamedLink64,
-    pub next: *mut NamedLink64,
-    pub name: *mut ::std::os::raw::c_char,
-    pub data: int64,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of NamedLink64"][::std::mem::size_of::<NamedLink64>() - 32usize];
-    ["Alignment of NamedLink64"][::std::mem::align_of::<NamedLink64>() - 8usize];
-    ["Offset of field: NamedLink64::prev"][::std::mem::offset_of!(NamedLink64, prev) - 0usize];
-    ["Offset of field: NamedLink64::next"][::std::mem::offset_of!(NamedLink64, next) - 8usize];
-    ["Offset of field: NamedLink64::name"][::std::mem::offset_of!(NamedLink64, name) - 16usize];
-    ["Offset of field: NamedLink64::data"][::std::mem::offset_of!(NamedLink64, data) - 24usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct OldLink {
-    pub prev: *mut OldLink,
-    pub next: *mut OldLink,
-    pub data: *mut ::std::os::raw::c_void,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OldLink"][::std::mem::size_of::<OldLink>() - 24usize];
-    ["Alignment of OldLink"][::std::mem::align_of::<OldLink>() - 8usize];
-    ["Offset of field: OldLink::prev"][::std::mem::offset_of!(OldLink, prev) - 0usize];
-    ["Offset of field: OldLink::next"][::std::mem::offset_of!(OldLink, next) - 8usize];
-    ["Offset of field: OldLink::data"][::std::mem::offset_of!(OldLink, data) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct StringBTNode {
-    pub key: String,
-    pub parent: *mut StringBTNode,
-    pub left: *mut StringBTNode,
-    pub right: *mut StringBTNode,
-    pub depth: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StringBTNode"][::std::mem::size_of::<StringBTNode>() - 40usize];
-    ["Alignment of StringBTNode"][::std::mem::align_of::<StringBTNode>() - 8usize];
-    ["Offset of field: StringBTNode::key"][::std::mem::offset_of!(StringBTNode, key) - 0usize];
-    ["Offset of field: StringBTNode::parent"]
-        [::std::mem::offset_of!(StringBTNode, parent) - 8usize];
-    ["Offset of field: StringBTNode::left"][::std::mem::offset_of!(StringBTNode, left) - 16usize];
-    ["Offset of field: StringBTNode::right"][::std::mem::offset_of!(StringBTNode, right) - 24usize];
-    ["Offset of field: StringBTNode::depth"][::std::mem::offset_of!(StringBTNode, depth) - 32usize];
-};
-pub type BackSlashEscaping = bool_;
-pub const BackSlashEscaping_BackSlashEscaping_forArgsPassing: BackSlashEscaping = 2;
-pub type EscapeCStringOptions = uint32;
-pub type StringAllocType = ::std::os::raw::c_int;
-pub const StringAllocType_StringAllocType_pointer: StringAllocType = 0;
-pub const StringAllocType_StringAllocType_stack: StringAllocType = 1;
-pub const StringAllocType_StringAllocType_heap: StringAllocType = 2;
-pub type TreePrintStyle = ::std::os::raw::c_int;
-pub const TreePrintStyle_TreePrintStyle_inOrder: TreePrintStyle = 0;
-pub const TreePrintStyle_TreePrintStyle_postOrder: TreePrintStyle = 1;
-pub const TreePrintStyle_TreePrintStyle_preOrder: TreePrintStyle = 2;
-pub const TreePrintStyle_TreePrintStyle_depthOrder: TreePrintStyle = 3;
-pub type ZString = Instance;
-unsafe extern "C" {
-    pub static mut BTNode_findPrefix: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BTNode,
-            key: *const ::std::os::raw::c_char,
-        ) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BTNode_findString: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BTNode,
-            key: *const ::std::os::raw::c_char,
-        ) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_prev: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_next:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_minimum: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_minimum:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_maximum: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_maximum:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_count: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_count:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_BTNode_depthProp: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BTNode_get_depthProp:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_add: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_check:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_compareInt: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BinaryTree,
-            a: uintptr,
-            b: uintptr,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_compareString: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BinaryTree,
-            a: *const ::std::os::raw::c_char,
-            b: *const ::std::os::raw::c_char,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_delete:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_find: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_findAll: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_findPrefix: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BinaryTree,
-            key: *const ::std::os::raw::c_char,
-        ) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_findString: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BinaryTree,
-            key: *const ::std::os::raw::c_char,
-        ) -> *mut BTNode,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree)>;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_freeString:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_print: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BinaryTree,
-            output: *mut ::std::os::raw::c_char,
-            tps: TreePrintStyle,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_remove:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
-}
-unsafe extern "C" {
-    pub static mut property_BinaryTree_first: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_get_first:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut property_BinaryTree_last: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BinaryTree_get_last:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
-}
-unsafe extern "C" {
-    pub static mut Item_copy: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Item, src: *mut Item, size: ::std::os::raw::c_int),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Mutex {
-    pub __ecere_padding: [byte; 56usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Mutex"][::std::mem::size_of::<Mutex>() - 56usize];
-    ["Alignment of Mutex"][::std::mem::align_of::<Mutex>() - 1usize];
-    ["Offset of field: Mutex::__ecere_padding"]
-        [::std::mem::offset_of!(Mutex, __ecere_padding) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut Mutex_release: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
-}
-unsafe extern "C" {
-    pub static mut Mutex_wait: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
-}
-unsafe extern "C" {
-    pub static mut property_Mutex_lockCount: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mutex_get_lockCount:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mutex_owningThread: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mutex_get_owningThread:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut OldLink_free: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldLink)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct OldList {
-    pub first: *mut ::std::os::raw::c_void,
-    pub last: *mut ::std::os::raw::c_void,
-    pub count: ::std::os::raw::c_int,
-    pub offset: uint,
-    pub circ: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of OldList"][::std::mem::size_of::<OldList>() - 32usize];
-    ["Alignment of OldList"][::std::mem::align_of::<OldList>() - 8usize];
-    ["Offset of field: OldList::first"][::std::mem::offset_of!(OldList, first) - 0usize];
-    ["Offset of field: OldList::last"][::std::mem::offset_of!(OldList, last) - 8usize];
-    ["Offset of field: OldList::count"][::std::mem::offset_of!(OldList, count) - 16usize];
-    ["Offset of field: OldList::offset"][::std::mem::offset_of!(OldList, offset) - 20usize];
-    ["Offset of field: OldList::circ"][::std::mem::offset_of!(OldList, circ) - 24usize];
-};
-unsafe extern "C" {
-    pub static mut OldList_add: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_addName: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_clear: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldList)>;
-}
-unsafe extern "C" {
-    pub static mut OldList_copy: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            src: *mut OldList,
-            size: ::std::os::raw::c_int,
-            copy: ::std::option::Option<
-                unsafe extern "C" fn(
-                    dest: *mut ::std::os::raw::c_void,
-                    src: *mut ::std::os::raw::c_void,
-                ),
-            >,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_delete: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_findLink: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            data: *mut ::std::os::raw::c_void,
-        ) -> *mut OldLink,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_findName: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            name: *const ::std::os::raw::c_char,
-            warn: bool_,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_findNamedLink: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            name: *const ::std::os::raw::c_char,
-            warn: bool_,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_free: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_insert: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            prevItem: *mut ::std::os::raw::c_void,
-            item: *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_move: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            item: *mut ::std::os::raw::c_void,
-            prevItem: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_placeName: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            name: *const ::std::os::raw::c_char,
-            place: *mut *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_remove: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_removeAll: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_sort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            compare: ::std::option::Option<
-                unsafe extern "C" fn(
-                    arg1: *mut ::std::os::raw::c_void,
-                    arg2: *mut ::std::os::raw::c_void,
-                    arg3: *mut ::std::os::raw::c_void,
-                ) -> ::std::os::raw::c_int,
-            >,
-            data: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut OldList_swap: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut OldList,
-            item1: *mut ::std::os::raw::c_void,
-            item2: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct StringBinaryTree {
-    pub root: *mut BTNode,
-    pub count: ::std::os::raw::c_int,
-    pub CompareKey: ::std::option::Option<
-        unsafe extern "C" fn(
-            tree: *mut BinaryTree,
-            a: uintptr,
-            b: uintptr,
-        ) -> ::std::os::raw::c_int,
-    >,
-    pub FreeKey: ::std::option::Option<unsafe extern "C" fn(key: *mut ::std::os::raw::c_void)>,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StringBinaryTree"][::std::mem::size_of::<StringBinaryTree>() - 32usize];
-    ["Alignment of StringBinaryTree"][::std::mem::align_of::<StringBinaryTree>() - 8usize];
-    ["Offset of field: StringBinaryTree::root"]
-        [::std::mem::offset_of!(StringBinaryTree, root) - 0usize];
-    ["Offset of field: StringBinaryTree::count"]
-        [::std::mem::offset_of!(StringBinaryTree, count) - 8usize];
-    ["Offset of field: StringBinaryTree::CompareKey"]
-        [::std::mem::offset_of!(StringBinaryTree, CompareKey) - 16usize];
-    ["Offset of field: StringBinaryTree::FreeKey"]
-        [::std::mem::offset_of!(StringBinaryTree, FreeKey) - 24usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_ZString {
-    pub _string: *mut ::std::os::raw::c_char,
-    pub len: ::std::os::raw::c_int,
-    pub allocType: StringAllocType,
-    pub size: ::std::os::raw::c_int,
-    pub minSize: ::std::os::raw::c_int,
-    pub maxSize: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_ZString"][::std::mem::size_of::<class_members_ZString>() - 32usize];
-    ["Alignment of class_members_ZString"]
-        [::std::mem::align_of::<class_members_ZString>() - 8usize];
-    ["Offset of field: class_members_ZString::_string"]
-        [::std::mem::offset_of!(class_members_ZString, _string) - 0usize];
-    ["Offset of field: class_members_ZString::len"]
-        [::std::mem::offset_of!(class_members_ZString, len) - 8usize];
-    ["Offset of field: class_members_ZString::allocType"]
-        [::std::mem::offset_of!(class_members_ZString, allocType) - 12usize];
-    ["Offset of field: class_members_ZString::size"]
-        [::std::mem::offset_of!(class_members_ZString, size) - 16usize];
-    ["Offset of field: class_members_ZString::minSize"]
-        [::std::mem::offset_of!(class_members_ZString, minSize) - 20usize];
-    ["Offset of field: class_members_ZString::maxSize"]
-        [::std::mem::offset_of!(class_members_ZString, maxSize) - 24usize];
-};
-unsafe extern "C" {
-    pub static mut ZString_concat:
-        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
-}
-unsafe extern "C" {
-    pub static mut ZString_concatf: ::std::option::Option<
-        unsafe extern "C" fn(__this: ZString, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ZString_concatn: ::std::option::Option<
-        unsafe extern "C" fn(__this: ZString, s: ZString, l: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ZString_concatx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ZString,
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ZString_copy:
-        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
-}
-unsafe extern "C" {
-    pub static mut ZString_copyString: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ZString,
-            value: *const ::std::os::raw::c_char,
-            newLen: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_ZString_string: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ZString_set_string: ::std::option::Option<
-        unsafe extern "C" fn(z: ZString, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ZString_get_string:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_ZString_char_ptr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ZString_from_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> ZString>;
-}
-unsafe extern "C" {
-    pub static mut ZString_to_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_ZString_String: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ZString_from_String:
-        ::std::option::Option<unsafe extern "C" fn(string: String) -> ZString>;
-}
-unsafe extern "C" {
-    pub static mut ZString_to_String:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> constString>;
-}
-unsafe extern "C" {
-    pub static mut changeCh: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            ch1: ::std::os::raw::c_char,
-            ch2: ::std::os::raw::c_char,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut changeChars: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            chars: *const ::std::os::raw::c_char,
-            alt: ::std::os::raw::c_char,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut changeExtension: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            ext: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut copyString: ::std::option::Option<
-        unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut escapeCString: ::std::option::Option<
-        unsafe extern "C" fn(
-            outString: String,
-            bufferLen: ::std::os::raw::c_int,
-            s: constString,
-            options: EscapeCStringOptions,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut floatFromString:
-        ::std::option::Option<unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut getCurrentThreadID: ::std::option::Option<unsafe extern "C" fn() -> int64>;
-}
-unsafe extern "C" {
-    pub static mut getExtension: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getHexValue: ::std::option::Option<
-        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> uint,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getLastDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getString: ::std::option::Option<
-        unsafe extern "C" fn(
-            buffer: *mut *const ::std::os::raw::c_char,
-            string: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getValue: ::std::option::Option<
-        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut iSO8859_1toUTF8: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut isPathInsideOf: ::std::option::Option<
-        unsafe extern "C" fn(
-            path: *const ::std::os::raw::c_char,
-            of: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut makePathRelative: ::std::option::Option<
-        unsafe extern "C" fn(
-            path: *const ::std::os::raw::c_char,
-            to: *const ::std::os::raw::c_char,
-            destination: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut pathCat: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            addedPath: *const ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut pathCatSlash: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            addedPath: *const ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut printBigSize: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            size: f64,
-            prec: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut printSize: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            size: uint64,
-            prec: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut rSearchString: ::std::option::Option<
-        unsafe extern "C" fn(
-            buffer: *const ::std::os::raw::c_char,
-            subStr: *const ::std::os::raw::c_char,
-            maxLen: ::std::os::raw::c_int,
-            matchCase: bool_,
-            matchWord: bool_,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut repeatCh: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            count: ::std::os::raw::c_int,
-            ch: ::std::os::raw::c_char,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut searchString: ::std::option::Option<
-        unsafe extern "C" fn(
-            buffer: *const ::std::os::raw::c_char,
-            start: ::std::os::raw::c_int,
-            subStr: *const ::std::os::raw::c_char,
-            matchCase: bool_,
-            matchWord: bool_,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut splitArchivePath: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            archiveName: *mut ::std::os::raw::c_char,
-            archiveFile: *mut *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut splitDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            part: *mut ::std::os::raw::c_char,
-            rest: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut stringLikePattern: ::std::option::Option<
-        unsafe extern "C" fn(string: constString, pattern: constString) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut stripChars: ::std::option::Option<
-        unsafe extern "C" fn(string: String, chars: constString) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut stripExtension:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut stripLastDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut stripQuotes: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut tokenize: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            maxTokens: ::std::os::raw::c_int,
-            tokens: *mut *mut ::std::os::raw::c_char,
-            esc: BackSlashEscaping,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut tokenizeWith: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *mut ::std::os::raw::c_char,
-            maxTokens: ::std::os::raw::c_int,
-            tokens: *mut *mut ::std::os::raw::c_char,
-            tokenizers: *const ::std::os::raw::c_char,
-            escapeBackSlashes: bool_,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut trimLSpaces: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut trimRSpaces: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            output: *mut ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF16toUTF8: ::std::option::Option<
-        unsafe extern "C" fn(source: *const uint16) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF16toUTF8Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const uint16,
-            dest: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF32toUTF8Len: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const unichar,
-            count: ::std::os::raw::c_int,
-            dest: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8GetChar: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            numBytes: *mut ::std::os::raw::c_int,
-        ) -> unichar,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8Validate:
-        ::std::option::Option<unsafe extern "C" fn(source: *const ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut uTF8toUTF16: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            wordCount: *mut ::std::os::raw::c_int,
-        ) -> *mut uint16,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8toUTF16Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *mut uint16,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut unescapeCString: ::std::option::Option<
-        unsafe extern "C" fn(
-            d: *mut ::std::os::raw::c_char,
-            s: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut unescapeCStringLoose: ::std::option::Option<
-        unsafe extern "C" fn(
-            d: *mut ::std::os::raw::c_char,
-            s: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ishexdigit:
-        ::std::option::Option<unsafe extern "C" fn(x: ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut strchrmax: ::std::option::Option<
-        unsafe extern "C" fn(
-            s: *const ::std::os::raw::c_char,
-            c: ::std::os::raw::c_int,
-            max: ::std::os::raw::c_int,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-pub type tparam_AVLNode_T = u64;
-pub type tparam_Container_T = u64;
-pub type tparam_CustomAVLTree_BT = u64;
-pub type tparam_LinkElement_T = u64;
-pub type tparam_LinkList_LT = u64;
-pub type tparam_MapNode_V = u64;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct BTNamedLink {
-    pub name: *const ::std::os::raw::c_char,
-    pub parent: *mut BTNamedLink,
-    pub left: *mut BTNamedLink,
-    pub right: *mut BTNamedLink,
-    pub depth: ::std::os::raw::c_int,
-    pub data: *mut ::std::os::raw::c_void,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of BTNamedLink"][::std::mem::size_of::<BTNamedLink>() - 48usize];
-    ["Alignment of BTNamedLink"][::std::mem::align_of::<BTNamedLink>() - 8usize];
-    ["Offset of field: BTNamedLink::name"][::std::mem::offset_of!(BTNamedLink, name) - 0usize];
-    ["Offset of field: BTNamedLink::parent"][::std::mem::offset_of!(BTNamedLink, parent) - 8usize];
-    ["Offset of field: BTNamedLink::left"][::std::mem::offset_of!(BTNamedLink, left) - 16usize];
-    ["Offset of field: BTNamedLink::right"][::std::mem::offset_of!(BTNamedLink, right) - 24usize];
-    ["Offset of field: BTNamedLink::depth"][::std::mem::offset_of!(BTNamedLink, depth) - 32usize];
-    ["Offset of field: BTNamedLink::data"][::std::mem::offset_of!(BTNamedLink, data) - 40usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
 pub struct NameSpace {
     pub name: *const ::std::os::raw::c_char,
     pub btParent: *mut NameSpace,
@@ -3102,6 +1653,30 @@ const _: () = {
     ["Offset of field: NameSpace::defines"][::std::mem::offset_of!(NameSpace, defines) - 112usize];
     ["Offset of field: NameSpace::functions"]
         [::std::mem::offset_of!(NameSpace, functions) - 144usize];
+};
+pub type uint = u32;
+pub type bool_ = uint;
+pub const boolean_true_: boolean = 1;
+pub const boolean_false_: boolean = 0;
+pub type boolean = ::std::os::raw::c_uint;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OldList {
+    pub first: *mut ::std::os::raw::c_void,
+    pub last: *mut ::std::os::raw::c_void,
+    pub count: ::std::os::raw::c_int,
+    pub offset: uint,
+    pub circ: bool_,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of OldList"][::std::mem::size_of::<OldList>() - 32usize];
+    ["Alignment of OldList"][::std::mem::align_of::<OldList>() - 8usize];
+    ["Offset of field: OldList::first"][::std::mem::offset_of!(OldList, first) - 0usize];
+    ["Offset of field: OldList::last"][::std::mem::offset_of!(OldList, last) - 8usize];
+    ["Offset of field: OldList::count"][::std::mem::offset_of!(OldList, count) - 16usize];
+    ["Offset of field: OldList::offset"][::std::mem::offset_of!(OldList, offset) - 20usize];
+    ["Offset of field: OldList::circ"][::std::mem::offset_of!(OldList, circ) - 24usize];
 };
 pub type Module = Instance;
 pub type Application = Module;
@@ -3168,6 +1743,7 @@ pub const AccessMode_AccessMode_publicAccess: AccessMode = 1;
 pub const AccessMode_AccessMode_privateAccess: AccessMode = 2;
 pub const AccessMode_AccessMode_staticAccess: AccessMode = 3;
 pub const AccessMode_AccessMode_baseSystemAccess: AccessMode = 4;
+pub type typed_object_class_ptr = *mut Class;
 pub type ClassType = ::std::os::raw::c_int;
 pub const ClassType_ClassType_normalClass: ClassType = 0;
 pub const ClassType_ClassType_structClass: ClassType = 1;
@@ -3321,10 +1897,101 @@ const _: () = {
     ["Offset of field: Class::bindingsClass"]
         [::std::mem::offset_of!(Class, bindingsClass) - 624usize];
 };
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_Application {
+    pub argc: ::std::os::raw::c_int,
+    pub argv: *mut *const ::std::os::raw::c_char,
+    pub exitCode: ::std::os::raw::c_int,
+    pub isGUIApp: bool_,
+    pub allModules: OldList,
+    pub parsedCommand: *mut ::std::os::raw::c_char,
+    pub systemNameSpace: NameSpace,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_Application"]
+        [::std::mem::size_of::<class_members_Application>() - 240usize];
+    ["Alignment of class_members_Application"]
+        [::std::mem::align_of::<class_members_Application>() - 8usize];
+    ["Offset of field: class_members_Application::argc"]
+        [::std::mem::offset_of!(class_members_Application, argc) - 0usize];
+    ["Offset of field: class_members_Application::argv"]
+        [::std::mem::offset_of!(class_members_Application, argv) - 8usize];
+    ["Offset of field: class_members_Application::exitCode"]
+        [::std::mem::offset_of!(class_members_Application, exitCode) - 16usize];
+    ["Offset of field: class_members_Application::isGUIApp"]
+        [::std::mem::offset_of!(class_members_Application, isGUIApp) - 20usize];
+    ["Offset of field: class_members_Application::allModules"]
+        [::std::mem::offset_of!(class_members_Application, allModules) - 24usize];
+    ["Offset of field: class_members_Application::parsedCommand"]
+        [::std::mem::offset_of!(class_members_Application, parsedCommand) - 56usize];
+    ["Offset of field: class_members_Application::systemNameSpace"]
+        [::std::mem::offset_of!(class_members_Application, systemNameSpace) - 64usize];
+};
+unsafe extern "C" {
+    pub static mut Application_main_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_Application_main: *mut Method;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_Instance {
+    pub _vTbl: *mut *mut ::std::os::raw::c_void,
+    pub _class: *mut Class,
+    pub _refCount: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_Instance"][::std::mem::size_of::<class_members_Instance>() - 24usize];
+    ["Alignment of class_members_Instance"]
+        [::std::mem::align_of::<class_members_Instance>() - 8usize];
+    ["Offset of field: class_members_Instance::_vTbl"]
+        [::std::mem::offset_of!(class_members_Instance, _vTbl) - 0usize];
+    ["Offset of field: class_members_Instance::_class"]
+        [::std::mem::offset_of!(class_members_Instance, _class) - 8usize];
+    ["Offset of field: class_members_Instance::_refCount"]
+        [::std::mem::offset_of!(class_members_Instance, _refCount) - 16usize];
+};
+unsafe extern "C" {
+    pub static mut Module_onLoad_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_Module_onLoad: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut Module_onUnload_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_Module_onUnload: *mut Method;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct BTNamedLink {
+    pub name: *const ::std::os::raw::c_char,
+    pub parent: *mut BTNamedLink,
+    pub left: *mut BTNamedLink,
+    pub right: *mut BTNamedLink,
+    pub depth: ::std::os::raw::c_int,
+    pub data: *mut ::std::os::raw::c_void,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of BTNamedLink"][::std::mem::size_of::<BTNamedLink>() - 48usize];
+    ["Alignment of BTNamedLink"][::std::mem::align_of::<BTNamedLink>() - 8usize];
+    ["Offset of field: BTNamedLink::name"][::std::mem::offset_of!(BTNamedLink, name) - 0usize];
+    ["Offset of field: BTNamedLink::parent"][::std::mem::offset_of!(BTNamedLink, parent) - 8usize];
+    ["Offset of field: BTNamedLink::left"][::std::mem::offset_of!(BTNamedLink, left) - 16usize];
+    ["Offset of field: BTNamedLink::right"][::std::mem::offset_of!(BTNamedLink, right) - 24usize];
+    ["Offset of field: BTNamedLink::depth"][::std::mem::offset_of!(BTNamedLink, depth) - 32usize];
+    ["Offset of field: BTNamedLink::data"][::std::mem::offset_of!(BTNamedLink, data) - 40usize];
+};
 pub type DataMemberType = ::std::os::raw::c_int;
 pub const DataMemberType_DataMemberType_normalMember: DataMemberType = 0;
 pub const DataMemberType_DataMemberType_unionMember: DataMemberType = 1;
 pub const DataMemberType_DataMemberType_structMember: DataMemberType = 2;
+pub type uint64 = u64;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct BitMember {
@@ -3366,6 +2033,7 @@ const _: () = {
     ["Offset of field: BitMember::pos"][::std::mem::offset_of!(BitMember, pos) - 80usize];
     ["Offset of field: BitMember::mask"][::std::mem::offset_of!(BitMember, mask) - 88usize];
 };
+pub type int64 = i64;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct ClassProperty {
@@ -3456,6 +2124,8 @@ const _: () = {
     ["Offset of field: DataMember::pointerAlignment"]
         [::std::mem::offset_of!(DataMember, pointerAlignment) - 158usize];
 };
+pub type byte = u8;
+pub type uint16 = u16;
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub struct DataValue {
@@ -3830,79 +2500,6 @@ const _: () = {
 };
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct class_members_HashMap {
-    pub __ecerePrivateData0: [byte; 8usize],
-    pub noRemResize: bool_,
-    pub __ecere_padding: [byte; 4usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_HashMap"][::std::mem::size_of::<class_members_HashMap>() - 16usize];
-    ["Alignment of class_members_HashMap"]
-        [::std::mem::align_of::<class_members_HashMap>() - 4usize];
-    ["Offset of field: class_members_HashMap::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_HashMap, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_HashMap::noRemResize"]
-        [::std::mem::offset_of!(class_members_HashMap, noRemResize) - 8usize];
-    ["Offset of field: class_members_HashMap::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_HashMap, __ecere_padding) - 12usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Instance {
-    pub _vTbl: *mut *mut ::std::os::raw::c_void,
-    pub _class: *mut Class,
-    pub _refCount: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Instance"][::std::mem::size_of::<class_members_Instance>() - 24usize];
-    ["Alignment of class_members_Instance"]
-        [::std::mem::align_of::<class_members_Instance>() - 8usize];
-    ["Offset of field: class_members_Instance::_vTbl"]
-        [::std::mem::offset_of!(class_members_Instance, _vTbl) - 0usize];
-    ["Offset of field: class_members_Instance::_class"]
-        [::std::mem::offset_of!(class_members_Instance, _class) - 8usize];
-    ["Offset of field: class_members_Instance::_refCount"]
-        [::std::mem::offset_of!(class_members_Instance, _refCount) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct IteratorPointer {}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of IteratorPointer"][::std::mem::size_of::<IteratorPointer>() - 0usize];
-    ["Alignment of IteratorPointer"][::std::mem::align_of::<IteratorPointer>() - 1usize];
-};
-pub type Container = Instance;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Iterator {
-    pub container: Container,
-    pub pointer: *mut IteratorPointer,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Iterator"][::std::mem::size_of::<Iterator>() - 16usize];
-    ["Alignment of Iterator"][::std::mem::align_of::<Iterator>() - 8usize];
-    ["Offset of field: Iterator::container"][::std::mem::offset_of!(Iterator, container) - 0usize];
-    ["Offset of field: Iterator::pointer"][::std::mem::offset_of!(Iterator, pointer) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LinkElement {
-    pub prev: tparam_LinkElement_T,
-    pub next: tparam_LinkElement_T,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of LinkElement"][::std::mem::size_of::<LinkElement>() - 16usize];
-    ["Alignment of LinkElement"][::std::mem::align_of::<LinkElement>() - 8usize];
-    ["Offset of field: LinkElement::prev"][::std::mem::offset_of!(LinkElement, prev) - 0usize];
-    ["Offset of field: LinkElement::next"][::std::mem::offset_of!(LinkElement, next) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
 pub struct ObjectInfo {
     pub prev: *mut ObjectInfo,
     pub next: *mut ObjectInfo,
@@ -3956,45 +2553,1503 @@ const _: () = {
     ["Offset of field: SubModule::importMode"]
         [::std::mem::offset_of!(SubModule, importMode) - 24usize];
 };
-pub type ClassDesignerBase = Window;
-pub type CustomAVLTree = Container;
-pub type DesignerBase = Window;
-pub type HashMap = Container;
-pub type LinkList = Container;
-pub type Map = CustomAVLTree;
+pub type BackSlashEscaping = bool_;
+pub const BackSlashEscaping_BackSlashEscaping_forArgsPassing: BackSlashEscaping = 2;
+pub type ClassDesignerBase = Instance;
+pub type DesignerBase = Instance;
+pub type uint32 = u32;
+pub type EscapeCStringOptions = uint32;
+pub type IOChannel = Instance;
 pub type Platform = ::std::os::raw::c_int;
 pub const Platform_Platform_unknown: Platform = 0;
 pub const Platform_Platform_win32: Platform = 1;
 pub const Platform_Platform_tux: Platform = 2;
 pub const Platform_Platform_apple: Platform = 3;
 pub type SerialBuffer = IOChannel;
-pub type AVLTree = CustomAVLTree;
+pub type String = *mut ::std::os::raw::c_char;
+pub type StringAllocType = ::std::os::raw::c_int;
+pub const StringAllocType_StringAllocType_pointer: StringAllocType = 0;
+pub const StringAllocType_StringAllocType_stack: StringAllocType = 1;
+pub const StringAllocType_StringAllocType_heap: StringAllocType = 2;
+pub type ZString = Instance;
+pub type uintsize = usize;
 pub type Angle = f64;
-pub type Array = Container;
 pub type CIString = *mut ::std::os::raw::c_char;
+pub type Distance = f64;
+pub type ObjectNotationType = bool_;
+pub const ObjectNotationType_ObjectNotationType_none: ObjectNotationType = 0;
+pub const ObjectNotationType_ObjectNotationType_econ: ObjectNotationType = 1;
+pub const ObjectNotationType_ObjectNotationType_json: ObjectNotationType = 2;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Box {
+    pub left: ::std::os::raw::c_int,
+    pub top: ::std::os::raw::c_int,
+    pub right: ::std::os::raw::c_int,
+    pub bottom: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Box"][::std::mem::size_of::<Box>() - 16usize];
+    ["Alignment of Box"][::std::mem::align_of::<Box>() - 4usize];
+    ["Offset of field: Box::left"][::std::mem::offset_of!(Box, left) - 0usize];
+    ["Offset of field: Box::top"][::std::mem::offset_of!(Box, top) - 4usize];
+    ["Offset of field: Box::right"][::std::mem::offset_of!(Box, right) - 8usize];
+    ["Offset of field: Box::bottom"][::std::mem::offset_of!(Box, bottom) - 12usize];
+};
+unsafe extern "C" {
+    pub static mut Box_clip:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, against: *mut Box)>;
+}
+unsafe extern "C" {
+    pub static mut Box_clipOffset: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut Box,
+            against: *mut Box,
+            x: ::std::os::raw::c_int,
+            y: ::std::os::raw::c_int,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut Box_isPointInside:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, point: *mut Point) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut Box_overlap:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, box_: *mut Box) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_Box_width: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Box_set_width:
+        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
+}
+unsafe extern "C" {
+    pub static mut Box_get_width:
+        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
+}
+unsafe extern "C" {
+    pub static mut property_Box_height: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Box_set_height:
+        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
+}
+unsafe extern "C" {
+    pub static mut Box_get_height:
+        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
+}
+unsafe extern "C" {
+    pub static mut property_Centimeters_Meters: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Centimeters_from_Meters:
+        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
+}
+unsafe extern "C" {
+    pub static mut Centimeters_to_Meters:
+        ::std::option::Option<unsafe extern "C" fn(centimeters: f64) -> Distance>;
+}
+unsafe extern "C" {
+    pub static mut property_Class_char_ptr: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Class_from_char_ptr: ::std::option::Option<
+        unsafe extern "C" fn(c: *const Class, value: *const ::std::os::raw::c_char),
+    >;
+}
+unsafe extern "C" {
+    pub static mut Class_to_char_ptr: ::std::option::Option<
+        unsafe extern "C" fn(c: *const Class) -> *const ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_addObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_addObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_createNew_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_createNew: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_createObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_createObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_destroyObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_destroyObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_droppedObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_droppedObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_fixProperty_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_fixProperty: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_listToolBoxClasses_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_listToolBoxClasses: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_postCreateObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_postCreateObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_prepareTestObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_prepareTestObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_reset_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_reset: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut ClassDesignerBase_selectObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_ClassDesignerBase_selectObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut property_Degrees_Radians: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Degrees_from_Radians:
+        ::std::option::Option<unsafe extern "C" fn(radians: Angle) -> f64>;
+}
+unsafe extern "C" {
+    pub static mut Degrees_to_Radians:
+        ::std::option::Option<unsafe extern "C" fn(degrees: f64) -> Angle>;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_DesignerBase {
+    pub classDesigner: ClassDesignerBase,
+    pub objectClass: *const ::std::os::raw::c_char,
+    pub isDragging: bool_,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_DesignerBase"]
+        [::std::mem::size_of::<class_members_DesignerBase>() - 24usize];
+    ["Alignment of class_members_DesignerBase"]
+        [::std::mem::align_of::<class_members_DesignerBase>() - 8usize];
+    ["Offset of field: class_members_DesignerBase::classDesigner"]
+        [::std::mem::offset_of!(class_members_DesignerBase, classDesigner) - 0usize];
+    ["Offset of field: class_members_DesignerBase::objectClass"]
+        [::std::mem::offset_of!(class_members_DesignerBase, objectClass) - 8usize];
+    ["Offset of field: class_members_DesignerBase::isDragging"]
+        [::std::mem::offset_of!(class_members_DesignerBase, isDragging) - 16usize];
+};
+unsafe extern "C" {
+    pub static mut DesignerBase_addDefaultMethod_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_addDefaultMethod: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_addToolBoxClass_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_addToolBoxClass: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_codeAddObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_codeAddObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_deleteObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_deleteObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_findObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_findObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_modifyCode_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_modifyCode: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_objectContainsCode_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_objectContainsCode: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_renameObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_renameObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_selectObjectFromDesigner_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_selectObjectFromDesigner: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_sheetAddObject_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_sheetAddObject: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_updateProperties_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_DesignerBase_updateProperties: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut property_DesignerBase_classDesigner: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_set_classDesigner:
+        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: ClassDesignerBase)>;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_get_classDesigner:
+        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> ClassDesignerBase>;
+}
+unsafe extern "C" {
+    pub static mut property_DesignerBase_objectClass: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_set_objectClass: ::std::option::Option<
+        unsafe extern "C" fn(d: DesignerBase, value: *const ::std::os::raw::c_char),
+    >;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_get_objectClass: ::std::option::Option<
+        unsafe extern "C" fn(d: DesignerBase) -> *const ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut property_DesignerBase_isDragging: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_set_isDragging:
+        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: bool_)>;
+}
+unsafe extern "C" {
+    pub static mut DesignerBase_get_isDragging:
+        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> bool_>;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct EnumClassData {
+    pub values: OldList,
+    pub largest: int64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of EnumClassData"][::std::mem::size_of::<EnumClassData>() - 40usize];
+    ["Alignment of EnumClassData"][::std::mem::align_of::<EnumClassData>() - 8usize];
+    ["Offset of field: EnumClassData::values"]
+        [::std::mem::offset_of!(EnumClassData, values) - 0usize];
+    ["Offset of field: EnumClassData::largest"]
+        [::std::mem::offset_of!(EnumClassData, largest) - 32usize];
+};
+unsafe extern "C" {
+    pub static mut property_Feet_Meters: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Feet_from_Meters:
+        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
+}
+unsafe extern "C" {
+    pub static mut Feet_to_Meters:
+        ::std::option::Option<unsafe extern "C" fn(feet: f64) -> Distance>;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_get: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: IOChannel,
+            class_data: typed_object_class_ptr,
+            data: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_put: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: IOChannel,
+            class_data: typed_object_class_ptr,
+            data: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_readData_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_IOChannel_readData: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_serialize: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: IOChannel,
+            class_data: typed_object_class_ptr,
+            data: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_unserialize: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: IOChannel,
+            class_data: typed_object_class_ptr,
+            data: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut IOChannel_writeData_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_IOChannel_writeData: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut property_Platform_char_ptr: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Platform_from_char_ptr:
+        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> Platform>;
+}
+unsafe extern "C" {
+    pub static mut Platform_to_char_ptr: ::std::option::Option<
+        unsafe extern "C" fn(platform: Platform) -> *const ::std::os::raw::c_char,
+    >;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Point {
+    pub x: ::std::os::raw::c_int,
+    pub y: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Point"][::std::mem::size_of::<Point>() - 8usize];
+    ["Alignment of Point"][::std::mem::align_of::<Point>() - 4usize];
+    ["Offset of field: Point::x"][::std::mem::offset_of!(Point, x) - 0usize];
+    ["Offset of field: Point::y"][::std::mem::offset_of!(Point, y) - 4usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Pointd {
+    pub x: f64,
+    pub y: f64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Pointd"][::std::mem::size_of::<Pointd>() - 16usize];
+    ["Alignment of Pointd"][::std::mem::align_of::<Pointd>() - 8usize];
+    ["Offset of field: Pointd::x"][::std::mem::offset_of!(Pointd, x) - 0usize];
+    ["Offset of field: Pointd::y"][::std::mem::offset_of!(Pointd, y) - 8usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Pointf {
+    pub x: f32,
+    pub y: f32,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Pointf"][::std::mem::size_of::<Pointf>() - 8usize];
+    ["Alignment of Pointf"][::std::mem::align_of::<Pointf>() - 4usize];
+    ["Offset of field: Pointf::x"][::std::mem::offset_of!(Pointf, x) - 0usize];
+    ["Offset of field: Pointf::y"][::std::mem::offset_of!(Pointf, y) - 4usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_SerialBuffer {
+    pub _buffer: *mut byte,
+    pub count: uintsize,
+    pub _size: uintsize,
+    pub pos: uintsize,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_SerialBuffer"]
+        [::std::mem::size_of::<class_members_SerialBuffer>() - 32usize];
+    ["Alignment of class_members_SerialBuffer"]
+        [::std::mem::align_of::<class_members_SerialBuffer>() - 8usize];
+    ["Offset of field: class_members_SerialBuffer::_buffer"]
+        [::std::mem::offset_of!(class_members_SerialBuffer, _buffer) - 0usize];
+    ["Offset of field: class_members_SerialBuffer::count"]
+        [::std::mem::offset_of!(class_members_SerialBuffer, count) - 8usize];
+    ["Offset of field: class_members_SerialBuffer::_size"]
+        [::std::mem::offset_of!(class_members_SerialBuffer, _size) - 16usize];
+    ["Offset of field: class_members_SerialBuffer::pos"]
+        [::std::mem::offset_of!(class_members_SerialBuffer, pos) - 24usize];
+};
+unsafe extern "C" {
+    pub static mut SerialBuffer_free:
+        ::std::option::Option<unsafe extern "C" fn(__this: SerialBuffer)>;
+}
+unsafe extern "C" {
+    pub static mut property_SerialBuffer_buffer: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut SerialBuffer_set_buffer:
+        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: *mut byte)>;
+}
+unsafe extern "C" {
+    pub static mut SerialBuffer_get_buffer:
+        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> *mut byte>;
+}
+unsafe extern "C" {
+    pub static mut property_SerialBuffer_size: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut SerialBuffer_set_size:
+        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: uint)>;
+}
+unsafe extern "C" {
+    pub static mut SerialBuffer_get_size:
+        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> uint>;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct StaticString {
+    pub string: [::std::os::raw::c_char; 1usize],
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of StaticString"][::std::mem::size_of::<StaticString>() - 1usize];
+    ["Alignment of StaticString"][::std::mem::align_of::<StaticString>() - 1usize];
+    ["Offset of field: StaticString::string"]
+        [::std::mem::offset_of!(StaticString, string) - 0usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_ZString {
+    pub _string: *mut ::std::os::raw::c_char,
+    pub len: ::std::os::raw::c_int,
+    pub allocType: StringAllocType,
+    pub size: ::std::os::raw::c_int,
+    pub minSize: ::std::os::raw::c_int,
+    pub maxSize: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_ZString"][::std::mem::size_of::<class_members_ZString>() - 32usize];
+    ["Alignment of class_members_ZString"]
+        [::std::mem::align_of::<class_members_ZString>() - 8usize];
+    ["Offset of field: class_members_ZString::_string"]
+        [::std::mem::offset_of!(class_members_ZString, _string) - 0usize];
+    ["Offset of field: class_members_ZString::len"]
+        [::std::mem::offset_of!(class_members_ZString, len) - 8usize];
+    ["Offset of field: class_members_ZString::allocType"]
+        [::std::mem::offset_of!(class_members_ZString, allocType) - 12usize];
+    ["Offset of field: class_members_ZString::size"]
+        [::std::mem::offset_of!(class_members_ZString, size) - 16usize];
+    ["Offset of field: class_members_ZString::minSize"]
+        [::std::mem::offset_of!(class_members_ZString, minSize) - 20usize];
+    ["Offset of field: class_members_ZString::maxSize"]
+        [::std::mem::offset_of!(class_members_ZString, maxSize) - 24usize];
+};
+unsafe extern "C" {
+    pub static mut ZString_concat:
+        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
+}
+unsafe extern "C" {
+    pub static mut ZString_concatf: ::std::option::Option<
+        unsafe extern "C" fn(__this: ZString, format: *const ::std::os::raw::c_char, ...),
+    >;
+}
+unsafe extern "C" {
+    pub static mut ZString_concatn: ::std::option::Option<
+        unsafe extern "C" fn(__this: ZString, s: ZString, l: ::std::os::raw::c_int),
+    >;
+}
+unsafe extern "C" {
+    pub static mut ZString_concatx: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: ZString,
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut ZString_copy:
+        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
+}
+unsafe extern "C" {
+    pub static mut ZString_copyString: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: ZString,
+            value: *const ::std::os::raw::c_char,
+            newLen: ::std::os::raw::c_int,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut property_ZString_string: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut ZString_set_string: ::std::option::Option<
+        unsafe extern "C" fn(z: ZString, value: *const ::std::os::raw::c_char),
+    >;
+}
+unsafe extern "C" {
+    pub static mut ZString_get_string:
+        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
+}
+unsafe extern "C" {
+    pub static mut property_ZString_char_ptr: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut ZString_from_char_ptr:
+        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> ZString>;
+}
+unsafe extern "C" {
+    pub static mut ZString_to_char_ptr:
+        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
+}
+unsafe extern "C" {
+    pub static mut property_ZString_String: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut ZString_from_String:
+        ::std::option::Option<unsafe extern "C" fn(string: String) -> ZString>;
+}
+unsafe extern "C" {
+    pub static mut ZString_to_String:
+        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> constString>;
+}
+unsafe extern "C" {
+    pub static mut changeCh: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            ch1: ::std::os::raw::c_char,
+            ch2: ::std::os::raw::c_char,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut changeChars: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            chars: *const ::std::os::raw::c_char,
+            alt: ::std::os::raw::c_char,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut changeExtension: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            ext: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut checkConsistency: ::std::option::Option<unsafe extern "C" fn()>;
+}
+unsafe extern "C" {
+    pub static mut checkMemory: ::std::option::Option<unsafe extern "C" fn()>;
+}
+unsafe extern "C" {
+    pub static mut copyBytes: ::std::option::Option<
+        unsafe extern "C" fn(
+            dest: *mut ::std::os::raw::c_void,
+            source: *const ::std::os::raw::c_void,
+            count: uint64,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut copyBytesBy2: ::std::option::Option<
+        unsafe extern "C" fn(
+            dest: *mut ::std::os::raw::c_void,
+            source: *const ::std::os::raw::c_void,
+            count: uint,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut copyBytesBy4: ::std::option::Option<
+        unsafe extern "C" fn(
+            dest: *mut ::std::os::raw::c_void,
+            source: *const ::std::os::raw::c_void,
+            count: uint,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut copyString: ::std::option::Option<
+        unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut escapeCString: ::std::option::Option<
+        unsafe extern "C" fn(
+            outString: String,
+            bufferLen: ::std::os::raw::c_int,
+            s: constString,
+            options: EscapeCStringOptions,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fillBytes: ::std::option::Option<
+        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: byte, count: uint),
+    >;
+}
+unsafe extern "C" {
+    pub static mut fillBytesBy2: ::std::option::Option<
+        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint16, count: uint),
+    >;
+}
+unsafe extern "C" {
+    pub static mut fillBytesBy4: ::std::option::Option<
+        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint, count: uint),
+    >;
+}
+unsafe extern "C" {
+    pub static mut floatFromString:
+        ::std::option::Option<unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> f64>;
+}
+unsafe extern "C" {
+    pub static mut getActiveDesigner: ::std::option::Option<unsafe extern "C" fn() -> DesignerBase>;
+}
+unsafe extern "C" {
+    pub static mut getExtension: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getHexValue: ::std::option::Option<
+        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> uint,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getLastDirectory: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getRuntimePlatform: ::std::option::Option<unsafe extern "C" fn() -> Platform>;
+}
+unsafe extern "C" {
+    pub static mut getString: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *mut *const ::std::os::raw::c_char,
+            string: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getValue: ::std::option::Option<
+        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut isPathInsideOf: ::std::option::Option<
+        unsafe extern "C" fn(
+            path: *const ::std::os::raw::c_char,
+            of: *const ::std::os::raw::c_char,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut locateModule: ::std::option::Option<
+        unsafe extern "C" fn(
+            name: *const ::std::os::raw::c_char,
+            fileName: *const ::std::os::raw::c_char,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut makePathRelative: ::std::option::Option<
+        unsafe extern "C" fn(
+            path: *const ::std::os::raw::c_char,
+            to: *const ::std::os::raw::c_char,
+            destination: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut moveBytes: ::std::option::Option<
+        unsafe extern "C" fn(
+            dest: *mut ::std::os::raw::c_void,
+            source: *const ::std::os::raw::c_void,
+            count: uint,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut pathCat: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            addedPath: *const ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut pathCatSlash: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            addedPath: *const ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut printx: ::std::option::Option<
+        unsafe extern "C" fn(
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut printBigSize: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            size: f64,
+            prec: ::std::os::raw::c_int,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut printBuf: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *mut ::std::os::raw::c_char,
+            maxLen: ::std::os::raw::c_int,
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut printLn: ::std::option::Option<
+        unsafe extern "C" fn(
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut printLnBuf: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *mut ::std::os::raw::c_char,
+            maxLen: ::std::os::raw::c_int,
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut printLnString: ::std::option::Option<
+        unsafe extern "C" fn(
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut printSize: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            size: uint64,
+            prec: ::std::os::raw::c_int,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut printStdArgsToBuffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *mut ::std::os::raw::c_char,
+            maxLen: ::std::os::raw::c_int,
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            args: *mut __va_list_tag,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut printString: ::std::option::Option<
+        unsafe extern "C" fn(
+            class_object: typed_object_class_ptr,
+            object: *const ::std::os::raw::c_void,
+            ...
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut rSearchString: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *const ::std::os::raw::c_char,
+            subStr: *const ::std::os::raw::c_char,
+            maxLen: ::std::os::raw::c_int,
+            matchCase: bool_,
+            matchWord: bool_,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut repeatCh: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            count: ::std::os::raw::c_int,
+            ch: ::std::os::raw::c_char,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut searchString: ::std::option::Option<
+        unsafe extern "C" fn(
+            buffer: *const ::std::os::raw::c_char,
+            start: ::std::os::raw::c_int,
+            subStr: *const ::std::os::raw::c_char,
+            matchCase: bool_,
+            matchWord: bool_,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut setActiveDesigner:
+        ::std::option::Option<unsafe extern "C" fn(designer: DesignerBase)>;
+}
+unsafe extern "C" {
+    pub static mut splitArchivePath: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            archiveName: *mut ::std::os::raw::c_char,
+            archiveFile: *mut *const ::std::os::raw::c_char,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut splitDirectory: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            part: *mut ::std::os::raw::c_char,
+            rest: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut stringLikePattern: ::std::option::Option<
+        unsafe extern "C" fn(string: constString, pattern: constString) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut stripChars: ::std::option::Option<
+        unsafe extern "C" fn(string: String, chars: constString) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut stripExtension:
+        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut stripLastDirectory: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut stripQuotes: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut tokenize: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            maxTokens: ::std::os::raw::c_int,
+            tokens: *mut *mut ::std::os::raw::c_char,
+            esc: BackSlashEscaping,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut tokenizeWith: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *mut ::std::os::raw::c_char,
+            maxTokens: ::std::os::raw::c_int,
+            tokens: *mut *mut ::std::os::raw::c_char,
+            tokenizers: *const ::std::os::raw::c_char,
+            escapeBackSlashes: bool_,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut trimLSpaces: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut trimRSpaces: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            output: *mut ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut unescapeCString: ::std::option::Option<
+        unsafe extern "C" fn(
+            d: *mut ::std::os::raw::c_char,
+            s: *const ::std::os::raw::c_char,
+            len: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut unescapeCStringLoose: ::std::option::Option<
+        unsafe extern "C" fn(
+            d: *mut ::std::os::raw::c_char,
+            s: *const ::std::os::raw::c_char,
+            len: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut eSystem_LockMem: ::std::option::Option<unsafe extern "C" fn()>;
+}
+unsafe extern "C" {
+    pub static mut eSystem_UnlockMem: ::std::option::Option<unsafe extern "C" fn()>;
+}
+unsafe extern "C" {
+    pub static mut ishexdigit:
+        ::std::option::Option<unsafe extern "C" fn(x: ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut log2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
+}
+unsafe extern "C" {
+    pub static mut memswap:
+        ::std::option::Option<unsafe extern "C" fn(a: *mut byte, b: *mut byte, size: uint)>;
+}
+unsafe extern "C" {
+    pub static mut pow2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
+}
+unsafe extern "C" {
+    pub static mut queryMemInfo:
+        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut strchrmax: ::std::option::Option<
+        unsafe extern "C" fn(
+            s: *const ::std::os::raw::c_char,
+            c: ::std::os::raw::c_int,
+            max: ::std::os::raw::c_int,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+pub type Container = Instance;
+pub type Array = Container;
+pub type CustomAVLTree = Container;
+pub type Map = CustomAVLTree;
+pub type intptr = isize;
+pub type intsize = isize;
+pub type template_Map_String_FieldValue = Map;
+pub type template_Array_FieldValue = Array;
+pub type template_Map_String_JSONTypeOptions = Map;
+unsafe extern "C" {
+    pub static mut class_onCompare_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onCompare: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onCopy_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onCopy: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onDisplay_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onDisplay: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onEdit_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onEdit: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onFree_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onFree: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onGetDataFromString_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onGetDataFromString: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onGetString_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onGetString: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onSaveEdit_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onSaveEdit: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onSerialize_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onSerialize: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut class_onUnserialize_vTblID: ::std::os::raw::c_int;
+}
+unsafe extern "C" {
+    pub static mut method_class_onUnserialize: *mut Method;
+}
+unsafe extern "C" {
+    pub static mut double_inf: ::std::option::Option<unsafe extern "C" fn() -> f64>;
+}
+unsafe extern "C" {
+    pub static mut double_nan: ::std::option::Option<unsafe extern "C" fn() -> f64>;
+}
+unsafe extern "C" {
+    pub static mut property_double_isNan: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut double_get_isNan: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_double_isInf: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut double_get_isInf: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_double_signBit: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut double_get_signBit:
+        ::std::option::Option<unsafe extern "C" fn(d: f64) -> ::std::os::raw::c_int>;
+}
+unsafe extern "C" {
+    pub static mut float_inf: ::std::option::Option<unsafe extern "C" fn() -> f32>;
+}
+unsafe extern "C" {
+    pub static mut float_nan: ::std::option::Option<unsafe extern "C" fn() -> f32>;
+}
+unsafe extern "C" {
+    pub static mut property_float_isNan: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut float_get_isNan: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_float_isInf: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut float_get_isInf: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_float_signBit: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut float_get_signBit:
+        ::std::option::Option<unsafe extern "C" fn(f: f32) -> ::std::os::raw::c_int>;
+}
+pub type unichar = u32;
+pub type tparam_Container_T = u64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_Array {
+    pub array: *mut tparam_Container_T,
+    pub count: uint,
+    pub minAllocSize: uint,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_Array"][::std::mem::size_of::<class_members_Array>() - 16usize];
+    ["Alignment of class_members_Array"][::std::mem::align_of::<class_members_Array>() - 8usize];
+    ["Offset of field: class_members_Array::array"]
+        [::std::mem::offset_of!(class_members_Array, array) - 0usize];
+    ["Offset of field: class_members_Array::count"]
+        [::std::mem::offset_of!(class_members_Array, count) - 8usize];
+    ["Offset of field: class_members_Array::minAllocSize"]
+        [::std::mem::offset_of!(class_members_Array, minAllocSize) - 12usize];
+};
+pub type FieldTypeEx = ::std::os::raw::c_int;
+pub type FieldType = ::std::os::raw::c_int;
+pub const FieldType_FieldType_integer: FieldType = 1;
+pub const FieldType_FieldType_real: FieldType = 2;
+pub const FieldType_FieldType_text: FieldType = 3;
+pub const FieldType_FieldType_blob: FieldType = 4;
+pub const FieldType_FieldType_nil: FieldType = 5;
+pub const FieldType_FieldType_array: FieldType = 6;
+pub const FieldType_FieldType_map: FieldType = 7;
+pub type FieldValueFormat = ::std::os::raw::c_int;
+pub const FieldValueFormat_FieldValueFormat_decimal: FieldValueFormat = 0;
+pub const FieldValueFormat_FieldValueFormat_unset: FieldValueFormat = 0;
+pub const FieldValueFormat_FieldValueFormat_hex: FieldValueFormat = 1;
+pub const FieldValueFormat_FieldValueFormat_octal: FieldValueFormat = 2;
+pub const FieldValueFormat_FieldValueFormat_binary: FieldValueFormat = 3;
+pub const FieldValueFormat_FieldValueFormat_exponential: FieldValueFormat = 4;
+pub const FieldValueFormat_FieldValueFormat_boolean: FieldValueFormat = 5;
+pub const FieldValueFormat_FieldValueFormat_textObj: FieldValueFormat = 6;
+pub const FieldValueFormat_FieldValueFormat_color: FieldValueFormat = 7;
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct FieldValue {
+    pub type_: FieldTypeEx,
+    pub __bindgen_anon_1: FieldValue__bindgen_ty_1,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union FieldValue__bindgen_ty_1 {
+    pub i: int64,
+    pub r: f64,
+    pub s: String,
+    pub b: *mut ::std::os::raw::c_void,
+    pub a: Array,
+    pub m: Map,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of FieldValue__bindgen_ty_1"]
+        [::std::mem::size_of::<FieldValue__bindgen_ty_1>() - 8usize];
+    ["Alignment of FieldValue__bindgen_ty_1"]
+        [::std::mem::align_of::<FieldValue__bindgen_ty_1>() - 8usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::i"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, i) - 0usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::r"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, r) - 0usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::s"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, s) - 0usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::b"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, b) - 0usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::a"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, a) - 0usize];
+    ["Offset of field: FieldValue__bindgen_ty_1::m"]
+        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, m) - 0usize];
+};
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of FieldValue"][::std::mem::size_of::<FieldValue>() - 16usize];
+    ["Alignment of FieldValue"][::std::mem::align_of::<FieldValue>() - 8usize];
+    ["Offset of field: FieldValue::type_"][::std::mem::offset_of!(FieldValue, type_) - 0usize];
+};
+unsafe extern "C" {
+    pub static mut FieldValue_compareInt: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            other: *mut FieldValue,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_compareReal: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            other: *mut FieldValue,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_compareText: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            other: *mut FieldValue,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_formatArray: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            tempString: *mut ::std::os::raw::c_char,
+            fieldData: *mut ::std::os::raw::c_void,
+            onType: *mut ObjectNotationType,
+        ) -> String,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_formatFloat: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            stringOutput: *mut ::std::os::raw::c_char,
+            fixDot: bool_,
+        ) -> String,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_formatInteger: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            stringOutput: *mut ::std::os::raw::c_char,
+        ) -> String,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_formatMap: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut FieldValue,
+            tempString: *mut ::std::os::raw::c_char,
+            fieldData: *mut ::std::os::raw::c_void,
+            onType: *mut ObjectNotationType,
+        ) -> String,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_getArrayOrMap: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            destClass: *mut Class,
+            destination: *mut *mut ::std::os::raw::c_void,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut FieldValue_stringify:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut FieldValue) -> String>;
+}
+pub type tparam_AVLNode_T = u64;
+pub type tparam_CustomAVLTree_BT = u64;
+pub type tparam_LinkElement_T = u64;
+pub type tparam_LinkList_LT = u64;
+pub type tparam_MapNode_V = u64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_HashMap {
+    pub __eCPrivateData0: [byte; 8usize],
+    pub noRemResize: bool_,
+    pub __ecere_padding: [byte; 4usize],
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_HashMap"][::std::mem::size_of::<class_members_HashMap>() - 16usize];
+    ["Alignment of class_members_HashMap"]
+        [::std::mem::align_of::<class_members_HashMap>() - 4usize];
+    ["Offset of field: class_members_HashMap::__eCPrivateData0"]
+        [::std::mem::offset_of!(class_members_HashMap, __eCPrivateData0) - 0usize];
+    ["Offset of field: class_members_HashMap::noRemResize"]
+        [::std::mem::offset_of!(class_members_HashMap, noRemResize) - 8usize];
+    ["Offset of field: class_members_HashMap::__ecere_padding"]
+        [::std::mem::offset_of!(class_members_HashMap, __ecere_padding) - 12usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Item {
+    pub prev: *mut Item,
+    pub next: *mut Item,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Item"][::std::mem::size_of::<Item>() - 16usize];
+    ["Alignment of Item"][::std::mem::align_of::<Item>() - 8usize];
+    ["Offset of field: Item::prev"][::std::mem::offset_of!(Item, prev) - 0usize];
+    ["Offset of field: Item::next"][::std::mem::offset_of!(Item, next) - 8usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct IteratorPointer {}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of IteratorPointer"][::std::mem::size_of::<IteratorPointer>() - 0usize];
+    ["Alignment of IteratorPointer"][::std::mem::align_of::<IteratorPointer>() - 1usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Iterator {
+    pub container: Container,
+    pub pointer: *mut IteratorPointer,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Iterator"][::std::mem::size_of::<Iterator>() - 16usize];
+    ["Alignment of Iterator"][::std::mem::align_of::<Iterator>() - 8usize];
+    ["Offset of field: Iterator::container"][::std::mem::offset_of!(Iterator, container) - 0usize];
+    ["Offset of field: Iterator::pointer"][::std::mem::offset_of!(Iterator, pointer) - 8usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct LinkElement {
+    pub prev: tparam_LinkElement_T,
+    pub next: tparam_LinkElement_T,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of LinkElement"][::std::mem::size_of::<LinkElement>() - 16usize];
+    ["Alignment of LinkElement"][::std::mem::align_of::<LinkElement>() - 8usize];
+    ["Offset of field: LinkElement::prev"][::std::mem::offset_of!(LinkElement, prev) - 0usize];
+    ["Offset of field: LinkElement::next"][::std::mem::offset_of!(LinkElement, next) - 8usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NamedItem {
+    pub prev: *mut NamedItem,
+    pub next: *mut NamedItem,
+    pub name: *mut ::std::os::raw::c_char,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of NamedItem"][::std::mem::size_of::<NamedItem>() - 24usize];
+    ["Alignment of NamedItem"][::std::mem::align_of::<NamedItem>() - 8usize];
+    ["Offset of field: NamedItem::prev"][::std::mem::offset_of!(NamedItem, prev) - 0usize];
+    ["Offset of field: NamedItem::next"][::std::mem::offset_of!(NamedItem, next) - 8usize];
+    ["Offset of field: NamedItem::name"][::std::mem::offset_of!(NamedItem, name) - 16usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NamedLink {
+    pub prev: *mut NamedLink,
+    pub next: *mut NamedLink,
+    pub name: *mut ::std::os::raw::c_char,
+    pub data: *mut ::std::os::raw::c_void,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of NamedLink"][::std::mem::size_of::<NamedLink>() - 32usize];
+    ["Alignment of NamedLink"][::std::mem::align_of::<NamedLink>() - 8usize];
+    ["Offset of field: NamedLink::prev"][::std::mem::offset_of!(NamedLink, prev) - 0usize];
+    ["Offset of field: NamedLink::next"][::std::mem::offset_of!(NamedLink, next) - 8usize];
+    ["Offset of field: NamedLink::name"][::std::mem::offset_of!(NamedLink, name) - 16usize];
+    ["Offset of field: NamedLink::data"][::std::mem::offset_of!(NamedLink, data) - 24usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct NamedLink64 {
+    pub prev: *mut NamedLink64,
+    pub next: *mut NamedLink64,
+    pub name: *mut ::std::os::raw::c_char,
+    pub data: int64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of NamedLink64"][::std::mem::size_of::<NamedLink64>() - 32usize];
+    ["Alignment of NamedLink64"][::std::mem::align_of::<NamedLink64>() - 8usize];
+    ["Offset of field: NamedLink64::prev"][::std::mem::offset_of!(NamedLink64, prev) - 0usize];
+    ["Offset of field: NamedLink64::next"][::std::mem::offset_of!(NamedLink64, next) - 8usize];
+    ["Offset of field: NamedLink64::name"][::std::mem::offset_of!(NamedLink64, name) - 16usize];
+    ["Offset of field: NamedLink64::data"][::std::mem::offset_of!(NamedLink64, data) - 24usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct OldLink {
+    pub prev: *mut OldLink,
+    pub next: *mut OldLink,
+    pub data: *mut ::std::os::raw::c_void,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of OldLink"][::std::mem::size_of::<OldLink>() - 24usize];
+    ["Alignment of OldLink"][::std::mem::align_of::<OldLink>() - 8usize];
+    ["Offset of field: OldLink::prev"][::std::mem::offset_of!(OldLink, prev) - 0usize];
+    ["Offset of field: OldLink::next"][::std::mem::offset_of!(OldLink, next) - 8usize];
+    ["Offset of field: OldLink::data"][::std::mem::offset_of!(OldLink, data) - 16usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct StringBTNode {
+    pub key: String,
+    pub parent: *mut StringBTNode,
+    pub left: *mut StringBTNode,
+    pub right: *mut StringBTNode,
+    pub depth: ::std::os::raw::c_int,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of StringBTNode"][::std::mem::size_of::<StringBTNode>() - 40usize];
+    ["Alignment of StringBTNode"][::std::mem::align_of::<StringBTNode>() - 8usize];
+    ["Offset of field: StringBTNode::key"][::std::mem::offset_of!(StringBTNode, key) - 0usize];
+    ["Offset of field: StringBTNode::parent"]
+        [::std::mem::offset_of!(StringBTNode, parent) - 8usize];
+    ["Offset of field: StringBTNode::left"][::std::mem::offset_of!(StringBTNode, left) - 16usize];
+    ["Offset of field: StringBTNode::right"][::std::mem::offset_of!(StringBTNode, right) - 24usize];
+    ["Offset of field: StringBTNode::depth"][::std::mem::offset_of!(StringBTNode, depth) - 32usize];
+};
+pub type HashMap = Container;
+pub type LinkList = Container;
+pub type TreePrintStyle = ::std::os::raw::c_int;
+pub const TreePrintStyle_TreePrintStyle_inOrder: TreePrintStyle = 0;
+pub const TreePrintStyle_TreePrintStyle_postOrder: TreePrintStyle = 1;
+pub const TreePrintStyle_TreePrintStyle_preOrder: TreePrintStyle = 2;
+pub const TreePrintStyle_TreePrintStyle_depthOrder: TreePrintStyle = 3;
+pub type AVLTree = CustomAVLTree;
 pub type HashTable = Container;
 pub type List = LinkList;
-pub type tparam_MapIterator_KT = u64;
-pub type tparam_HashMapIterator_KT = u64;
 pub type tparam_Container_D = u64;
+pub type tparam_HashMapIterator_KT = u64;
 pub type tparam_Iterator_T = u64;
 pub type tparam_HashMapIterator_VT = u64;
-pub type tparam_Iterator_IT = u64;
-pub type tparam_MapNode_KT = u64;
-pub type tparam_Container_I = u64;
 pub type tparam_MapIterator_V = u64;
+pub type tparam_Container_I = u64;
+pub type tparam_MapIterator_KT = u64;
+pub type tparam_MapNode_KT = u64;
+pub type tparam_Iterator_IT = u64;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct AVLNode {
-    pub __ecerePrivateData0: [byte; 32usize],
+    pub __eCPrivateData0: [byte; 32usize],
     pub key: tparam_AVLNode_T,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
     ["Size of AVLNode"][::std::mem::size_of::<AVLNode>() - 40usize];
     ["Alignment of AVLNode"][::std::mem::align_of::<AVLNode>() - 8usize];
-    ["Offset of field: AVLNode::__ecerePrivateData0"]
-        [::std::mem::offset_of!(AVLNode, __ecerePrivateData0) - 0usize];
+    ["Offset of field: AVLNode::__eCPrivateData0"]
+        [::std::mem::offset_of!(AVLNode, __eCPrivateData0) - 0usize];
     ["Offset of field: AVLNode::key"][::std::mem::offset_of!(AVLNode, key) - 32usize];
 };
 unsafe extern "C" {
@@ -4048,62 +4103,6 @@ unsafe extern "C" {
     pub static mut AVLNode_get_depthProp:
         ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> ::std::os::raw::c_int>;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Application {
-    pub argc: ::std::os::raw::c_int,
-    pub argv: *mut *const ::std::os::raw::c_char,
-    pub exitCode: ::std::os::raw::c_int,
-    pub isGUIApp: bool_,
-    pub allModules: OldList,
-    pub parsedCommand: *mut ::std::os::raw::c_char,
-    pub systemNameSpace: NameSpace,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Application"]
-        [::std::mem::size_of::<class_members_Application>() - 240usize];
-    ["Alignment of class_members_Application"]
-        [::std::mem::align_of::<class_members_Application>() - 8usize];
-    ["Offset of field: class_members_Application::argc"]
-        [::std::mem::offset_of!(class_members_Application, argc) - 0usize];
-    ["Offset of field: class_members_Application::argv"]
-        [::std::mem::offset_of!(class_members_Application, argv) - 8usize];
-    ["Offset of field: class_members_Application::exitCode"]
-        [::std::mem::offset_of!(class_members_Application, exitCode) - 16usize];
-    ["Offset of field: class_members_Application::isGUIApp"]
-        [::std::mem::offset_of!(class_members_Application, isGUIApp) - 20usize];
-    ["Offset of field: class_members_Application::allModules"]
-        [::std::mem::offset_of!(class_members_Application, allModules) - 24usize];
-    ["Offset of field: class_members_Application::parsedCommand"]
-        [::std::mem::offset_of!(class_members_Application, parsedCommand) - 56usize];
-    ["Offset of field: class_members_Application::systemNameSpace"]
-        [::std::mem::offset_of!(class_members_Application, systemNameSpace) - 64usize];
-};
-unsafe extern "C" {
-    pub static mut Application_main_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Application_main: *mut Method;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Array {
-    pub array: *mut tparam_Container_T,
-    pub count: uint,
-    pub minAllocSize: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Array"][::std::mem::size_of::<class_members_Array>() - 16usize];
-    ["Alignment of class_members_Array"][::std::mem::align_of::<class_members_Array>() - 8usize];
-    ["Offset of field: class_members_Array::array"]
-        [::std::mem::offset_of!(class_members_Array, array) - 0usize];
-    ["Offset of field: class_members_Array::count"]
-        [::std::mem::offset_of!(class_members_Array, count) - 8usize];
-    ["Offset of field: class_members_Array::minAllocSize"]
-        [::std::mem::offset_of!(class_members_Array, minAllocSize) - 12usize];
-};
 unsafe extern "C" {
     pub static mut property_Array_size: *mut Property;
 }
@@ -4124,6 +4123,156 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub static mut Array_get_minAllocSize:
         ::std::option::Option<unsafe extern "C" fn(a: Array) -> uint>;
+}
+unsafe extern "C" {
+    pub static mut BTNode_findPrefix: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BTNode,
+            key: *const ::std::os::raw::c_char,
+        ) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BTNode_findString: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BTNode,
+            key: *const ::std::os::raw::c_char,
+        ) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_prev: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_prev:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_next: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_next:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_minimum: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_minimum:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_maximum: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_maximum:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_count: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_count:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
+}
+unsafe extern "C" {
+    pub static mut property_BTNode_depthProp: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BTNode_get_depthProp:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_add: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_check:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_compareInt: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BinaryTree,
+            a: uintptr,
+            b: uintptr,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_compareString: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BinaryTree,
+            a: *const ::std::os::raw::c_char,
+            b: *const ::std::os::raw::c_char,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_delete:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_find: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_findAll: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_findPrefix: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BinaryTree,
+            key: *const ::std::os::raw::c_char,
+        ) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_findString: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BinaryTree,
+            key: *const ::std::os::raw::c_char,
+        ) -> *mut BTNode,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_free:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree)>;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_freeString:
+        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_print: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut BinaryTree,
+            output: *mut ::std::os::raw::c_char,
+            tps: TreePrintStyle,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_remove:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
+}
+unsafe extern "C" {
+    pub static mut property_BinaryTree_first: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_get_first:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
+}
+unsafe extern "C" {
+    pub static mut property_BinaryTree_last: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut BinaryTree_get_last:
+        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4272,85 +4421,6 @@ unsafe extern "C" {
 unsafe extern "C" {
     pub static mut BuiltInContainer_to_Container:
         ::std::option::Option<unsafe extern "C" fn(b: *const BuiltInContainer) -> Container>;
-}
-unsafe extern "C" {
-    pub static mut property_Class_char_ptr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Class_from_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Class, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Class_to_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Class) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_addObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_addObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_createNew_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_createNew: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_createObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_createObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_destroyObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_destroyObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_droppedObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_droppedObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_fixProperty_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_fixProperty: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_listToolBoxClasses_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_listToolBoxClasses: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_postCreateObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_postCreateObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_prepareTestObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_prepareTestObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_reset_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_reset: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ClassDesignerBase_selectObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ClassDesignerBase_selectObject: *mut Method;
 }
 unsafe extern "C" {
     pub static mut Container_add_vTblID: ::std::os::raw::c_int;
@@ -4517,142 +4587,6 @@ unsafe extern "C" {
     pub static mut CustomAVLTree_freeKey:
         ::std::option::Option<unsafe extern "C" fn(__this: CustomAVLTree, item: *mut AVLNode)>;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DesignerBase {
-    pub classDesigner: ClassDesignerBase,
-    pub objectClass: *const ::std::os::raw::c_char,
-    pub isDragging: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DesignerBase"]
-        [::std::mem::size_of::<class_members_DesignerBase>() - 24usize];
-    ["Alignment of class_members_DesignerBase"]
-        [::std::mem::align_of::<class_members_DesignerBase>() - 8usize];
-    ["Offset of field: class_members_DesignerBase::classDesigner"]
-        [::std::mem::offset_of!(class_members_DesignerBase, classDesigner) - 0usize];
-    ["Offset of field: class_members_DesignerBase::objectClass"]
-        [::std::mem::offset_of!(class_members_DesignerBase, objectClass) - 8usize];
-    ["Offset of field: class_members_DesignerBase::isDragging"]
-        [::std::mem::offset_of!(class_members_DesignerBase, isDragging) - 16usize];
-};
-unsafe extern "C" {
-    pub static mut DesignerBase_addDefaultMethod_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_addDefaultMethod: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_addToolBoxClass_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_addToolBoxClass: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_codeAddObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_codeAddObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_deleteObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_deleteObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_findObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_findObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_modifyCode_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_modifyCode: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_objectContainsCode_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_objectContainsCode: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_renameObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_renameObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_selectObjectFromDesigner_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_selectObjectFromDesigner: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_sheetAddObject_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_sheetAddObject: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_updateProperties_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DesignerBase_updateProperties: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_DesignerBase_classDesigner: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_set_classDesigner:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: ClassDesignerBase)>;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_get_classDesigner:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> ClassDesignerBase>;
-}
-unsafe extern "C" {
-    pub static mut property_DesignerBase_objectClass: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_set_objectClass: ::std::option::Option<
-        unsafe extern "C" fn(d: DesignerBase, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_get_objectClass: ::std::option::Option<
-        unsafe extern "C" fn(d: DesignerBase) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_DesignerBase_isDragging: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_set_isDragging:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DesignerBase_get_isDragging:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> bool_>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct EnumClassData {
-    pub values: OldList,
-    pub largest: int64,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of EnumClassData"][::std::mem::size_of::<EnumClassData>() - 40usize];
-    ["Alignment of EnumClassData"][::std::mem::align_of::<EnumClassData>() - 8usize];
-    ["Offset of field: EnumClassData::values"]
-        [::std::mem::offset_of!(EnumClassData, values) - 0usize];
-    ["Offset of field: EnumClassData::largest"]
-        [::std::mem::offset_of!(EnumClassData, largest) - 32usize];
-};
 unsafe extern "C" {
     pub static mut HashMap_removeIterating:
         ::std::option::Option<unsafe extern "C" fn(__this: HashMap, it: *mut IteratorPointer)>;
@@ -4731,52 +4665,9 @@ unsafe extern "C" {
         ::std::option::Option<unsafe extern "C" fn(h: HashTable, value: ::std::os::raw::c_int)>;
 }
 unsafe extern "C" {
-    pub static mut IOChannel_get: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: IOChannel,
-            class_data: typed_object_class_ptr,
-            data: *mut ::std::os::raw::c_void,
-        ),
+    pub static mut Item_copy: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut Item, src: *mut Item, size: ::std::os::raw::c_int),
     >;
-}
-unsafe extern "C" {
-    pub static mut IOChannel_put: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: IOChannel,
-            class_data: typed_object_class_ptr,
-            data: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut IOChannel_readData_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_IOChannel_readData: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut IOChannel_serialize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: IOChannel,
-            class_data: typed_object_class_ptr,
-            data: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut IOChannel_unserialize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: IOChannel,
-            class_data: typed_object_class_ptr,
-            data: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut IOChannel_writeData_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_IOChannel_writeData: *mut Method;
 }
 unsafe extern "C" {
     pub static mut Iterator_find: ::std::option::Option<
@@ -4989,7 +4880,7 @@ unsafe extern "C" {
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct MapNode {
-    pub __ecerePrivateData0: [byte; 32usize],
+    pub __eCPrivateData0: [byte; 32usize],
     pub key: tparam_AVLNode_T,
     pub value: tparam_MapNode_V,
 }
@@ -4997,8 +4888,8 @@ pub struct MapNode {
 const _: () = {
     ["Size of MapNode"][::std::mem::size_of::<MapNode>() - 48usize];
     ["Alignment of MapNode"][::std::mem::align_of::<MapNode>() - 8usize];
-    ["Offset of field: MapNode::__ecerePrivateData0"]
-        [::std::mem::offset_of!(MapNode, __ecerePrivateData0) - 0usize];
+    ["Offset of field: MapNode::__eCPrivateData0"]
+        [::std::mem::offset_of!(MapNode, __eCPrivateData0) - 0usize];
     ["Offset of field: MapNode::key"][::std::mem::offset_of!(MapNode, key) - 32usize];
     ["Offset of field: MapNode::value"][::std::mem::offset_of!(MapNode, value) - 40usize];
 };
@@ -5053,199 +4944,166 @@ unsafe extern "C" {
         ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> *mut MapNode>;
 }
 unsafe extern "C" {
-    pub static mut Module_onLoad_vTblID: ::std::os::raw::c_int;
+    pub static mut OldLink_free: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldLink)>;
 }
 unsafe extern "C" {
-    pub static mut method_Module_onLoad: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Module_onUnload_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Module_onUnload: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_Platform_char_ptr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Platform_from_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> Platform>;
-}
-unsafe extern "C" {
-    pub static mut Platform_to_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(platform: Platform) -> *const ::std::os::raw::c_char,
+    pub static mut OldList_add: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
     >;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_SerialBuffer {
-    pub _buffer: *mut byte,
-    pub count: uintsize,
-    pub _size: uintsize,
-    pub pos: uintsize,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_SerialBuffer"]
-        [::std::mem::size_of::<class_members_SerialBuffer>() - 32usize];
-    ["Alignment of class_members_SerialBuffer"]
-        [::std::mem::align_of::<class_members_SerialBuffer>() - 8usize];
-    ["Offset of field: class_members_SerialBuffer::_buffer"]
-        [::std::mem::offset_of!(class_members_SerialBuffer, _buffer) - 0usize];
-    ["Offset of field: class_members_SerialBuffer::count"]
-        [::std::mem::offset_of!(class_members_SerialBuffer, count) - 8usize];
-    ["Offset of field: class_members_SerialBuffer::_size"]
-        [::std::mem::offset_of!(class_members_SerialBuffer, _size) - 16usize];
-    ["Offset of field: class_members_SerialBuffer::pos"]
-        [::std::mem::offset_of!(class_members_SerialBuffer, pos) - 24usize];
-};
 unsafe extern "C" {
-    pub static mut SerialBuffer_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: SerialBuffer)>;
+    pub static mut OldList_addName: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void) -> bool_,
+    >;
 }
 unsafe extern "C" {
-    pub static mut property_SerialBuffer_buffer: *mut Property;
+    pub static mut OldList_clear: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldList)>;
 }
 unsafe extern "C" {
-    pub static mut SerialBuffer_set_buffer:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: *mut byte)>;
-}
-unsafe extern "C" {
-    pub static mut SerialBuffer_get_buffer:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> *mut byte>;
-}
-unsafe extern "C" {
-    pub static mut property_SerialBuffer_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SerialBuffer_set_size:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut SerialBuffer_get_size:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> uint>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct StaticString {
-    pub string: [::std::os::raw::c_char; 1usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of StaticString"][::std::mem::size_of::<StaticString>() - 1usize];
-    ["Alignment of StaticString"][::std::mem::align_of::<StaticString>() - 1usize];
-    ["Offset of field: StaticString::string"]
-        [::std::mem::offset_of!(StaticString, string) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut checkConsistency: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut checkMemory: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut getActiveDesigner: ::std::option::Option<unsafe extern "C" fn() -> DesignerBase>;
-}
-unsafe extern "C" {
-    pub static mut getRuntimePlatform: ::std::option::Option<unsafe extern "C" fn() -> Platform>;
-}
-unsafe extern "C" {
-    pub static mut locateModule: ::std::option::Option<
+    pub static mut OldList_copy: ::std::option::Option<
         unsafe extern "C" fn(
+            __this: *mut OldList,
+            src: *mut OldList,
+            size: ::std::os::raw::c_int,
+            copy: ::std::option::Option<
+                unsafe extern "C" fn(
+                    dest: *mut ::std::os::raw::c_void,
+                    src: *mut ::std::os::raw::c_void,
+                ),
+            >,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_delete: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_findLink: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
+            data: *mut ::std::os::raw::c_void,
+        ) -> *mut OldLink,
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_findName: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
             name: *const ::std::os::raw::c_char,
-            fileName: *const ::std::os::raw::c_char,
+            warn: bool_,
+        ) -> *mut ::std::os::raw::c_void,
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_findNamedLink: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
+            name: *const ::std::os::raw::c_char,
+            warn: bool_,
+        ) -> *mut ::std::os::raw::c_void,
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_free: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
+            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_insert: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
+            prevItem: *mut ::std::os::raw::c_void,
+            item: *mut ::std::os::raw::c_void,
         ) -> bool_,
     >;
 }
 unsafe extern "C" {
-    pub static mut printx: ::std::option::Option<
+    pub static mut OldList_move: ::std::option::Option<
         unsafe extern "C" fn(
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
+            __this: *mut OldList,
+            item: *mut ::std::os::raw::c_void,
+            prevItem: *mut ::std::os::raw::c_void,
         ),
     >;
 }
 unsafe extern "C" {
-    pub static mut printBuf: ::std::option::Option<
+    pub static mut OldList_placeName: ::std::option::Option<
         unsafe extern "C" fn(
-            buffer: *mut ::std::os::raw::c_char,
-            maxLen: ::std::os::raw::c_int,
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
-        ) -> ::std::os::raw::c_int,
+            __this: *mut OldList,
+            name: *const ::std::os::raw::c_char,
+            place: *mut *mut ::std::os::raw::c_void,
+        ) -> bool_,
     >;
 }
 unsafe extern "C" {
-    pub static mut printLn: ::std::option::Option<
+    pub static mut OldList_remove: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_removeAll: ::std::option::Option<
         unsafe extern "C" fn(
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
+            __this: *mut OldList,
+            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
         ),
     >;
 }
 unsafe extern "C" {
-    pub static mut printLnBuf: ::std::option::Option<
+    pub static mut OldList_sort: ::std::option::Option<
         unsafe extern "C" fn(
-            buffer: *mut ::std::os::raw::c_char,
-            maxLen: ::std::os::raw::c_int,
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
+            __this: *mut OldList,
+            compare: ::std::option::Option<
+                unsafe extern "C" fn(
+                    arg1: *mut ::std::os::raw::c_void,
+                    arg2: *mut ::std::os::raw::c_void,
+                    arg3: *mut ::std::os::raw::c_void,
+                ) -> ::std::os::raw::c_int,
+            >,
+            data: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut OldList_swap: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut OldList,
+            item1: *mut ::std::os::raw::c_void,
+            item2: *mut ::std::os::raw::c_void,
+        ),
+    >;
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct StringBinaryTree {
+    pub root: *mut BTNode,
+    pub count: ::std::os::raw::c_int,
+    pub CompareKey: ::std::option::Option<
+        unsafe extern "C" fn(
+            tree: *mut BinaryTree,
+            a: uintptr,
+            b: uintptr,
         ) -> ::std::os::raw::c_int,
-    >;
+    >,
+    pub FreeKey: ::std::option::Option<unsafe extern "C" fn(key: *mut ::std::os::raw::c_void)>,
 }
-unsafe extern "C" {
-    pub static mut printLnString: ::std::option::Option<
-        unsafe extern "C" fn(
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut printStdArgsToBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            buffer: *mut ::std::os::raw::c_char,
-            maxLen: ::std::os::raw::c_int,
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            args: *mut __va_list_tag,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut printString: ::std::option::Option<
-        unsafe extern "C" fn(
-            class_object: typed_object_class_ptr,
-            object: *const ::std::os::raw::c_void,
-            ...
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut setActiveDesigner:
-        ::std::option::Option<unsafe extern "C" fn(designer: DesignerBase)>;
-}
-unsafe extern "C" {
-    pub static mut eSystem_LockMem: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut eSystem_UnlockMem: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut log2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut memswap:
-        ::std::option::Option<unsafe extern "C" fn(a: *mut byte, b: *mut byte, size: uint)>;
-}
-unsafe extern "C" {
-    pub static mut pow2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
-}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of StringBinaryTree"][::std::mem::size_of::<StringBinaryTree>() - 32usize];
+    ["Alignment of StringBinaryTree"][::std::mem::align_of::<StringBinaryTree>() - 8usize];
+    ["Offset of field: StringBinaryTree::root"]
+        [::std::mem::offset_of!(StringBinaryTree, root) - 0usize];
+    ["Offset of field: StringBinaryTree::count"]
+        [::std::mem::offset_of!(StringBinaryTree, count) - 8usize];
+    ["Offset of field: StringBinaryTree::CompareKey"]
+        [::std::mem::offset_of!(StringBinaryTree, CompareKey) - 16usize];
+    ["Offset of field: StringBinaryTree::FreeKey"]
+        [::std::mem::offset_of!(StringBinaryTree, FreeKey) - 24usize];
+};
 unsafe extern "C" {
     pub static mut qsortr: ::std::option::Option<
         unsafe extern "C" fn(
@@ -5289,1921 +5147,185 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
-    pub static mut queryMemInfo:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut class_Window: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_String: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_byte: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_char: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_class: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_double: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_enum: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_float: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_int: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_int64: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_intptr: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_intsize: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_short: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_struct: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uint: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uint16: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uint32: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uint64: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uintptr: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_uintsize: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BTNode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BackSlashEscaping: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BinaryTree: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EscapeCStringOptions: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Item: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Mutex: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_NamedItem: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_NamedLink: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_NamedLink64: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_OldLink: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_OldList: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StringAllocType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StringBTNode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StringBinaryTree: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TreePrintStyle: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ZString: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_AVLNode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_AVLTree: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_AccessMode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Angle: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Application: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Array: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BTNamedLink: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BitMember: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BuiltInContainer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CIString: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Class: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClassDesignerBase: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClassProperty: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClassTemplateArgument: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClassTemplateParameter: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClassType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Container: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CustomAVLTree: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataMember: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataMemberType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DefinedExpression: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DesignerBase: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EnumClassData: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GlobalFunction: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_HashMap: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_HashMapIterator: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_HashTable: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_IOChannel: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ImportType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Instance: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Iterator: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_IteratorPointer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Link: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_LinkElement: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_LinkList: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_List: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ListItem: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Map: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MapIterator: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MapNode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Method: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MethodType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Module: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_NameSpace: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ObjectInfo: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ObjectNotationType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Platform: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Property: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SerialBuffer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StaticString: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SubModule: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TemplateMemberType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TemplateParameterType: *mut Class;
-}
-unsafe extern "C" {
-    #[doc = " dll function imports //////// ////////////////\n ////////////////\n ////////////////"]
-    pub fn __ecereNameSpace__ecere__GetTranslatedString(
-        name: constString,
-        string: *const ::std::os::raw::c_char,
-        stringAndContext: *const ::std::os::raw::c_char,
-    ) -> *const ::std::os::raw::c_char;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__LoadTranslatedStrings(
-        moduleName: constString,
-        name: *const ::std::os::raw::c_char,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__UnloadTranslatedStrings(name: constString);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__MemoryGuard_PushLoc(loc: *const ::std::os::raw::c_char);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com____ecere_COM_Initialize(
-        guiApp: bool_,
-        argc: ::std::os::raw::c_int,
-        argv: *mut *mut ::std::os::raw::c_char,
-    ) -> Application;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddBitMember(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        bitSize: ::std::os::raw::c_int,
-        bitPos: ::std::os::raw::c_int,
-        declMode: AccessMode,
-    ) -> *mut BitMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddClassProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        dataType: *const ::std::os::raw::c_char,
-        setStmt: *mut ::std::os::raw::c_void,
-        getStmt: *mut ::std::os::raw::c_void,
-    ) -> *mut ClassProperty;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddDataMember(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        size: uint,
-        alignment: uint,
-        declMode: AccessMode,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddMember(
-        _class: *mut Class,
-        dataMember: *mut DataMember,
-    ) -> bool_;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddMethod(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        function: *mut ::std::os::raw::c_void,
-        declMode: AccessMode,
-    ) -> *mut Method;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        dataType: *const ::std::os::raw::c_char,
-        setStmt: *mut ::std::os::raw::c_void,
-        getStmt: *mut ::std::os::raw::c_void,
-        declMode: AccessMode,
-    ) -> *mut Property;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        type_: TemplateParameterType,
-        info: *const ::std::os::raw::c_void,
-        defaultArg: *mut ClassTemplateArgument,
-    ) -> *mut ClassTemplateParameter;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        function: *mut ::std::os::raw::c_void,
-        declMode: AccessMode,
-    ) -> *mut Method;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_DestructionWatchable(_class: *mut Class);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(base: *mut Class);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindClassProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-    ) -> *mut ClassProperty;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindDataMember(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        module: Module,
-        subMemberStack: *mut DataMember,
-        subMemberStackPos: *mut ::std::os::raw::c_int,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindDataMemberAndId(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        id: *mut ::std::os::raw::c_int,
-        module: Module,
-        subMemberStack: *mut DataMember,
-        subMemberStackPos: *mut ::std::os::raw::c_int,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        offset: *mut uint,
-        module: Module,
-        subMemberStack: *mut DataMember,
-        subMemberStackPos: *mut ::std::os::raw::c_int,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindMethod(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        module: Module,
-    ) -> *mut Method;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindNextMember(
-        _class: *mut Class,
-        curClass: *mut Class,
-        curMember: *mut DataMember,
-        subMemberStack: *mut DataMember,
-        subMemberStackPos: *mut ::std::os::raw::c_int,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_FindProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        module: Module,
-    ) -> *mut Property;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_GetDesigner(_class: *mut Class) -> *mut Class;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_GetProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-    ) -> int64;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_IsDerived(
-        _class: *mut Class,
-        from: *mut Class,
-    ) -> bool_;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_Resize(
-        _class: *mut Class,
-        newSize: ::std::os::raw::c_int,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_SetProperty(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        value: int64,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eClass_Unregister(_class: *mut Class);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eEnum_AddFixedValue(
-        _class: *mut Class,
-        string: *const ::std::os::raw::c_char,
-        value: int64,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eEnum_AddValue(
-        _class: *mut Class,
-        string: *const ::std::os::raw::c_char,
-    ) -> int64;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_DecRef(instance: Instance);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_Delete(instance: Instance);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_Evolve(
-        instancePtr: *mut Instance,
-        _class: *mut Class,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(
-        instance: Instance,
-        _property: *mut Property,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_FireWatchers(
-        instance: Instance,
-        _property: *mut Property,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_GetDesigner(instance: Instance) -> *mut Class;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_IncRef(instance: Instance);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_IsDerived(
-        instance: Instance,
-        from: *mut Class,
-    ) -> bool_;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_New(
-        _class: *mut Class,
-    ) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_NewEx(
-        _class: *mut Class,
-        bindingsAlloc: bool_,
-    ) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_SetMethod(
-        instance: Instance,
-        name: *const ::std::os::raw::c_char,
-        function: *mut ::std::os::raw::c_void,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_StopWatching(
-        instance: Instance,
-        _property: *mut Property,
-        object: Instance,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_Watch(
-        instance: Instance,
-        _property: *mut Property,
-        object: *mut ::std::os::raw::c_void,
-        callback: ::std::option::Option<
-            unsafe extern "C" fn(
-                arg1: *mut ::std::os::raw::c_void,
-                arg2: *mut ::std::os::raw::c_void,
-            ),
-        >,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eInstance_WatchDestruction(
-        instance: Instance,
-        object: Instance,
-        callback: ::std::option::Option<
-            unsafe extern "C" fn(
-                arg1: *mut ::std::os::raw::c_void,
-                arg2: *mut ::std::os::raw::c_void,
-            ),
-        >,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eMember_AddDataMember(
-        member: *mut DataMember,
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        size: uint,
-        alignment: uint,
-        declMode: AccessMode,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eMember_AddMember(
-        addTo: *mut DataMember,
-        dataMember: *mut DataMember,
-    ) -> bool_;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eMember_New(
-        type_: DataMemberType,
-        declMode: AccessMode,
-    ) -> *mut DataMember;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eModule_Load(
-        fromModule: Module,
-        name: *const ::std::os::raw::c_char,
-        importAccess: AccessMode,
-    ) -> Module;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eModule_LoadStatic(
-        fromModule: Module,
-        name: *const ::std::os::raw::c_char,
-        importAccess: AccessMode,
-        Load: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
-        Unload: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
-    ) -> Module;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eModule_LoadStrict(
-        fromModule: Module,
-        name: *const ::std::os::raw::c_char,
-        importAccess: AccessMode,
-    ) -> Module;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eModule_Unload(fromModule: Module, module: Module);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eProperty_SelfWatch(
-        _class: *mut Class,
-        name: *const ::std::os::raw::c_char,
-        callback: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eProperty_Watchable(_property: *mut Property);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_Delete(memory: *mut ::std::os::raw::c_void);
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_FindClass(
-        module: Module,
-        name: *const ::std::os::raw::c_char,
-    ) -> *mut Class;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_FindDefine(
-        module: Module,
-        name: *const ::std::os::raw::c_char,
-    ) -> *mut DefinedExpression;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_FindFunction(
-        module: Module,
-        name: *const ::std::os::raw::c_char,
-    ) -> *mut GlobalFunction;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_New(size: uint) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_New0(size: uint) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_RegisterClass(
-        type_: ClassType,
-        name: *const ::std::os::raw::c_char,
-        baseName: *const ::std::os::raw::c_char,
-        size: ::std::os::raw::c_int,
-        sizeClass: ::std::os::raw::c_int,
-        Constructor: ::std::option::Option<
-            unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_,
-        >,
-        Destructor: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
-        module: Module,
-        declMode: AccessMode,
-        inheritanceAccess: AccessMode,
-    ) -> *mut Class;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_RegisterDefine(
-        name: *const ::std::os::raw::c_char,
-        value: *const ::std::os::raw::c_char,
-        module: Module,
-        declMode: AccessMode,
-    ) -> *mut DefinedExpression;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_RegisterFunction(
-        name: *const ::std::os::raw::c_char,
-        type_: *const ::std::os::raw::c_char,
-        func: *mut ::std::os::raw::c_void,
-        module: Module,
-        declMode: AccessMode,
-    ) -> *mut GlobalFunction;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_Renew(
-        memory: *mut ::std::os::raw::c_void,
-        size: uint,
-    ) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_Renew0(
-        memory: *mut ::std::os::raw::c_void,
-        size: uint,
-    ) -> *mut ::std::os::raw::c_void;
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_SetArgs(
-        app: Application,
-        argc: ::std::os::raw::c_int,
-        argv: *mut *mut ::std::os::raw::c_char,
-    );
-}
-unsafe extern "C" {
-    pub fn __ecereNameSpace__ecere__com__eSystem_SetPoolingDisabled(disabled: bool_);
-}
-unsafe extern "C" {
-    pub static mut __thisModule: Module;
-}
-unsafe extern "C" {
-    pub fn eC_init(
-        fromModule: Module,
-        loadEcere: bool_,
-        guiApp: bool_,
-        argc: ::std::os::raw::c_int,
-        argv: *mut *mut ::std::os::raw::c_char,
-    ) -> Application;
-}
-pub type template_LinkElement_FMFont = LinkElement;
-pub type template_Array_BlockEntry = Array;
-pub type template_Array_String = Array;
-pub type template_Array_SkinVert = Array;
-pub type template_Array_SkinBone = Array;
-pub type template_Array_MeshPart = Array;
-pub type template_Array_MeshMorph = Array;
-pub type template_Array_int = Array;
-pub type template_Array_Window = Array;
-pub type template_Map_String_JSONTypeOptions = Map;
-pub type Bitmap = Instance;
-pub type ColorAlpha = uint32;
-pub type DisplaySystem = Instance;
-pub type PixelFormat = ::std::os::raw::c_int;
-pub const PixelFormat_PixelFormat_pixelFormat4: PixelFormat = 0;
-pub const PixelFormat_PixelFormat_pixelFormat8: PixelFormat = 1;
-pub const PixelFormat_PixelFormat_pixelFormat444: PixelFormat = 2;
-pub const PixelFormat_PixelFormat_pixelFormat555: PixelFormat = 3;
-pub const PixelFormat_PixelFormat_pixelFormat565: PixelFormat = 4;
-pub const PixelFormat_PixelFormat_pixelFormat888: PixelFormat = 5;
-pub const PixelFormat_PixelFormat_pixelFormatAlpha: PixelFormat = 6;
-pub const PixelFormat_PixelFormat_pixelFormatText: PixelFormat = 7;
-pub const PixelFormat_PixelFormat_pixelFormatRGBA: PixelFormat = 8;
-pub const PixelFormat_PixelFormat_pixelFormatA16: PixelFormat = 9;
-pub const PixelFormat_PixelFormat_pixelFormatRGBAGL: PixelFormat = 10;
-pub const PixelFormat_PixelFormat_pixelFormatETC2RGBA8: PixelFormat = 11;
+pub type DayOfTheWeek = ::std::os::raw::c_int;
+pub const DayOfTheWeek_DayOfTheWeek_sunday: DayOfTheWeek = 0;
+pub const DayOfTheWeek_DayOfTheWeek_monday: DayOfTheWeek = 1;
+pub const DayOfTheWeek_DayOfTheWeek_tuesday: DayOfTheWeek = 2;
+pub const DayOfTheWeek_DayOfTheWeek_wednesday: DayOfTheWeek = 3;
+pub const DayOfTheWeek_DayOfTheWeek_thursday: DayOfTheWeek = 4;
+pub const DayOfTheWeek_DayOfTheWeek_friday: DayOfTheWeek = 5;
+pub const DayOfTheWeek_DayOfTheWeek_saturday: DayOfTheWeek = 6;
+pub type Month = ::std::os::raw::c_int;
+pub const Month_Month_january: Month = 0;
+pub const Month_Month_february: Month = 1;
+pub const Month_Month_march: Month = 2;
+pub const Month_Month_april: Month = 3;
+pub const Month_Month_may: Month = 4;
+pub const Month_Month_june: Month = 5;
+pub const Month_Month_july: Month = 6;
+pub const Month_Month_august: Month = 7;
+pub const Month_Month_september: Month = 8;
+pub const Month_Month_october: Month = 9;
+pub const Month_Month_november: Month = 10;
+pub const Month_Month_december: Month = 11;
+pub type Time = f64;
+pub type SecSince1970 = int64;
+pub type TimeStamp32 = uint;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct class_members_Bitmap {
-    pub width: ::std::os::raw::c_int,
-    pub height: ::std::os::raw::c_int,
-    pub pixelFormat: PixelFormat,
-    pub picture: *mut byte,
-    pub stride: uint,
-    pub size: uint,
-    pub sizeBytes: uint,
-    pub palette: *mut ColorAlpha,
-    pub allocatePalette: bool_,
-    pub transparent: bool_,
-    pub shadeShift: ::std::os::raw::c_int,
-    pub paletteShades: *mut byte,
-    pub alphaBlend: bool_,
-    pub displaySystem: DisplaySystem,
-    pub driver: *mut Class,
-    pub driverData: *mut ::std::os::raw::c_void,
-    pub keepData: bool_,
-    pub mipMaps: bool_,
-    pub sRGB2Linear: bool_,
-    pub numMipMaps: ::std::os::raw::c_int,
-    pub bitmaps: *mut Bitmap,
+pub struct Date {
+    pub year: ::std::os::raw::c_int,
+    pub month: Month,
+    pub day: ::std::os::raw::c_int,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of class_members_Bitmap"][::std::mem::size_of::<class_members_Bitmap>() - 128usize];
-    ["Alignment of class_members_Bitmap"][::std::mem::align_of::<class_members_Bitmap>() - 8usize];
-    ["Offset of field: class_members_Bitmap::width"]
-        [::std::mem::offset_of!(class_members_Bitmap, width) - 0usize];
-    ["Offset of field: class_members_Bitmap::height"]
-        [::std::mem::offset_of!(class_members_Bitmap, height) - 4usize];
-    ["Offset of field: class_members_Bitmap::pixelFormat"]
-        [::std::mem::offset_of!(class_members_Bitmap, pixelFormat) - 8usize];
-    ["Offset of field: class_members_Bitmap::picture"]
-        [::std::mem::offset_of!(class_members_Bitmap, picture) - 16usize];
-    ["Offset of field: class_members_Bitmap::stride"]
-        [::std::mem::offset_of!(class_members_Bitmap, stride) - 24usize];
-    ["Offset of field: class_members_Bitmap::size"]
-        [::std::mem::offset_of!(class_members_Bitmap, size) - 28usize];
-    ["Offset of field: class_members_Bitmap::sizeBytes"]
-        [::std::mem::offset_of!(class_members_Bitmap, sizeBytes) - 32usize];
-    ["Offset of field: class_members_Bitmap::palette"]
-        [::std::mem::offset_of!(class_members_Bitmap, palette) - 40usize];
-    ["Offset of field: class_members_Bitmap::allocatePalette"]
-        [::std::mem::offset_of!(class_members_Bitmap, allocatePalette) - 48usize];
-    ["Offset of field: class_members_Bitmap::transparent"]
-        [::std::mem::offset_of!(class_members_Bitmap, transparent) - 52usize];
-    ["Offset of field: class_members_Bitmap::shadeShift"]
-        [::std::mem::offset_of!(class_members_Bitmap, shadeShift) - 56usize];
-    ["Offset of field: class_members_Bitmap::paletteShades"]
-        [::std::mem::offset_of!(class_members_Bitmap, paletteShades) - 64usize];
-    ["Offset of field: class_members_Bitmap::alphaBlend"]
-        [::std::mem::offset_of!(class_members_Bitmap, alphaBlend) - 72usize];
-    ["Offset of field: class_members_Bitmap::displaySystem"]
-        [::std::mem::offset_of!(class_members_Bitmap, displaySystem) - 80usize];
-    ["Offset of field: class_members_Bitmap::driver"]
-        [::std::mem::offset_of!(class_members_Bitmap, driver) - 88usize];
-    ["Offset of field: class_members_Bitmap::driverData"]
-        [::std::mem::offset_of!(class_members_Bitmap, driverData) - 96usize];
-    ["Offset of field: class_members_Bitmap::keepData"]
-        [::std::mem::offset_of!(class_members_Bitmap, keepData) - 104usize];
-    ["Offset of field: class_members_Bitmap::mipMaps"]
-        [::std::mem::offset_of!(class_members_Bitmap, mipMaps) - 108usize];
-    ["Offset of field: class_members_Bitmap::sRGB2Linear"]
-        [::std::mem::offset_of!(class_members_Bitmap, sRGB2Linear) - 112usize];
-    ["Offset of field: class_members_Bitmap::numMipMaps"]
-        [::std::mem::offset_of!(class_members_Bitmap, numMipMaps) - 116usize];
-    ["Offset of field: class_members_Bitmap::bitmaps"]
-        [::std::mem::offset_of!(class_members_Bitmap, bitmaps) - 120usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Box {
-    pub left: ::std::os::raw::c_int,
-    pub top: ::std::os::raw::c_int,
-    pub right: ::std::os::raw::c_int,
-    pub bottom: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Box"][::std::mem::size_of::<Box>() - 16usize];
-    ["Alignment of Box"][::std::mem::align_of::<Box>() - 4usize];
-    ["Offset of field: Box::left"][::std::mem::offset_of!(Box, left) - 0usize];
-    ["Offset of field: Box::top"][::std::mem::offset_of!(Box, top) - 4usize];
-    ["Offset of field: Box::right"][::std::mem::offset_of!(Box, right) - 8usize];
-    ["Offset of field: Box::bottom"][::std::mem::offset_of!(Box, bottom) - 12usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct CompiledShader {
-    pub program: ::std::os::raw::c_int,
-    pub vertex: ::std::os::raw::c_int,
-    pub fragment: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CompiledShader"][::std::mem::size_of::<CompiledShader>() - 12usize];
-    ["Alignment of CompiledShader"][::std::mem::align_of::<CompiledShader>() - 4usize];
-    ["Offset of field: CompiledShader::program"]
-        [::std::mem::offset_of!(CompiledShader, program) - 0usize];
-    ["Offset of field: CompiledShader::vertex"]
-        [::std::mem::offset_of!(CompiledShader, vertex) - 4usize];
-    ["Offset of field: CompiledShader::fragment"]
-        [::std::mem::offset_of!(CompiledShader, fragment) - 8usize];
-};
-pub type DefaultShaderBits = uint64;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DefaultShader {
-    pub __ecerePrivateData0: [byte; 13184usize],
-    pub backLightState: DefaultShaderBits,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DefaultShader"]
-        [::std::mem::size_of::<class_members_DefaultShader>() - 13192usize];
-    ["Alignment of class_members_DefaultShader"]
-        [::std::mem::align_of::<class_members_DefaultShader>() - 8usize];
-    ["Offset of field: class_members_DefaultShader::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_DefaultShader, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_DefaultShader::backLightState"]
-        [::std::mem::offset_of!(class_members_DefaultShader, backLightState) - 13184usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Display {
-    pub width: ::std::os::raw::c_int,
-    pub height: ::std::os::raw::c_int,
-    pub driverData: *mut ::std::os::raw::c_void,
-    pub __ecere_padding: [byte; 64usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Display"][::std::mem::size_of::<class_members_Display>() - 80usize];
-    ["Alignment of class_members_Display"]
-        [::std::mem::align_of::<class_members_Display>() - 8usize];
-    ["Offset of field: class_members_Display::width"]
-        [::std::mem::offset_of!(class_members_Display, width) - 0usize];
-    ["Offset of field: class_members_Display::height"]
-        [::std::mem::offset_of!(class_members_Display, height) - 4usize];
-    ["Offset of field: class_members_Display::driverData"]
-        [::std::mem::offset_of!(class_members_Display, driverData) - 8usize];
-    ["Offset of field: class_members_Display::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_Display, __ecere_padding) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Font {
-    pub __ecere_padding: [byte; 688usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Font"][::std::mem::size_of::<Font>() - 688usize];
-    ["Alignment of Font"][::std::mem::align_of::<Font>() - 1usize];
-    ["Offset of field: Font::__ecere_padding"]
-        [::std::mem::offset_of!(Font, __ecere_padding) - 0usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLB {
-    pub buffer: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLB"][::std::mem::size_of::<GLB>() - 4usize];
-    ["Alignment of GLB"][::std::mem::align_of::<GLB>() - 4usize];
-    ["Offset of field: GLB::buffer"][::std::mem::offset_of!(GLB, buffer) - 0usize];
-};
-pub type BlockEntry = uint64;
-pub type Camera = Instance;
-pub type ClearType = ::std::os::raw::c_int;
-pub const ClearType_ClearType_colorBuffer: ClearType = 0;
-pub const ClearType_ClearType_depthBuffer: ClearType = 1;
-pub const ClearType_ClearType_colorAndDepth: ClearType = 2;
-pub type Color = uint32;
-pub type Shader = Instance;
-pub type DefaultShader = Shader;
-pub type Display = Instance;
-pub type DisplayDriver = Instance;
-pub type FreeBlockMap = template_Array_BlockEntry;
-pub type GLAttribMode = ::std::os::raw::c_int;
-pub const GLAttribMode_GLAttribMode_none: GLAttribMode = 0;
-pub const GLAttribMode_GLAttribMode_normalized: GLAttribMode = 1;
-pub const GLAttribMode_GLAttribMode_integer: GLAttribMode = 2;
-pub const GLAttribMode_GLAttribMode_longDouble: GLAttribMode = 3;
-pub type GLBType = ::std::os::raw::c_int;
-pub const GLBType_GLBType_elements: GLBType = 0;
-pub const GLBType_GLBType_attributes: GLBType = 1;
-pub const GLBType_GLBType_commands: GLBType = 2;
-pub type GLBufferContents = ::std::os::raw::c_int;
-pub const GLBufferContents_GLBufferContents_vertex: GLBufferContents = 0;
-pub const GLBufferContents_GLBufferContents_normal: GLBufferContents = 1;
-pub const GLBufferContents_GLBufferContents_texCoord: GLBufferContents = 2;
-pub const GLBufferContents_GLBufferContents_color: GLBufferContents = 3;
-pub const GLBufferContents_GLBufferContents_tangent1: GLBufferContents = 4;
-pub const GLBufferContents_GLBufferContents_tangent2: GLBufferContents = 5;
-pub const GLBufferContents_GLBufferContents_lightVector: GLBufferContents = 6;
-pub const GLBufferContents_GLBufferContents_boneIndices1: GLBufferContents = 7;
-pub const GLBufferContents_GLBufferContents_boneIndices2: GLBufferContents = 8;
-pub const GLBufferContents_GLBufferContents_boneIndices3: GLBufferContents = 9;
-pub const GLBufferContents_GLBufferContents_boneWeights1: GLBufferContents = 10;
-pub const GLBufferContents_GLBufferContents_boneWeights2: GLBufferContents = 11;
-pub const GLBufferContents_GLBufferContents_boneWeights3: GLBufferContents = 12;
-pub type GLBufferUsage = ::std::os::raw::c_int;
-pub const GLBufferUsage_GLBufferUsage_staticDraw: GLBufferUsage = 0;
-pub const GLBufferUsage_GLBufferUsage_dynamicDraw: GLBufferUsage = 1;
-pub const GLBufferUsage_GLBufferUsage_streamDraw: GLBufferUsage = 2;
-pub type GLIMTKMode = ::std::os::raw::c_int;
-pub const GLIMTKMode_GLIMTKMode_unset: GLIMTKMode = -1;
-pub const GLIMTKMode_GLIMTKMode_points: GLIMTKMode = 0;
-pub const GLIMTKMode_GLIMTKMode_lines: GLIMTKMode = 1;
-pub const GLIMTKMode_GLIMTKMode_lineLoop: GLIMTKMode = 2;
-pub const GLIMTKMode_GLIMTKMode_lineStrip: GLIMTKMode = 3;
-pub const GLIMTKMode_GLIMTKMode_triangles: GLIMTKMode = 4;
-pub const GLIMTKMode_GLIMTKMode_triangleStrip: GLIMTKMode = 5;
-pub const GLIMTKMode_GLIMTKMode_triangleFan: GLIMTKMode = 6;
-pub const GLIMTKMode_GLIMTKMode_quads: GLIMTKMode = 7;
-pub const GLIMTKMode_GLIMTKMode_quadStrip: GLIMTKMode = 8;
-pub const GLIMTKMode_GLIMTKMode_polygon: GLIMTKMode = 9;
-pub type GLMB = FreeBlockMap;
-pub type GLMSWhatToGet = ::std::os::raw::c_int;
-pub const GLMSWhatToGet_GLMSWhatToGet_modelViewMatrix: GLMSWhatToGet = 2982;
-pub const GLMSWhatToGet_GLMSWhatToGet_projectionMatrix: GLMSWhatToGet = 2983;
-pub const GLMSWhatToGet_GLMSWhatToGet_textureMatrix: GLMSWhatToGet = 2984;
-pub type MatrixMode = ::std::os::raw::c_int;
-pub const MatrixMode_MatrixMode_modelView: MatrixMode = 5888;
-pub const MatrixMode_MatrixMode_projection: MatrixMode = 5889;
-pub const MatrixMode_MatrixMode_texture: MatrixMode = 5890;
-pub type MeshFeatures = uint32;
-pub type ShaderModifiedUniforms = uint32;
-pub type SwizzleMode = ::std::os::raw::c_int;
-pub const SwizzleMode_SwizzleMode_off: SwizzleMode = 0;
-pub const SwizzleMode_SwizzleMode_alpha: SwizzleMode = 1;
-pub const SwizzleMode_SwizzleMode_red: SwizzleMode = 2;
-pub type GLStats = Instance;
-pub type LFBDisplayDriver = DisplayDriver;
-pub type LightMode = ::std::os::raw::c_int;
-pub const LightMode_LightMode_off: LightMode = 0;
-pub const LightMode_LightMode_dir: LightMode = 1;
-pub const LightMode_LightMode_pos: LightMode = 2;
-pub const LightMode_LightMode_posAtt: LightMode = 3;
-pub const LightMode_LightMode_posSpot: LightMode = 4;
-pub const LightMode_LightMode_posSpotAtt: LightMode = 5;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct CompiledDefaultShader {
-    pub program: ::std::os::raw::c_int,
-    pub vertex: ::std::os::raw::c_int,
-    pub fragment: ::std::os::raw::c_int,
-    pub uPrjMatrix: ::std::os::raw::c_int,
-    pub uMVMatrix: ::std::os::raw::c_int,
-    pub uTextureMatrix: ::std::os::raw::c_int,
-    pub uNormalsMatrix: ::std::os::raw::c_int,
-    pub uNormalsInvScale2: ::std::os::raw::c_int,
-    pub uFogDensity: ::std::os::raw::c_int,
-    pub uFogColor: ::std::os::raw::c_int,
-    pub uGlobalAmbient: ::std::os::raw::c_int,
-    pub uNearPlane: ::std::os::raw::c_int,
-    pub uLightsPos: [::std::os::raw::c_int; 8usize],
-    pub uLightsDiffuse: [::std::os::raw::c_int; 8usize],
-    pub uLightsAmbient: [::std::os::raw::c_int; 8usize],
-    pub uLightsSpecular: [::std::os::raw::c_int; 8usize],
-    pub uLightsAtt: [::std::os::raw::c_int; 8usize],
-    pub uLightsSpotDir: [::std::os::raw::c_int; 8usize],
-    pub uLightsSpotCutOffCos: [::std::os::raw::c_int; 8usize],
-    pub uLightsSpotExp: [::std::os::raw::c_int; 8usize],
-    pub uMatDiffuse: ::std::os::raw::c_int,
-    pub uMatAmbient: ::std::os::raw::c_int,
-    pub uMatSpecular: ::std::os::raw::c_int,
-    pub uMatEmissive: ::std::os::raw::c_int,
-    pub uMatPower: ::std::os::raw::c_int,
-    pub uMatOpacity: ::std::os::raw::c_int,
-    pub uDiffuseTex: ::std::os::raw::c_int,
-    pub uBumpTex: ::std::os::raw::c_int,
-    pub uSpecularTex: ::std::os::raw::c_int,
-    pub uEnvTex: ::std::os::raw::c_int,
-    pub uReflectTex: ::std::os::raw::c_int,
-    pub uRefractionETA: ::std::os::raw::c_int,
-    pub uMatReflectivity: ::std::os::raw::c_int,
-    pub uCubeMapMatrix: ::std::os::raw::c_int,
-    pub uAlphaFuncValue: ::std::os::raw::c_int,
-    pub uBlackTint: ::std::os::raw::c_int,
-    pub uBoneMatrices: ::std::os::raw::c_int,
-    pub uBoneOffsets: ::std::os::raw::c_int,
-    pub initialSetup: bool_,
-    pub useNearPlane: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CompiledDefaultShader"][::std::mem::size_of::<CompiledDefaultShader>() - 384usize];
-    ["Alignment of CompiledDefaultShader"]
-        [::std::mem::align_of::<CompiledDefaultShader>() - 4usize];
-    ["Offset of field: CompiledDefaultShader::program"]
-        [::std::mem::offset_of!(CompiledDefaultShader, program) - 0usize];
-    ["Offset of field: CompiledDefaultShader::vertex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, vertex) - 4usize];
-    ["Offset of field: CompiledDefaultShader::fragment"]
-        [::std::mem::offset_of!(CompiledDefaultShader, fragment) - 8usize];
-    ["Offset of field: CompiledDefaultShader::uPrjMatrix"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uPrjMatrix) - 12usize];
-    ["Offset of field: CompiledDefaultShader::uMVMatrix"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMVMatrix) - 16usize];
-    ["Offset of field: CompiledDefaultShader::uTextureMatrix"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uTextureMatrix) - 20usize];
-    ["Offset of field: CompiledDefaultShader::uNormalsMatrix"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uNormalsMatrix) - 24usize];
-    ["Offset of field: CompiledDefaultShader::uNormalsInvScale2"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uNormalsInvScale2) - 28usize];
-    ["Offset of field: CompiledDefaultShader::uFogDensity"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uFogDensity) - 32usize];
-    ["Offset of field: CompiledDefaultShader::uFogColor"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uFogColor) - 36usize];
-    ["Offset of field: CompiledDefaultShader::uGlobalAmbient"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uGlobalAmbient) - 40usize];
-    ["Offset of field: CompiledDefaultShader::uNearPlane"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uNearPlane) - 44usize];
-    ["Offset of field: CompiledDefaultShader::uLightsPos"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsPos) - 48usize];
-    ["Offset of field: CompiledDefaultShader::uLightsDiffuse"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsDiffuse) - 80usize];
-    ["Offset of field: CompiledDefaultShader::uLightsAmbient"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsAmbient) - 112usize];
-    ["Offset of field: CompiledDefaultShader::uLightsSpecular"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsSpecular) - 144usize];
-    ["Offset of field: CompiledDefaultShader::uLightsAtt"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsAtt) - 176usize];
-    ["Offset of field: CompiledDefaultShader::uLightsSpotDir"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsSpotDir) - 208usize];
-    ["Offset of field: CompiledDefaultShader::uLightsSpotCutOffCos"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsSpotCutOffCos) - 240usize];
-    ["Offset of field: CompiledDefaultShader::uLightsSpotExp"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uLightsSpotExp) - 272usize];
-    ["Offset of field: CompiledDefaultShader::uMatDiffuse"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatDiffuse) - 304usize];
-    ["Offset of field: CompiledDefaultShader::uMatAmbient"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatAmbient) - 308usize];
-    ["Offset of field: CompiledDefaultShader::uMatSpecular"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatSpecular) - 312usize];
-    ["Offset of field: CompiledDefaultShader::uMatEmissive"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatEmissive) - 316usize];
-    ["Offset of field: CompiledDefaultShader::uMatPower"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatPower) - 320usize];
-    ["Offset of field: CompiledDefaultShader::uMatOpacity"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatOpacity) - 324usize];
-    ["Offset of field: CompiledDefaultShader::uDiffuseTex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uDiffuseTex) - 328usize];
-    ["Offset of field: CompiledDefaultShader::uBumpTex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uBumpTex) - 332usize];
-    ["Offset of field: CompiledDefaultShader::uSpecularTex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uSpecularTex) - 336usize];
-    ["Offset of field: CompiledDefaultShader::uEnvTex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uEnvTex) - 340usize];
-    ["Offset of field: CompiledDefaultShader::uReflectTex"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uReflectTex) - 344usize];
-    ["Offset of field: CompiledDefaultShader::uRefractionETA"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uRefractionETA) - 348usize];
-    ["Offset of field: CompiledDefaultShader::uMatReflectivity"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uMatReflectivity) - 352usize];
-    ["Offset of field: CompiledDefaultShader::uCubeMapMatrix"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uCubeMapMatrix) - 356usize];
-    ["Offset of field: CompiledDefaultShader::uAlphaFuncValue"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uAlphaFuncValue) - 360usize];
-    ["Offset of field: CompiledDefaultShader::uBlackTint"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uBlackTint) - 364usize];
-    ["Offset of field: CompiledDefaultShader::uBoneMatrices"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uBoneMatrices) - 368usize];
-    ["Offset of field: CompiledDefaultShader::uBoneOffsets"]
-        [::std::mem::offset_of!(CompiledDefaultShader, uBoneOffsets) - 372usize];
-    ["Offset of field: CompiledDefaultShader::initialSetup"]
-        [::std::mem::offset_of!(CompiledDefaultShader, initialSetup) - 376usize];
-    ["Offset of field: CompiledDefaultShader::useNearPlane"]
-        [::std::mem::offset_of!(CompiledDefaultShader, useNearPlane) - 380usize];
+    ["Size of Date"][::std::mem::size_of::<Date>() - 12usize];
+    ["Alignment of Date"][::std::mem::align_of::<Date>() - 4usize];
+    ["Offset of field: Date::year"][::std::mem::offset_of!(Date, year) - 0usize];
+    ["Offset of field: Date::month"][::std::mem::offset_of!(Date, month) - 4usize];
+    ["Offset of field: Date::day"][::std::mem::offset_of!(Date, day) - 8usize];
 };
 unsafe extern "C" {
-    pub static mut CompiledDefaultShader_registerUniforms: ::std::option::Option<
+    pub static mut Date_onGetStringEn: ::std::option::Option<
         unsafe extern "C" fn(
-            __this: *mut CompiledDefaultShader,
-            program: ::std::os::raw::c_int,
-            state: DefaultShaderBits,
-        ),
+            __this: *mut Date,
+            stringOutput: *mut ::std::os::raw::c_char,
+            fieldData: *mut ::std::os::raw::c_void,
+            onType: *mut ObjectNotationType,
+        ) -> *const ::std::os::raw::c_char,
     >;
 }
 unsafe extern "C" {
-    pub static mut CompiledShader_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut CompiledShader)>;
+    pub static mut property_Date_dayOfTheWeek: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut DefaultShader_debugging:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, on: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_fog:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, on: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_lighting:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, on: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setBoneMatrices: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DefaultShader,
-            n: ::std::os::raw::c_int,
-            matrices: *const Matrixf,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setCamera:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, camera: Camera)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setColor: ::std::option::Option<
-        unsafe extern "C" fn(__this: DefaultShader, r: f32, g: f32, b: f32, a: f32),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setFogColor:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, r: f32, g: f32, b: f32)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setFogDensity:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, density: f32)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setGlobalAmbient: ::std::option::Option<
-        unsafe extern "C" fn(__this: DefaultShader, r: f32, g: f32, b: f32, a: f32),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setLight: ::std::option::Option<
-        unsafe extern "C" fn(__this: DefaultShader, display: Display, id: uint, light: *mut Light),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setPerVertexColor:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, perVertexColor: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_setSimpleMaterial: ::std::option::Option<
-        unsafe extern "C" fn(__this: DefaultShader, color: ColorAlpha, twoSided: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_shader:
-        ::std::option::Option<unsafe extern "C" fn() -> DefaultShader>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_swizzle:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, swizzle: SwizzleMode)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_texturing:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, on: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_useExternalTexture:
-        ::std::option::Option<unsafe extern "C" fn(__this: DefaultShader, on: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_DefaultShader_blackTint: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DefaultShader_set_blackTint:
-        ::std::option::Option<unsafe extern "C" fn(d: DefaultShader, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut FreeBlockMap_allocate: ::std::option::Option<
-        unsafe extern "C" fn(__this: FreeBlockMap, type_: GLBType, size: uint) -> BlockEntry,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FreeBlockMap_freeBlock:
-        ::std::option::Option<unsafe extern "C" fn(__this: FreeBlockMap, block: BlockEntry)>;
-}
-unsafe extern "C" {
-    pub static mut FreeBlockMap_onExpand_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FreeBlockMap_onExpand: *mut Method;
+    pub static mut Date_get_dayOfTheWeek:
+        ::std::option::Option<unsafe extern "C" fn(d: *const Date) -> DayOfTheWeek>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct GLAB {
-    pub buffer: uint,
+pub struct DateTime {
+    pub year: ::std::os::raw::c_int,
+    pub month: Month,
+    pub day: ::std::os::raw::c_int,
+    pub hour: ::std::os::raw::c_int,
+    pub minute: ::std::os::raw::c_int,
+    pub second: ::std::os::raw::c_int,
+    pub dayOfTheWeek: DayOfTheWeek,
+    pub dayInTheYear: ::std::os::raw::c_int,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of GLAB"][::std::mem::size_of::<GLAB>() - 4usize];
-    ["Alignment of GLAB"][::std::mem::align_of::<GLAB>() - 4usize];
-    ["Offset of field: GLAB::buffer"][::std::mem::offset_of!(GLAB, buffer) - 0usize];
+    ["Size of DateTime"][::std::mem::size_of::<DateTime>() - 32usize];
+    ["Alignment of DateTime"][::std::mem::align_of::<DateTime>() - 4usize];
+    ["Offset of field: DateTime::year"][::std::mem::offset_of!(DateTime, year) - 0usize];
+    ["Offset of field: DateTime::month"][::std::mem::offset_of!(DateTime, month) - 4usize];
+    ["Offset of field: DateTime::day"][::std::mem::offset_of!(DateTime, day) - 8usize];
+    ["Offset of field: DateTime::hour"][::std::mem::offset_of!(DateTime, hour) - 12usize];
+    ["Offset of field: DateTime::minute"][::std::mem::offset_of!(DateTime, minute) - 16usize];
+    ["Offset of field: DateTime::second"][::std::mem::offset_of!(DateTime, second) - 20usize];
+    ["Offset of field: DateTime::dayOfTheWeek"]
+        [::std::mem::offset_of!(DateTime, dayOfTheWeek) - 24usize];
+    ["Offset of field: DateTime::dayInTheYear"]
+        [::std::mem::offset_of!(DateTime, dayInTheYear) - 28usize];
 };
 unsafe extern "C" {
-    pub static mut GLAB_use: ::std::option::Option<
+    pub static mut DateTime_fixDayOfYear:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut DateTime_getLocalTime:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut property_DateTime_global: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DateTime_set_global:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
+}
+unsafe extern "C" {
+    pub static mut DateTime_get_global:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
+}
+unsafe extern "C" {
+    pub static mut property_DateTime_local: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DateTime_set_local:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
+}
+unsafe extern "C" {
+    pub static mut DateTime_get_local:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
+}
+unsafe extern "C" {
+    pub static mut property_DateTime_daysSince1970: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DateTime_get_daysSince1970:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> int64>;
+}
+unsafe extern "C" {
+    pub static mut property_DateTime_SecSince1970: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DateTime_from_SecSince1970:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: SecSince1970)>;
+}
+unsafe extern "C" {
+    pub static mut DateTime_to_SecSince1970:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> SecSince1970>;
+}
+unsafe extern "C" {
+    pub static mut property_DateTime_Date: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut DateTime_from_Date:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const Date)>;
+}
+unsafe extern "C" {
+    pub static mut DateTime_to_Date:
+        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut Date)>;
+}
+unsafe extern "C" {
+    pub static mut Month_getNumDays: ::std::option::Option<
+        unsafe extern "C" fn(__this: Month, year: ::std::os::raw::c_int) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut property_SecSince1970_global: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut SecSince1970_get_global:
+        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
+}
+unsafe extern "C" {
+    pub static mut property_SecSince1970_local: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut SecSince1970_get_local:
+        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
+}
+unsafe extern "C" {
+    pub static mut getRandom: ::std::option::Option<
         unsafe extern "C" fn(
-            __this: *mut GLAB,
-            contents: GLBufferContents,
-            n: ::std::os::raw::c_int,
-            type_: ::std::os::raw::c_int,
-            stride: uint,
-            mode: GLAttribMode,
-            pointer: *const ::std::os::raw::c_void,
-        ),
+            lo: ::std::os::raw::c_int,
+            hi: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
     >;
 }
 unsafe extern "C" {
-    pub static mut GLAB_useVertTrans: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLAB,
-            count: uint,
-            n: ::std::os::raw::c_int,
-            type_: ::std::os::raw::c_int,
-            stride: uint,
-            mode: GLAttribMode,
-            pointer: *const ::std::os::raw::c_void,
-        ),
-    >;
+    pub static mut getTime: ::std::option::Option<unsafe extern "C" fn() -> Time>;
 }
 unsafe extern "C" {
-    pub static mut GLB__allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            type_: GLBType,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-            usage: GLBufferUsage,
-        ) -> bool_,
-    >;
+    pub static mut randomSeed: ::std::option::Option<unsafe extern "C" fn(seed: uint)>;
 }
 unsafe extern "C" {
-    pub static mut GLB__upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            type_: GLBType,
-            offset: uint,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLB_allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-            usage: GLBufferUsage,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLB_copy: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            src: *mut GLB,
-            srcStart: uint,
-            dstStart: uint,
-            size: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLB_deleteBuffers: ::std::option::Option<
-        unsafe extern "C" fn(count: ::std::os::raw::c_int, buffers: *mut GLB),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLB_free: ::std::option::Option<unsafe extern "C" fn(__this: *mut GLB)>;
-}
-unsafe extern "C" {
-    pub static mut GLB_resize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            type_: GLBType,
-            oldSize: uint,
-            newSize: uint,
-            usage: GLBufferUsage,
-            keepSameBufferID: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLB_upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLB,
-            offset: uint,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLCAB {
-    pub buffer: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLCAB"][::std::mem::size_of::<GLCAB>() - 4usize];
-    ["Alignment of GLCAB"][::std::mem::align_of::<GLCAB>() - 4usize];
-    ["Offset of field: GLCAB::buffer"][::std::mem::offset_of!(GLCAB, buffer) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut GLCAB_allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLCAB,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-            usage: GLBufferUsage,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLCAB_upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLCAB,
-            offset: uint,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLEAB {
-    pub buffer: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLEAB"][::std::mem::size_of::<GLEAB>() - 4usize];
-    ["Alignment of GLEAB"][::std::mem::align_of::<GLEAB>() - 4usize];
-    ["Offset of field: GLEAB::buffer"][::std::mem::offset_of!(GLEAB, buffer) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut GLEAB_allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLEAB,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-            usage: GLBufferUsage,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLEAB_draw: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLEAB,
-            primType: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-            type_: ::std::os::raw::c_int,
-            indices: *const ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLEAB_draw2: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLEAB,
-            primType: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-            type_: ::std::os::raw::c_int,
-            indices: *const ::std::os::raw::c_void,
-            baseVertex: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLEAB_upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLEAB,
-            offset: uint,
-            size: uint,
-            data: *const ::std::os::raw::c_void,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLFB {
-    pub w: ::std::os::raw::c_int,
-    pub h: ::std::os::raw::c_int,
-    pub fbo: uint,
-    pub color: uint,
-    pub depth: uint,
-    pub samples: uint,
-    pub colorRBO: uint,
-    pub depthRBO: uint,
-    pub depthFormat: ::std::os::raw::c_int,
-    pub colorFormat: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLFB"][::std::mem::size_of::<GLFB>() - 40usize];
-    ["Alignment of GLFB"][::std::mem::align_of::<GLFB>() - 4usize];
-    ["Offset of field: GLFB::w"][::std::mem::offset_of!(GLFB, w) - 0usize];
-    ["Offset of field: GLFB::h"][::std::mem::offset_of!(GLFB, h) - 4usize];
-    ["Offset of field: GLFB::fbo"][::std::mem::offset_of!(GLFB, fbo) - 8usize];
-    ["Offset of field: GLFB::color"][::std::mem::offset_of!(GLFB, color) - 12usize];
-    ["Offset of field: GLFB::depth"][::std::mem::offset_of!(GLFB, depth) - 16usize];
-    ["Offset of field: GLFB::samples"][::std::mem::offset_of!(GLFB, samples) - 20usize];
-    ["Offset of field: GLFB::colorRBO"][::std::mem::offset_of!(GLFB, colorRBO) - 24usize];
-    ["Offset of field: GLFB::depthRBO"][::std::mem::offset_of!(GLFB, depthRBO) - 28usize];
-    ["Offset of field: GLFB::depthFormat"][::std::mem::offset_of!(GLFB, depthFormat) - 32usize];
-    ["Offset of field: GLFB::colorFormat"][::std::mem::offset_of!(GLFB, colorFormat) - 36usize];
-};
-unsafe extern "C" {
-    pub static mut GLFB_copy: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLFB,
-            src: *const GLFB,
-            srcExtent: *const Box,
-            dstExtent: *const Box,
-            buffers: ClearType,
-            filter: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLFB_copyToTexture:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLFB)>;
-}
-unsafe extern "C" {
-    pub static mut GLFB_free: ::std::option::Option<unsafe extern "C" fn(__this: *mut GLFB)>;
-}
-unsafe extern "C" {
-    pub static mut GLFB_read: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GLFB, bitmap: Bitmap, buffer: ClearType, sRGB: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLFB_setup: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLFB,
-            textureFBO: bool_,
-            allocTextures: bool_,
-            samples: ::std::os::raw::c_int,
-            colorFormat: ::std::os::raw::c_int,
-            depthFormat: ::std::os::raw::c_int,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_GLMB {
-    pub ab: GLB,
-    pub keepSameBufferID: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_GLMB"][::std::mem::size_of::<class_members_GLMB>() - 8usize];
-    ["Alignment of class_members_GLMB"][::std::mem::align_of::<class_members_GLMB>() - 4usize];
-    ["Offset of field: class_members_GLMB::ab"]
-        [::std::mem::offset_of!(class_members_GLMB, ab) - 0usize];
-    ["Offset of field: class_members_GLMB::keepSameBufferID"]
-        [::std::mem::offset_of!(class_members_GLMB, keepSameBufferID) - 4usize];
-};
-unsafe extern "C" {
-    pub static mut GLMB_free: ::std::option::Option<unsafe extern "C" fn(__this: GLMB)>;
-}
-unsafe extern "C" {
-    pub static mut GLMB_printStats: ::std::option::Option<unsafe extern "C" fn(__this: GLMB)>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_allocBuffer:
-        ::std::option::Option<unsafe extern "C" fn(buf: uint, size: uint)>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_allocTexture:
-        ::std::option::Option<unsafe extern "C" fn(tex: uint, w: uint, h: uint, mipMaps: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_freeBuffers:
-        ::std::option::Option<unsafe extern "C" fn(count: uint, bufs: *mut uint)>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_freeTextures:
-        ::std::option::Option<unsafe extern "C" fn(count: uint, texs: *mut uint)>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_print: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut GLStats_printBuf: ::std::option::Option<
-        unsafe extern "C" fn(output: *mut ::std::os::raw::c_char, size: uint),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LFBDisplay {
-    pub bitmap: Bitmap,
-    pub rgbLookup: [byte; 32768usize],
-    pub lightTable: [[byte; 32usize]; 256usize],
-    pub updateBoxes: OldList,
-    pub x: ::std::os::raw::c_int,
-    pub y: ::std::os::raw::c_int,
-    pub selfManaged: bool_,
-    pub displayCallback:
-        ::std::option::Option<unsafe extern "C" fn(display: Display, updateBox: *mut Box)>,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of LFBDisplay"][::std::mem::size_of::<LFBDisplay>() - 41024usize];
-    ["Alignment of LFBDisplay"][::std::mem::align_of::<LFBDisplay>() - 8usize];
-    ["Offset of field: LFBDisplay::bitmap"][::std::mem::offset_of!(LFBDisplay, bitmap) - 0usize];
-    ["Offset of field: LFBDisplay::rgbLookup"]
-        [::std::mem::offset_of!(LFBDisplay, rgbLookup) - 8usize];
-    ["Offset of field: LFBDisplay::lightTable"]
-        [::std::mem::offset_of!(LFBDisplay, lightTable) - 32776usize];
-    ["Offset of field: LFBDisplay::updateBoxes"]
-        [::std::mem::offset_of!(LFBDisplay, updateBoxes) - 40968usize];
-    ["Offset of field: LFBDisplay::x"][::std::mem::offset_of!(LFBDisplay, x) - 41000usize];
-    ["Offset of field: LFBDisplay::y"][::std::mem::offset_of!(LFBDisplay, y) - 41004usize];
-    ["Offset of field: LFBDisplay::selfManaged"]
-        [::std::mem::offset_of!(LFBDisplay, selfManaged) - 41008usize];
-    ["Offset of field: LFBDisplay::displayCallback"]
-        [::std::mem::offset_of!(LFBDisplay, displayCallback) - 41016usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LFBSurface {
-    pub font: *mut Font,
-    pub opaqueText: bool_,
-    pub xOffset: ::std::os::raw::c_int,
-    pub writingText: bool_,
-    pub writingOutline: bool_,
-    pub bitmap: Bitmap,
-    pub foreground: uint,
-    pub background: uint,
-    pub foregroundRgb: ColorAlpha,
-    pub stipple: uint16,
-    pub drawingChar: byte,
-    pub paletteShades: *mut byte,
-    pub clearing: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of LFBSurface"][::std::mem::size_of::<LFBSurface>() - 64usize];
-    ["Alignment of LFBSurface"][::std::mem::align_of::<LFBSurface>() - 8usize];
-    ["Offset of field: LFBSurface::font"][::std::mem::offset_of!(LFBSurface, font) - 0usize];
-    ["Offset of field: LFBSurface::opaqueText"]
-        [::std::mem::offset_of!(LFBSurface, opaqueText) - 8usize];
-    ["Offset of field: LFBSurface::xOffset"][::std::mem::offset_of!(LFBSurface, xOffset) - 12usize];
-    ["Offset of field: LFBSurface::writingText"]
-        [::std::mem::offset_of!(LFBSurface, writingText) - 16usize];
-    ["Offset of field: LFBSurface::writingOutline"]
-        [::std::mem::offset_of!(LFBSurface, writingOutline) - 20usize];
-    ["Offset of field: LFBSurface::bitmap"][::std::mem::offset_of!(LFBSurface, bitmap) - 24usize];
-    ["Offset of field: LFBSurface::foreground"]
-        [::std::mem::offset_of!(LFBSurface, foreground) - 32usize];
-    ["Offset of field: LFBSurface::background"]
-        [::std::mem::offset_of!(LFBSurface, background) - 36usize];
-    ["Offset of field: LFBSurface::foregroundRgb"]
-        [::std::mem::offset_of!(LFBSurface, foregroundRgb) - 40usize];
-    ["Offset of field: LFBSurface::stipple"][::std::mem::offset_of!(LFBSurface, stipple) - 44usize];
-    ["Offset of field: LFBSurface::drawingChar"]
-        [::std::mem::offset_of!(LFBSurface, drawingChar) - 46usize];
-    ["Offset of field: LFBSurface::paletteShades"]
-        [::std::mem::offset_of!(LFBSurface, paletteShades) - 48usize];
-    ["Offset of field: LFBSurface::clearing"]
-        [::std::mem::offset_of!(LFBSurface, clearing) - 56usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct LFBSystem {
-    pub format: ::std::os::raw::c_int,
-    pub palette: *mut ColorAlpha,
-    pub rgbLookup: [byte; 32768usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of LFBSystem"][::std::mem::size_of::<LFBSystem>() - 32784usize];
-    ["Alignment of LFBSystem"][::std::mem::align_of::<LFBSystem>() - 8usize];
-    ["Offset of field: LFBSystem::format"][::std::mem::offset_of!(LFBSystem, format) - 0usize];
-    ["Offset of field: LFBSystem::palette"][::std::mem::offset_of!(LFBSystem, palette) - 8usize];
-    ["Offset of field: LFBSystem::rgbLookup"]
-        [::std::mem::offset_of!(LFBSystem, rgbLookup) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Shader {
-    pub __ecerePrivateData0: [byte; 24usize],
-    pub state: uint64,
-    pub modifiedUniforms: ShaderModifiedUniforms,
-    pub __ecere_padding: [byte; 44usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Shader"][::std::mem::size_of::<class_members_Shader>() - 80usize];
-    ["Alignment of class_members_Shader"][::std::mem::align_of::<class_members_Shader>() - 8usize];
-    ["Offset of field: class_members_Shader::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_Shader, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_Shader::state"]
-        [::std::mem::offset_of!(class_members_Shader, state) - 24usize];
-    ["Offset of field: class_members_Shader::modifiedUniforms"]
-        [::std::mem::offset_of!(class_members_Shader, modifiedUniforms) - 32usize];
-    ["Offset of field: class_members_Shader::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_Shader, __ecere_padding) - 36usize];
-};
-unsafe extern "C" {
-    pub static mut Shader_activate:
-        ::std::option::Option<unsafe extern "C" fn(__this: Shader) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Shader_bindAttribs_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_bindAttribs: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_free: ::std::option::Option<unsafe extern "C" fn(__this: Shader)>;
-}
-unsafe extern "C" {
-    pub static mut Shader_getDefinitions_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_getDefinitions: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_load: ::std::option::Option<
-        unsafe extern "C" fn(__this: Shader, state: uint64) -> *mut CompiledShader,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Shader_registerShader_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_registerShader: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_select: ::std::option::Option<unsafe extern "C" fn(__this: Shader)>;
-}
-unsafe extern "C" {
-    pub static mut Shader_setMaterial_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_setMaterial: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_setupDrawCommand_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_setupDrawCommand: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_updateMatrix_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_updateMatrix: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Shader_uploadUniforms_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Shader_uploadUniforms: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_Shader_vertexShaderFile: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Shader_set_vertexShaderFile:
-        ::std::option::Option<unsafe extern "C" fn(s: Shader, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut property_Shader_fragmentShaderFile: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Shader_set_fragmentShaderFile:
-        ::std::option::Option<unsafe extern "C" fn(s: Shader, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut property_Shader_vertexShader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Shader_set_vertexShader:
-        ::std::option::Option<unsafe extern "C" fn(s: Shader, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut property_Shader_fragmentShader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Shader_set_fragmentShader:
-        ::std::option::Option<unsafe extern "C" fn(s: Shader, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut property_Shader_activeCompiledShader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Shader_get_activeCompiledShader:
-        ::std::option::Option<unsafe extern "C" fn(s: Shader) -> *mut CompiledShader>;
-}
-unsafe extern "C" {
-    pub static mut gLABBindBuffer:
-        ::std::option::Option<unsafe extern "C" fn(target: ::std::os::raw::c_int, buffer: uint)>;
-}
-unsafe extern "C" {
-    pub static mut gLABBindVertexArray: ::std::option::Option<unsafe extern "C" fn(vao: uint)>;
-}
-unsafe extern "C" {
-    pub static mut gLSetupFog: ::std::option::Option<unsafe extern "C" fn(enable: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut gLSetupLighting: ::std::option::Option<unsafe extern "C" fn(enable: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut gLSetupTexturing: ::std::option::Option<unsafe extern "C" fn(enable: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut useSingleGLContext:
-        ::std::option::Option<unsafe extern "C" fn(useSingle: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkBegin: ::std::option::Option<unsafe extern "C" fn(mode: GLIMTKMode)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkColor3f:
-        ::std::option::Option<unsafe extern "C" fn(r: f32, g: f32, b: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkColor4f:
-        ::std::option::Option<unsafe extern "C" fn(r: f32, g: f32, b: f32, a: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkColor4fv: ::std::option::Option<unsafe extern "C" fn(a: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkColor4ub:
-        ::std::option::Option<unsafe extern "C" fn(r: byte, g: byte, b: byte, a: byte)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkEnd: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut glimtkNormal3d:
-        ::std::option::Option<unsafe extern "C" fn(x: f64, y: f64, z: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkNormal3f:
-        ::std::option::Option<unsafe extern "C" fn(x: f32, y: f32, z: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkNormal3fd: ::std::option::Option<unsafe extern "C" fn(coords: *mut f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkNormal3fv: ::std::option::Option<unsafe extern "C" fn(coords: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkRecti: ::std::option::Option<
-        unsafe extern "C" fn(
-            a: ::std::os::raw::c_int,
-            b: ::std::os::raw::c_int,
-            c: ::std::os::raw::c_int,
-            d: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut glimtkTexCoord2d: ::std::option::Option<unsafe extern "C" fn(x: f64, y: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkTexCoord2f: ::std::option::Option<unsafe extern "C" fn(x: f32, y: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkTexCoord2fv: ::std::option::Option<unsafe extern "C" fn(a: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkTexCoord2i: ::std::option::Option<
-        unsafe extern "C" fn(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex2d: ::std::option::Option<unsafe extern "C" fn(x: f64, y: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex2f: ::std::option::Option<unsafe extern "C" fn(x: f32, y: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex2i: ::std::option::Option<
-        unsafe extern "C" fn(x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex3d:
-        ::std::option::Option<unsafe extern "C" fn(x: f64, y: f64, z: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex3dv: ::std::option::Option<unsafe extern "C" fn(coords: *mut f64)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex3f:
-        ::std::option::Option<unsafe extern "C" fn(x: f32, y: f32, z: f32)>;
-}
-unsafe extern "C" {
-    pub static mut glimtkVertex3fv: ::std::option::Option<unsafe extern "C" fn(coords: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glmsFlushMatrices: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut glmsFrustum:
-        ::std::option::Option<unsafe extern "C" fn(l: f64, r: f64, b: f64, t: f64, n: f64, f: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsGetDoublev:
-        ::std::option::Option<unsafe extern "C" fn(what: GLMSWhatToGet, i: *mut f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsGetNearPlane: ::std::option::Option<unsafe extern "C" fn() -> f64>;
-}
-unsafe extern "C" {
-    pub static mut glmsLoadIdentity: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut glmsLoadMatrix: ::std::option::Option<unsafe extern "C" fn(matrix: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut glmsLoadMatrixd: ::std::option::Option<unsafe extern "C" fn(i: *mut f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsLoadMatrixf: ::std::option::Option<unsafe extern "C" fn(i: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glmsMatrixMode: ::std::option::Option<unsafe extern "C" fn(mode: MatrixMode)>;
-}
-unsafe extern "C" {
-    pub static mut glmsMultMatrixd: ::std::option::Option<unsafe extern "C" fn(i: *mut f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsMultMatrixf: ::std::option::Option<unsafe extern "C" fn(i: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut glmsOrtho:
-        ::std::option::Option<unsafe extern "C" fn(l: f64, r: f64, b: f64, t: f64, n: f64, f: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsPopMatrix: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut glmsPushMatrix: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut glmsRotated:
-        ::std::option::Option<unsafe extern "C" fn(angle: f64, x: f64, y: f64, z: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsScaled: ::std::option::Option<unsafe extern "C" fn(a: f64, b: f64, c: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsSetNearPlane: ::std::option::Option<unsafe extern "C" fn(value: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glmsTranslated:
-        ::std::option::Option<unsafe extern "C" fn(a: f64, b: f64, c: f64)>;
-}
-unsafe extern "C" {
-    pub static mut glsupLightModeli:
-        ::std::option::Option<unsafe extern "C" fn(pname: uint, param: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut glsupLineStipple:
-        ::std::option::Option<unsafe extern "C" fn(i: ::std::os::raw::c_int, j: uint16)>;
+    pub static mut __sleep: ::std::option::Option<unsafe extern "C" fn(seconds: Time)>;
 }
 pub type FileAttribs = uint32;
-pub type SecSince1970 = int64;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct FileStats {
@@ -7233,78 +5355,6 @@ pub type ArchiveDir = Instance;
 pub type ArchiveOpenFlags = uint32;
 pub type File = IOChannel;
 pub type BufferedFile = File;
-pub type Button = CommonControl;
-pub type CharCategories = uint32;
-pub type CharCategory = ::std::os::raw::c_int;
-pub const CharCategory_CharCategory_none: CharCategory = 0;
-pub const CharCategory_CharCategory_Mn: CharCategory = 1;
-pub const CharCategory_CharCategory_markNonSpacing: CharCategory = 1;
-pub const CharCategory_CharCategory_Mc: CharCategory = 2;
-pub const CharCategory_CharCategory_markSpacing: CharCategory = 2;
-pub const CharCategory_CharCategory_Me: CharCategory = 3;
-pub const CharCategory_CharCategory_markEnclosing: CharCategory = 3;
-pub const CharCategory_CharCategory_Nd: CharCategory = 4;
-pub const CharCategory_CharCategory_numberDecimalDigit: CharCategory = 4;
-pub const CharCategory_CharCategory_Nl: CharCategory = 5;
-pub const CharCategory_CharCategory_numberLetter: CharCategory = 5;
-pub const CharCategory_CharCategory_No: CharCategory = 6;
-pub const CharCategory_CharCategory_numberOther: CharCategory = 6;
-pub const CharCategory_CharCategory_Zs: CharCategory = 7;
-pub const CharCategory_CharCategory_separatorSpace: CharCategory = 7;
-pub const CharCategory_CharCategory_Zl: CharCategory = 8;
-pub const CharCategory_CharCategory_separatorLine: CharCategory = 8;
-pub const CharCategory_CharCategory_Zp: CharCategory = 9;
-pub const CharCategory_CharCategory_separatorParagraph: CharCategory = 9;
-pub const CharCategory_CharCategory_Cc: CharCategory = 10;
-pub const CharCategory_CharCategory_otherControl: CharCategory = 10;
-pub const CharCategory_CharCategory_Cf: CharCategory = 11;
-pub const CharCategory_CharCategory_otherFormat: CharCategory = 11;
-pub const CharCategory_CharCategory_Cs: CharCategory = 12;
-pub const CharCategory_CharCategory_otherSurrogate: CharCategory = 12;
-pub const CharCategory_CharCategory_Co: CharCategory = 13;
-pub const CharCategory_CharCategory_otherPrivateUse: CharCategory = 13;
-pub const CharCategory_CharCategory_Cn: CharCategory = 14;
-pub const CharCategory_CharCategory_otherNotAssigned: CharCategory = 14;
-pub const CharCategory_CharCategory_Lu: CharCategory = 15;
-pub const CharCategory_CharCategory_letterUpperCase: CharCategory = 15;
-pub const CharCategory_CharCategory_Ll: CharCategory = 16;
-pub const CharCategory_CharCategory_letterLowerCase: CharCategory = 16;
-pub const CharCategory_CharCategory_Lt: CharCategory = 17;
-pub const CharCategory_CharCategory_letterTitleCase: CharCategory = 17;
-pub const CharCategory_CharCategory_Lm: CharCategory = 18;
-pub const CharCategory_CharCategory_letterModifier: CharCategory = 18;
-pub const CharCategory_CharCategory_Lo: CharCategory = 19;
-pub const CharCategory_CharCategory_letterOther: CharCategory = 19;
-pub const CharCategory_CharCategory_Pc: CharCategory = 20;
-pub const CharCategory_CharCategory_punctuationConnector: CharCategory = 20;
-pub const CharCategory_CharCategory_Pd: CharCategory = 21;
-pub const CharCategory_CharCategory_punctuationDash: CharCategory = 21;
-pub const CharCategory_CharCategory_Ps: CharCategory = 22;
-pub const CharCategory_CharCategory_punctuationOpen: CharCategory = 22;
-pub const CharCategory_CharCategory_Pe: CharCategory = 23;
-pub const CharCategory_CharCategory_punctuationClose: CharCategory = 23;
-pub const CharCategory_CharCategory_Pi: CharCategory = 24;
-pub const CharCategory_CharCategory_punctuationInitial: CharCategory = 24;
-pub const CharCategory_CharCategory_Pf: CharCategory = 25;
-pub const CharCategory_CharCategory_punctuationFinal: CharCategory = 25;
-pub const CharCategory_CharCategory_Po: CharCategory = 26;
-pub const CharCategory_CharCategory_punctuationOther: CharCategory = 26;
-pub const CharCategory_CharCategory_Sm: CharCategory = 27;
-pub const CharCategory_CharCategory_symbolMath: CharCategory = 27;
-pub const CharCategory_CharCategory_Sc: CharCategory = 28;
-pub const CharCategory_CharCategory_symbolCurrency: CharCategory = 28;
-pub const CharCategory_CharCategory_Sk: CharCategory = 29;
-pub const CharCategory_CharCategory_symbolModifier: CharCategory = 29;
-pub const CharCategory_CharCategory_So: CharCategory = 30;
-pub const CharCategory_CharCategory_symbolOther: CharCategory = 30;
-pub type DayOfTheWeek = ::std::os::raw::c_int;
-pub const DayOfTheWeek_DayOfTheWeek_sunday: DayOfTheWeek = 0;
-pub const DayOfTheWeek_DayOfTheWeek_monday: DayOfTheWeek = 1;
-pub const DayOfTheWeek_DayOfTheWeek_tuesday: DayOfTheWeek = 2;
-pub const DayOfTheWeek_DayOfTheWeek_wednesday: DayOfTheWeek = 3;
-pub const DayOfTheWeek_DayOfTheWeek_thursday: DayOfTheWeek = 4;
-pub const DayOfTheWeek_DayOfTheWeek_friday: DayOfTheWeek = 5;
-pub const DayOfTheWeek_DayOfTheWeek_saturday: DayOfTheWeek = 6;
 pub type DualPipe = File;
 pub type ErrorCode = uint32;
 pub type ErrorLevel = ::std::os::raw::c_int;
@@ -7331,27 +5381,6 @@ pub const FileSeekMode_FileSeekMode_current: FileSeekMode = 1;
 pub const FileSeekMode_FileSeekMode_end: FileSeekMode = 2;
 pub type FileSize = uint;
 pub type FileSize64 = uint64;
-pub type GlobalSettings = Instance;
-pub type GlobalAppSettings = GlobalSettings;
-pub type GlobalSettingType = ::std::os::raw::c_int;
-pub const GlobalSettingType_GlobalSettingType_integer: GlobalSettingType = 0;
-pub const GlobalSettingType_GlobalSettingType_singleString: GlobalSettingType = 1;
-pub const GlobalSettingType_GlobalSettingType_stringList: GlobalSettingType = 2;
-pub type GlobalSettingsData = Instance;
-pub type GlobalSettingsDriver = Instance;
-pub type JSONFirstLetterCapitalization = ::std::os::raw::c_int;
-pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_keepCase:
-    JSONFirstLetterCapitalization = 0;
-pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_upperCase:
-    JSONFirstLetterCapitalization = 1;
-pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_lowerCase:
-    JSONFirstLetterCapitalization = 2;
-pub type JSONParser = Instance;
-pub type JSONResult = ::std::os::raw::c_int;
-pub const JSONResult_JSONResult_syntaxError: JSONResult = 0;
-pub const JSONResult_JSONResult_success: JSONResult = 1;
-pub const JSONResult_JSONResult_typeMismatch: JSONResult = 2;
-pub const JSONResult_JSONResult_noItem: JSONResult = 3;
 pub type LoggingMode = ::std::os::raw::c_int;
 pub const LoggingMode_LoggingMode_noLogging: LoggingMode = 0;
 pub const LoggingMode_LoggingMode_stdOut: LoggingMode = 1;
@@ -7360,72 +5389,15 @@ pub const LoggingMode_LoggingMode_debug: LoggingMode = 3;
 pub const LoggingMode_LoggingMode_logFile: LoggingMode = 4;
 pub const LoggingMode_LoggingMode_msgBox: LoggingMode = 5;
 pub const LoggingMode_LoggingMode_buffer: LoggingMode = 6;
-pub type Month = ::std::os::raw::c_int;
-pub const Month_Month_january: Month = 0;
-pub const Month_Month_february: Month = 1;
-pub const Month_Month_march: Month = 2;
-pub const Month_Month_april: Month = 3;
-pub const Month_Month_may: Month = 4;
-pub const Month_Month_june: Month = 5;
-pub const Month_Month_july: Month = 6;
-pub const Month_Month_august: Month = 7;
-pub const Month_Month_september: Month = 8;
-pub const Month_Month_october: Month = 9;
-pub const Month_Month_november: Month = 10;
-pub const Month_Month_december: Month = 11;
 pub type MoveFileOptions = uint32;
-pub type OptionsMap = template_Map_String_JSONTypeOptions;
 pub type PipeOpenMode = uint32;
-pub type SettingsIOResult = ::std::os::raw::c_int;
-pub const SettingsIOResult_SettingsIOResult_error: SettingsIOResult = 0;
-pub const SettingsIOResult_SettingsIOResult_success: SettingsIOResult = 1;
-pub const SettingsIOResult_SettingsIOResult_fileNotFound: SettingsIOResult = 2;
-pub const SettingsIOResult_SettingsIOResult_fileNotCompatibleWithDriver: SettingsIOResult = 3;
 pub type TempFile = File;
-pub type Thread = Instance;
-pub type ThreadPriority = ::std::os::raw::c_int;
-pub const ThreadPriority_ThreadPriority_normal: ThreadPriority = 0;
-pub const ThreadPriority_ThreadPriority_aboveNormal: ThreadPriority = 1;
-pub const ThreadPriority_ThreadPriority_belowNormal: ThreadPriority = -1;
-pub const ThreadPriority_ThreadPriority_highest: ThreadPriority = 2;
-pub const ThreadPriority_ThreadPriority_lowest: ThreadPriority = -2;
-pub const ThreadPriority_ThreadPriority_idle: ThreadPriority = -15;
-pub const ThreadPriority_ThreadPriority_timeCritical: ThreadPriority = 15;
-pub type Time = f64;
-pub type Timer = Instance;
-pub type UnicodeDecomposition = uint32;
 pub type ConsoleFile = File;
-pub type Distance = f64;
-pub type ECONGlobalSettings = GlobalSettingsDriver;
-pub type ECONParser = JSONParser;
 pub type GuiErrorCode = ErrorCode;
 pub const GuiErrorCode_GuiErrorCode_driverNotSupported: GuiErrorCode = 257;
 pub const GuiErrorCode_GuiErrorCode_windowCreationFailed: GuiErrorCode = 258;
 pub const GuiErrorCode_GuiErrorCode_graphicsLoadingFailed: GuiErrorCode = 259;
 pub const GuiErrorCode_GuiErrorCode_modeSwitchFailed: GuiErrorCode = 260;
-pub type JSONGlobalSettings = GlobalSettingsDriver;
-pub type JSONTypeOptions = uint32;
-pub type PredefinedCharCategories = CharCategories;
-pub const PredefinedCharCategories_PredefinedCharCategories_none: PredefinedCharCategories = 1;
-pub const PredefinedCharCategories_PredefinedCharCategories_marks: PredefinedCharCategories = 14;
-pub const PredefinedCharCategories_PredefinedCharCategories_numbers: PredefinedCharCategories = 112;
-pub const PredefinedCharCategories_PredefinedCharCategories_separators: PredefinedCharCategories =
-    896;
-pub const PredefinedCharCategories_PredefinedCharCategories_others: PredefinedCharCategories =
-    31744;
-pub const PredefinedCharCategories_PredefinedCharCategories_letters: PredefinedCharCategories =
-    1015808;
-pub const PredefinedCharCategories_PredefinedCharCategories_punctuation: PredefinedCharCategories =
-    133169152;
-pub const PredefinedCharCategories_PredefinedCharCategories_symbols: PredefinedCharCategories =
-    2013265920;
-pub const PredefinedCharCategories_PredefinedCharCategories_connector: PredefinedCharCategories =
-    1048576;
-pub type RepButton = Button;
-pub type SetBool = uint;
-pub const SetBool_SetBool_unset: SetBool = 0;
-pub const SetBool_SetBool_false: SetBool = 1;
-pub const SetBool_SetBool_true: SetBool = 2;
 pub type SysErrorCode = ErrorCode;
 pub const SysErrorCode_SysErrorCode_allocationFailed: SysErrorCode = 4097;
 pub const SysErrorCode_SysErrorCode_nameInexistant: SysErrorCode = 4098;
@@ -7433,7 +5405,6 @@ pub const SysErrorCode_SysErrorCode_nameExists: SysErrorCode = 4099;
 pub const SysErrorCode_SysErrorCode_missingLibrary: SysErrorCode = 4100;
 pub const SysErrorCode_SysErrorCode_fileNotFound: SysErrorCode = 12293;
 pub const SysErrorCode_SysErrorCode_writeFailed: SysErrorCode = 8198;
-pub type TimeStamp32 = uint;
 unsafe extern "C" {
     pub static mut Archive_clear_vTblID: ::std::os::raw::c_int;
 }
@@ -7569,50 +5540,6 @@ unsafe extern "C" {
     pub static mut method_ArchiveDir_rename: *mut Method;
 }
 unsafe extern "C" {
-    pub static mut Box_clip:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, against: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Box_clipOffset: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Box,
-            against: *mut Box,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Box_isPointInside:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, point: *mut Point) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Box_overlap:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, box_: *mut Box) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Box_width: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Box_set_width:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Box_get_width:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Box_height: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Box_set_height:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Box_get_height:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
     pub static mut property_BufferedFile_handle: *mut Property;
 }
 unsafe extern "C" {
@@ -7646,179 +5573,6 @@ unsafe extern "C" {
         ::std::option::Option<unsafe extern "C" fn(b: BufferedFile) -> uintsize>;
 }
 unsafe extern "C" {
-    pub static mut property_Centimeters_Meters: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Centimeters_from_Meters:
-        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Centimeters_to_Meters:
-        ::std::option::Option<unsafe extern "C" fn(centimeters: f64) -> Distance>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Condition {
-    pub __ecere_padding: [byte; 40usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Condition"][::std::mem::size_of::<Condition>() - 40usize];
-    ["Alignment of Condition"][::std::mem::align_of::<Condition>() - 1usize];
-    ["Offset of field: Condition::__ecere_padding"]
-        [::std::mem::offset_of!(Condition, __ecere_padding) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut Condition_signal:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition)>;
-}
-unsafe extern "C" {
-    pub static mut Condition_wait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition, mutex: *mut Mutex)>;
-}
-unsafe extern "C" {
-    pub static mut property_Condition_name: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Condition_set_name: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Condition, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Condition_get_name: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Condition) -> *const ::std::os::raw::c_char,
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Date {
-    pub year: ::std::os::raw::c_int,
-    pub month: Month,
-    pub day: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Date"][::std::mem::size_of::<Date>() - 12usize];
-    ["Alignment of Date"][::std::mem::align_of::<Date>() - 4usize];
-    ["Offset of field: Date::year"][::std::mem::offset_of!(Date, year) - 0usize];
-    ["Offset of field: Date::month"][::std::mem::offset_of!(Date, month) - 4usize];
-    ["Offset of field: Date::day"][::std::mem::offset_of!(Date, day) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut Date_onGetStringEn: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Date,
-            stringOutput: *mut ::std::os::raw::c_char,
-            fieldData: *mut ::std::os::raw::c_void,
-            onType: *mut ObjectNotationType,
-        ) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Date_dayOfTheWeek: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Date_get_dayOfTheWeek:
-        ::std::option::Option<unsafe extern "C" fn(d: *const Date) -> DayOfTheWeek>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct DateTime {
-    pub year: ::std::os::raw::c_int,
-    pub month: Month,
-    pub day: ::std::os::raw::c_int,
-    pub hour: ::std::os::raw::c_int,
-    pub minute: ::std::os::raw::c_int,
-    pub second: ::std::os::raw::c_int,
-    pub dayOfTheWeek: DayOfTheWeek,
-    pub dayInTheYear: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DateTime"][::std::mem::size_of::<DateTime>() - 32usize];
-    ["Alignment of DateTime"][::std::mem::align_of::<DateTime>() - 4usize];
-    ["Offset of field: DateTime::year"][::std::mem::offset_of!(DateTime, year) - 0usize];
-    ["Offset of field: DateTime::month"][::std::mem::offset_of!(DateTime, month) - 4usize];
-    ["Offset of field: DateTime::day"][::std::mem::offset_of!(DateTime, day) - 8usize];
-    ["Offset of field: DateTime::hour"][::std::mem::offset_of!(DateTime, hour) - 12usize];
-    ["Offset of field: DateTime::minute"][::std::mem::offset_of!(DateTime, minute) - 16usize];
-    ["Offset of field: DateTime::second"][::std::mem::offset_of!(DateTime, second) - 20usize];
-    ["Offset of field: DateTime::dayOfTheWeek"]
-        [::std::mem::offset_of!(DateTime, dayOfTheWeek) - 24usize];
-    ["Offset of field: DateTime::dayInTheYear"]
-        [::std::mem::offset_of!(DateTime, dayInTheYear) - 28usize];
-};
-unsafe extern "C" {
-    pub static mut DateTime_fixDayOfYear:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut DateTime_getLocalTime:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DateTime_global: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DateTime_set_global:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
-}
-unsafe extern "C" {
-    pub static mut DateTime_get_global:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
-}
-unsafe extern "C" {
-    pub static mut property_DateTime_local: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DateTime_set_local:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
-}
-unsafe extern "C" {
-    pub static mut DateTime_get_local:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
-}
-unsafe extern "C" {
-    pub static mut property_DateTime_daysSince1970: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DateTime_get_daysSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut property_DateTime_SecSince1970: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DateTime_from_SecSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: SecSince1970)>;
-}
-unsafe extern "C" {
-    pub static mut DateTime_to_SecSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> SecSince1970>;
-}
-unsafe extern "C" {
-    pub static mut property_DateTime_Date: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DateTime_from_Date:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const Date)>;
-}
-unsafe extern "C" {
-    pub static mut DateTime_to_Date:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut Date)>;
-}
-unsafe extern "C" {
-    pub static mut property_Degrees_Radians: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Degrees_from_Radians:
-        ::std::option::Option<unsafe extern "C" fn(radians: Angle) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Degrees_to_Radians:
-        ::std::option::Option<unsafe extern "C" fn(degrees: f64) -> Angle>;
-}
-unsafe extern "C" {
     pub static mut DualPipe_getExitCode:
         ::std::option::Option<unsafe extern "C" fn(__this: DualPipe) -> ::std::os::raw::c_int>;
 }
@@ -7846,17 +5600,6 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub static mut DualPipe_wait: ::std::option::Option<unsafe extern "C" fn(__this: DualPipe)>;
-}
-unsafe extern "C" {
-    pub static mut property_Feet_Meters: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Feet_from_Meters:
-        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Feet_to_Meters:
-        ::std::option::Option<unsafe extern "C" fn(feet: f64) -> Distance>;
 }
 unsafe extern "C" {
     pub static mut File_close_vTblID: ::std::os::raw::c_int;
@@ -8177,6 +5920,634 @@ unsafe extern "C" {
     >;
 }
 unsafe extern "C" {
+    pub static mut TempFile_stealBuffer:
+        ::std::option::Option<unsafe extern "C" fn(__this: TempFile) -> *mut byte>;
+}
+unsafe extern "C" {
+    pub static mut property_TempFile_openMode: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut TempFile_set_openMode:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: FileOpenMode)>;
+}
+unsafe extern "C" {
+    pub static mut TempFile_get_openMode:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> FileOpenMode>;
+}
+unsafe extern "C" {
+    pub static mut property_TempFile_buffer: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut TempFile_set_buffer:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: *mut byte)>;
+}
+unsafe extern "C" {
+    pub static mut TempFile_get_buffer:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> *mut byte>;
+}
+unsafe extern "C" {
+    pub static mut property_TempFile_size: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut TempFile_set_size:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
+}
+unsafe extern "C" {
+    pub static mut TempFile_get_size:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
+}
+unsafe extern "C" {
+    pub static mut property_TempFile_allocated: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut TempFile_set_allocated:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
+}
+unsafe extern "C" {
+    pub static mut TempFile_get_allocated:
+        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
+}
+unsafe extern "C" {
+    pub static mut archiveOpen: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            flags: ArchiveOpenFlags,
+        ) -> Archive,
+    >;
+}
+unsafe extern "C" {
+    pub static mut archiveQuerySize: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut changeWorkingDir:
+        ::std::option::Option<unsafe extern "C" fn(buf: *const ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut copySystemPath: ::std::option::Option<
+        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut copyUnixPath: ::std::option::Option<
+        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut createTemporaryDir: ::std::option::Option<
+        unsafe extern "C" fn(
+            tempFileName: *mut ::std::os::raw::c_char,
+            _template: *const ::std::os::raw::c_char,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut createTemporaryFile: ::std::option::Option<
+        unsafe extern "C" fn(
+            tempFileName: *mut ::std::os::raw::c_char,
+            _template: *const ::std::os::raw::c_char,
+        ) -> File,
+    >;
+}
+unsafe extern "C" {
+    pub static mut deleteFile: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut dualPipeOpen: ::std::option::Option<
+        unsafe extern "C" fn(
+            mode: PipeOpenMode,
+            commandLine: *const ::std::os::raw::c_char,
+        ) -> DualPipe,
+    >;
+}
+unsafe extern "C" {
+    pub static mut dualPipeOpenEnv: ::std::option::Option<
+        unsafe extern "C" fn(
+            mode: PipeOpenMode,
+            env: *const ::std::os::raw::c_char,
+            commandLine: *const ::std::os::raw::c_char,
+        ) -> DualPipe,
+    >;
+}
+unsafe extern "C" {
+    pub static mut dualPipeOpenEnvf: ::std::option::Option<
+        unsafe extern "C" fn(
+            mode: PipeOpenMode,
+            env: *const ::std::os::raw::c_char,
+            command: *const ::std::os::raw::c_char,
+            ...
+        ) -> DualPipe,
+    >;
+}
+unsafe extern "C" {
+    pub static mut dualPipeOpenf: ::std::option::Option<
+        unsafe extern "C" fn(
+            mode: PipeOpenMode,
+            command: *const ::std::os::raw::c_char,
+            ...
+        ) -> DualPipe,
+    >;
+}
+unsafe extern "C" {
+    pub static mut dumpErrors: ::std::option::Option<unsafe extern "C" fn(display: bool_)>;
+}
+unsafe extern "C" {
+    pub static mut execute: ::std::option::Option<
+        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut executeEnv: ::std::option::Option<
+        unsafe extern "C" fn(
+            env: *const ::std::os::raw::c_char,
+            command: *const ::std::os::raw::c_char,
+            ...
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut executeWait: ::std::option::Option<
+        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileExists: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> FileAttribs,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileFixCase:
+        ::std::option::Option<unsafe extern "C" fn(file: *mut ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut fileGetSize: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileGetStats: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            stats: *mut FileStats,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileOpen: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, mode: FileOpenMode) -> File,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileOpenBuffered: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            mode: FileOpenMode,
+        ) -> BufferedFile,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileSetAttribs: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            attribs: FileAttribs,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileSetTime: ::std::option::Option<
+        unsafe extern "C" fn(
+            fileName: *const ::std::os::raw::c_char,
+            created: SecSince1970,
+            accessed: SecSince1970,
+            modified: SecSince1970,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut fileTruncate: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: uint64) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getEnvironment: ::std::option::Option<
+        unsafe extern "C" fn(
+            envName: *const ::std::os::raw::c_char,
+            envValue: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getFreeSpace: ::std::option::Option<
+        unsafe extern "C" fn(path: *const ::std::os::raw::c_char, size: *mut FileSize64),
+    >;
+}
+unsafe extern "C" {
+    pub static mut getLastErrorCode: ::std::option::Option<unsafe extern "C" fn() -> uint>;
+}
+unsafe extern "C" {
+    pub static mut getSlashPathBuffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            d: *mut ::std::os::raw::c_char,
+            p: *const ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getSystemPathBuffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            d: *mut ::std::os::raw::c_char,
+            p: *const ::std::os::raw::c_char,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getWorkingDir: ::std::option::Option<
+        unsafe extern "C" fn(
+            buf: *mut ::std::os::raw::c_char,
+            size: ::std::os::raw::c_int,
+        ) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut __e_log:
+        ::std::option::Option<unsafe extern "C" fn(text: *const ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut logErrorCode: ::std::option::Option<
+        unsafe extern "C" fn(errorCode: ErrorCode, details: *const ::std::os::raw::c_char),
+    >;
+}
+unsafe extern "C" {
+    pub static mut __e_logf:
+        ::std::option::Option<unsafe extern "C" fn(format: *const ::std::os::raw::c_char, ...)>;
+}
+unsafe extern "C" {
+    pub static mut makeDir:
+        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut makeSlashPath:
+        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut makeSystemPath:
+        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut moveFile: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *const ::std::os::raw::c_char,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut moveFileEx: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *const ::std::os::raw::c_char,
+            options: MoveFileOptions,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut removeDir:
+        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut renameFile: ::std::option::Option<
+        unsafe extern "C" fn(
+            oldName: *const ::std::os::raw::c_char,
+            newName: *const ::std::os::raw::c_char,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut resetError: ::std::option::Option<unsafe extern "C" fn()>;
+}
+unsafe extern "C" {
+    pub static mut setEnvironment: ::std::option::Option<
+        unsafe extern "C" fn(
+            envName: *const ::std::os::raw::c_char,
+            envValue: *const ::std::os::raw::c_char,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut setErrorLevel: ::std::option::Option<unsafe extern "C" fn(level: ErrorLevel)>;
+}
+unsafe extern "C" {
+    pub static mut setLoggingMode: ::std::option::Option<
+        unsafe extern "C" fn(mode: LoggingMode, where_: *mut ::std::os::raw::c_void),
+    >;
+}
+unsafe extern "C" {
+    pub static mut shellOpen: ::std::option::Option<
+        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, ...) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut unsetEnvironment:
+        ::std::option::Option<unsafe extern "C" fn(envName: *const ::std::os::raw::c_char)>;
+}
+unsafe extern "C" {
+    pub static mut debugBreakpoint: ::std::option::Option<unsafe extern "C" fn()>;
+}
+pub type CharCategories = uint32;
+pub type CharCategory = ::std::os::raw::c_int;
+pub const CharCategory_CharCategory_none: CharCategory = 0;
+pub const CharCategory_CharCategory_Mn: CharCategory = 1;
+pub const CharCategory_CharCategory_markNonSpacing: CharCategory = 1;
+pub const CharCategory_CharCategory_Mc: CharCategory = 2;
+pub const CharCategory_CharCategory_markSpacing: CharCategory = 2;
+pub const CharCategory_CharCategory_Me: CharCategory = 3;
+pub const CharCategory_CharCategory_markEnclosing: CharCategory = 3;
+pub const CharCategory_CharCategory_Nd: CharCategory = 4;
+pub const CharCategory_CharCategory_numberDecimalDigit: CharCategory = 4;
+pub const CharCategory_CharCategory_Nl: CharCategory = 5;
+pub const CharCategory_CharCategory_numberLetter: CharCategory = 5;
+pub const CharCategory_CharCategory_No: CharCategory = 6;
+pub const CharCategory_CharCategory_numberOther: CharCategory = 6;
+pub const CharCategory_CharCategory_Zs: CharCategory = 7;
+pub const CharCategory_CharCategory_separatorSpace: CharCategory = 7;
+pub const CharCategory_CharCategory_Zl: CharCategory = 8;
+pub const CharCategory_CharCategory_separatorLine: CharCategory = 8;
+pub const CharCategory_CharCategory_Zp: CharCategory = 9;
+pub const CharCategory_CharCategory_separatorParagraph: CharCategory = 9;
+pub const CharCategory_CharCategory_Cc: CharCategory = 10;
+pub const CharCategory_CharCategory_otherControl: CharCategory = 10;
+pub const CharCategory_CharCategory_Cf: CharCategory = 11;
+pub const CharCategory_CharCategory_otherFormat: CharCategory = 11;
+pub const CharCategory_CharCategory_Cs: CharCategory = 12;
+pub const CharCategory_CharCategory_otherSurrogate: CharCategory = 12;
+pub const CharCategory_CharCategory_Co: CharCategory = 13;
+pub const CharCategory_CharCategory_otherPrivateUse: CharCategory = 13;
+pub const CharCategory_CharCategory_Cn: CharCategory = 14;
+pub const CharCategory_CharCategory_otherNotAssigned: CharCategory = 14;
+pub const CharCategory_CharCategory_Lu: CharCategory = 15;
+pub const CharCategory_CharCategory_letterUpperCase: CharCategory = 15;
+pub const CharCategory_CharCategory_Ll: CharCategory = 16;
+pub const CharCategory_CharCategory_letterLowerCase: CharCategory = 16;
+pub const CharCategory_CharCategory_Lt: CharCategory = 17;
+pub const CharCategory_CharCategory_letterTitleCase: CharCategory = 17;
+pub const CharCategory_CharCategory_Lm: CharCategory = 18;
+pub const CharCategory_CharCategory_letterModifier: CharCategory = 18;
+pub const CharCategory_CharCategory_Lo: CharCategory = 19;
+pub const CharCategory_CharCategory_letterOther: CharCategory = 19;
+pub const CharCategory_CharCategory_Pc: CharCategory = 20;
+pub const CharCategory_CharCategory_punctuationConnector: CharCategory = 20;
+pub const CharCategory_CharCategory_Pd: CharCategory = 21;
+pub const CharCategory_CharCategory_punctuationDash: CharCategory = 21;
+pub const CharCategory_CharCategory_Ps: CharCategory = 22;
+pub const CharCategory_CharCategory_punctuationOpen: CharCategory = 22;
+pub const CharCategory_CharCategory_Pe: CharCategory = 23;
+pub const CharCategory_CharCategory_punctuationClose: CharCategory = 23;
+pub const CharCategory_CharCategory_Pi: CharCategory = 24;
+pub const CharCategory_CharCategory_punctuationInitial: CharCategory = 24;
+pub const CharCategory_CharCategory_Pf: CharCategory = 25;
+pub const CharCategory_CharCategory_punctuationFinal: CharCategory = 25;
+pub const CharCategory_CharCategory_Po: CharCategory = 26;
+pub const CharCategory_CharCategory_punctuationOther: CharCategory = 26;
+pub const CharCategory_CharCategory_Sm: CharCategory = 27;
+pub const CharCategory_CharCategory_symbolMath: CharCategory = 27;
+pub const CharCategory_CharCategory_Sc: CharCategory = 28;
+pub const CharCategory_CharCategory_symbolCurrency: CharCategory = 28;
+pub const CharCategory_CharCategory_Sk: CharCategory = 29;
+pub const CharCategory_CharCategory_symbolModifier: CharCategory = 29;
+pub const CharCategory_CharCategory_So: CharCategory = 30;
+pub const CharCategory_CharCategory_symbolOther: CharCategory = 30;
+pub type UnicodeDecomposition = uint32;
+pub type PredefinedCharCategories = CharCategories;
+pub const PredefinedCharCategories_PredefinedCharCategories_none: PredefinedCharCategories = 1;
+pub const PredefinedCharCategories_PredefinedCharCategories_marks: PredefinedCharCategories = 14;
+pub const PredefinedCharCategories_PredefinedCharCategories_numbers: PredefinedCharCategories = 112;
+pub const PredefinedCharCategories_PredefinedCharCategories_separators: PredefinedCharCategories =
+    896;
+pub const PredefinedCharCategories_PredefinedCharCategories_others: PredefinedCharCategories =
+    31744;
+pub const PredefinedCharCategories_PredefinedCharCategories_letters: PredefinedCharCategories =
+    1015808;
+pub const PredefinedCharCategories_PredefinedCharCategories_punctuation: PredefinedCharCategories =
+    133169152;
+pub const PredefinedCharCategories_PredefinedCharCategories_symbols: PredefinedCharCategories =
+    2013265920;
+pub const PredefinedCharCategories_PredefinedCharCategories_connector: PredefinedCharCategories =
+    1048576;
+unsafe extern "C" {
+    pub static mut charMatchCategories: ::std::option::Option<
+        unsafe extern "C" fn(ch: unichar, categories: CharCategories) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getAlNum: ::std::option::Option<
+        unsafe extern "C" fn(
+            input: *mut *const ::std::os::raw::c_char,
+            string: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> bool_,
+    >;
+}
+unsafe extern "C" {
+    pub static mut getCharCategory:
+        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> CharCategory>;
+}
+unsafe extern "C" {
+    pub static mut getCombiningClass:
+        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> uint>;
+}
+unsafe extern "C" {
+    pub static mut iSO8859_1toUTF8: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF16BEtoUTF8Buffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const uint16,
+            dest: *mut byte,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF16toUTF8: ::std::option::Option<
+        unsafe extern "C" fn(source: *const uint16) -> *mut ::std::os::raw::c_char,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF16toUTF8Buffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const uint16,
+            dest: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF32toUTF8Len: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const unichar,
+            count: ::std::os::raw::c_int,
+            dest: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8GetChar: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: *const ::std::os::raw::c_char,
+            numBytes: *mut ::std::os::raw::c_int,
+        ) -> unichar,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8Validate:
+        ::std::option::Option<unsafe extern "C" fn(source: *const ::std::os::raw::c_char) -> bool_>;
+}
+unsafe extern "C" {
+    pub static mut uTF8toISO8859_1: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *mut ::std::os::raw::c_char,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8toUTF16: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            wordCount: *mut ::std::os::raw::c_int,
+        ) -> *mut uint16,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8toUTF16Buffer: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *mut uint16,
+            max: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8toUTF16BufferLen: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            dest: *mut uint16,
+            max: ::std::os::raw::c_int,
+            len: ::std::os::raw::c_int,
+        ) -> ::std::os::raw::c_int,
+    >;
+}
+unsafe extern "C" {
+    pub static mut uTF8toUTF16Len: ::std::option::Option<
+        unsafe extern "C" fn(
+            source: *const ::std::os::raw::c_char,
+            byteCount: ::std::os::raw::c_int,
+            wordCount: *mut ::std::os::raw::c_int,
+        ) -> *mut uint16,
+    >;
+}
+unsafe extern "C" {
+    pub static mut accenti:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut casei:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut encodeArrayToString:
+        ::std::option::Option<unsafe extern "C" fn(array: Array) -> String>;
+}
+unsafe extern "C" {
+    pub static mut normalizeNFC:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut normalizeNFD:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut normalizeNFKC:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut normalizeNFKD:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+}
+unsafe extern "C" {
+    pub static mut normalizeNFKDArray:
+        ::std::option::Option<unsafe extern "C" fn(string: constString) -> Array>;
+}
+unsafe extern "C" {
+    pub static mut normalizeUnicode: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: constString,
+            type_: UnicodeDecomposition,
+            compose: bool_,
+        ) -> String,
+    >;
+}
+unsafe extern "C" {
+    pub static mut normalizeUnicodeArray: ::std::option::Option<
+        unsafe extern "C" fn(
+            string: constString,
+            type_: UnicodeDecomposition,
+            compose: bool_,
+        ) -> Array,
+    >;
+}
+unsafe extern "C" {
+    pub static mut stripUnicodeCategory:
+        ::std::option::Option<unsafe extern "C" fn(string: constString, c: CharCategory) -> String>;
+}
+pub type GlobalSettings = Instance;
+pub type GlobalAppSettings = GlobalSettings;
+pub type GlobalSettingType = ::std::os::raw::c_int;
+pub const GlobalSettingType_GlobalSettingType_integer: GlobalSettingType = 0;
+pub const GlobalSettingType_GlobalSettingType_singleString: GlobalSettingType = 1;
+pub const GlobalSettingType_GlobalSettingType_stringList: GlobalSettingType = 2;
+pub type GlobalSettingsData = Instance;
+pub type GlobalSettingsDriver = Instance;
+pub type JSONFirstLetterCapitalization = ::std::os::raw::c_int;
+pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_keepCase:
+    JSONFirstLetterCapitalization = 0;
+pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_upperCase:
+    JSONFirstLetterCapitalization = 1;
+pub const JSONFirstLetterCapitalization_JSONFirstLetterCapitalization_lowerCase:
+    JSONFirstLetterCapitalization = 2;
+pub type JSONParser = Instance;
+pub type JSONResult = ::std::os::raw::c_int;
+pub const JSONResult_JSONResult_syntaxError: JSONResult = 0;
+pub const JSONResult_JSONResult_success: JSONResult = 1;
+pub const JSONResult_JSONResult_typeMismatch: JSONResult = 2;
+pub const JSONResult_JSONResult_noItem: JSONResult = 3;
+pub type OptionsMap = template_Map_String_JSONTypeOptions;
+pub type SettingsIOResult = ::std::os::raw::c_int;
+pub const SettingsIOResult_SettingsIOResult_error: SettingsIOResult = 0;
+pub const SettingsIOResult_SettingsIOResult_success: SettingsIOResult = 1;
+pub const SettingsIOResult_SettingsIOResult_fileNotFound: SettingsIOResult = 2;
+pub const SettingsIOResult_SettingsIOResult_fileNotCompatibleWithDriver: SettingsIOResult = 3;
+pub type ECONGlobalSettings = GlobalSettingsDriver;
+pub type ECONParser = JSONParser;
+pub type JSONGlobalSettings = GlobalSettingsDriver;
+pub type JSONTypeOptions = uint32;
+pub type SetBool = uint;
+pub const SetBool_SetBool_unset: SetBool = 0;
+pub const SetBool_SetBool_false: SetBool = 1;
+pub const SetBool_SetBool_true: SetBool = 2;
+unsafe extern "C" {
     pub static mut GlobalAppSettings_getGlobalValue: ::std::option::Option<
         unsafe extern "C" fn(
             __this: GlobalAppSettings,
@@ -8432,550 +6803,6 @@ unsafe extern "C" {
         ::std::option::Option<unsafe extern "C" fn(j: JSONParser) -> bool_>;
 }
 unsafe extern "C" {
-    pub static mut Month_getNumDays: ::std::option::Option<
-        unsafe extern "C" fn(__this: Month, year: ::std::os::raw::c_int) -> ::std::os::raw::c_int,
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Point {
-    pub x: ::std::os::raw::c_int,
-    pub y: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Point"][::std::mem::size_of::<Point>() - 8usize];
-    ["Alignment of Point"][::std::mem::align_of::<Point>() - 4usize];
-    ["Offset of field: Point::x"][::std::mem::offset_of!(Point, x) - 0usize];
-    ["Offset of field: Point::y"][::std::mem::offset_of!(Point, y) - 4usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Pointd {
-    pub x: f64,
-    pub y: f64,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Pointd"][::std::mem::size_of::<Pointd>() - 16usize];
-    ["Alignment of Pointd"][::std::mem::align_of::<Pointd>() - 8usize];
-    ["Offset of field: Pointd::x"][::std::mem::offset_of!(Pointd, x) - 0usize];
-    ["Offset of field: Pointd::y"][::std::mem::offset_of!(Pointd, y) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Pointf {
-    pub x: f32,
-    pub y: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Pointf"][::std::mem::size_of::<Pointf>() - 8usize];
-    ["Alignment of Pointf"][::std::mem::align_of::<Pointf>() - 4usize];
-    ["Offset of field: Pointf::x"][::std::mem::offset_of!(Pointf, x) - 0usize];
-    ["Offset of field: Pointf::y"][::std::mem::offset_of!(Pointf, y) - 4usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_RepButton {
-    pub pressing: bool_,
-    pub timer: Timer,
-    pub timer2: Timer,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_RepButton"][::std::mem::size_of::<class_members_RepButton>() - 24usize];
-    ["Alignment of class_members_RepButton"]
-        [::std::mem::align_of::<class_members_RepButton>() - 8usize];
-    ["Offset of field: class_members_RepButton::pressing"]
-        [::std::mem::offset_of!(class_members_RepButton, pressing) - 0usize];
-    ["Offset of field: class_members_RepButton::timer"]
-        [::std::mem::offset_of!(class_members_RepButton, timer) - 8usize];
-    ["Offset of field: class_members_RepButton::timer2"]
-        [::std::mem::offset_of!(class_members_RepButton, timer2) - 16usize];
-};
-unsafe extern "C" {
-    pub static mut property_RepButton_delay: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut RepButton_set_delay:
-        ::std::option::Option<unsafe extern "C" fn(r: RepButton, value: Time)>;
-}
-unsafe extern "C" {
-    pub static mut property_RepButton_delay0: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut RepButton_set_delay0:
-        ::std::option::Option<unsafe extern "C" fn(r: RepButton, value: Time)>;
-}
-unsafe extern "C" {
-    pub static mut property_SecSince1970_global: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SecSince1970_get_global:
-        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
-}
-unsafe extern "C" {
-    pub static mut property_SecSince1970_local: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SecSince1970_get_local:
-        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Semaphore {
-    pub __ecere_padding: [byte; 40usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Semaphore"][::std::mem::size_of::<Semaphore>() - 40usize];
-    ["Alignment of Semaphore"][::std::mem::align_of::<Semaphore>() - 1usize];
-    ["Offset of field: Semaphore::__ecere_padding"]
-        [::std::mem::offset_of!(Semaphore, __ecere_padding) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut Semaphore_release:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_tryWait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_wait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
-}
-unsafe extern "C" {
-    pub static mut property_Semaphore_initCount: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_set_initCount: ::std::option::Option<
-        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_get_initCount:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Semaphore_maxCount: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_set_maxCount: ::std::option::Option<
-        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Semaphore_get_maxCount:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut TempFile_stealBuffer:
-        ::std::option::Option<unsafe extern "C" fn(__this: TempFile) -> *mut byte>;
-}
-unsafe extern "C" {
-    pub static mut property_TempFile_openMode: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TempFile_set_openMode:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: FileOpenMode)>;
-}
-unsafe extern "C" {
-    pub static mut TempFile_get_openMode:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> FileOpenMode>;
-}
-unsafe extern "C" {
-    pub static mut property_TempFile_buffer: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TempFile_set_buffer:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: *mut byte)>;
-}
-unsafe extern "C" {
-    pub static mut TempFile_get_buffer:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> *mut byte>;
-}
-unsafe extern "C" {
-    pub static mut property_TempFile_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TempFile_set_size:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
-}
-unsafe extern "C" {
-    pub static mut TempFile_get_size:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
-}
-unsafe extern "C" {
-    pub static mut property_TempFile_allocated: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TempFile_set_allocated:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
-}
-unsafe extern "C" {
-    pub static mut TempFile_get_allocated:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
-}
-unsafe extern "C" {
-    pub static mut Thread_create: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
-}
-unsafe extern "C" {
-    pub static mut Thread_kill: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
-}
-unsafe extern "C" {
-    pub static mut Thread_main_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Thread_main: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Thread_setPriority:
-        ::std::option::Option<unsafe extern "C" fn(__this: Thread, priority: ThreadPriority)>;
-}
-unsafe extern "C" {
-    pub static mut Thread_wait: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
-}
-unsafe extern "C" {
-    pub static mut property_Thread_created: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Thread_get_created:
-        ::std::option::Option<unsafe extern "C" fn(t: Thread) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut archiveOpen: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            flags: ArchiveOpenFlags,
-        ) -> Archive,
-    >;
-}
-unsafe extern "C" {
-    pub static mut archiveQuerySize: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut changeWorkingDir:
-        ::std::option::Option<unsafe extern "C" fn(buf: *const ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut charMatchCategories: ::std::option::Option<
-        unsafe extern "C" fn(ch: unichar, categories: CharCategories) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut copyBytes: ::std::option::Option<
-        unsafe extern "C" fn(
-            dest: *mut ::std::os::raw::c_void,
-            source: *const ::std::os::raw::c_void,
-            count: uint64,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut copyBytesBy2: ::std::option::Option<
-        unsafe extern "C" fn(
-            dest: *mut ::std::os::raw::c_void,
-            source: *const ::std::os::raw::c_void,
-            count: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut copyBytesBy4: ::std::option::Option<
-        unsafe extern "C" fn(
-            dest: *mut ::std::os::raw::c_void,
-            source: *const ::std::os::raw::c_void,
-            count: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut copySystemPath: ::std::option::Option<
-        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut copyUnixPath: ::std::option::Option<
-        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut createTemporaryDir: ::std::option::Option<
-        unsafe extern "C" fn(
-            tempFileName: *mut ::std::os::raw::c_char,
-            _template: *const ::std::os::raw::c_char,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut createTemporaryFile: ::std::option::Option<
-        unsafe extern "C" fn(
-            tempFileName: *mut ::std::os::raw::c_char,
-            _template: *const ::std::os::raw::c_char,
-        ) -> File,
-    >;
-}
-unsafe extern "C" {
-    pub static mut deleteFile: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut dualPipeOpen: ::std::option::Option<
-        unsafe extern "C" fn(
-            mode: PipeOpenMode,
-            commandLine: *const ::std::os::raw::c_char,
-        ) -> DualPipe,
-    >;
-}
-unsafe extern "C" {
-    pub static mut dualPipeOpenEnv: ::std::option::Option<
-        unsafe extern "C" fn(
-            mode: PipeOpenMode,
-            env: *const ::std::os::raw::c_char,
-            commandLine: *const ::std::os::raw::c_char,
-        ) -> DualPipe,
-    >;
-}
-unsafe extern "C" {
-    pub static mut dualPipeOpenEnvf: ::std::option::Option<
-        unsafe extern "C" fn(
-            mode: PipeOpenMode,
-            env: *const ::std::os::raw::c_char,
-            command: *const ::std::os::raw::c_char,
-            ...
-        ) -> DualPipe,
-    >;
-}
-unsafe extern "C" {
-    pub static mut dualPipeOpenf: ::std::option::Option<
-        unsafe extern "C" fn(
-            mode: PipeOpenMode,
-            command: *const ::std::os::raw::c_char,
-            ...
-        ) -> DualPipe,
-    >;
-}
-unsafe extern "C" {
-    pub static mut dumpErrors: ::std::option::Option<unsafe extern "C" fn(display: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut execute: ::std::option::Option<
-        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut executeEnv: ::std::option::Option<
-        unsafe extern "C" fn(
-            env: *const ::std::os::raw::c_char,
-            command: *const ::std::os::raw::c_char,
-            ...
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut executeWait: ::std::option::Option<
-        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileExists: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> FileAttribs,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileFixCase:
-        ::std::option::Option<unsafe extern "C" fn(file: *mut ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut fileGetSize: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileGetStats: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            stats: *mut FileStats,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileOpen: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, mode: FileOpenMode) -> File,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileOpenBuffered: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            mode: FileOpenMode,
-        ) -> BufferedFile,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileSetAttribs: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            attribs: FileAttribs,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileSetTime: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            created: SecSince1970,
-            accessed: SecSince1970,
-            modified: SecSince1970,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fileTruncate: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: uint64) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut fillBytes: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: byte, count: uint),
-    >;
-}
-unsafe extern "C" {
-    pub static mut fillBytesBy2: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint16, count: uint),
-    >;
-}
-unsafe extern "C" {
-    pub static mut fillBytesBy4: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint, count: uint),
-    >;
-}
-unsafe extern "C" {
-    pub static mut getAlNum: ::std::option::Option<
-        unsafe extern "C" fn(
-            input: *mut *const ::std::os::raw::c_char,
-            string: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getCharCategory:
-        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> CharCategory>;
-}
-unsafe extern "C" {
-    pub static mut getCombiningClass:
-        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut getEnvironment: ::std::option::Option<
-        unsafe extern "C" fn(
-            envName: *const ::std::os::raw::c_char,
-            envValue: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getFreeSpace: ::std::option::Option<
-        unsafe extern "C" fn(path: *const ::std::os::raw::c_char, size: *mut FileSize64),
-    >;
-}
-unsafe extern "C" {
-    pub static mut getLastErrorCode: ::std::option::Option<unsafe extern "C" fn() -> uint>;
-}
-unsafe extern "C" {
-    pub static mut getRandom: ::std::option::Option<
-        unsafe extern "C" fn(
-            lo: ::std::os::raw::c_int,
-            hi: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getSlashPathBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            d: *mut ::std::os::raw::c_char,
-            p: *const ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getSystemPathBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            d: *mut ::std::os::raw::c_char,
-            p: *const ::std::os::raw::c_char,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getTime: ::std::option::Option<unsafe extern "C" fn() -> Time>;
-}
-unsafe extern "C" {
-    pub static mut getWorkingDir: ::std::option::Option<
-        unsafe extern "C" fn(
-            buf: *mut ::std::os::raw::c_char,
-            size: ::std::os::raw::c_int,
-        ) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut __e_log:
-        ::std::option::Option<unsafe extern "C" fn(text: *const ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut logErrorCode: ::std::option::Option<
-        unsafe extern "C" fn(errorCode: ErrorCode, details: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut __e_logf:
-        ::std::option::Option<unsafe extern "C" fn(format: *const ::std::os::raw::c_char, ...)>;
-}
-unsafe extern "C" {
-    pub static mut makeDir:
-        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut makeSlashPath:
-        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut makeSystemPath:
-        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut moveBytes: ::std::option::Option<
-        unsafe extern "C" fn(
-            dest: *mut ::std::os::raw::c_void,
-            source: *const ::std::os::raw::c_void,
-            count: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut moveFile: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut moveFileEx: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *const ::std::os::raw::c_char,
-            options: MoveFileOptions,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
     pub static mut printECONObject: ::std::option::Option<
         unsafe extern "C" fn(
             objectType: *mut Class,
@@ -8997,48 +6824,6 @@ unsafe extern "C" {
     >;
 }
 unsafe extern "C" {
-    pub static mut randomSeed: ::std::option::Option<unsafe extern "C" fn(seed: uint)>;
-}
-unsafe extern "C" {
-    pub static mut removeDir:
-        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut renameFile: ::std::option::Option<
-        unsafe extern "C" fn(
-            oldName: *const ::std::os::raw::c_char,
-            newName: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut resetError: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut setEnvironment: ::std::option::Option<
-        unsafe extern "C" fn(
-            envName: *const ::std::os::raw::c_char,
-            envValue: *const ::std::os::raw::c_char,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut setErrorLevel: ::std::option::Option<unsafe extern "C" fn(level: ErrorLevel)>;
-}
-unsafe extern "C" {
-    pub static mut setLoggingMode: ::std::option::Option<
-        unsafe extern "C" fn(mode: LoggingMode, where_: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut shellOpen: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, ...) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut __sleep: ::std::option::Option<unsafe extern "C" fn(seconds: Time)>;
-}
-unsafe extern "C" {
     pub static mut stringIndent: ::std::option::Option<
         unsafe extern "C" fn(
             base: constString,
@@ -9046,47 +6831,6 @@ unsafe extern "C" {
             indentFirst: bool_,
         ) -> String,
     >;
-}
-unsafe extern "C" {
-    pub static mut uTF16BEtoUTF8Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const uint16,
-            dest: *mut byte,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8toISO8859_1: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *mut ::std::os::raw::c_char,
-            max: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8toUTF16BufferLen: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            dest: *mut uint16,
-            max: ::std::os::raw::c_int,
-            len: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut uTF8toUTF16Len: ::std::option::Option<
-        unsafe extern "C" fn(
-            source: *const ::std::os::raw::c_char,
-            byteCount: ::std::os::raw::c_int,
-            wordCount: *mut ::std::os::raw::c_int,
-        ) -> *mut uint16,
-    >;
-}
-unsafe extern "C" {
-    pub static mut unsetEnvironment:
-        ::std::option::Option<unsafe extern "C" fn(envName: *const ::std::os::raw::c_char)>;
 }
 unsafe extern "C" {
     pub static mut writeECONObject: ::std::option::Option<
@@ -9140,14442 +6884,495 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
-    pub static mut accenti:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut casei:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut debugBreakpoint: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut encodeArrayToString:
-        ::std::option::Option<unsafe extern "C" fn(array: Array) -> String>;
-}
-unsafe extern "C" {
-    pub static mut normalizeNFC:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut normalizeNFD:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut normalizeNFKC:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut normalizeNFKD:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
-}
-unsafe extern "C" {
-    pub static mut normalizeNFKDArray:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> Array>;
-}
-unsafe extern "C" {
-    pub static mut normalizeUnicode: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: constString,
-            type_: UnicodeDecomposition,
-            compose: bool_,
-        ) -> String,
-    >;
-}
-unsafe extern "C" {
-    pub static mut normalizeUnicodeArray: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: constString,
-            type_: UnicodeDecomposition,
-            compose: bool_,
-        ) -> Array,
-    >;
-}
-unsafe extern "C" {
-    pub static mut stripUnicodeCategory:
-        ::std::option::Option<unsafe extern "C" fn(string: constString, c: CharCategory) -> String>;
-}
+pub type Thread = Instance;
+pub type ThreadPriority = ::std::os::raw::c_int;
+pub const ThreadPriority_ThreadPriority_normal: ThreadPriority = 0;
+pub const ThreadPriority_ThreadPriority_aboveNormal: ThreadPriority = 1;
+pub const ThreadPriority_ThreadPriority_belowNormal: ThreadPriority = -1;
+pub const ThreadPriority_ThreadPriority_highest: ThreadPriority = 2;
+pub const ThreadPriority_ThreadPriority_lowest: ThreadPriority = -2;
+pub const ThreadPriority_ThreadPriority_idle: ThreadPriority = -15;
+pub const ThreadPriority_ThreadPriority_timeCritical: ThreadPriority = 15;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct Vector3D {
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
+pub struct Condition {
+    pub __ecere_padding: [byte; 40usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of Vector3D"][::std::mem::size_of::<Vector3D>() - 24usize];
-    ["Alignment of Vector3D"][::std::mem::align_of::<Vector3D>() - 8usize];
-    ["Offset of field: Vector3D::x"][::std::mem::offset_of!(Vector3D, x) - 0usize];
-    ["Offset of field: Vector3D::y"][::std::mem::offset_of!(Vector3D, y) - 8usize];
-    ["Offset of field: Vector3D::z"][::std::mem::offset_of!(Vector3D, z) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Camera {
-    pub __ecerePrivateData0: [byte; 24usize],
-    pub position: Vector3D,
-    pub __ecere_padding: [byte; 1056usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Camera"][::std::mem::size_of::<class_members_Camera>() - 1104usize];
-    ["Alignment of class_members_Camera"][::std::mem::align_of::<class_members_Camera>() - 8usize];
-    ["Offset of field: class_members_Camera::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_Camera, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_Camera::position"]
-        [::std::mem::offset_of!(class_members_Camera, position) - 24usize];
-    ["Offset of field: class_members_Camera::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_Camera, __ecere_padding) - 48usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorRGB {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorRGB"][::std::mem::size_of::<ColorRGB>() - 12usize];
-    ["Alignment of ColorRGB"][::std::mem::align_of::<ColorRGB>() - 4usize];
-    ["Offset of field: ColorRGB::r"][::std::mem::offset_of!(ColorRGB, r) - 0usize];
-    ["Offset of field: ColorRGB::g"][::std::mem::offset_of!(ColorRGB, g) - 4usize];
-    ["Offset of field: ColorRGB::b"][::std::mem::offset_of!(ColorRGB, b) - 8usize];
-};
-pub type DisplayFlags = uint32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DisplaySystem {
-    pub __ecerePrivateData0: [byte; 24usize],
-    pub pixelFormat: PixelFormat,
-    pub flags: DisplayFlags,
-    pub __ecere_padding: [byte; 160usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DisplaySystem"]
-        [::std::mem::size_of::<class_members_DisplaySystem>() - 192usize];
-    ["Alignment of class_members_DisplaySystem"]
-        [::std::mem::align_of::<class_members_DisplaySystem>() - 4usize];
-    ["Offset of field: class_members_DisplaySystem::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_DisplaySystem, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_DisplaySystem::pixelFormat"]
-        [::std::mem::offset_of!(class_members_DisplaySystem, pixelFormat) - 24usize];
-    ["Offset of field: class_members_DisplaySystem::flags"]
-        [::std::mem::offset_of!(class_members_DisplaySystem, flags) - 28usize];
-    ["Offset of field: class_members_DisplaySystem::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_DisplaySystem, __ecere_padding) - 32usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Euler {
-    pub yaw: Angle,
-    pub pitch: Angle,
-    pub roll: Angle,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Euler"][::std::mem::size_of::<Euler>() - 24usize];
-    ["Alignment of Euler"][::std::mem::align_of::<Euler>() - 8usize];
-    ["Offset of field: Euler::yaw"][::std::mem::offset_of!(Euler, yaw) - 0usize];
-    ["Offset of field: Euler::pitch"][::std::mem::offset_of!(Euler, pitch) - 8usize];
-    ["Offset of field: Euler::roll"][::std::mem::offset_of!(Euler, roll) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Quaternion {
-    pub w: f64,
-    pub x: f64,
-    pub y: f64,
-    pub z: f64,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Quaternion"][::std::mem::size_of::<Quaternion>() - 32usize];
-    ["Alignment of Quaternion"][::std::mem::align_of::<Quaternion>() - 8usize];
-    ["Offset of field: Quaternion::w"][::std::mem::offset_of!(Quaternion, w) - 0usize];
-    ["Offset of field: Quaternion::x"][::std::mem::offset_of!(Quaternion, x) - 8usize];
-    ["Offset of field: Quaternion::y"][::std::mem::offset_of!(Quaternion, y) - 16usize];
-    ["Offset of field: Quaternion::z"][::std::mem::offset_of!(Quaternion, z) - 24usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Vector3Df {
-    pub x: f32,
-    pub y: f32,
-    pub z: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Vector3Df"][::std::mem::size_of::<Vector3Df>() - 12usize];
-    ["Alignment of Vector3Df"][::std::mem::align_of::<Vector3Df>() - 4usize];
-    ["Offset of field: Vector3Df::x"][::std::mem::offset_of!(Vector3Df, x) - 0usize];
-    ["Offset of field: Vector3Df::y"][::std::mem::offset_of!(Vector3Df, y) - 4usize];
-    ["Offset of field: Vector3Df::z"][::std::mem::offset_of!(Vector3Df, z) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Transform {
-    pub position: Vector3D,
-    pub orientation: Quaternion,
-    pub scaling: Vector3Df,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Transform"][::std::mem::size_of::<Transform>() - 72usize];
-    ["Alignment of Transform"][::std::mem::align_of::<Transform>() - 8usize];
-    ["Offset of field: Transform::position"][::std::mem::offset_of!(Transform, position) - 0usize];
-    ["Offset of field: Transform::orientation"]
-        [::std::mem::offset_of!(Transform, orientation) - 24usize];
-    ["Offset of field: Transform::scaling"][::std::mem::offset_of!(Transform, scaling) - 56usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Object {
-    pub __ecerePrivateData0: [byte; 128usize],
-    pub transform: Transform,
-    pub __ecere_padding: [byte; 680usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Object"][::std::mem::size_of::<Object>() - 880usize];
-    ["Alignment of Object"][::std::mem::align_of::<Object>() - 8usize];
-    ["Offset of field: Object::__ecerePrivateData0"]
-        [::std::mem::offset_of!(Object, __ecerePrivateData0) - 0usize];
-    ["Offset of field: Object::transform"][::std::mem::offset_of!(Object, transform) - 128usize];
-    ["Offset of field: Object::__ecere_padding"]
-        [::std::mem::offset_of!(Object, __ecere_padding) - 200usize];
-};
-pub type LightFlags = uint32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Light {
-    pub flags: LightFlags,
-    pub ambient: ColorRGB,
-    pub diffuse: ColorRGB,
-    pub specular: ColorRGB,
-    pub direction: Vector3D,
-    pub orientation: Quaternion,
-    pub lightObject: *mut Object,
-    pub target: *mut Object,
-    pub fallOff: Angle,
-    pub hotSpot: Angle,
-    pub Kc: f32,
-    pub Kl: f32,
-    pub Kq: f32,
-    pub start: Angle,
-    pub end: Angle,
-    pub multiplier: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Light"][::std::mem::size_of::<Light>() - 168usize];
-    ["Alignment of Light"][::std::mem::align_of::<Light>() - 8usize];
-    ["Offset of field: Light::flags"][::std::mem::offset_of!(Light, flags) - 0usize];
-    ["Offset of field: Light::ambient"][::std::mem::offset_of!(Light, ambient) - 4usize];
-    ["Offset of field: Light::diffuse"][::std::mem::offset_of!(Light, diffuse) - 16usize];
-    ["Offset of field: Light::specular"][::std::mem::offset_of!(Light, specular) - 28usize];
-    ["Offset of field: Light::direction"][::std::mem::offset_of!(Light, direction) - 40usize];
-    ["Offset of field: Light::orientation"][::std::mem::offset_of!(Light, orientation) - 64usize];
-    ["Offset of field: Light::lightObject"][::std::mem::offset_of!(Light, lightObject) - 96usize];
-    ["Offset of field: Light::target"][::std::mem::offset_of!(Light, target) - 104usize];
-    ["Offset of field: Light::fallOff"][::std::mem::offset_of!(Light, fallOff) - 112usize];
-    ["Offset of field: Light::hotSpot"][::std::mem::offset_of!(Light, hotSpot) - 120usize];
-    ["Offset of field: Light::Kc"][::std::mem::offset_of!(Light, Kc) - 128usize];
-    ["Offset of field: Light::Kl"][::std::mem::offset_of!(Light, Kl) - 132usize];
-    ["Offset of field: Light::Kq"][::std::mem::offset_of!(Light, Kq) - 136usize];
-    ["Offset of field: Light::start"][::std::mem::offset_of!(Light, start) - 144usize];
-    ["Offset of field: Light::end"][::std::mem::offset_of!(Light, end) - 152usize];
-    ["Offset of field: Light::multiplier"][::std::mem::offset_of!(Light, multiplier) - 160usize];
-};
-pub type CubeMap = Bitmap;
-pub type MaterialFlags = uint32;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Material {
-    pub prev: *mut Material,
-    pub next: *mut Material,
-    pub name: *mut ::std::os::raw::c_char,
-    pub opacity: f32,
-    pub diffuse: ColorRGB,
-    pub ambient: ColorRGB,
-    pub specular: ColorRGB,
-    pub emissive: ColorRGB,
-    pub power: f32,
-    pub baseMap: Bitmap,
-    pub bumpMap: Bitmap,
-    pub specularMap: Bitmap,
-    pub reflectMap: Bitmap,
-    pub envMap: CubeMap,
-    pub reflectivity: f32,
-    pub refractiveIndex: f32,
-    pub refractiveIndexContainer: f32,
-    pub flags: MaterialFlags,
-    pub uScale: f32,
-    pub vScale: f32,
-    pub __ecere_padding: [byte; 8usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Material"][::std::mem::size_of::<Material>() - 152usize];
-    ["Alignment of Material"][::std::mem::align_of::<Material>() - 8usize];
-    ["Offset of field: Material::prev"][::std::mem::offset_of!(Material, prev) - 0usize];
-    ["Offset of field: Material::next"][::std::mem::offset_of!(Material, next) - 8usize];
-    ["Offset of field: Material::name"][::std::mem::offset_of!(Material, name) - 16usize];
-    ["Offset of field: Material::opacity"][::std::mem::offset_of!(Material, opacity) - 24usize];
-    ["Offset of field: Material::diffuse"][::std::mem::offset_of!(Material, diffuse) - 28usize];
-    ["Offset of field: Material::ambient"][::std::mem::offset_of!(Material, ambient) - 40usize];
-    ["Offset of field: Material::specular"][::std::mem::offset_of!(Material, specular) - 52usize];
-    ["Offset of field: Material::emissive"][::std::mem::offset_of!(Material, emissive) - 64usize];
-    ["Offset of field: Material::power"][::std::mem::offset_of!(Material, power) - 76usize];
-    ["Offset of field: Material::baseMap"][::std::mem::offset_of!(Material, baseMap) - 80usize];
-    ["Offset of field: Material::bumpMap"][::std::mem::offset_of!(Material, bumpMap) - 88usize];
-    ["Offset of field: Material::specularMap"]
-        [::std::mem::offset_of!(Material, specularMap) - 96usize];
-    ["Offset of field: Material::reflectMap"]
-        [::std::mem::offset_of!(Material, reflectMap) - 104usize];
-    ["Offset of field: Material::envMap"][::std::mem::offset_of!(Material, envMap) - 112usize];
-    ["Offset of field: Material::reflectivity"]
-        [::std::mem::offset_of!(Material, reflectivity) - 120usize];
-    ["Offset of field: Material::refractiveIndex"]
-        [::std::mem::offset_of!(Material, refractiveIndex) - 124usize];
-    ["Offset of field: Material::refractiveIndexContainer"]
-        [::std::mem::offset_of!(Material, refractiveIndexContainer) - 128usize];
-    ["Offset of field: Material::flags"][::std::mem::offset_of!(Material, flags) - 132usize];
-    ["Offset of field: Material::uScale"][::std::mem::offset_of!(Material, uScale) - 136usize];
-    ["Offset of field: Material::vScale"][::std::mem::offset_of!(Material, vScale) - 140usize];
-    ["Offset of field: Material::__ecere_padding"]
-        [::std::mem::offset_of!(Material, __ecere_padding) - 144usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Matrix {
-    pub __bindgen_anon_1: Matrix__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Matrix__bindgen_ty_1 {
-    pub array: [f64; 16usize],
-    pub m: [[f64; 4usize]; 4usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Matrix__bindgen_ty_1"][::std::mem::size_of::<Matrix__bindgen_ty_1>() - 128usize];
-    ["Alignment of Matrix__bindgen_ty_1"][::std::mem::align_of::<Matrix__bindgen_ty_1>() - 8usize];
-    ["Offset of field: Matrix__bindgen_ty_1::array"]
-        [::std::mem::offset_of!(Matrix__bindgen_ty_1, array) - 0usize];
-    ["Offset of field: Matrix__bindgen_ty_1::m"]
-        [::std::mem::offset_of!(Matrix__bindgen_ty_1, m) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Matrix"][::std::mem::size_of::<Matrix>() - 128usize];
-    ["Alignment of Matrix"][::std::mem::align_of::<Matrix>() - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Mesh {
-    pub __ecerePrivateData0: [byte; 56usize],
-    pub groups: OldList,
-    pub __ecere_padding: [byte; 184usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Mesh"][::std::mem::size_of::<Mesh>() - 272usize];
-    ["Alignment of Mesh"][::std::mem::align_of::<Mesh>() - 8usize];
-    ["Offset of field: Mesh::__ecerePrivateData0"]
-        [::std::mem::offset_of!(Mesh, __ecerePrivateData0) - 0usize];
-    ["Offset of field: Mesh::groups"][::std::mem::offset_of!(Mesh, groups) - 56usize];
-    ["Offset of field: Mesh::__ecere_padding"]
-        [::std::mem::offset_of!(Mesh, __ecere_padding) - 88usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct class_members_MeshSkin {
-    pub bindShapeMatrix: Matrix,
-    pub bones: Array,
-    pub skinVerts: Array,
-    pub invShape: Matrix,
-    pub bsIsIdentity: bool_,
-    pub __ecere_padding: [byte; 28usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_MeshSkin"][::std::mem::size_of::<class_members_MeshSkin>() - 304usize];
-    ["Alignment of class_members_MeshSkin"]
-        [::std::mem::align_of::<class_members_MeshSkin>() - 8usize];
-    ["Offset of field: class_members_MeshSkin::bindShapeMatrix"]
-        [::std::mem::offset_of!(class_members_MeshSkin, bindShapeMatrix) - 0usize];
-    ["Offset of field: class_members_MeshSkin::bones"]
-        [::std::mem::offset_of!(class_members_MeshSkin, bones) - 128usize];
-    ["Offset of field: class_members_MeshSkin::skinVerts"]
-        [::std::mem::offset_of!(class_members_MeshSkin, skinVerts) - 136usize];
-    ["Offset of field: class_members_MeshSkin::invShape"]
-        [::std::mem::offset_of!(class_members_MeshSkin, invShape) - 144usize];
-    ["Offset of field: class_members_MeshSkin::bsIsIdentity"]
-        [::std::mem::offset_of!(class_members_MeshSkin, bsIsIdentity) - 272usize];
-    ["Offset of field: class_members_MeshSkin::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_MeshSkin, __ecere_padding) - 276usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Plane {
-    pub __bindgen_anon_1: Plane__bindgen_ty_1,
-    pub d: f64,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Plane__bindgen_ty_1 {
-    pub __bindgen_anon_1: Plane__bindgen_ty_1__bindgen_ty_1,
-    pub normal: Vector3D,
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Plane__bindgen_ty_1__bindgen_ty_1 {
-    pub a: f64,
-    pub b: f64,
-    pub c: f64,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Plane__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::size_of::<Plane__bindgen_ty_1__bindgen_ty_1>() - 24usize];
-    ["Alignment of Plane__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::align_of::<Plane__bindgen_ty_1__bindgen_ty_1>() - 8usize];
-    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::a"]
-        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, a) - 0usize];
-    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::b"]
-        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, b) - 8usize];
-    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::c"]
-        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, c) - 16usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Plane__bindgen_ty_1"][::std::mem::size_of::<Plane__bindgen_ty_1>() - 24usize];
-    ["Alignment of Plane__bindgen_ty_1"][::std::mem::align_of::<Plane__bindgen_ty_1>() - 8usize];
-    ["Offset of field: Plane__bindgen_ty_1::normal"]
-        [::std::mem::offset_of!(Plane__bindgen_ty_1, normal) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Plane"][::std::mem::size_of::<Plane>() - 32usize];
-    ["Alignment of Plane"][::std::mem::align_of::<Plane>() - 8usize];
-    ["Offset of field: Plane::d"][::std::mem::offset_of!(Plane, d) - 24usize];
-};
-pub type PrimitiveGroupType = uint32;
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PrimitiveGroup {
-    pub prev: *mut PrimitiveGroup,
-    pub next: *mut PrimitiveGroup,
-    pub type_: PrimitiveGroupType,
-    pub baseIndexMesh: ::std::os::raw::c_int,
-    pub baseIndexBuffer: ::std::os::raw::c_int,
-    pub __bindgen_anon_1: PrimitiveGroup__bindgen_ty_1,
-    pub material: *mut Material,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union PrimitiveGroup__bindgen_ty_1 {
-    pub __bindgen_anon_1: PrimitiveGroup__bindgen_ty_1__bindgen_ty_1,
-    pub __bindgen_anon_2: PrimitiveGroup__bindgen_ty_1__bindgen_ty_2,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PrimitiveGroup__bindgen_ty_1__bindgen_ty_1 {
-    pub __bindgen_anon_1: PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    pub nIndices: ::std::os::raw::c_int,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1 {
-    pub indices: *mut uint16,
-    pub indices32: *mut uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1"][::std::mem::size_of::<
-        PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    >() - 8usize];
-    ["Alignment of PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1"][::std::mem::align_of::<
-        PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    >() - 8usize];
-    ["Offset of field: PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1::indices"][::std::mem::offset_of!(
-        PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-        indices
-    )
-        - 0usize];
-    ["Offset of field: PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1::indices32"][::std::mem::offset_of!(
-        PrimitiveGroup__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-        indices32
-    )
-        - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveGroup__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::size_of::<PrimitiveGroup__bindgen_ty_1__bindgen_ty_1>() - 16usize];
-    ["Alignment of PrimitiveGroup__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::align_of::<PrimitiveGroup__bindgen_ty_1__bindgen_ty_1>() - 8usize];
-    ["Offset of field: PrimitiveGroup__bindgen_ty_1__bindgen_ty_1::nIndices"]
-        [::std::mem::offset_of!(PrimitiveGroup__bindgen_ty_1__bindgen_ty_1, nIndices) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PrimitiveGroup__bindgen_ty_1__bindgen_ty_2 {
-    pub first: ::std::os::raw::c_int,
-    pub nVertices: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveGroup__bindgen_ty_1__bindgen_ty_2"]
-        [::std::mem::size_of::<PrimitiveGroup__bindgen_ty_1__bindgen_ty_2>() - 8usize];
-    ["Alignment of PrimitiveGroup__bindgen_ty_1__bindgen_ty_2"]
-        [::std::mem::align_of::<PrimitiveGroup__bindgen_ty_1__bindgen_ty_2>() - 4usize];
-    ["Offset of field: PrimitiveGroup__bindgen_ty_1__bindgen_ty_2::first"]
-        [::std::mem::offset_of!(PrimitiveGroup__bindgen_ty_1__bindgen_ty_2, first) - 0usize];
-    ["Offset of field: PrimitiveGroup__bindgen_ty_1__bindgen_ty_2::nVertices"]
-        [::std::mem::offset_of!(PrimitiveGroup__bindgen_ty_1__bindgen_ty_2, nVertices) - 4usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveGroup__bindgen_ty_1"]
-        [::std::mem::size_of::<PrimitiveGroup__bindgen_ty_1>() - 16usize];
-    ["Alignment of PrimitiveGroup__bindgen_ty_1"]
-        [::std::mem::align_of::<PrimitiveGroup__bindgen_ty_1>() - 8usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveGroup"][::std::mem::size_of::<PrimitiveGroup>() - 56usize];
-    ["Alignment of PrimitiveGroup"][::std::mem::align_of::<PrimitiveGroup>() - 8usize];
-    ["Offset of field: PrimitiveGroup::prev"]
-        [::std::mem::offset_of!(PrimitiveGroup, prev) - 0usize];
-    ["Offset of field: PrimitiveGroup::next"]
-        [::std::mem::offset_of!(PrimitiveGroup, next) - 8usize];
-    ["Offset of field: PrimitiveGroup::type_"]
-        [::std::mem::offset_of!(PrimitiveGroup, type_) - 16usize];
-    ["Offset of field: PrimitiveGroup::baseIndexMesh"]
-        [::std::mem::offset_of!(PrimitiveGroup, baseIndexMesh) - 20usize];
-    ["Offset of field: PrimitiveGroup::baseIndexBuffer"]
-        [::std::mem::offset_of!(PrimitiveGroup, baseIndexBuffer) - 24usize];
-    ["Offset of field: PrimitiveGroup::material"]
-        [::std::mem::offset_of!(PrimitiveGroup, material) - 48usize];
-};
-pub type CameraType = ::std::os::raw::c_int;
-pub const CameraType_CameraType_fixed: CameraType = 0;
-pub const CameraType_CameraType_fixedQuaternion: CameraType = 1;
-pub const CameraType_CameraType_attached: CameraType = 2;
-pub const CameraType_CameraType_attachedQuaternion: CameraType = 3;
-pub const CameraType_CameraType_lookAt: CameraType = 4;
-pub const CameraType_CameraType_lookAtObject: CameraType = 5;
-pub type EulerRotationOrder = ::std::os::raw::c_int;
-pub const EulerRotationOrder_EulerRotationOrder_xyz: EulerRotationOrder = 0;
-pub const EulerRotationOrder_EulerRotationOrder_xzy: EulerRotationOrder = 1;
-pub const EulerRotationOrder_EulerRotationOrder_yxz: EulerRotationOrder = 2;
-pub const EulerRotationOrder_EulerRotationOrder_yzx: EulerRotationOrder = 3;
-pub const EulerRotationOrder_EulerRotationOrder_zxy: EulerRotationOrder = 4;
-pub const EulerRotationOrder_EulerRotationOrder_zyx: EulerRotationOrder = 5;
-pub type FovDirection = ::std::os::raw::c_int;
-pub const FovDirection_FovDirection_widest: FovDirection = 0;
-pub const FovDirection_FovDirection_horizontal: FovDirection = 1;
-pub const FovDirection_FovDirection_vertical: FovDirection = 2;
-pub type FrameTrackBits = uint32;
-pub type FrustumPlacement = ::std::os::raw::c_int;
-pub const FrustumPlacement_FrustumPlacement_outside: FrustumPlacement = 0;
-pub const FrustumPlacement_FrustumPlacement_inside: FrustumPlacement = 1;
-pub const FrustumPlacement_FrustumPlacement_intersecting: FrustumPlacement = 2;
-pub type MeshSkin = Instance;
-pub type ObjectFlags = uint32;
-pub type ObjectFormat = Instance;
-pub type ClippingPlane = ::std::os::raw::c_int;
-pub const ClippingPlane_ClippingPlane_left: ClippingPlane = 0;
-pub const ClippingPlane_ClippingPlane_right: ClippingPlane = 1;
-pub const ClippingPlane_ClippingPlane_top: ClippingPlane = 2;
-pub const ClippingPlane_ClippingPlane_bottom: ClippingPlane = 3;
-pub const ClippingPlane_ClippingPlane_near: ClippingPlane = 4;
-pub const ClippingPlane_ClippingPlane_far: ClippingPlane = 5;
-pub type FrameTrackType = uint16;
-pub const FrameTrackType_FrameTrackType_position: FrameTrackType = 1;
-pub const FrameTrackType_FrameTrackType_rotation: FrameTrackType = 2;
-pub const FrameTrackType_FrameTrackType_scaling: FrameTrackType = 3;
-pub const FrameTrackType_FrameTrackType_fov: FrameTrackType = 4;
-pub const FrameTrackType_FrameTrackType_roll: FrameTrackType = 5;
-pub const FrameTrackType_FrameTrackType_colorChange: FrameTrackType = 6;
-pub const FrameTrackType_FrameTrackType_morph: FrameTrackType = 7;
-pub const FrameTrackType_FrameTrackType_hotSpot: FrameTrackType = 8;
-pub const FrameTrackType_FrameTrackType_fallOff: FrameTrackType = 9;
-pub const FrameTrackType_FrameTrackType_hide: FrameTrackType = 10;
-pub const FrameTrackType_FrameTrackType_rYaw: FrameTrackType = 11;
-pub const FrameTrackType_FrameTrackType_rPitch: FrameTrackType = 12;
-pub const FrameTrackType_FrameTrackType_rRoll: FrameTrackType = 13;
-pub type RenderPrimitiveType = PrimitiveGroupType;
-pub const RenderPrimitiveType_RenderPrimitiveType_dot: RenderPrimitiveType = 0;
-pub const RenderPrimitiveType_RenderPrimitiveType_lines: RenderPrimitiveType = 1;
-pub const RenderPrimitiveType_RenderPrimitiveType_triangles: RenderPrimitiveType = 2;
-pub const RenderPrimitiveType_RenderPrimitiveType_triStrip: RenderPrimitiveType = 3;
-pub const RenderPrimitiveType_RenderPrimitiveType_triFan: RenderPrimitiveType = 4;
-pub const RenderPrimitiveType_RenderPrimitiveType_quads: RenderPrimitiveType = 5;
-pub const RenderPrimitiveType_RenderPrimitiveType_quadStrip: RenderPrimitiveType = 6;
-pub const RenderPrimitiveType_RenderPrimitiveType_lineStrip: RenderPrimitiveType = 7;
-unsafe extern "C" {
-    pub static mut Camera_adjustAngle:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, angle: *mut Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_adjustPosition:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, position: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_move:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, direction: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_pointsVisible: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Camera,
-            points: *mut Vector3D,
-            numPoints: ::std::os::raw::c_int,
-            threshold: f64,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_project: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, vector: *mut Vector3D, point: *mut Vector3D) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_projectSize: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, vector: *mut Vector3D, point: *mut Point) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_rotatePitch: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, amount: Angle, min: Angle, max: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_rotateRoll: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, amount: Angle, min: Angle, max: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_rotateYaw: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, amount: Angle, min: Angle, max: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_setup: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Camera,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-            origin: *const Point,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_setupVR: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Camera,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-            prjMatrix: *const Matrix,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_slerp:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, amount: f32)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_sphereVisible: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, center: *mut Vector3D, radius: f32) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_transformMatrix: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, dest: *mut Matrix, src: *mut Matrix),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_transformNormal: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, dest: *mut Vector3D, src: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_transformPoint: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, dest: *mut Vector3D, src: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_unproject: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, point: *mut Vector3D, vector: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_untransform: ::std::option::Option<
-        unsafe extern "C" fn(__this: Camera, src: *mut Vector3D, result: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Camera_update:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Camera_setCPosition:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_setViewMatrix:
-        ::std::option::Option<unsafe extern "C" fn(__this: Camera, value: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_type: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_type:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: CameraType)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_type:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera) -> CameraType>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_position: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_position:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *const Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_position:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_orientation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_orientation:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *const Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_orientation:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_eulerOrientation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_eulerOrientation:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *const Euler)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_eulerOrientation:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Euler)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_cPosition: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_cPosition:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_cOrientation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_cOrientation:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_fov: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_fov:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_fov: ::std::option::Option<unsafe extern "C" fn(c: Camera) -> Angle>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_zMin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_zMin:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_zMin: ::std::option::Option<unsafe extern "C" fn(c: Camera) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_zMax: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_zMax:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_zMax: ::std::option::Option<unsafe extern "C" fn(c: Camera) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_target: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_target:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_target:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera) -> *mut Object>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_fovDirection: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_fovDirection:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: FovDirection)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_fovDirection:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera) -> FovDirection>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_aspectRatio: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_aspectRatio:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_aspectRatio:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_Camera_focal: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Camera_set_focal:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Camera_get_focal:
-        ::std::option::Option<unsafe extern "C" fn(c: Camera, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut Euler_add: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Euler, e1: *const Euler, e2: *const Euler),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Euler_fromMatrix: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Euler, m: *const Matrix, order: EulerRotationOrder),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Euler_fromQuaternion: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Euler, q: *const Quaternion, order: EulerRotationOrder),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Euler_Quaternion: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Euler_from_Quaternion:
-        ::std::option::Option<unsafe extern "C" fn(e: *const Euler, value: *const Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Euler_to_Quaternion:
-        ::std::option::Option<unsafe extern "C" fn(e: *const Euler, value: *mut Quaternion)>;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct FrameKey {
-    pub frame: uint,
-    pub tension: f32,
-    pub continuity: f32,
-    pub bias: f32,
-    pub easeFrom: f32,
-    pub easeTo: f32,
-    pub __bindgen_anon_1: FrameKey__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union FrameKey__bindgen_ty_1 {
-    pub position: Vector3Df,
-    pub orientation: Quaternion,
-    pub scaling: Vector3Df,
-    pub roll: f32,
-    pub fov: f32,
-    pub color: ColorRGB,
-    pub hotSpot: f32,
-    pub fallOff: f32,
-    pub weight: f32,
-    pub hide: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FrameKey__bindgen_ty_1"][::std::mem::size_of::<FrameKey__bindgen_ty_1>() - 32usize];
-    ["Alignment of FrameKey__bindgen_ty_1"]
-        [::std::mem::align_of::<FrameKey__bindgen_ty_1>() - 8usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::position"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, position) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::orientation"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, orientation) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::scaling"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, scaling) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::roll"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, roll) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::fov"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, fov) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::color"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, color) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::hotSpot"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, hotSpot) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::fallOff"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, fallOff) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::weight"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, weight) - 0usize];
-    ["Offset of field: FrameKey__bindgen_ty_1::hide"]
-        [::std::mem::offset_of!(FrameKey__bindgen_ty_1, hide) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FrameKey"][::std::mem::size_of::<FrameKey>() - 56usize];
-    ["Alignment of FrameKey"][::std::mem::align_of::<FrameKey>() - 8usize];
-    ["Offset of field: FrameKey::frame"][::std::mem::offset_of!(FrameKey, frame) - 0usize];
-    ["Offset of field: FrameKey::tension"][::std::mem::offset_of!(FrameKey, tension) - 4usize];
-    ["Offset of field: FrameKey::continuity"]
-        [::std::mem::offset_of!(FrameKey, continuity) - 8usize];
-    ["Offset of field: FrameKey::bias"][::std::mem::offset_of!(FrameKey, bias) - 12usize];
-    ["Offset of field: FrameKey::easeFrom"][::std::mem::offset_of!(FrameKey, easeFrom) - 16usize];
-    ["Offset of field: FrameKey::easeTo"][::std::mem::offset_of!(FrameKey, easeTo) - 20usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FrameTrack {
-    pub __ecerePrivateData0: [byte; 16usize],
-    pub type_: FrameTrackBits,
-    pub numKeys: uint,
-    pub keys: *mut FrameKey,
-    pub morphIndex: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FrameTrack"][::std::mem::size_of::<FrameTrack>() - 40usize];
-    ["Alignment of FrameTrack"][::std::mem::align_of::<FrameTrack>() - 8usize];
-    ["Offset of field: FrameTrack::__ecerePrivateData0"]
-        [::std::mem::offset_of!(FrameTrack, __ecerePrivateData0) - 0usize];
-    ["Offset of field: FrameTrack::type_"][::std::mem::offset_of!(FrameTrack, type_) - 16usize];
-    ["Offset of field: FrameTrack::numKeys"][::std::mem::offset_of!(FrameTrack, numKeys) - 20usize];
-    ["Offset of field: FrameTrack::keys"][::std::mem::offset_of!(FrameTrack, keys) - 24usize];
-    ["Offset of field: FrameTrack::morphIndex"]
-        [::std::mem::offset_of!(FrameTrack, morphIndex) - 32usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Line {
-    pub p0: Vector3D,
-    pub delta: Vector3D,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Line"][::std::mem::size_of::<Line>() - 48usize];
-    ["Alignment of Line"][::std::mem::align_of::<Line>() - 8usize];
-    ["Offset of field: Line::p0"][::std::mem::offset_of!(Line, p0) - 0usize];
-    ["Offset of field: Line::delta"][::std::mem::offset_of!(Line, delta) - 24usize];
+    ["Size of Condition"][::std::mem::size_of::<Condition>() - 40usize];
+    ["Alignment of Condition"][::std::mem::align_of::<Condition>() - 1usize];
+    ["Offset of field: Condition::__ecere_padding"]
+        [::std::mem::offset_of!(Condition, __ecere_padding) - 0usize];
 };
 unsafe extern "C" {
-    pub static mut Line_intersectSphere: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Line, radius: f64, t: *mut f64) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Material_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Material)>;
-}
-unsafe extern "C" {
-    pub static mut property_Material_shader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Material_set_shader:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Material, value: Shader)>;
-}
-unsafe extern "C" {
-    pub static mut Material_get_shader:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Material) -> Shader>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_determinant:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_identity:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_inverse:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, source: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_inverseTransposeTransform:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, source: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_multiply: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Matrix, a: *const Matrix, b: *const Matrix),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Matrix_multiply3x4: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Matrix, a: *const Matrix, b: *const Matrix),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Matrix_rotate:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, quat: *const Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_rotationQuaternion:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, quat: *const Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_scale:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, sx: f64, sy: f64, sz: f64)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_toEuler:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, euler: *mut Euler)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_translate:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, tx: f64, ty: f64, tz: f64)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_transpose:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix, source: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_isIdentity:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrix) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Matrix_Quaternion: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Matrix_from_Quaternion:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Matrix, value: *const Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Matrix_to_Quaternion:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Matrix, value: *mut Quaternion)>;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Matrixf {
-    pub __bindgen_anon_1: Matrixf__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Matrixf__bindgen_ty_1 {
-    pub m: [[f32; 4usize]; 4usize],
-    pub array: [f32; 16usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Matrixf__bindgen_ty_1"][::std::mem::size_of::<Matrixf__bindgen_ty_1>() - 64usize];
-    ["Alignment of Matrixf__bindgen_ty_1"]
-        [::std::mem::align_of::<Matrixf__bindgen_ty_1>() - 4usize];
-    ["Offset of field: Matrixf__bindgen_ty_1::m"]
-        [::std::mem::offset_of!(Matrixf__bindgen_ty_1, m) - 0usize];
-    ["Offset of field: Matrixf__bindgen_ty_1::array"]
-        [::std::mem::offset_of!(Matrixf__bindgen_ty_1, array) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Matrixf"][::std::mem::size_of::<Matrixf>() - 64usize];
-    ["Alignment of Matrixf"][::std::mem::align_of::<Matrixf>() - 4usize];
-};
-unsafe extern "C" {
-    pub static mut Matrixf_identity:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrixf)>;
-}
-unsafe extern "C" {
-    pub static mut Matrixf_fromMatrix:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Matrixf, m: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut property_Matrixf_Matrix: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Matrixf_from_Matrix:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Matrixf, value: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Matrixf_to_Matrix:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Matrixf, value: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_addPrimitiveGroup: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            flags: PrimitiveGroupType,
-            nIndices: ::std::os::raw::c_int,
-        ) -> *mut PrimitiveGroup,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            what: MeshFeatures,
-            nVertices: ::std::os::raw::c_int,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_allocatePrimitive: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            primitive: *mut PrimitiveSingle,
-            flags: PrimitiveGroupType,
-            nIndices: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_applyMaterial:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, material: *mut Material)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_applyMorphs:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, recomputeNormals: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_applySkin: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_applyTranslucency: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, object: *mut Object) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_combineMorphs:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, combined: Array)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_computeNormals:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_computeNormals2: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, computeNormals: bool_, computeTangents: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_computeNormals3: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            computeNormals: bool_,
-            computeTangents: bool_,
-            unlock: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_copy:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh) -> *mut Mesh>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_findClosestVertex: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            local: *const Vector3D,
-            actual: *mut Vector3Df,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, what: MeshFeatures)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_freeCPUVertexAttributes:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, what: MeshFeatures)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_freePrimitive: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, primitive: *mut PrimitiveSingle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_freePrimitiveGroup:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, group: *mut PrimitiveGroup)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_getData: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_lock: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, flags: MeshFeatures) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_lockPrimitive: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, primitive: *mut PrimitiveSingle) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_lockPrimitiveGroup: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, group: *mut PrimitiveGroup) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_setData: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, value: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_unapplySkin: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_unapplyTranslucency: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, object: *mut Object) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_unlock:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, flags: MeshFeatures)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_unlockPrimitive: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, primitive: *mut PrimitiveSingle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_unlockPrimitiveGroup:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh, group: *mut PrimitiveGroup)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            displaySystem: DisplaySystem,
-            uploadTextures: bool_,
-            mab: GLMB,
-            meab: GLMB,
-            nAT: ::std::os::raw::c_int,
-            mAT: *mut GLArrayTexture,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_uploadPrimitive: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            g: *mut PrimitiveSingle,
-            displaySystem: DisplaySystem,
-            uploadTextures: bool_,
-            nAT: ::std::os::raw::c_int,
-            mAT: *mut GLArrayTexture,
-            clearData: bool_,
-            unlockAndDelete: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_uploadTexture: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Mesh,
-            bitmap: Bitmap,
-            displaySystem: DisplaySystem,
-            at: *mut GLArrayTexture,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Mesh_fixMorphSkin:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_fixSkeletonBones: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Mesh, bone: *mut SkinBone, boneIx: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_texCoords: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_texCoords:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut Pointf)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_texCoords:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut Pointf>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_nVertices: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_nVertices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_nVertices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_vertices: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_vertices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_vertices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut Vector3Df>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_nIndices: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_nIndices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_nIndices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_meab: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_meab:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: GLMB)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_meab:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> GLMB>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_baseIndex: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_baseIndex:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_baseIndex:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_baseVertex: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_baseVertex:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_baseVertex:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_indices: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_indices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut uint)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_indices:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut uint>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_normals: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_normals:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_normals:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut Vector3Df>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_tangents: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_tangents:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_tangents:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut Vector3Df>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_colors: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_colors:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut ColorRGBAf)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_colors:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut ColorRGBAf>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_lightVectors: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_lightVectors:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_lightVectors:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut ColorRGB>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_groups: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_groups:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut OldList)>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_flags: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_flags:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: MeshFeatures)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_flags:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> MeshFeatures>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_skin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_skin:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: MeshSkin)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_skin:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> MeshSkin>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_dupVerts: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_dupVerts:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: Array)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_dupVerts:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> Array>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_morphs: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_morphs:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: Array)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_morphs:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> Array>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_unmorphedMesh: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_unmorphedMesh:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_unmorphedMesh:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut Mesh>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_translucentPrimitives: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_translucentPrimitives:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> *mut PrimitiveSingle>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_nTranslucentPrimitives: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_nTranslucentPrimitives:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Mesh_parts: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Mesh_set_parts:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh, value: Array)>;
-}
-unsafe extern "C" {
-    pub static mut Mesh_get_parts:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mesh) -> Array>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MeshMorph {
-    pub target: *mut Mesh,
-    pub weight: f32,
-    pub name: String,
-    pub updated: bool_,
-    pub firstV: ::std::os::raw::c_int,
-    pub lastV: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MeshMorph"][::std::mem::size_of::<MeshMorph>() - 40usize];
-    ["Alignment of MeshMorph"][::std::mem::align_of::<MeshMorph>() - 8usize];
-    ["Offset of field: MeshMorph::target"][::std::mem::offset_of!(MeshMorph, target) - 0usize];
-    ["Offset of field: MeshMorph::weight"][::std::mem::offset_of!(MeshMorph, weight) - 8usize];
-    ["Offset of field: MeshMorph::name"][::std::mem::offset_of!(MeshMorph, name) - 16usize];
-    ["Offset of field: MeshMorph::updated"][::std::mem::offset_of!(MeshMorph, updated) - 24usize];
-    ["Offset of field: MeshMorph::firstV"][::std::mem::offset_of!(MeshMorph, firstV) - 28usize];
-    ["Offset of field: MeshMorph::lastV"][::std::mem::offset_of!(MeshMorph, lastV) - 32usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct MeshPart {
-    pub id: uint64,
-    pub start: uint,
-    pub count: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MeshPart"][::std::mem::size_of::<MeshPart>() - 16usize];
-    ["Alignment of MeshPart"][::std::mem::align_of::<MeshPart>() - 8usize];
-    ["Offset of field: MeshPart::id"][::std::mem::offset_of!(MeshPart, id) - 0usize];
-    ["Offset of field: MeshPart::start"][::std::mem::offset_of!(MeshPart, start) - 8usize];
-    ["Offset of field: MeshPart::count"][::std::mem::offset_of!(MeshPart, count) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut Object_add:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, object: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_addFrameTrack:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, track: *mut FrameTrack)>;
-}
-unsafe extern "C" {
-    pub static mut Object_addName: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            object: *mut Object,
-            name: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_animate: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, frame: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_applyMorphs:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, recomputeNormals: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Object_applySkins:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_combineMorphs:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_delete: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, child: *mut Object, displaySystem: DisplaySystem),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_doubleSided:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, flag: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Object_duplicate:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, model: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_duplicate2: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, model: *mut Object, takeOwnership: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_find: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            name: *const ::std::os::raw::c_char,
-        ) -> *mut Object,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_free: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, displaySystem: DisplaySystem),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_freeMesh: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, displaySystem: DisplaySystem),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_initialize:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_initializeMesh: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, displaySystem: DisplaySystem) -> *mut Mesh,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_insideFrustum: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, planes: *mut Plane) -> FrustumPlacement,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_intersectsGroundPolygon: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            count: ::std::os::raw::c_int,
-            pointfs: *mut Pointf,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_inverseKinematics: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            boneIX: ::std::os::raw::c_int,
-            limits: Array,
-            vertex: ::std::os::raw::c_int,
-            target: *const Vector3D,
-            maxDepth: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_load: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_loadEx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-            options: *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_merge: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Object, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_mergeEx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            displaySystem: DisplaySystem,
-            deleteCPUAttrOptions: MeshFeatures,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_move:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, direction: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Object_remove:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, child: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_resetPose:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_rotateEuler: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            rotation: *mut Euler,
-            min: *mut Euler,
-            max: *mut Euler,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_save: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_saveEx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            options: *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_setMinMaxRadius:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object, processMesh: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Object_updateTransform:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_upload: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Object,
-            displaySystem: DisplaySystem,
-            mab: GLMB,
-            meab: GLMB,
-            nAT: ::std::os::raw::c_int,
-            mAT: *mut GLArrayTexture,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_listTextures: ::std::option::Option<
-        unsafe extern "C" fn(
-            file: File,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            options: *mut ::std::os::raw::c_void,
-        ) -> Array,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Object_transform: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_transform:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *const Transform)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_transform:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Transform)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_eulerOrientation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_eulerOrientation:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *const Euler)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_eulerOrientation:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Euler)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_material: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_material:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Material)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_material:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Material>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_max: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_max:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_min: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_min:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_center: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_center:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_radius: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_radius:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_wmax: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_wmax:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_wmin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_wmin:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_wcenter: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_wcenter:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_wradius: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_wradius:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_tag: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_tag: ::std::option::Option<
-        unsafe extern "C" fn(o: *const Object, value: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_get_tag: ::std::option::Option<
-        unsafe extern "C" fn(o: *const Object) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Object_frame: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_frame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_frame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_startFrame: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_startFrame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_startFrame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_endFrame: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_endFrame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_endFrame:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_mesh: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_mesh:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_mesh:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Mesh>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_camera: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_camera:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> Camera>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_firstChild: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_firstChild:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Object>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_next:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Object>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_name: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_name: ::std::option::Option<
-        unsafe extern "C" fn(o: *const Object, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Object_get_name: ::std::option::Option<
-        unsafe extern "C" fn(o: *const Object) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Object_matrix: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_matrix:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_cameraTarget: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_cameraTarget:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_cameraTarget:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Object>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_tracks: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_tracks:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut OldList>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_flags: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_flags:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: ObjectFlags)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_flags:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> ObjectFlags>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_parent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_parent:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Object>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_numChildren: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_numChildren:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_localMatrixPtr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_localMatrixPtr:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Matrix>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_matrixPtr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_get_matrixPtr:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> *mut Matrix>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_light: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_light:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *const Light)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_light:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: *mut Light)>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_rotationOrder: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_rotationOrder:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: EulerRotationOrder)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_rotationOrder:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> EulerRotationOrder>;
-}
-unsafe extern "C" {
-    pub static mut property_Object_displaySystem: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Object_set_displaySystem:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object, value: DisplaySystem)>;
-}
-unsafe extern "C" {
-    pub static mut Object_get_displaySystem:
-        ::std::option::Option<unsafe extern "C" fn(o: *const Object) -> DisplaySystem>;
-}
-unsafe extern "C" {
-    pub static mut ObjectFormat_load_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ObjectFormat_load: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ObjectFormat_save_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ObjectFormat_save: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ObjectFormat_listTextures_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ObjectFormat_listTextures: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Plane_fromPointNormal: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Plane, normal: *const Vector3D, point: *const Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_fromPoints: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Plane,
-            v1: *const Vector3D,
-            v2: *const Vector3D,
-            v3: *const Vector3D,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_fromPointsf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Plane,
-            v1: *const Vector3Df,
-            v2: *const Vector3Df,
-            v3: *const Vector3Df,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_intersectLine: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Plane, line: *const Line, result: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_intersectLinef: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Plane, line: *const Line, result: *mut Vector3Df),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_intersectLinefT: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Plane,
-            line: *const Line,
-            result: *mut Vector3Df,
-            rt: *mut f64,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Plane_multMatrix: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Plane,
-            source: *const Plane,
-            inverseTranspose: *const Matrix,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PrimitiveSingle {
-    pub type_: PrimitiveGroupType,
-    pub baseIndexMesh: ::std::os::raw::c_int,
-    pub baseIndexBuffer: ::std::os::raw::c_int,
-    pub __bindgen_anon_1: PrimitiveSingle__bindgen_ty_1,
-    pub material: *mut Material,
-    pub data: *mut ::std::os::raw::c_void,
-    pub middle: Vector3Df,
-    pub plane: Plane,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union PrimitiveSingle__bindgen_ty_1 {
-    pub __bindgen_anon_1: PrimitiveSingle__bindgen_ty_1__bindgen_ty_1,
-    pub __bindgen_anon_2: PrimitiveSingle__bindgen_ty_1__bindgen_ty_2,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct PrimitiveSingle__bindgen_ty_1__bindgen_ty_1 {
-    pub __bindgen_anon_1: PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    pub nIndices: ::std::os::raw::c_int,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1 {
-    pub indices: *mut uint16,
-    pub indices32: *mut uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1"][::std::mem::size_of::<
-        PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    >() - 8usize];
-    ["Alignment of PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1"][::std::mem::align_of::<
-        PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-    >() - 8usize];
-    ["Offset of field: PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1::indices"][::std::mem::offset_of!(
-        PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-        indices
-    )
-        - 0usize];
-    ["Offset of field: PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1::indices32"][::std::mem::offset_of!(
-        PrimitiveSingle__bindgen_ty_1__bindgen_ty_1__bindgen_ty_1,
-        indices32
-    )
-        - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveSingle__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::size_of::<PrimitiveSingle__bindgen_ty_1__bindgen_ty_1>() - 16usize];
-    ["Alignment of PrimitiveSingle__bindgen_ty_1__bindgen_ty_1"]
-        [::std::mem::align_of::<PrimitiveSingle__bindgen_ty_1__bindgen_ty_1>() - 8usize];
-    ["Offset of field: PrimitiveSingle__bindgen_ty_1__bindgen_ty_1::nIndices"]
-        [::std::mem::offset_of!(PrimitiveSingle__bindgen_ty_1__bindgen_ty_1, nIndices) - 8usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PrimitiveSingle__bindgen_ty_1__bindgen_ty_2 {
-    pub first: ::std::os::raw::c_int,
-    pub nVertices: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveSingle__bindgen_ty_1__bindgen_ty_2"]
-        [::std::mem::size_of::<PrimitiveSingle__bindgen_ty_1__bindgen_ty_2>() - 8usize];
-    ["Alignment of PrimitiveSingle__bindgen_ty_1__bindgen_ty_2"]
-        [::std::mem::align_of::<PrimitiveSingle__bindgen_ty_1__bindgen_ty_2>() - 4usize];
-    ["Offset of field: PrimitiveSingle__bindgen_ty_1__bindgen_ty_2::first"]
-        [::std::mem::offset_of!(PrimitiveSingle__bindgen_ty_1__bindgen_ty_2, first) - 0usize];
-    ["Offset of field: PrimitiveSingle__bindgen_ty_1__bindgen_ty_2::nVertices"]
-        [::std::mem::offset_of!(PrimitiveSingle__bindgen_ty_1__bindgen_ty_2, nVertices) - 4usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveSingle__bindgen_ty_1"]
-        [::std::mem::size_of::<PrimitiveSingle__bindgen_ty_1>() - 16usize];
-    ["Alignment of PrimitiveSingle__bindgen_ty_1"]
-        [::std::mem::align_of::<PrimitiveSingle__bindgen_ty_1>() - 8usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PrimitiveSingle"][::std::mem::size_of::<PrimitiveSingle>() - 96usize];
-    ["Alignment of PrimitiveSingle"][::std::mem::align_of::<PrimitiveSingle>() - 8usize];
-    ["Offset of field: PrimitiveSingle::type_"]
-        [::std::mem::offset_of!(PrimitiveSingle, type_) - 0usize];
-    ["Offset of field: PrimitiveSingle::baseIndexMesh"]
-        [::std::mem::offset_of!(PrimitiveSingle, baseIndexMesh) - 4usize];
-    ["Offset of field: PrimitiveSingle::baseIndexBuffer"]
-        [::std::mem::offset_of!(PrimitiveSingle, baseIndexBuffer) - 8usize];
-    ["Offset of field: PrimitiveSingle::material"]
-        [::std::mem::offset_of!(PrimitiveSingle, material) - 32usize];
-    ["Offset of field: PrimitiveSingle::data"]
-        [::std::mem::offset_of!(PrimitiveSingle, data) - 40usize];
-    ["Offset of field: PrimitiveSingle::middle"]
-        [::std::mem::offset_of!(PrimitiveSingle, middle) - 48usize];
-    ["Offset of field: PrimitiveSingle::plane"]
-        [::std::mem::offset_of!(PrimitiveSingle, plane) - 64usize];
-};
-unsafe extern "C" {
-    pub static mut Quaternion_divide: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, q1: *const Quaternion, q2: *const Quaternion),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_identity:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_inverse: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, source: *const Quaternion),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_multiply: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, q1: *const Quaternion, q2: *const Quaternion),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_normalize: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, source: *const Quaternion),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_pitch:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, angle: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_roll:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, angle: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotatePitch:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, pitch: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotateRoll:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, roll: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotateYaw:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, yaw: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotateYawPitch: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, yaw: Angle, pitch: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotationAxis: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, axis: *const Vector3D, angle: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotationDirection: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, direction: *const Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotationEuler: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Quaternion,
-            euler: *const Euler,
-            rotationOrder: EulerRotationOrder,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotationMatrix:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, m: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotationYawPitchRoll:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, euler: *const Euler)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_slerp: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Quaternion,
-            from: *const Quaternion,
-            to: *const Quaternion,
-            t: f32,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_toDirection: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, direction: *mut Vector3D),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_yaw:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Quaternion, angle: Angle)>;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_yawPitch: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Quaternion, yaw: Angle, pitch: Angle),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Quaternion_rotateQuats: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Quaternion,
-            qPitch: *const Quaternion,
-            qYaw: *const Quaternion,
-            qRoll: *const Quaternion,
-            rotationOrder: EulerRotationOrder,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct SkinBone {
-    pub name: String,
-    pub invBindMatrix: Matrix,
-    pub bsInvBindMatrix: Matrix,
-    pub object: *mut Object,
-    pub min: Vector3Df,
-    pub max: Vector3Df,
-    pub origTransform: Transform,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SkinBone"][::std::mem::size_of::<SkinBone>() - 368usize];
-    ["Alignment of SkinBone"][::std::mem::align_of::<SkinBone>() - 8usize];
-    ["Offset of field: SkinBone::name"][::std::mem::offset_of!(SkinBone, name) - 0usize];
-    ["Offset of field: SkinBone::invBindMatrix"]
-        [::std::mem::offset_of!(SkinBone, invBindMatrix) - 8usize];
-    ["Offset of field: SkinBone::bsInvBindMatrix"]
-        [::std::mem::offset_of!(SkinBone, bsInvBindMatrix) - 136usize];
-    ["Offset of field: SkinBone::object"][::std::mem::offset_of!(SkinBone, object) - 264usize];
-    ["Offset of field: SkinBone::min"][::std::mem::offset_of!(SkinBone, min) - 272usize];
-    ["Offset of field: SkinBone::max"][::std::mem::offset_of!(SkinBone, max) - 284usize];
-    ["Offset of field: SkinBone::origTransform"]
-        [::std::mem::offset_of!(SkinBone, origTransform) - 296usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct SkinVert {
-    pub bones: [byte; 10usize],
-    pub weights: [byte; 10usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SkinVert"][::std::mem::size_of::<SkinVert>() - 20usize];
-    ["Alignment of SkinVert"][::std::mem::align_of::<SkinVert>() - 1usize];
-    ["Offset of field: SkinVert::bones"][::std::mem::offset_of!(SkinVert, bones) - 0usize];
-    ["Offset of field: SkinVert::weights"][::std::mem::offset_of!(SkinVert, weights) - 10usize];
-};
-unsafe extern "C" {
-    pub static mut Transform_getMatrix3x4f:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Transform, m: *mut f32)>;
-}
-unsafe extern "C" {
-    pub static mut property_Transform_Matrix: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Transform_from_Matrix:
-        ::std::option::Option<unsafe extern "C" fn(t: *const Transform, value: *const Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Transform_to_Matrix:
-        ::std::option::Option<unsafe extern "C" fn(t: *const Transform, value: *mut Matrix)>;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_add: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3D,
-            vector1: *const Vector3D,
-            vector2: *const Vector3D,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_crossProduct: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3D,
-            vector1: *const Vector3D,
-            vector2: *const Vector3D,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_divideMatrix: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, v: *const Vector3D, m: *const Matrix),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_dotProduct: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3D) -> f64,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_dotProductf: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3Df) -> f64,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_multMatrix: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, source: *const Vector3D, matrix: *const Matrix),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_multMatrixf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3D,
-            source: *const Vector3Df,
-            matrix: *const Matrix,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_multQuaternion: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, s: *const Vector3D, quat: *const Quaternion),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_normalize:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Vector3D, source: *const Vector3D)>;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_scale: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, vector1: *const Vector3D, s: f64),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_subtract: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3D,
-            vector1: *const Vector3D,
-            vector2: *const Vector3D,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Vector3D_length: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_get_length:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3D) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut property_Vector3D_lengthApprox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Vector3D_get_lengthApprox:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3D) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_add: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            vector1: *const Vector3Df,
-            vector2: *const Vector3Df,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_crossProduct: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            vector1: *const Vector3Df,
-            vector2: *const Vector3Df,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_divideMatrix: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            source: *const Vector3Df,
-            matrix: *const Matrix,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_dotProduct: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3Df, vector2: *const Vector3Df) -> f64,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_multMatrix: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            source: *const Vector3Df,
-            matrix: *const Matrix,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_multQuaternion: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            source: *const Vector3Df,
-            quat: *const Quaternion,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_normalize: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3Df, source: *const Vector3Df),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_scale: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3Df, vector1: *const Vector3Df, s: f32),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_subtract: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Vector3Df,
-            vector1: *const Vector3Df,
-            vector2: *const Vector3Df,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Vector3Df_length: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_get_length:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3Df) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_Vector3Df_lengthApprox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Vector3Df_get_lengthApprox:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3Df) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut fastInvSqrt: ::std::option::Option<unsafe extern "C" fn(x: f32) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut fastInvSqrtDouble: ::std::option::Option<unsafe extern "C" fn(x: f64) -> f64>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FMFont {
-    pub link: LinkElement,
-    pub __ecere_padding: [byte; 16480usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FMFont"][::std::mem::size_of::<FMFont>() - 16496usize];
-    ["Alignment of FMFont"][::std::mem::align_of::<FMFont>() - 8usize];
-    ["Offset of field: FMFont::link"][::std::mem::offset_of!(FMFont, link) - 0usize];
-    ["Offset of field: FMFont::__ecere_padding"]
-        [::std::mem::offset_of!(FMFont, __ecere_padding) - 16usize];
-};
-pub type FontManager = Instance;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_FontManagerRenderer {
-    pub fm: FontManager,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_FontManagerRenderer"]
-        [::std::mem::size_of::<class_members_FontManagerRenderer>() - 8usize];
-    ["Alignment of class_members_FontManagerRenderer"]
-        [::std::mem::align_of::<class_members_FontManagerRenderer>() - 8usize];
-    ["Offset of field: class_members_FontManagerRenderer::fm"]
-        [::std::mem::offset_of!(class_members_FontManagerRenderer, fm) - 0usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct HitRecord {
-    pub prev: *mut HitRecord,
-    pub next: *mut HitRecord,
-    pub pos: uint,
-    pub numTags: uint,
-    pub center: Vector3D,
-    pub tags: [*mut ::std::os::raw::c_void; 1usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of HitRecord"][::std::mem::size_of::<HitRecord>() - 56usize];
-    ["Alignment of HitRecord"][::std::mem::align_of::<HitRecord>() - 8usize];
-    ["Offset of field: HitRecord::prev"][::std::mem::offset_of!(HitRecord, prev) - 0usize];
-    ["Offset of field: HitRecord::next"][::std::mem::offset_of!(HitRecord, next) - 8usize];
-    ["Offset of field: HitRecord::pos"][::std::mem::offset_of!(HitRecord, pos) - 16usize];
-    ["Offset of field: HitRecord::numTags"][::std::mem::offset_of!(HitRecord, numTags) - 20usize];
-    ["Offset of field: HitRecord::center"][::std::mem::offset_of!(HitRecord, center) - 24usize];
-    ["Offset of field: HitRecord::tags"][::std::mem::offset_of!(HitRecord, tags) - 48usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Surface {
-    pub width: ::std::os::raw::c_int,
-    pub height: ::std::os::raw::c_int,
-    pub offset: Point,
-    pub box_: Box,
-    pub unclippedBox: Box,
-    pub driverData: *mut ::std::os::raw::c_void,
-    pub __ecere_padding: [byte; 72usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Surface"][::std::mem::size_of::<class_members_Surface>() - 128usize];
-    ["Alignment of class_members_Surface"]
-        [::std::mem::align_of::<class_members_Surface>() - 8usize];
-    ["Offset of field: class_members_Surface::width"]
-        [::std::mem::offset_of!(class_members_Surface, width) - 0usize];
-    ["Offset of field: class_members_Surface::height"]
-        [::std::mem::offset_of!(class_members_Surface, height) - 4usize];
-    ["Offset of field: class_members_Surface::offset"]
-        [::std::mem::offset_of!(class_members_Surface, offset) - 8usize];
-    ["Offset of field: class_members_Surface::box_"]
-        [::std::mem::offset_of!(class_members_Surface, box_) - 16usize];
-    ["Offset of field: class_members_Surface::unclippedBox"]
-        [::std::mem::offset_of!(class_members_Surface, unclippedBox) - 32usize];
-    ["Offset of field: class_members_Surface::driverData"]
-        [::std::mem::offset_of!(class_members_Surface, driverData) - 48usize];
-    ["Offset of field: class_members_Surface::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_Surface, __ecere_padding) - 56usize];
-};
-pub type AlphaWriteMode = ::std::os::raw::c_int;
-pub const AlphaWriteMode_AlphaWriteMode_dontWrite: AlphaWriteMode = 0;
-pub const AlphaWriteMode_AlphaWriteMode_write: AlphaWriteMode = 1;
-pub const AlphaWriteMode_AlphaWriteMode_blend: AlphaWriteMode = 2;
-pub type DrawList = Instance;
-pub type DrawManager = Instance;
-pub type FillModeValue = ::std::os::raw::c_int;
-pub const FillModeValue_FillModeValue_solid: FillModeValue = 0;
-pub const FillModeValue_FillModeValue_wireframe: FillModeValue = 1;
-pub type FontFlags = uint32;
-pub type FontManagerRenderer = Instance;
-pub type FontRenderer = FontManagerRenderer;
-pub type Resource = Instance;
-pub type FontResource = Resource;
-pub type GLCapabilities = uint32;
-pub type GradientDirection = ::std::os::raw::c_int;
-pub const GradientDirection_GradientDirection_vertical: GradientDirection = 0;
-pub const GradientDirection_GradientDirection_horizontal: GradientDirection = 1;
-pub type RenderState = ::std::os::raw::c_int;
-pub const RenderState_RenderState_fillMode: RenderState = 1;
-pub const RenderState_RenderState_depthTest: RenderState = 2;
-pub const RenderState_RenderState_depthWrite: RenderState = 3;
-pub const RenderState_RenderState_fogDensity: RenderState = 4;
-pub const RenderState_RenderState_fogColor: RenderState = 5;
-pub const RenderState_RenderState_blend: RenderState = 6;
-pub const RenderState_RenderState_ambient: RenderState = 7;
-pub const RenderState_RenderState_alphaWrite: RenderState = 8;
-pub const RenderState_RenderState_antiAlias: RenderState = 9;
-pub const RenderState_RenderState_vSync: RenderState = 10;
-pub type Resolution = ::std::os::raw::c_int;
-pub const Resolution_Resolution_resText80x25: Resolution = 0;
-pub const Resolution_Resolution_res320x200: Resolution = 1;
-pub const Resolution_Resolution_res320x240: Resolution = 2;
-pub const Resolution_Resolution_res320x400: Resolution = 3;
-pub const Resolution_Resolution_res360x480: Resolution = 4;
-pub const Resolution_Resolution_res400x256: Resolution = 5;
-pub const Resolution_Resolution_res400x300: Resolution = 6;
-pub const Resolution_Resolution_res512x256: Resolution = 7;
-pub const Resolution_Resolution_res512x384: Resolution = 8;
-pub const Resolution_Resolution_res640x200: Resolution = 9;
-pub const Resolution_Resolution_res640x350: Resolution = 10;
-pub const Resolution_Resolution_res640x400: Resolution = 11;
-pub const Resolution_Resolution_res640x480: Resolution = 12;
-pub const Resolution_Resolution_res720x348: Resolution = 13;
-pub const Resolution_Resolution_res800x600: Resolution = 14;
-pub const Resolution_Resolution_res856x480: Resolution = 15;
-pub const Resolution_Resolution_res960x720: Resolution = 16;
-pub const Resolution_Resolution_res1024x768: Resolution = 17;
-pub const Resolution_Resolution_res1152x864: Resolution = 18;
-pub const Resolution_Resolution_res1280x1024: Resolution = 19;
-pub const Resolution_Resolution_res1600x1200: Resolution = 20;
-pub const Resolution_Resolution_res768x480: Resolution = 21;
-pub type BitmapFormat = Instance;
-pub type BitmapResource = Resource;
-pub type Color444 = uint16;
-pub type Color555 = uint16;
-pub type Color565 = uint16;
-pub type ColorRGBA = uint32;
-pub type DefinedColor = Color;
-pub const DefinedColor_DefinedColor_black: DefinedColor = 0;
-pub const DefinedColor_DefinedColor_dimGray: DefinedColor = 6908265;
-pub const DefinedColor_DefinedColor_dimGrey: DefinedColor = 6908265;
-pub const DefinedColor_DefinedColor_gray: DefinedColor = 8421504;
-pub const DefinedColor_DefinedColor_darkGray: DefinedColor = 11119013;
-pub const DefinedColor_DefinedColor_darkGrey: DefinedColor = 11119013;
-pub const DefinedColor_DefinedColor_silver: DefinedColor = 12632256;
-pub const DefinedColor_DefinedColor_lightGray: DefinedColor = 13882323;
-pub const DefinedColor_DefinedColor_lightGrey: DefinedColor = 13882323;
-pub const DefinedColor_DefinedColor_gainsboro: DefinedColor = 14474460;
-pub const DefinedColor_DefinedColor_whiteSmoke: DefinedColor = 16119285;
-pub const DefinedColor_DefinedColor_white: DefinedColor = 16777215;
-pub const DefinedColor_DefinedColor_rosyBrown: DefinedColor = 12357519;
-pub const DefinedColor_DefinedColor_indianRed: DefinedColor = 13458524;
-pub const DefinedColor_DefinedColor_brown: DefinedColor = 10824234;
-pub const DefinedColor_DefinedColor_fireBrick: DefinedColor = 11674146;
-pub const DefinedColor_DefinedColor_lightCoral: DefinedColor = 15761536;
-pub const DefinedColor_DefinedColor_maroon: DefinedColor = 8388608;
-pub const DefinedColor_DefinedColor_darkRed: DefinedColor = 9109504;
-pub const DefinedColor_DefinedColor_red: DefinedColor = 16711680;
-pub const DefinedColor_DefinedColor_snow: DefinedColor = 16775930;
-pub const DefinedColor_DefinedColor_mistyRose: DefinedColor = 16770273;
-pub const DefinedColor_DefinedColor_salmon: DefinedColor = 16416882;
-pub const DefinedColor_DefinedColor_tomato: DefinedColor = 16737095;
-pub const DefinedColor_DefinedColor_darkSalmon: DefinedColor = 15308410;
-pub const DefinedColor_DefinedColor_coral: DefinedColor = 16744272;
-pub const DefinedColor_DefinedColor_orangeRed: DefinedColor = 16729344;
-pub const DefinedColor_DefinedColor_lightSalmon: DefinedColor = 16752762;
-pub const DefinedColor_DefinedColor_sienna: DefinedColor = 10506797;
-pub const DefinedColor_DefinedColor_seaShell: DefinedColor = 16774638;
-pub const DefinedColor_DefinedColor_chocolate: DefinedColor = 13789470;
-pub const DefinedColor_DefinedColor_saddleBrown: DefinedColor = 9127187;
-pub const DefinedColor_DefinedColor_sandyBrown: DefinedColor = 16032864;
-pub const DefinedColor_DefinedColor_peachPuff: DefinedColor = 16767673;
-pub const DefinedColor_DefinedColor_peru: DefinedColor = 13468991;
-pub const DefinedColor_DefinedColor_linen: DefinedColor = 16445670;
-pub const DefinedColor_DefinedColor_bisque: DefinedColor = 16770244;
-pub const DefinedColor_DefinedColor_darkOrange: DefinedColor = 16747520;
-pub const DefinedColor_DefinedColor_burlyWood: DefinedColor = 14596231;
-pub const DefinedColor_DefinedColor_tan: DefinedColor = 13808780;
-pub const DefinedColor_DefinedColor_antiqueWhite: DefinedColor = 16444375;
-pub const DefinedColor_DefinedColor_navajoWhite: DefinedColor = 16768685;
-pub const DefinedColor_DefinedColor_blanchedAlmond: DefinedColor = 16772045;
-pub const DefinedColor_DefinedColor_papayaWhip: DefinedColor = 16773077;
-pub const DefinedColor_DefinedColor_mocassin: DefinedColor = 16770229;
-pub const DefinedColor_DefinedColor_moccasin: DefinedColor = 16770229;
-pub const DefinedColor_DefinedColor_orange: DefinedColor = 16753920;
-pub const DefinedColor_DefinedColor_wheat: DefinedColor = 16113331;
-pub const DefinedColor_DefinedColor_oldLace: DefinedColor = 16643558;
-pub const DefinedColor_DefinedColor_floralWhite: DefinedColor = 16775920;
-pub const DefinedColor_DefinedColor_darkGoldenrod: DefinedColor = 12092939;
-pub const DefinedColor_DefinedColor_goldenrod: DefinedColor = 14329120;
-pub const DefinedColor_DefinedColor_cornsilk: DefinedColor = 16775388;
-pub const DefinedColor_DefinedColor_gold: DefinedColor = 16766720;
-pub const DefinedColor_DefinedColor_khaki: DefinedColor = 15787660;
-pub const DefinedColor_DefinedColor_lemonChiffon: DefinedColor = 16775885;
-pub const DefinedColor_DefinedColor_paleGoldenrod: DefinedColor = 15657130;
-pub const DefinedColor_DefinedColor_darkKhaki: DefinedColor = 12433259;
-pub const DefinedColor_DefinedColor_beige: DefinedColor = 16119260;
-pub const DefinedColor_DefinedColor_lightGoldenRodYellow: DefinedColor = 16448210;
-pub const DefinedColor_DefinedColor_olive: DefinedColor = 8421376;
-pub const DefinedColor_DefinedColor_yellow: DefinedColor = 16776960;
-pub const DefinedColor_DefinedColor_lightYellow: DefinedColor = 16777184;
-pub const DefinedColor_DefinedColor_ivory: DefinedColor = 16777200;
-pub const DefinedColor_DefinedColor_oliveDrab: DefinedColor = 7048739;
-pub const DefinedColor_DefinedColor_yellowGreen: DefinedColor = 10145074;
-pub const DefinedColor_DefinedColor_darkOliveGreen: DefinedColor = 5597999;
-pub const DefinedColor_DefinedColor_greenYellow: DefinedColor = 11403055;
-pub const DefinedColor_DefinedColor_chartreuse: DefinedColor = 8388352;
-pub const DefinedColor_DefinedColor_lawnGreen: DefinedColor = 8190976;
-pub const DefinedColor_DefinedColor_darkSeaGreen: DefinedColor = 9419915;
-pub const DefinedColor_DefinedColor_forestGreen: DefinedColor = 2263842;
-pub const DefinedColor_DefinedColor_limeGreen: DefinedColor = 3329330;
-pub const DefinedColor_DefinedColor_lightGreen: DefinedColor = 9498256;
-pub const DefinedColor_DefinedColor_paleGreen: DefinedColor = 10025880;
-pub const DefinedColor_DefinedColor_darkGreen: DefinedColor = 25600;
-pub const DefinedColor_DefinedColor_green: DefinedColor = 32768;
-pub const DefinedColor_DefinedColor_lime: DefinedColor = 65280;
-pub const DefinedColor_DefinedColor_honeyDew: DefinedColor = 15794160;
-pub const DefinedColor_DefinedColor_seaGreen: DefinedColor = 3050327;
-pub const DefinedColor_DefinedColor_mediumSeaGreen: DefinedColor = 3978097;
-pub const DefinedColor_DefinedColor_springGreen: DefinedColor = 65407;
-pub const DefinedColor_DefinedColor_mintCream: DefinedColor = 16121850;
-pub const DefinedColor_DefinedColor_mediumSpringGreen: DefinedColor = 64154;
-pub const DefinedColor_DefinedColor_mediumAquaMarine: DefinedColor = 6737322;
-pub const DefinedColor_DefinedColor_aquamarine: DefinedColor = 8388564;
-pub const DefinedColor_DefinedColor_turquoise: DefinedColor = 4251856;
-pub const DefinedColor_DefinedColor_lightSeaGreen: DefinedColor = 2142890;
-pub const DefinedColor_DefinedColor_mediumTurquoise: DefinedColor = 4772300;
-pub const DefinedColor_DefinedColor_darkSlateGray: DefinedColor = 3100495;
-pub const DefinedColor_DefinedColor_darkSlateGrey: DefinedColor = 3100495;
-pub const DefinedColor_DefinedColor_paleTurquoise: DefinedColor = 11529966;
-pub const DefinedColor_DefinedColor_teal: DefinedColor = 32896;
-pub const DefinedColor_DefinedColor_darkCyan: DefinedColor = 35723;
-pub const DefinedColor_DefinedColor_aqua: DefinedColor = 65535;
-pub const DefinedColor_DefinedColor_cyan: DefinedColor = 65535;
-pub const DefinedColor_DefinedColor_lightCyan: DefinedColor = 14745599;
-pub const DefinedColor_DefinedColor_azure: DefinedColor = 15794175;
-pub const DefinedColor_DefinedColor_darkTurquoise: DefinedColor = 52945;
-pub const DefinedColor_DefinedColor_cadetBlue: DefinedColor = 6266528;
-pub const DefinedColor_DefinedColor_powderBlue: DefinedColor = 11591910;
-pub const DefinedColor_DefinedColor_lightBlue: DefinedColor = 11393254;
-pub const DefinedColor_DefinedColor_deepSkyBlue: DefinedColor = 49151;
-pub const DefinedColor_DefinedColor_skyBlue: DefinedColor = 8900331;
-pub const DefinedColor_DefinedColor_lightSkyBlue: DefinedColor = 8900346;
-pub const DefinedColor_DefinedColor_steelBlue: DefinedColor = 4620980;
-pub const DefinedColor_DefinedColor_aliceBlue: DefinedColor = 15792383;
-pub const DefinedColor_DefinedColor_dodgerBlue: DefinedColor = 2003199;
-pub const DefinedColor_DefinedColor_slateGray: DefinedColor = 7372944;
-pub const DefinedColor_DefinedColor_slateGrey: DefinedColor = 7372944;
-pub const DefinedColor_DefinedColor_lightSlateGray: DefinedColor = 7833753;
-pub const DefinedColor_DefinedColor_lightSlateGrey: DefinedColor = 7833753;
-pub const DefinedColor_DefinedColor_lightSteelBlue: DefinedColor = 11584734;
-pub const DefinedColor_DefinedColor_cornflowerBlue: DefinedColor = 6591981;
-pub const DefinedColor_DefinedColor_royalBlue: DefinedColor = 4286945;
-pub const DefinedColor_DefinedColor_midnightBlue: DefinedColor = 1644912;
-pub const DefinedColor_DefinedColor_lavender: DefinedColor = 15132410;
-pub const DefinedColor_DefinedColor_navy: DefinedColor = 128;
-pub const DefinedColor_DefinedColor_darkBlue: DefinedColor = 139;
-pub const DefinedColor_DefinedColor_mediumBlue: DefinedColor = 205;
-pub const DefinedColor_DefinedColor_blue: DefinedColor = 255;
-pub const DefinedColor_DefinedColor_ghostWhite: DefinedColor = 16316671;
-pub const DefinedColor_DefinedColor_slateBlue: DefinedColor = 6970061;
-pub const DefinedColor_DefinedColor_darkSlateBlue: DefinedColor = 4734347;
-pub const DefinedColor_DefinedColor_mediumSlateBlue: DefinedColor = 8087790;
-pub const DefinedColor_DefinedColor_mediumPurple: DefinedColor = 9662683;
-pub const DefinedColor_DefinedColor_blueViolet: DefinedColor = 9055202;
-pub const DefinedColor_DefinedColor_indigo: DefinedColor = 4915330;
-pub const DefinedColor_DefinedColor_darkOrchid: DefinedColor = 10040012;
-pub const DefinedColor_DefinedColor_darkViolet: DefinedColor = 9699539;
-pub const DefinedColor_DefinedColor_mediumOrchid: DefinedColor = 12211667;
-pub const DefinedColor_DefinedColor_thistle: DefinedColor = 14204888;
-pub const DefinedColor_DefinedColor_plum: DefinedColor = 14524637;
-pub const DefinedColor_DefinedColor_violet: DefinedColor = 15631086;
-pub const DefinedColor_DefinedColor_purple: DefinedColor = 8388736;
-pub const DefinedColor_DefinedColor_darkMagenta: DefinedColor = 9109643;
-pub const DefinedColor_DefinedColor_magenta: DefinedColor = 16711935;
-pub const DefinedColor_DefinedColor_fuschia: DefinedColor = 16711935;
-pub const DefinedColor_DefinedColor_orchid: DefinedColor = 14315734;
-pub const DefinedColor_DefinedColor_mediumVioletRed: DefinedColor = 13047173;
-pub const DefinedColor_DefinedColor_deepPink: DefinedColor = 16716947;
-pub const DefinedColor_DefinedColor_hotPink: DefinedColor = 16751540;
-pub const DefinedColor_DefinedColor_lavenderBlush: DefinedColor = 16773365;
-pub const DefinedColor_DefinedColor_paleVioletRed: DefinedColor = 14381203;
-pub const DefinedColor_DefinedColor_crimson: DefinedColor = 14423100;
-pub const DefinedColor_DefinedColor_pink: DefinedColor = 16761035;
-pub const DefinedColor_DefinedColor_lightPink: DefinedColor = 16758465;
-pub type FMTextAlignment = uint16;
-pub type FMVerticalAlignment = ::std::os::raw::c_int;
-pub const FMVerticalAlignment_FMVerticalAlignment_baseline: FMVerticalAlignment = 0;
-pub const FMVerticalAlignment_FMVerticalAlignment_top: FMVerticalAlignment = 1;
-pub const FMVerticalAlignment_FMVerticalAlignment_middle: FMVerticalAlignment = 2;
-pub const FMVerticalAlignment_FMVerticalAlignment_bottom: FMVerticalAlignment = 3;
-pub type GLSamplesCount = ::std::os::raw::c_int;
-pub const GLSamplesCount_GLSamplesCount_none: GLSamplesCount = 0;
-pub const GLSamplesCount_GLSamplesCount_ms2: GLSamplesCount = 1;
-pub const GLSamplesCount_GLSamplesCount_ms4: GLSamplesCount = 2;
-pub const GLSamplesCount_GLSamplesCount_ms8: GLSamplesCount = 3;
-pub const GLSamplesCount_GLSamplesCount_ms16: GLSamplesCount = 4;
-pub type SystemColor = Color;
-pub const SystemColor_SystemColor_formColor: SystemColor = 15067893;
-pub const SystemColor_SystemColor_activeBorder: SystemColor = 15067893;
-pub const SystemColor_SystemColor_control: SystemColor = 13947080;
-pub const SystemColor_SystemColor_controlLight: SystemColor = 13947080;
-pub const SystemColor_SystemColor_inactiveBorder: SystemColor = 13947080;
-pub const SystemColor_SystemColor_inactiveCaptionText: SystemColor = 13947080;
-pub const SystemColor_SystemColor_menu: SystemColor = 13947080;
-pub const SystemColor_SystemColor_scrollBar: SystemColor = 13947080;
-unsafe extern "C" {
-    pub static mut Bitmap_allocate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            driverName: *const ::std::os::raw::c_char,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-            stride: ::std::os::raw::c_int,
-            format: PixelFormat,
-            allocatePalette: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_allocateDD: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            displaySystem: DisplaySystem,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_convert: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            displaySystem: DisplaySystem,
-            format: PixelFormat,
-            palette: *mut ColorAlpha,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_copy:
-        ::std::option::Option<unsafe extern "C" fn(__this: Bitmap, source: Bitmap) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_copy2: ::std::option::Option<
-        unsafe extern "C" fn(__this: Bitmap, source: Bitmap, moveStuff: bool_) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_free: ::std::option::Option<unsafe extern "C" fn(__this: Bitmap)>;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_getSurface: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            clip: *mut Box,
-        ) -> Surface,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_grab: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            src: Bitmap,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_load: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadFromFile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            file: File,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadGrayed: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadMipMaps: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadMonochrome: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadT: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_loadTMipMaps: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            displaySystem: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_makeDD: ::std::option::Option<
-        unsafe extern "C" fn(__this: Bitmap, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_makeMipMaps: ::std::option::Option<
-        unsafe extern "C" fn(__this: Bitmap, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_processDD: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            mipMaps: bool_,
-            cubeMapFace: uint,
-            compress: bool_,
-            maxTextureSize: ::std::os::raw::c_int,
-            makePow2: bool_,
-            enforcedWidth: ::std::os::raw::c_int,
-            enforcedHeight: ::std::os::raw::c_int,
-        ) -> Bitmap,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_quantize: ::std::option::Option<
-        unsafe extern "C" fn(__this: Bitmap, start: uint, end: uint) -> *mut ColorAlpha,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_save: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Bitmap,
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-            options: *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Bitmap_smoothEdges:
-        ::std::option::Option<unsafe extern "C" fn(__this: Bitmap, size: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_fileName: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_fileName: ::std::option::Option<
-        unsafe extern "C" fn(b: BitmapResource, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_fileName: ::std::option::Option<
-        unsafe extern "C" fn(b: BitmapResource) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_grayed: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_grayed:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_grayed:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_monochrome: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_monochrome:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_monochrome:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_transparent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_transparent:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_transparent:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_isSet_transparent:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_alphaBlend: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_isSet_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_mipMaps: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_mipMaps:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_mipMaps:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_isSet_mipMaps:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_keepData: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_keepData:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_keepData:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_bitmap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: Bitmap)>;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_get_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource) -> Bitmap>;
-}
-unsafe extern "C" {
-    pub static mut property_BitmapResource_window: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut BitmapResource_set_window:
-        ::std::option::Option<unsafe extern "C" fn(b: BitmapResource, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut property_Color_ColorRGB: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Color_from_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(colorRGB: *const ColorRGB) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut Color_to_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(color: Color, value: *mut ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut property_Color444_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Color444_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(color: Color) -> Color444>;
-}
-unsafe extern "C" {
-    pub static mut Color444_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(color444: Color444) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Color555_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Color555_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(color: Color) -> Color555>;
-}
-unsafe extern "C" {
-    pub static mut Color555_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(color555: Color555) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Color565_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Color565_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(color: Color) -> Color565>;
-}
-unsafe extern "C" {
-    pub static mut Color565_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(color565: Color565) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_ColorAlpha_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorAlpha_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(color: Color) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut ColorAlpha_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(colorAlpha: ColorAlpha) -> Color>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorCMYK {
-    pub c: f32,
-    pub m: f32,
-    pub y: f32,
-    pub k: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorCMYK"][::std::mem::size_of::<ColorCMYK>() - 16usize];
-    ["Alignment of ColorCMYK"][::std::mem::align_of::<ColorCMYK>() - 4usize];
-    ["Offset of field: ColorCMYK::c"][::std::mem::offset_of!(ColorCMYK, c) - 0usize];
-    ["Offset of field: ColorCMYK::m"][::std::mem::offset_of!(ColorCMYK, m) - 4usize];
-    ["Offset of field: ColorCMYK::y"][::std::mem::offset_of!(ColorCMYK, y) - 8usize];
-    ["Offset of field: ColorCMYK::k"][::std::mem::offset_of!(ColorCMYK, k) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut property_ColorCMYK_ColorRGB: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorCMYK_from_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorCMYK, value: *const ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut ColorCMYK_to_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorCMYK, value: *mut ColorRGB)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorHSV {
-    pub h: Angle,
-    pub s: f32,
-    pub v: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorHSV"][::std::mem::size_of::<ColorHSV>() - 16usize];
-    ["Alignment of ColorHSV"][::std::mem::align_of::<ColorHSV>() - 8usize];
-    ["Offset of field: ColorHSV::h"][::std::mem::offset_of!(ColorHSV, h) - 0usize];
-    ["Offset of field: ColorHSV::s"][::std::mem::offset_of!(ColorHSV, s) - 8usize];
-    ["Offset of field: ColorHSV::v"][::std::mem::offset_of!(ColorHSV, v) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut property_ColorHSV_ColorRGB: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorHSV_from_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorHSV, value: *const ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut ColorHSV_to_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorHSV, value: *mut ColorRGB)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorKey {
-    pub color: ColorAlpha,
-    pub percent: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorKey"][::std::mem::size_of::<ColorKey>() - 8usize];
-    ["Alignment of ColorKey"][::std::mem::align_of::<ColorKey>() - 4usize];
-    ["Offset of field: ColorKey::color"][::std::mem::offset_of!(ColorKey, color) - 0usize];
-    ["Offset of field: ColorKey::percent"][::std::mem::offset_of!(ColorKey, percent) - 4usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorLab {
-    pub l: f32,
-    pub a: f32,
-    pub b: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorLab"][::std::mem::size_of::<ColorLab>() - 12usize];
-    ["Alignment of ColorLab"][::std::mem::align_of::<ColorLab>() - 4usize];
-    ["Offset of field: ColorLab::l"][::std::mem::offset_of!(ColorLab, l) - 0usize];
-    ["Offset of field: ColorLab::a"][::std::mem::offset_of!(ColorLab, a) - 4usize];
-    ["Offset of field: ColorLab::b"][::std::mem::offset_of!(ColorLab, b) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut property_ColorLab_ColorRGB: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorLab_from_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorLab, value: *const ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut ColorLab_to_ColorRGB:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorLab, value: *mut ColorRGB)>;
-}
-unsafe extern "C" {
-    pub static mut property_ColorRGBA_ColorAlpha: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBA_from_ColorAlpha:
-        ::std::option::Option<unsafe extern "C" fn(colorAlpha: ColorAlpha) -> ColorRGBA>;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBA_to_ColorAlpha:
-        ::std::option::Option<unsafe extern "C" fn(colorRGBA: ColorRGBA) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_ColorRGBA_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBA_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(color: Color) -> ColorRGBA>;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBA_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(colorRGBA: ColorRGBA) -> Color>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ColorRGBAf {
-    pub r: f32,
-    pub g: f32,
-    pub b: f32,
-    pub a: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ColorRGBAf"][::std::mem::size_of::<ColorRGBAf>() - 16usize];
-    ["Alignment of ColorRGBAf"][::std::mem::align_of::<ColorRGBAf>() - 4usize];
-    ["Offset of field: ColorRGBAf::r"][::std::mem::offset_of!(ColorRGBAf, r) - 0usize];
-    ["Offset of field: ColorRGBAf::g"][::std::mem::offset_of!(ColorRGBAf, g) - 4usize];
-    ["Offset of field: ColorRGBAf::b"][::std::mem::offset_of!(ColorRGBAf, b) - 8usize];
-    ["Offset of field: ColorRGBAf::a"][::std::mem::offset_of!(ColorRGBAf, a) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut property_ColorRGBAf_ColorAlpha: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBAf_from_ColorAlpha:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorRGBAf, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBAf_to_ColorAlpha:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorRGBAf) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_ColorRGBAf_Color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBAf_from_Color:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorRGBAf, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut ColorRGBAf_to_Color:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ColorRGBAf) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut CubeMap_load: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: CubeMap,
-            displaySystem: DisplaySystem,
-            names: *mut constString,
-            extension: constString,
-            oldStyle: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut CubeMap_loadFromFiles: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: CubeMap,
-            displaySystem: DisplaySystem,
-            files: *mut File,
-            extension: constString,
-            oldStyle: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_applyMaterial: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, material: *mut Material, mesh: *mut Mesh),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_collectHits:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_create: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            displaySystem: DisplaySystem,
-            window: *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_drawMesh:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, object: *mut Object) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Display_drawMeshEx: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, object: *mut Object, id: *mut uint64) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_drawObject:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, object: *mut Object) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Display_drawObjectEx: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, object: *mut Object, id: *mut uint64) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_drawPrimitives: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, primitive: *mut PrimitiveSingle, mesh: *mut Mesh),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_drawTranslucency:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_endUpdate: ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_fontExtent: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            font: *mut Font,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_fontExtent2: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            font: *mut Font,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-            prevGlyph: ::std::os::raw::c_int,
-            rPrevGlyph: *mut ::std::os::raw::c_int,
-            overHang: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_getHits: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, list: *mut OldList) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_getIntersect: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, intersect: *mut Vector3D) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_getSurface: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            clip: *mut Box,
-        ) -> Surface,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_grab: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            bitmap: Bitmap,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_intersectPolygons:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_isObjectVisible:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, object: *mut Object) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Display_lock:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, render: bool_) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Display_nextPage: ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_popMatrix: ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_position: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_pushMatrix: ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_resize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_restorePalette:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_scroll: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            scroll: *mut Box,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            dirty: *mut Extent,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_selectMesh:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, mesh: *mut Mesh)>;
-}
-unsafe extern "C" {
-    pub static mut Display_setCamera: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, surface: Surface, camera: Camera),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_setCameraVR: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            camera: Camera,
-            eye: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            output: *mut GLFB,
-            prjMat: *const Matrix,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_setLight: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, id: ::std::os::raw::c_int, light: *mut Light),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_setLights:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, object: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut Display_setPalette: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, palette: *mut ColorAlpha, colorMatch: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_setTransform: ::std::option::Option<
-        unsafe extern "C" fn(__this: Display, matrix: *mut Matrix, viewSpace: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_startSelection: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Display,
-            pickX: ::std::os::raw::c_int,
-            pickY: ::std::os::raw::c_int,
-            pickW: ::std::os::raw::c_int,
-            pickH: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Display_startUpdate:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_stopSelection:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_unlock: ::std::option::Option<unsafe extern "C" fn(__this: Display)>;
-}
-unsafe extern "C" {
-    pub static mut Display_update:
-        ::std::option::Option<unsafe extern "C" fn(__this: Display, updateBox: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_fillMode: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_fillMode:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: FillModeValue)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_depthTest: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_depthTest:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_depthWrite: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_depthWrite:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_fogDensity: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_fogDensity:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_fogColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_fogColor:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_blend: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_blend:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_ambient: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_ambient:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_alphaWrite: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_alphaWrite:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_antiAlias: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_antiAlias:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_vSync: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_vSync:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_pickingPlanes: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_pickingPlanes:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_maxFullSort: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_maxFullSort:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Display_get_maxFullSort:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_fullProjCheck: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_fullProjCheck:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Display_get_fullProjCheck:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_flags: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_get_flags:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> DisplayFlags>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_pixelFormat: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_get_pixelFormat:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> PixelFormat>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_alphaBlend: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Display_get_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_useSharedMemory: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_useSharedMemory:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Display_get_useSharedMemory:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_systemWindow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_get_systemWindow:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> *mut ::std::os::raw::c_void>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_displaySystem: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_get_displaySystem:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> DisplaySystem>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_glCapabilities: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_set_glCapabilities:
-        ::std::option::Option<unsafe extern "C" fn(d: Display, value: GLCapabilities)>;
-}
-unsafe extern "C" {
-    pub static mut Display_get_glCapabilities:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> GLCapabilities>;
-}
-unsafe extern "C" {
-    pub static mut property_Display_glVersion: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Display_get_glVersion:
-        ::std::option::Option<unsafe extern "C" fn(d: Display) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_allocateBitmap_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_allocateBitmap: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_allocateIndices_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_allocateIndices: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_allocateMesh_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_allocateMesh: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_applyMaterial_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_applyMaterial: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_area_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_area: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_blit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_blit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_blitDI_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_blitDI: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_clear_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_clear: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_clip_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_clip: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_convertBitmap_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_convertBitmap: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_createDisplay_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_createDisplay: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_createDisplaySystem_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_createDisplaySystem: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_destroyDisplay_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_destroyDisplay: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_destroyDisplaySystem_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_destroyDisplaySystem: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_displayPosition_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_displayPosition: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_displaySize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_displaySize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_drawLine_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_drawLine: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_drawPrimitives_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_drawPrimitives: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_drawingChar_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_drawingChar: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_endUpdate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_endUpdate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_filter_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_filter: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_filterDI_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_filterDI: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_fontExtent_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_fontExtent: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_freeBitmap_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_freeBitmap: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_freeIndices_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_freeIndices: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_freeMesh_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_freeMesh: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_getBitmapSurface_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_getBitmapSurface: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_getPixel_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_getPixel: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_getSurface_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_getSurface: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_grabScreen_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_grabScreen: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_lineStipple_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_lineStipple: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_loadFont_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_loadFont: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_lock_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_lock: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_lockIndices_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_lockIndices: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_lockMesh_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_lockMesh: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_lockSystem_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_lockSystem: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_makeDDBitmap_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_makeDDBitmap: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_nextPage_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_nextPage: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_popMatrix_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_popMatrix: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_pushMatrix_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_pushMatrix: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_putPixel_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_putPixel: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_rectangle_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_rectangle: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_releaseSurface_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_releaseSurface: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_restorePalette_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_restorePalette: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_scroll_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_scroll: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_selectMesh_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_selectMesh: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setBackground_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setBackground: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setBlitTint_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setBlitTint: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setCamera_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setCamera: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setCameraVR_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setCameraVR: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setForeground_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setForeground: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setLight_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setLight: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setPalette_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setPalette: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setRenderState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setRenderState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_setTransform_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_setTransform: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_startUpdate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_startUpdate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_stretch_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_stretch: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_stretchDI_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_stretchDI: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_stretchf_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_stretchf: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_textExtent_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_textExtent: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_textFont_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_textFont: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_textOpacity_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_textOpacity: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_unloadFont_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_unloadFont: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_unlock_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_unlock: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_unlockIndices_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_unlockIndices: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_unlockMesh_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_unlockMesh: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_unlockSystem_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_unlockSystem: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_update_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_update: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplayDriver_writeText_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DisplayDriver_writeText: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_addMaterial: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, material: *mut Material) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_addMesh: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, mesh: *mut Mesh) -> *mut OldLink,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_addNamedMaterial: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            name: *const ::std::os::raw::c_char,
-        ) -> *mut Material,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_addTexture: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            name: *const ::std::os::raw::c_char,
-            bitmap: Bitmap,
-        ) -> *mut NamedLink,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_clearMaterials:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem)>;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_clearMeshes:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem)>;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_clearTextures:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem)>;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_create: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            driverName: *const ::std::os::raw::c_char,
-            window: *mut ::std::os::raw::c_void,
-            fullScreen: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_fontExtent: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            font: *mut Font,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_fontExtent2: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            font: *mut Font,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-            prevGlyph: ::std::os::raw::c_int,
-            rPrevGlyph: *mut ::std::os::raw::c_int,
-            overHang: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_getMaterial: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            name: *const ::std::os::raw::c_char,
-        ) -> *mut Material,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_getTexture: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, name: *const ::std::os::raw::c_char) -> Bitmap,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_loadFont: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            faceName: *const ::std::os::raw::c_char,
-            size: f32,
-            flags: FontFlags,
-        ) -> *mut Font,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_loadOutlineFont: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            faceName: *const ::std::os::raw::c_char,
-            size: f32,
-            flags: FontFlags,
-            outlineSize: f32,
-            outlineFade: f32,
-        ) -> *mut Font,
-    >;
+    pub static mut Condition_signal:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition)>;
 }
 unsafe extern "C" {
-    pub static mut DisplaySystem_loadResource: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            resource: Resource,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_loadResourceFM: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            resource: Resource,
-            fm: FontManager,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_lock:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_removeMaterial: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, material: *mut Material) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_removeMesh: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, mesh: *mut Mesh) -> bool_,
-    >;
+    pub static mut Condition_wait:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition, mutex: *mut Mutex)>;
 }
 unsafe extern "C" {
-    pub static mut DisplaySystem_removeTexture: ::std::option::Option<
-        unsafe extern "C" fn(__this: DisplaySystem, name: *const ::std::os::raw::c_char) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_unloadFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem, font: *mut Font)>;
+    pub static mut property_Condition_name: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut DisplaySystem_unloadResource: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            resource: Resource,
-            res: *mut DisplaySystemResPtr,
-        ),
+    pub static mut Condition_set_name: ::std::option::Option<
+        unsafe extern "C" fn(c: *const Condition, value: *const ::std::os::raw::c_char),
     >;
-}
-unsafe extern "C" {
-    pub static mut DisplaySystem_unlock:
-        ::std::option::Option<unsafe extern "C" fn(__this: DisplaySystem)>;
 }
 unsafe extern "C" {
-    pub static mut DisplaySystem__LoadResource: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DisplaySystem,
-            resource: Resource,
-            fm: *mut ::std::os::raw::c_void,
-        ) -> *mut ::std::os::raw::c_void,
+    pub static mut Condition_get_name: ::std::option::Option<
+        unsafe extern "C" fn(c: *const Condition) -> *const ::std::os::raw::c_char,
     >;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct DisplaySystemResPtr {
-    pub __ecere_padding: [byte; 24usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DisplaySystemResPtr"][::std::mem::size_of::<DisplaySystemResPtr>() - 24usize];
-    ["Alignment of DisplaySystemResPtr"][::std::mem::align_of::<DisplaySystemResPtr>() - 1usize];
-    ["Offset of field: DisplaySystemResPtr::__ecere_padding"]
-        [::std::mem::offset_of!(DisplaySystemResPtr, __ecere_padding) - 0usize];
-};
-unsafe extern "C" {
-    pub static mut DrawList_addObject:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawList, object: *mut Object)>;
-}
-unsafe extern "C" {
-    pub static mut DrawList_init: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DrawList,
-            sm: *mut Matrix,
-            vm: *mut Matrix,
-            cp: *mut Vector3D,
-            vp: *mut Plane,
-            wp: *mut Plane,
-            guessCount: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DrawList_prepare: ::std::option::Option<unsafe extern "C" fn(__this: DrawList)>;
-}
-unsafe extern "C" {
-    pub static mut DrawList_render:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawList, display: Display)>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawManager)>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_drawBarrier:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawManager)>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_drawImage: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DrawManager,
-            index: ::std::os::raw::c_int,
-            offsetx: f32,
-            offsety: f32,
-            angsin: f32,
-            angcos: f32,
-            color: ColorAlpha,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_end:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawManager)>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_finish:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawManager)>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_flush_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DrawManager_flush: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_init:
-        ::std::option::Option<unsafe extern "C" fn(__this: DrawManager) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_ready: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DrawManager,
-            viewportWidth: ::std::os::raw::c_int,
-            viewportHeight: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_DrawManager_renderingFlipped: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DrawManager_set_renderingFlipped:
-        ::std::option::Option<unsafe extern "C" fn(d: DrawManager, value: bool_)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct DrawSlot {
-    pub object: *mut Object,
-    pub baseMap: Bitmap,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DrawSlot"][::std::mem::size_of::<DrawSlot>() - 16usize];
-    ["Alignment of DrawSlot"][::std::mem::align_of::<DrawSlot>() - 8usize];
-    ["Offset of field: DrawSlot::object"][::std::mem::offset_of!(DrawSlot, object) - 0usize];
-    ["Offset of field: DrawSlot::baseMap"][::std::mem::offset_of!(DrawSlot, baseMap) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut FMFont_setOutline:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FMFont, size: f32, fade: f32)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FMPathDraw {
-    pub prevGlyphIndex: ::std::os::raw::c_int,
-    pub middleAlign: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FMPathDraw"][::std::mem::size_of::<FMPathDraw>() - 8usize];
-    ["Alignment of FMPathDraw"][::std::mem::align_of::<FMPathDraw>() - 4usize];
-    ["Offset of field: FMPathDraw::prevGlyphIndex"]
-        [::std::mem::offset_of!(FMPathDraw, prevGlyphIndex) - 0usize];
-    ["Offset of field: FMPathDraw::middleAlign"]
-        [::std::mem::offset_of!(FMPathDraw, middleAlign) - 4usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FaceInfo {
-    pub fileName: String,
-    pub fakeItalic: bool_,
-    pub fontID: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FaceInfo"][::std::mem::size_of::<FaceInfo>() - 16usize];
-    ["Alignment of FaceInfo"][::std::mem::align_of::<FaceInfo>() - 8usize];
-    ["Offset of field: FaceInfo::fileName"][::std::mem::offset_of!(FaceInfo, fileName) - 0usize];
-    ["Offset of field: FaceInfo::fakeItalic"]
-        [::std::mem::offset_of!(FaceInfo, fakeItalic) - 8usize];
-    ["Offset of field: FaceInfo::fontID"][::std::mem::offset_of!(FaceInfo, fontID) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut property_Font_ascent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Font_get_ascent:
-        ::std::option::Option<unsafe extern "C" fn(f: *const Font) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Font_descent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Font_get_descent:
-        ::std::option::Option<unsafe extern "C" fn(f: *const Font) -> ::std::os::raw::c_int>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FontInfo {
-    pub fixedPitch: bool_,
-    pub defaultOrAnsiCharSet: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FontInfo"][::std::mem::size_of::<FontInfo>() - 8usize];
-    ["Alignment of FontInfo"][::std::mem::align_of::<FontInfo>() - 4usize];
-    ["Offset of field: FontInfo::fixedPitch"]
-        [::std::mem::offset_of!(FontInfo, fixedPitch) - 0usize];
-    ["Offset of field: FontInfo::defaultOrAnsiCharSet"]
-        [::std::mem::offset_of!(FontInfo, defaultOrAnsiCharSet) - 4usize];
-};
-unsafe extern "C" {
-    pub static mut FontManager_addFont: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            path: constString,
-            glyphPaddingWidth: ::std::os::raw::c_int,
-        ) -> *mut FMFont,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_addFontData: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            data: *mut byte,
-            dataSize: ::std::os::raw::c_int,
-            glyphPaddingWidth: ::std::os::raw::c_int,
-        ) -> *mut FMFont,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_clearState:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_create: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-            channelCount: ::std::os::raw::c_int,
-            channelIndex: ::std::os::raw::c_int,
-            renderer: FontManagerRenderer,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_drawText: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_drawTextTruncate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            truncatewidth: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-            extstring: *mut ::std::os::raw::c_char,
-            extwidth: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_drawTextWithCursor: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-            cursoroffset: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_expandAtlas: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_flush:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager, rendererFlush: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_flushUpdate:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_freeFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager, font: *mut FMFont)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getAtlasSize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            retwidth: *mut ::std::os::raw::c_int,
-            retheight: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getFont: ::std::option::Option<
-        unsafe extern "C" fn(__this: FontManager, fontResource: FontResource) -> *mut FMFont,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getFontExtent: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            retascent: *mut ::std::os::raw::c_int,
-            retdescent: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getFontLimits: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            retlimitminy: *mut ::std::os::raw::c_int,
-            retlimitmaxy: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getFontLineHeight:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextBounds: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-            bounds: *mut ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextNearestOffset: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            targetwidth: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextTruncateOffset: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            truncatewidth: ::std::os::raw::c_int,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-            extwidth: ::std::os::raw::c_int,
-            retextflag: *mut ::std::os::raw::c_int,
-            retfullwidth: *mut ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextWidth: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextWidthTruncate: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            string: *const ::std::os::raw::c_char,
-            stringlength: ::std::os::raw::c_int,
-            truncatewidth: ::std::os::raw::c_int,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_getTextureData: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-        ) -> *const byte,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_initPathDraw: ::std::option::Option<
-        unsafe extern "C" fn(__this: FontManager, pathdraw: *mut FMPathDraw) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_onAtlasFull_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManager_onAtlasFull: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManager_pathDrawCharacter: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            pathdraw: *mut FMPathDraw,
-            x: f32,
-            y: f32,
-            vectorx: f32,
-            vectory: f32,
-            unicode: ::std::os::raw::c_int,
-        ) -> f32,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_pathDrawPredictAdvance: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            pathdraw: *mut FMPathDraw,
-            unicode: unichar,
-        ) -> f32,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_popState:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_pushState:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_removeFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager, font: *mut FMFont)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_resetAtlas: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_setAlign: ::std::option::Option<
-        unsafe extern "C" fn(__this: FontManager, align: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_setFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontManager, font: *mut FMFont)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_setFontImageProcessing: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            font: *mut FMFont,
-            processImage: ::std::option::Option<
-                unsafe extern "C" fn(
-                    image: *mut byte,
-                    width: ::std::os::raw::c_int,
-                    height: ::std::os::raw::c_int,
-                    bytesperpixel: ::std::os::raw::c_int,
-                    bytesperline: ::std::os::raw::c_int,
-                    paddingwidth: ::std::os::raw::c_int,
-                    opaquecontext: *mut ::std::os::raw::c_void,
-                ),
-            >,
-            opaquecontext: *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_setSize: ::std::option::Option<
-        unsafe extern "C" fn(__this: FontManager, size: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_setState: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            font: *mut FMFont,
-            size: ::std::os::raw::c_int,
-            align: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontManager_validateTexture: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FontManager,
-            retdirtyrect: *mut ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_FontManager_renderer: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontManager_set_renderer:
-        ::std::option::Option<unsafe extern "C" fn(f: FontManager, value: FontManagerRenderer)>;
-}
-unsafe extern "C" {
-    pub static mut FontManager_get_renderer:
-        ::std::option::Option<unsafe extern "C" fn(f: FontManager) -> FontManagerRenderer>;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_createTexture_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_createTexture: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_drawImage_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_drawImage: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_drawImageAlt_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_drawImageAlt: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_drawImageCursor_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_drawImageCursor: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_drawImageFloat_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_drawImageFloat: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_flush_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_flush: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_init_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_init: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_registerImage_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_registerImage: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_resetImages_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_resetImages: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_resizeTexture_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_resizeTexture: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_setLayer_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_setLayer: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontManagerRenderer_updateTexture_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_FontManagerRenderer_updateTexture: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut FontRenderer_setColor:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontRenderer, color: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut FontRenderer_setCursorColor:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontRenderer, color: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut FontRenderer_setExtColor:
-        ::std::option::Option<unsafe extern "C" fn(__this: FontRenderer, color: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut property_FontRenderer_drawManager: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontRenderer_set_drawManager:
-        ::std::option::Option<unsafe extern "C" fn(f: FontRenderer, value: DrawManager)>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_faceName: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_faceName: ::std::option::Option<
-        unsafe extern "C" fn(f: FontResource, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_faceName: ::std::option::Option<
-        unsafe extern "C" fn(f: FontResource) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_size:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_size:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_bold: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_bold:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_bold:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_italic: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_italic:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_italic:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_underline: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_underline:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_underline:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_font: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_font:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> *mut Font>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_window: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_window:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_outlineSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_outlineSize:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_outlineSize:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_outlineFade: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_set_outlineFade:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource, value: f32)>;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_outlineFade:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> f32>;
-}
-unsafe extern "C" {
-    pub static mut property_FontResource_fmFont: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FontResource_get_fmFont:
-        ::std::option::Option<unsafe extern "C" fn(f: FontResource) -> *mut FMFont>;
-}
-unsafe extern "C" {
-    pub static mut HitRecord_compare: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut HitRecord,
-            recordB: *mut HitRecord,
-            unused: *mut ::std::os::raw::c_void,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct RenderStateFloat {
-    pub __bindgen_anon_1: RenderStateFloat__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union RenderStateFloat__bindgen_ty_1 {
-    pub f: f32,
-    pub ui: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of RenderStateFloat__bindgen_ty_1"]
-        [::std::mem::size_of::<RenderStateFloat__bindgen_ty_1>() - 4usize];
-    ["Alignment of RenderStateFloat__bindgen_ty_1"]
-        [::std::mem::align_of::<RenderStateFloat__bindgen_ty_1>() - 4usize];
-    ["Offset of field: RenderStateFloat__bindgen_ty_1::f"]
-        [::std::mem::offset_of!(RenderStateFloat__bindgen_ty_1, f) - 0usize];
-    ["Offset of field: RenderStateFloat__bindgen_ty_1::ui"]
-        [::std::mem::offset_of!(RenderStateFloat__bindgen_ty_1, ui) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of RenderStateFloat"][::std::mem::size_of::<RenderStateFloat>() - 4usize];
-    ["Alignment of RenderStateFloat"][::std::mem::align_of::<RenderStateFloat>() - 4usize];
-};
-unsafe extern "C" {
-    pub static mut Surface_area: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x1: ::std::os::raw::c_int,
-            y1: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-            y2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_bevel: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            inner: bool_,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_blit: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            sx: ::std::os::raw::c_int,
-            sy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_centerTextf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, type_: ClearType)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_clip:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, box_: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_drawLine: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x1: ::std::os::raw::c_int,
-            y1: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-            y2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_drawingChar:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: byte)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_filter: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            sx: ::std::os::raw::c_int,
-            sy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            sw: ::std::os::raw::c_int,
-            sh: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_filterHTile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_filterVTile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_getBackground:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut Surface_getBox:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_getDisplay:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface) -> Display>;
-}
-unsafe extern "C" {
-    pub static mut Surface_getFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface) -> *mut Font>;
-}
-unsafe extern "C" {
-    pub static mut Surface_getForeground:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut Surface_getPixel: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ) -> ColorAlpha,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_getSize: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            w: *mut ::std::os::raw::c_int,
-            h: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_getTextOpacity:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Surface_gradient: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            keys: *mut ColorKey,
-            numKeys: ::std::os::raw::c_int,
-            smoothness: f32,
-            direction: GradientDirection,
-            x1: ::std::os::raw::c_int,
-            y1: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-            y2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_hLine: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x1: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_hTile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_lineStipple:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_putPixel: ::std::option::Option<
-        unsafe extern "C" fn(__this: Surface, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_rectangle: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x1: ::std::os::raw::c_int,
-            y1: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-            y2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_setBackground:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_setForeground:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_stretch: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            sx: ::std::os::raw::c_int,
-            sy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            sw: ::std::os::raw::c_int,
-            sh: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_stretchf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: f32,
-            dy: f32,
-            sx: f32,
-            sy: f32,
-            w: f32,
-            h: f32,
-            sw: f32,
-            sh: f32,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_textExtent: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_textExtent2: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            width: *mut ::std::os::raw::c_int,
-            height: *mut ::std::os::raw::c_int,
-            prevGlyph: ::std::os::raw::c_int,
-            rPrevGlyph: *mut ::std::os::raw::c_int,
-            overHang: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_textFont:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: *mut Font)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_textOpacity:
-        ::std::option::Option<unsafe extern "C" fn(__this: Surface, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_thinBevel: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            inner: bool_,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_tile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_vLine: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            y1: ::std::os::raw::c_int,
-            y2: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_vTile: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            src: Bitmap,
-            dx: ::std::os::raw::c_int,
-            dy: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_writeText: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_writeText2: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-            prevGlyph: ::std::os::raw::c_int,
-            rPrevGlyph: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_writeTextDots: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            alignment: Alignment,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            width: ::std::os::raw::c_int,
-            text: *const ::std::os::raw::c_char,
-            len: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_writeTextDotsf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            alignment: Alignment,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            width: ::std::os::raw::c_int,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Surface_writeTextf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_alphaWrite: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_alphaWrite:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: AlphaWriteMode)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_alphaWrite:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> AlphaWriteMode>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_blend: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_blend:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_blend:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_bitmap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> Bitmap>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_outlineColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_outlineColor:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_outlineColor:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_foreground: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_foreground:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_foreground:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_background: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_background:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_background:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_blitTint: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_blitTint:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_blitTint:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_blackTint: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_blackTint:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_blackTint:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_lineStipple: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_lineStipple:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_size:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_display: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_display:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> Display>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_font: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_font:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: *mut Font)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_font:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> *mut Font>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_textOpacity: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_textOpacity:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Surface_get_textOpacity:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_drawingChar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_drawingChar:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: byte)>;
-}
-unsafe extern "C" {
-    pub static mut property_Surface_clipping: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Surface_set_clipping:
-        ::std::option::Option<unsafe extern "C" fn(s: Surface, value: *const Box)>;
-}
-unsafe extern "C" {
-    pub static mut bestColorMatch: ::std::option::Option<
-        unsafe extern "C" fn(
-            palette: *mut ColorAlpha,
-            start: ::std::os::raw::c_int,
-            end: ::std::os::raw::c_int,
-            rgb: Color,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getColorDepthShifts:
-        ::std::option::Option<unsafe extern "C" fn(format: PixelFormat) -> byte>;
-}
-unsafe extern "C" {
-    pub static mut getDefaultMaterial:
-        ::std::option::Option<unsafe extern "C" fn() -> *mut Material>;
-}
-unsafe extern "C" {
-    pub static mut getDefaultPalette:
-        ::std::option::Option<unsafe extern "C" fn() -> *mut ColorAlpha>;
-}
-unsafe extern "C" {
-    pub static mut getDepthBits: ::std::option::Option<
-        unsafe extern "C" fn(colorDepth: PixelFormat) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getResolutionHeight: ::std::option::Option<
-        unsafe extern "C" fn(resolution: Resolution) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut getResolutionWidth: ::std::option::Option<
-        unsafe extern "C" fn(resolution: Resolution) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut listAvailableFonts: ::std::option::Option<unsafe extern "C" fn() -> Map>;
-}
-unsafe extern "C" {
-    pub static mut loadPalette: ::std::option::Option<
-        unsafe extern "C" fn(
-            fileName: *const ::std::os::raw::c_char,
-            type_: *const ::std::os::raw::c_char,
-        ) -> *mut ColorAlpha,
-    >;
-}
-unsafe extern "C" {
-    pub static mut paletteGradient: ::std::option::Option<
-        unsafe extern "C" fn(
-            palette: *mut ColorAlpha,
-            numColors: ::std::os::raw::c_int,
-            keys: *mut ColorKey,
-            numKeys: ::std::os::raw::c_int,
-            smoothness: f32,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut resolveCharFont: ::std::option::Option<
-        unsafe extern "C" fn(
-            faceName: constString,
-            size: f32,
-            flags: FontFlags,
-            lang: constString,
-            testChar: unichar,
-        ) -> *mut FaceInfo,
-    >;
-}
-unsafe extern "C" {
-    pub static mut resolveFont: ::std::option::Option<
-        unsafe extern "C" fn(faceName: constString, size: f32, flags: FontFlags) -> Array,
-    >;
-}
-unsafe extern "C" {
-    pub static mut setPrintingDocumentName:
-        ::std::option::Option<unsafe extern "C" fn(name: constString)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FreeSpots {
-    pub size: uint,
-    pub spots: *mut ::std::os::raw::c_int,
-    pub nextSpot: ::std::os::raw::c_int,
-    pub used: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FreeSpots"][::std::mem::size_of::<FreeSpots>() - 24usize];
-    ["Alignment of FreeSpots"][::std::mem::align_of::<FreeSpots>() - 8usize];
-    ["Offset of field: FreeSpots::size"][::std::mem::offset_of!(FreeSpots, size) - 0usize];
-    ["Offset of field: FreeSpots::spots"][::std::mem::offset_of!(FreeSpots, spots) - 8usize];
-    ["Offset of field: FreeSpots::nextSpot"][::std::mem::offset_of!(FreeSpots, nextSpot) - 16usize];
-    ["Offset of field: FreeSpots::used"][::std::mem::offset_of!(FreeSpots, used) - 20usize];
-};
-pub type GLTextureFilter = ::std::os::raw::c_int;
-pub const GLTextureFilter_GLTextureFilter_nearest: GLTextureFilter = 0;
-pub const GLTextureFilter_GLTextureFilter_linear: GLTextureFilter = 1;
-unsafe extern "C" {
-    pub static mut FreeSpots_init:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FreeSpots, count: uint)>;
-}
-unsafe extern "C" {
-    pub static mut FreeSpots_markFree: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut FreeSpots, spot: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FreeSpots_next: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut FreeSpots) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FreeSpots_resize:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FreeSpots, count: uint)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLArrayTexture {
-    pub texture: uint,
-    pub width: uint,
-    pub height: uint,
-    pub numLayers: uint,
-    pub numLevels: uint,
-    pub maxLevel: bool_,
-    pub format: ::std::os::raw::c_int,
-    pub spots: FreeSpots,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLArrayTexture"][::std::mem::size_of::<GLArrayTexture>() - 56usize];
-    ["Alignment of GLArrayTexture"][::std::mem::align_of::<GLArrayTexture>() - 8usize];
-    ["Offset of field: GLArrayTexture::texture"]
-        [::std::mem::offset_of!(GLArrayTexture, texture) - 0usize];
-    ["Offset of field: GLArrayTexture::width"]
-        [::std::mem::offset_of!(GLArrayTexture, width) - 4usize];
-    ["Offset of field: GLArrayTexture::height"]
-        [::std::mem::offset_of!(GLArrayTexture, height) - 8usize];
-    ["Offset of field: GLArrayTexture::numLayers"]
-        [::std::mem::offset_of!(GLArrayTexture, numLayers) - 12usize];
-    ["Offset of field: GLArrayTexture::numLevels"]
-        [::std::mem::offset_of!(GLArrayTexture, numLevels) - 16usize];
-    ["Offset of field: GLArrayTexture::maxLevel"]
-        [::std::mem::offset_of!(GLArrayTexture, maxLevel) - 20usize];
-    ["Offset of field: GLArrayTexture::format"]
-        [::std::mem::offset_of!(GLArrayTexture, format) - 24usize];
-    ["Offset of field: GLArrayTexture::spots"]
-        [::std::mem::offset_of!(GLArrayTexture, spots) - 32usize];
-};
-unsafe extern "C" {
-    pub static mut GLArrayTexture__init: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-            format: ::std::os::raw::c_int,
-            setMaxLevel: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_allocateLayer: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GLArrayTexture, targetFBO: uint) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_bind:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLArrayTexture)>;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_copy: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            src: *mut GLArrayTexture,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLArrayTexture)>;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_freeLayer: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GLArrayTexture, layer: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_init: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_initMaxLevel: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_initRGBAUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_initRGBUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_initUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            levels: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            count: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_resize: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GLArrayTexture, numLayers: uint, targetFBO: uint),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_set1x1Layer: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            layer: ::std::os::raw::c_int,
-            color: ColorAlpha,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setFilter: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            minFilter: GLTextureFilter,
-            magFilter: GLTextureFilter,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayer: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayerCompressed: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            sizeBytes: uintsize,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayerFormat: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            targetFBO: uint,
-            format: ::std::os::raw::c_int,
-            type_: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayerRGBAUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayerRGBUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            targetFBO: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLArrayTexture_setLayerUShort: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLArrayTexture,
-            level: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            layer: ::std::os::raw::c_int,
-            c: *mut byte,
-            targetFBO: uint,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLDrawCommand {
-    pub count: uint,
-    pub instanceCount: uint,
-    pub firstIndex: uint,
-    pub baseVertex: uint,
-    pub baseInstance: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLDrawCommand"][::std::mem::size_of::<GLDrawCommand>() - 20usize];
-    ["Alignment of GLDrawCommand"][::std::mem::align_of::<GLDrawCommand>() - 4usize];
-    ["Offset of field: GLDrawCommand::count"]
-        [::std::mem::offset_of!(GLDrawCommand, count) - 0usize];
-    ["Offset of field: GLDrawCommand::instanceCount"]
-        [::std::mem::offset_of!(GLDrawCommand, instanceCount) - 4usize];
-    ["Offset of field: GLDrawCommand::firstIndex"]
-        [::std::mem::offset_of!(GLDrawCommand, firstIndex) - 8usize];
-    ["Offset of field: GLDrawCommand::baseVertex"]
-        [::std::mem::offset_of!(GLDrawCommand, baseVertex) - 12usize];
-    ["Offset of field: GLDrawCommand::baseInstance"]
-        [::std::mem::offset_of!(GLDrawCommand, baseInstance) - 16usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct GLMultiDraw {
-    pub indexGLMB: GLMB,
-    pub vertexGLMB: GLMB,
-    pub idsAB: GLAB,
-    pub commandsB: GLCAB,
-    pub vao: uint,
-    pub commandsCount: uint,
-    pub drawMode: GLIMTKMode,
-    pub commandsAlloced: uint,
-    pub drawIDs: *mut uint,
-    pub commands: *mut GLDrawCommand,
-    pub type_: uint,
-    pub idsAlloced: uint,
-    pub totalInstances: uint,
-    pub vertexStride: uint,
-    pub transformsAB: GLAB,
-    pub transformSize: ::std::os::raw::c_int,
-    pub transforms: *mut f32,
-    pub lastTransformAB: uint,
-    pub lastIDAB: uint,
-    pub lastVBO: uint,
-    pub lastIBO: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of GLMultiDraw"][::std::mem::size_of::<GLMultiDraw>() - 104usize];
-    ["Alignment of GLMultiDraw"][::std::mem::align_of::<GLMultiDraw>() - 8usize];
-    ["Offset of field: GLMultiDraw::indexGLMB"]
-        [::std::mem::offset_of!(GLMultiDraw, indexGLMB) - 0usize];
-    ["Offset of field: GLMultiDraw::vertexGLMB"]
-        [::std::mem::offset_of!(GLMultiDraw, vertexGLMB) - 8usize];
-    ["Offset of field: GLMultiDraw::idsAB"][::std::mem::offset_of!(GLMultiDraw, idsAB) - 16usize];
-    ["Offset of field: GLMultiDraw::commandsB"]
-        [::std::mem::offset_of!(GLMultiDraw, commandsB) - 20usize];
-    ["Offset of field: GLMultiDraw::vao"][::std::mem::offset_of!(GLMultiDraw, vao) - 24usize];
-    ["Offset of field: GLMultiDraw::commandsCount"]
-        [::std::mem::offset_of!(GLMultiDraw, commandsCount) - 28usize];
-    ["Offset of field: GLMultiDraw::drawMode"]
-        [::std::mem::offset_of!(GLMultiDraw, drawMode) - 32usize];
-    ["Offset of field: GLMultiDraw::commandsAlloced"]
-        [::std::mem::offset_of!(GLMultiDraw, commandsAlloced) - 36usize];
-    ["Offset of field: GLMultiDraw::drawIDs"]
-        [::std::mem::offset_of!(GLMultiDraw, drawIDs) - 40usize];
-    ["Offset of field: GLMultiDraw::commands"]
-        [::std::mem::offset_of!(GLMultiDraw, commands) - 48usize];
-    ["Offset of field: GLMultiDraw::type_"][::std::mem::offset_of!(GLMultiDraw, type_) - 56usize];
-    ["Offset of field: GLMultiDraw::idsAlloced"]
-        [::std::mem::offset_of!(GLMultiDraw, idsAlloced) - 60usize];
-    ["Offset of field: GLMultiDraw::totalInstances"]
-        [::std::mem::offset_of!(GLMultiDraw, totalInstances) - 64usize];
-    ["Offset of field: GLMultiDraw::vertexStride"]
-        [::std::mem::offset_of!(GLMultiDraw, vertexStride) - 68usize];
-    ["Offset of field: GLMultiDraw::transformsAB"]
-        [::std::mem::offset_of!(GLMultiDraw, transformsAB) - 72usize];
-    ["Offset of field: GLMultiDraw::transformSize"]
-        [::std::mem::offset_of!(GLMultiDraw, transformSize) - 76usize];
-    ["Offset of field: GLMultiDraw::transforms"]
-        [::std::mem::offset_of!(GLMultiDraw, transforms) - 80usize];
-    ["Offset of field: GLMultiDraw::lastTransformAB"]
-        [::std::mem::offset_of!(GLMultiDraw, lastTransformAB) - 88usize];
-    ["Offset of field: GLMultiDraw::lastIDAB"]
-        [::std::mem::offset_of!(GLMultiDraw, lastIDAB) - 92usize];
-    ["Offset of field: GLMultiDraw::lastVBO"]
-        [::std::mem::offset_of!(GLMultiDraw, lastVBO) - 96usize];
-    ["Offset of field: GLMultiDraw::lastIBO"]
-        [::std::mem::offset_of!(GLMultiDraw, lastIBO) - 100usize];
-};
-unsafe extern "C" {
-    pub static mut GLMultiDraw_addDrawCommand: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            indexCount: uint,
-            instanceCount: uint,
-            firstIndex: uint,
-            baseVertex: uint,
-            baseInstance: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_addDrawCommandCustomID: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            indexCount: uint,
-            instanceCount: uint,
-            firstIndex: uint,
-            baseVertex: uint,
-            baseInstance: uint,
-            layer: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_allocateIx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            nIndices: uint,
-            indexSize: uint,
-            data: *const ::std::os::raw::c_void,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_allocateVbo: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            nVertices: uint,
-            vertexSize: uint,
-            data: *const ::std::os::raw::c_void,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_draw:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw)>;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw)>;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_freeIx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            baseIndex: ::std::os::raw::c_int,
-            indexSize: uint,
-            count: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_freeVbo: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            baseVertex: ::std::os::raw::c_int,
-            vertexSize: uint,
-            count: uint,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_init: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GLMultiDraw, mode: GLIMTKMode, minAlloc: uint),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_prepare: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut GLMultiDraw,
-            vertNCoords: ::std::os::raw::c_int,
-            verticesStride: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_printStats:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw)>;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_resize:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw, size: uint)>;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_resizeCommands:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw, size: uint)>;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_resizeIDs:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GLMultiDraw, size: uint)>;
-}
-unsafe extern "C" {
-    pub static mut property_GLMultiDraw_ix32: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GLMultiDraw_set_ix32:
-        ::std::option::Option<unsafe extern "C" fn(g: *const GLMultiDraw, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut gLMultisampling: ::std::option::Option<unsafe extern "C" fn(value: bool_)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct PNGOptions {
-    pub zlibCompressionLevel: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of PNGOptions"][::std::mem::size_of::<PNGOptions>() - 4usize];
-    ["Alignment of PNGOptions"][::std::mem::align_of::<PNGOptions>() - 4usize];
-    ["Offset of field: PNGOptions::zlibCompressionLevel"]
-        [::std::mem::offset_of!(PNGOptions, zlibCompressionLevel) - 0usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Cube {
-    pub __ecerePrivateData0: [byte; 128usize],
-    pub transform: Transform,
-    pub __ecere_padding: [byte; 696usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Cube"][::std::mem::size_of::<Cube>() - 896usize];
-    ["Alignment of Cube"][::std::mem::align_of::<Cube>() - 8usize];
-    ["Offset of field: Cube::__ecerePrivateData0"]
-        [::std::mem::offset_of!(Cube, __ecerePrivateData0) - 0usize];
-    ["Offset of field: Cube::transform"][::std::mem::offset_of!(Cube, transform) - 128usize];
-    ["Offset of field: Cube::__ecere_padding"]
-        [::std::mem::offset_of!(Cube, __ecere_padding) - 200usize];
-};
-unsafe extern "C" {
-    pub static mut Cube_create: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Cube, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Cube_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Cube_set_size:
-        ::std::option::Option<unsafe extern "C" fn(c: *const Cube, value: *const Vector3Df)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct SkyBox {
-    pub __ecerePrivateData0: [byte; 128usize],
-    pub transform: Transform,
-    pub __ecere_padding: [byte; 728usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SkyBox"][::std::mem::size_of::<SkyBox>() - 928usize];
-    ["Alignment of SkyBox"][::std::mem::align_of::<SkyBox>() - 8usize];
-    ["Offset of field: SkyBox::__ecerePrivateData0"]
-        [::std::mem::offset_of!(SkyBox, __ecerePrivateData0) - 0usize];
-    ["Offset of field: SkyBox::transform"][::std::mem::offset_of!(SkyBox, transform) - 128usize];
-    ["Offset of field: SkyBox::__ecere_padding"]
-        [::std::mem::offset_of!(SkyBox, __ecere_padding) - 200usize];
-};
-unsafe extern "C" {
-    pub static mut SkyBox_create: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut SkyBox, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_render: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut SkyBox, camera: Camera, display: Display),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_SkyBox_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_set_size:
-        ::std::option::Option<unsafe extern "C" fn(s: *const SkyBox, value: *const Vector3Df)>;
-}
-unsafe extern "C" {
-    pub static mut property_SkyBox_folder: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_set_folder: ::std::option::Option<
-        unsafe extern "C" fn(s: *const SkyBox, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_SkyBox_extension: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_set_extension: ::std::option::Option<
-        unsafe extern "C" fn(s: *const SkyBox, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_SkyBox_newStyle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_set_newStyle:
-        ::std::option::Option<unsafe extern "C" fn(s: *const SkyBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_SkyBox_cubeMap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SkyBox_set_cubeMap:
-        ::std::option::Option<unsafe extern "C" fn(s: *const SkyBox, value: CubeMap)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Sphere {
-    pub __ecerePrivateData0: [byte; 128usize],
-    pub transform: Transform,
-    pub __ecere_padding: [byte; 696usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Sphere"][::std::mem::size_of::<Sphere>() - 896usize];
-    ["Alignment of Sphere"][::std::mem::align_of::<Sphere>() - 8usize];
-    ["Offset of field: Sphere::__ecerePrivateData0"]
-        [::std::mem::offset_of!(Sphere, __ecerePrivateData0) - 0usize];
-    ["Offset of field: Sphere::transform"][::std::mem::offset_of!(Sphere, transform) - 128usize];
-    ["Offset of field: Sphere::__ecere_padding"]
-        [::std::mem::offset_of!(Sphere, __ecere_padding) - 200usize];
-};
-unsafe extern "C" {
-    pub static mut Sphere_create: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Sphere, displaySystem: DisplaySystem) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Sphere_numLat: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Sphere_set_numLat:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Sphere, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut property_Sphere_numLon: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Sphere_set_numLon:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Sphere, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut property_Sphere_flattenedBody: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Sphere_set_flattenedBody:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Sphere, value: f32)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct EditLine {
-    pub __ecere_padding: [byte; 48usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of EditLine"][::std::mem::size_of::<EditLine>() - 48usize];
-    ["Alignment of EditLine"][::std::mem::align_of::<EditLine>() - 1usize];
-    ["Offset of field: EditLine::__ecere_padding"]
-        [::std::mem::offset_of!(EditLine, __ecere_padding) - 0usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_ListBox {
-    pub __ecerePrivateData0: [byte; 128usize],
-    pub typingTimeOut: f64,
-    pub __ecere_padding: [byte; 176usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_ListBox"][::std::mem::size_of::<class_members_ListBox>() - 312usize];
-    ["Alignment of class_members_ListBox"]
-        [::std::mem::align_of::<class_members_ListBox>() - 8usize];
-    ["Offset of field: class_members_ListBox::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_ListBox, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_ListBox::typingTimeOut"]
-        [::std::mem::offset_of!(class_members_ListBox, typingTimeOut) - 128usize];
-    ["Offset of field: class_members_ListBox::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_ListBox, __ecere_padding) - 136usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_SelectorButton {
-    pub focusHolder: Window,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_SelectorButton"]
-        [::std::mem::size_of::<class_members_SelectorButton>() - 8usize];
-    ["Alignment of class_members_SelectorButton"]
-        [::std::mem::align_of::<class_members_SelectorButton>() - 8usize];
-    ["Offset of field: class_members_SelectorButton::focusHolder"]
-        [::std::mem::offset_of!(class_members_SelectorButton, focusHolder) - 0usize];
-};
-pub type BoxAlignment = ::std::os::raw::c_int;
-pub const BoxAlignment_BoxAlignment_center: BoxAlignment = 0;
-pub const BoxAlignment_BoxAlignment_left: BoxAlignment = 1;
-pub const BoxAlignment_BoxAlignment_right: BoxAlignment = 2;
-pub const BoxAlignment_BoxAlignment_top: BoxAlignment = 3;
-pub const BoxAlignment_BoxAlignment_bottom: BoxAlignment = 4;
-pub type ButtonState = ::std::os::raw::c_int;
-pub const ButtonState_ButtonState_up: ButtonState = 0;
-pub const ButtonState_ButtonState_down: ButtonState = 1;
-pub const ButtonState_ButtonState_over: ButtonState = 2;
-pub const ButtonState_ButtonState_disabled: ButtonState = 3;
-pub const ButtonState_ButtonState_upChecked: ButtonState = 4;
-pub const ButtonState_ButtonState_downChecked: ButtonState = 5;
-pub const ButtonState_ButtonState_overChecked: ButtonState = 6;
-pub const ButtonState_ButtonState_disabledChecked: ButtonState = 7;
-pub type CalendarControl = CommonControl;
-pub type DataField = Instance;
-pub type DataRow = Instance;
-pub type DirectoriesBox = CommonControl;
-pub type DropBox = CommonControl;
-pub type EditBoxFindResult = ::std::os::raw::c_int;
-pub const EditBoxFindResult_EditBoxFindResult_notFound: EditBoxFindResult = 0;
-pub const EditBoxFindResult_EditBoxFindResult_found: EditBoxFindResult = 1;
-pub const EditBoxFindResult_EditBoxFindResult_wrapped: EditBoxFindResult = 2;
-pub type EditBoxStream = File;
-pub type EditSyntaxHL = Instance;
-pub type SelectorButton = Button;
-pub type EditableSelectorButton = SelectorButton;
-pub type FileDialog = Window;
-pub type Key = uint32;
-pub type ListBox = CommonControl;
-pub type Menu = Instance;
-pub type MenuItem = Instance;
-pub type Modifiers = uint32;
-pub type PaneSplitter = Window;
-pub type PathBox = CommonControl;
-pub type PathTypeExpected = ::std::os::raw::c_int;
-pub const PathTypeExpected_PathTypeExpected_none: PathTypeExpected = 0;
-pub const PathTypeExpected_PathTypeExpected_any: PathTypeExpected = 1;
-pub const PathTypeExpected_PathTypeExpected_directory: PathTypeExpected = 2;
-pub const PathTypeExpected_PathTypeExpected_file: PathTypeExpected = 3;
-pub type Percentage = f32;
-pub type ScrollBar = CommonControl;
-pub type ScrollBarAction = ::std::os::raw::c_int;
-pub const ScrollBarAction_ScrollBarAction_none: ScrollBarAction = 0;
-pub const ScrollBarAction_ScrollBarAction_up: ScrollBarAction = 1;
-pub const ScrollBarAction_ScrollBarAction_down: ScrollBarAction = 2;
-pub const ScrollBarAction_ScrollBarAction_pageDown: ScrollBarAction = 3;
-pub const ScrollBarAction_ScrollBarAction_pageUp: ScrollBarAction = 4;
-pub const ScrollBarAction_ScrollBarAction_setPosition: ScrollBarAction = 5;
-pub const ScrollBarAction_ScrollBarAction_home: ScrollBarAction = 6;
-pub const ScrollBarAction_ScrollBarAction_end: ScrollBarAction = 7;
-pub const ScrollBarAction_ScrollBarAction_setRange: ScrollBarAction = 8;
-pub const ScrollBarAction_ScrollBarAction_wheelUp: ScrollBarAction = 9;
-pub const ScrollBarAction_ScrollBarAction_wheelDown: ScrollBarAction = 10;
-pub type ScrollDirection = ::std::os::raw::c_int;
-pub const ScrollDirection_ScrollDirection_horizontal: ScrollDirection = 0;
-pub const ScrollDirection_ScrollDirection_vertical: ScrollDirection = 1;
-pub type Stacker = Window;
-pub type SelectorBar = Stacker;
-pub type StatusBar = Window;
-pub type StatusField = Instance;
-pub type Tab = Window;
-pub type TabControl = Window;
-pub type TabsPlacement = ::std::os::raw::c_int;
-pub const TabsPlacement_TabsPlacement_top: TabsPlacement = 0;
-pub const TabsPlacement_TabsPlacement_bottom: TabsPlacement = 1;
-pub const TabsPlacement_TabsPlacement_left: TabsPlacement = 2;
-pub const TabsPlacement_TabsPlacement_right: TabsPlacement = 3;
-pub type UndoBuffer = Instance;
-pub type DirPath = *mut ::std::os::raw::c_char;
-pub type FilePath = *mut ::std::os::raw::c_char;
-pub type Label = CommonControl;
-pub type MenuDivider = MenuItem;
-pub type MenuPlacement = MenuItem;
-pub type OldArray = Instance;
-pub type Picture = CommonControl;
-pub type PopupMenu = Window;
-pub type ProgressBar = CommonControl;
-pub type SavingDataBox = DataBox;
-pub type ToolBar = Stacker;
-pub type ToolButton = Button;
-pub type ToolSeparator = Window;
-pub type ToolTip = Window;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct BufferLocation {
-    pub line: *mut EditLine,
-    pub y: ::std::os::raw::c_int,
-    pub x: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of BufferLocation"][::std::mem::size_of::<BufferLocation>() - 16usize];
-    ["Alignment of BufferLocation"][::std::mem::align_of::<BufferLocation>() - 8usize];
-    ["Offset of field: BufferLocation::line"]
-        [::std::mem::offset_of!(BufferLocation, line) - 0usize];
-    ["Offset of field: BufferLocation::y"][::std::mem::offset_of!(BufferLocation, y) - 8usize];
-    ["Offset of field: BufferLocation::x"][::std::mem::offset_of!(BufferLocation, x) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut BufferLocation_adjustAdd: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BufferLocation,
-            start: *mut BufferLocation,
-            end: *mut BufferLocation,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut BufferLocation_adjustDelete: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut BufferLocation,
-            start: *mut BufferLocation,
-            end: *mut BufferLocation,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyClicked_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyClicked: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyMouseLeave_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyMouseLeave: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyMouseMove_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyMouseMove: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyMouseOver_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyMouseOver: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyPushed_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyPushed: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_notifyReleased_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Button_notifyReleased: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Button_removeRadio: ::std::option::Option<unsafe extern "C" fn(__this: Button)>;
-}
-unsafe extern "C" {
-    pub static mut Button_setColor: ::std::option::Option<
-        unsafe extern "C" fn(__this: Button, state: ButtonState, value: Color),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Button_setTextColor: ::std::option::Option<
-        unsafe extern "C" fn(__this: Button, state: ButtonState, value: Color),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Button_opacity: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_opacity:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: Percentage)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_opacity:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> Percentage>;
-}
-unsafe extern "C" {
-    pub static mut Button_isSet_opacity:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_drawBehind: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_drawBehind:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_drawBehind:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Button_isSet_drawBehind:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_isRadio: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_isRadio:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_isRadio:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_isCheckbox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_isCheckbox:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_isCheckbox:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_bevel: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_bevel:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_bevel:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_bevelOver: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_bevelOver:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_bevelOver:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_toggle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_toggle:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_toggle:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_checked: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_checked:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_checked:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_alignment: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_alignment:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: Alignment)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_alignment:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> Alignment>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_bitmap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: BitmapResource)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> BitmapResource>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_stayUp: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_stayUp:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_stayUp:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_scaleBitmap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_scaleBitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_scaleBitmap:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_keyRepeat: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_keyRepeat:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_keyRepeat:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_symbol: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_symbol:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: unichar)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_symbol:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> unichar>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_ellipsis: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_ellipsis:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_ellipsis:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_stayDown: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_stayDown:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_stayDown:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_offset: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_offset:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_offset:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_buttonState: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_buttonState:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: ButtonState)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_buttonState:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> ButtonState>;
-}
-unsafe extern "C" {
-    pub static mut property_Button_bitmapAlignment: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Button_set_bitmapAlignment:
-        ::std::option::Option<unsafe extern "C" fn(b: Button, value: BoxAlignment)>;
-}
-unsafe extern "C" {
-    pub static mut Button_get_bitmapAlignment:
-        ::std::option::Option<unsafe extern "C" fn(b: Button) -> BoxAlignment>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_CalendarControl {
-    pub dateValue: Date,
-    pub shownMonth: Month,
-    pub shownYear: ::std::os::raw::c_int,
-    pub __ecere_padding: [byte; 44usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_CalendarControl"]
-        [::std::mem::size_of::<class_members_CalendarControl>() - 64usize];
-    ["Alignment of class_members_CalendarControl"]
-        [::std::mem::align_of::<class_members_CalendarControl>() - 4usize];
-    ["Offset of field: class_members_CalendarControl::dateValue"]
-        [::std::mem::offset_of!(class_members_CalendarControl, dateValue) - 0usize];
-    ["Offset of field: class_members_CalendarControl::shownMonth"]
-        [::std::mem::offset_of!(class_members_CalendarControl, shownMonth) - 12usize];
-    ["Offset of field: class_members_CalendarControl::shownYear"]
-        [::std::mem::offset_of!(class_members_CalendarControl, shownYear) - 16usize];
-    ["Offset of field: class_members_CalendarControl::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_CalendarControl, __ecere_padding) - 20usize];
-};
-unsafe extern "C" {
-    pub static mut CalendarControl_notifyChanged_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_CalendarControl_notifyChanged: *mut Method;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DataBox {
-    pub type_: *mut Class,
-    pub data: *mut ::std::os::raw::c_void,
-    pub fieldData: *mut ::std::os::raw::c_void,
-    pub editor: Window,
-    pub readOnly: bool_,
-    pub keepEditor: bool_,
-    pub autoSize: bool_,
-    pub needUpdate: bool_,
-    pub stringValue: String,
-    pub __ecere_padding: [byte; 8usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DataBox"][::std::mem::size_of::<class_members_DataBox>() - 64usize];
-    ["Alignment of class_members_DataBox"]
-        [::std::mem::align_of::<class_members_DataBox>() - 8usize];
-    ["Offset of field: class_members_DataBox::type_"]
-        [::std::mem::offset_of!(class_members_DataBox, type_) - 0usize];
-    ["Offset of field: class_members_DataBox::data"]
-        [::std::mem::offset_of!(class_members_DataBox, data) - 8usize];
-    ["Offset of field: class_members_DataBox::fieldData"]
-        [::std::mem::offset_of!(class_members_DataBox, fieldData) - 16usize];
-    ["Offset of field: class_members_DataBox::editor"]
-        [::std::mem::offset_of!(class_members_DataBox, editor) - 24usize];
-    ["Offset of field: class_members_DataBox::readOnly"]
-        [::std::mem::offset_of!(class_members_DataBox, readOnly) - 32usize];
-    ["Offset of field: class_members_DataBox::keepEditor"]
-        [::std::mem::offset_of!(class_members_DataBox, keepEditor) - 36usize];
-    ["Offset of field: class_members_DataBox::autoSize"]
-        [::std::mem::offset_of!(class_members_DataBox, autoSize) - 40usize];
-    ["Offset of field: class_members_DataBox::needUpdate"]
-        [::std::mem::offset_of!(class_members_DataBox, needUpdate) - 44usize];
-    ["Offset of field: class_members_DataBox::stringValue"]
-        [::std::mem::offset_of!(class_members_DataBox, stringValue) - 48usize];
-    ["Offset of field: class_members_DataBox::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_DataBox, __ecere_padding) - 56usize];
-};
-unsafe extern "C" {
-    pub static mut DataBox_modified: ::std::option::Option<unsafe extern "C" fn(__this: DataBox)>;
-}
-unsafe extern "C" {
-    pub static mut DataBox_notifyChanged_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DataBox_notifyChanged: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DataBox_notifyModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DataBox_notifyModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DataBox_onConfigure_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DataBox_onConfigure: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DataBox_refresh: ::std::option::Option<unsafe extern "C" fn(__this: DataBox)>;
-}
-unsafe extern "C" {
-    pub static mut DataBox_saveData:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut DataBox_setData_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DataBox_setData: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DataField_autoSize:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_move:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataField, after: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_dataType: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_dataType:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: *mut Class)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_dataType:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> *mut Class>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_editable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_editable:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_fixed: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_fixed:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_fixed:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_alignment: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_alignment:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: Alignment)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_alignment:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> Alignment>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_width: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_width:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_width:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_index: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_index:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_position: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_position:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_position:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_sortOrder: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_sortOrder:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_header: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_header: ::std::option::Option<
-        unsafe extern "C" fn(d: DataField, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_userData: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_userData: ::std::option::Option<
-        unsafe extern "C" fn(d: DataField, value: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_userData:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> *mut ::std::os::raw::c_void>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_freeData: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_set_freeData:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_freeData:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_prev: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> DataField>;
-}
-unsafe extern "C" {
-    pub static mut property_DataField_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataField_get_next:
-        ::std::option::Option<unsafe extern "C" fn(d: DataField) -> DataField>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct DataFieldSort {
-    pub field: DataField,
-    pub order: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of DataFieldSort"][::std::mem::size_of::<DataFieldSort>() - 16usize];
-    ["Alignment of DataFieldSort"][::std::mem::align_of::<DataFieldSort>() - 8usize];
-    ["Offset of field: DataFieldSort::field"]
-        [::std::mem::offset_of!(DataFieldSort, field) - 0usize];
-    ["Offset of field: DataFieldSort::order"]
-        [::std::mem::offset_of!(DataFieldSort, order) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut DataRow_addRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_addRowAfter:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, after: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_addString: ::std::option::Option<
-        unsafe extern "C" fn(__this: DataRow, string: *const ::std::os::raw::c_char) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataRow_addStringf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DataRow,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataRow_edit:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, field: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_findRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_findSubRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_getData: ::std::option::Option<
-        unsafe extern "C" fn(__this: DataRow, field: DataField) -> any_object,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataRow_getNextRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_getPrevRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_move:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, after: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_setData: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DataRow,
-            field: DataField,
-            newData: any_object,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataRow_sortSubRows:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, scrollToCurrent: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_unsetData:
-        ::std::option::Option<unsafe extern "C" fn(__this: DataRow, field: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_tag: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_tag:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: int64)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_tag:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_previous: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_previous:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_next:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_index: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_index:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_string: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_string: ::std::option::Option<
-        unsafe extern "C" fn(d: DataRow, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_string:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_isHeader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_isHeader:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_isHeader:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_icon: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_icon:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: BitmapResource)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_icon:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> BitmapResource>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_collapsed: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_collapsed:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_collapsed:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_selected: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_selected:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_selected:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_parent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_set_parent:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow, value: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_parent:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_lastRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_lastRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DataRow_firstRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DataRow_get_firstRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DataRow) -> DataRow>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DirectoriesBox {
-    pub __ecerePrivateData0: [byte; 16usize],
-    pub browsing: bool_,
-    pub add: Button,
-    pub remove: Button,
-    pub up: RepButton,
-    pub down: RepButton,
-    pub list: ListBox,
-    pub dirField: DataField,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DirectoriesBox"]
-        [::std::mem::size_of::<class_members_DirectoriesBox>() - 72usize];
-    ["Alignment of class_members_DirectoriesBox"]
-        [::std::mem::align_of::<class_members_DirectoriesBox>() - 8usize];
-    ["Offset of field: class_members_DirectoriesBox::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_DirectoriesBox::browsing"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, browsing) - 16usize];
-    ["Offset of field: class_members_DirectoriesBox::add"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, add) - 24usize];
-    ["Offset of field: class_members_DirectoriesBox::remove"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, remove) - 32usize];
-    ["Offset of field: class_members_DirectoriesBox::up"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, up) - 40usize];
-    ["Offset of field: class_members_DirectoriesBox::down"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, down) - 48usize];
-    ["Offset of field: class_members_DirectoriesBox::list"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, list) - 56usize];
-    ["Offset of field: class_members_DirectoriesBox::dirField"]
-        [::std::mem::offset_of!(class_members_DirectoriesBox, dirField) - 64usize];
-};
-unsafe extern "C" {
-    pub static mut DirectoriesBox_notifyModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DirectoriesBox_notifyModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_notifyPathBoxModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DirectoriesBox_notifyPathBoxModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_onBrowsedDir_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DirectoriesBox_onBrowsedDir: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_onChangedDir_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DirectoriesBox_onChangedDir: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_onPrepareBrowseDir_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DirectoriesBox_onPrepareBrowseDir: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_DirectoriesBox_strings: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_set_strings:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox, value: Array)>;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_get_strings:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox) -> Array>;
-}
-unsafe extern "C" {
-    pub static mut property_DirectoriesBox_browseDialog: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_set_browseDialog:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox, value: FileDialog)>;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_get_browseDialog:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox) -> FileDialog>;
-}
-unsafe extern "C" {
-    pub static mut property_DirectoriesBox_baseBrowsePath: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_set_baseBrowsePath:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox, value: String)>;
-}
-unsafe extern "C" {
-    pub static mut DirectoriesBox_get_baseBrowsePath:
-        ::std::option::Option<unsafe extern "C" fn(d: DirectoriesBox) -> String>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DropBox {
-    pub button: Button,
-    pub __ecere_padding: [byte; 88usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DropBox"][::std::mem::size_of::<class_members_DropBox>() - 96usize];
-    ["Alignment of class_members_DropBox"]
-        [::std::mem::align_of::<class_members_DropBox>() - 8usize];
-    ["Offset of field: class_members_DropBox::button"]
-        [::std::mem::offset_of!(class_members_DropBox, button) - 0usize];
-    ["Offset of field: class_members_DropBox::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_DropBox, __ecere_padding) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut DropBox_addField:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, field: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_addRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_addRowAfter:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, after: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_addString: ::std::option::Option<
-        unsafe extern "C" fn(__this: DropBox, string: *const ::std::os::raw::c_char) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DropBox_addStringf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DropBox,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DropBox_clear: ::std::option::Option<unsafe extern "C" fn(__this: DropBox)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_deleteRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, row: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_findRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_findSubRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_getData: ::std::option::Option<
-        unsafe extern "C" fn(__this: DropBox, field: DataField) -> any_object,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DropBox_getRowCount:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_getTag:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_notifyClose_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_notifyClose: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_notifyHighlight_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_notifyHighlight: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_notifySelect_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_notifySelect: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_notifyTextEntry_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_notifyTextEntry: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_onCloseDropDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_onCloseDropDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_onDropDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DropBox_onDropDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DropBox_save:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_selectRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: DropBox, row: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_setData: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DropBox,
-            field: DataField,
-            data: any_object,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut DropBox_sort: ::std::option::Option<
-        unsafe extern "C" fn(__this: DropBox, field: DataField, order: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_activeStipple: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_activeStipple:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_activeStipple:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_showButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_showButton:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_showButton:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_alignment: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_alignment:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: Alignment)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_alignment:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> Alignment>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_noHighlight: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_noHighlight:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_noHighlight:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_activeColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_activeColor:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_activeColor:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_currentRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_currentRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_currentRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_firstRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_firstRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_lastRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_lastRow:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_contents: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_contents: ::std::option::Option<
-        unsafe extern "C" fn(d: DropBox, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_contents:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_editText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_editText:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_editText:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_editBox:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> EditBox>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_typingTimeout: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_typingTimeout:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: Time)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_typingTimeout:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> Time>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_rowHeight: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_rowHeight:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_rowHeight:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_maxShown: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_maxShown:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_maxShown:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_pullDown: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_pullDown:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_showNone: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_showNone:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_showNone:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_selectionColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_isSet_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_selectionText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_isSet_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_changeContents: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_set_changeContents:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_changeContents:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_listBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_listBox:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> ListBox>;
-}
-unsafe extern "C" {
-    pub static mut property_DropBox_rowCount: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut DropBox_get_rowCount:
-        ::std::option::Option<unsafe extern "C" fn(d: DropBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_addCh:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, ch: unichar) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_addS: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, string: *const ::std::os::raw::c_char) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_backSpace: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_centerOnCursor:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_clear: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_clearLine: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_copy: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_cut: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_delete: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            line1: *mut EditLine,
-            y1: ::std::os::raw::c_int,
-            x1: ::std::os::raw::c_int,
-            line2: *mut EditLine,
-            y2: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_deleteSelection:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_deselect: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_end: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_find: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            text: *const ::std::os::raw::c_char,
-            matchWord: bool_,
-            matchCase: bool_,
-            isSearchDown: bool_,
-        ) -> EditBoxFindResult,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_findInSelection: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            text: *const ::std::os::raw::c_char,
-            matchWord: bool_,
-            matchCase: bool_,
-            l2: *mut EditLine,
-            y2: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-        ) -> EditBoxFindResult,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_getSel: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, text: *mut ::std::os::raw::c_char, addCr: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_getSelPos: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            l1: *mut EditLine,
-            y1: *mut ::std::os::raw::c_int,
-            x1: *mut ::std::os::raw::c_int,
-            l2: *mut EditLine,
-            y2: *mut ::std::os::raw::c_int,
-            x2: *mut ::std::os::raw::c_int,
-            reorder: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_getText: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            text: *mut ::std::os::raw::c_char,
-            _l1: *mut EditLine,
-            _y1: ::std::os::raw::c_int,
-            _x1: ::std::os::raw::c_int,
-            _l2: *mut EditLine,
-            _y2: ::std::os::raw::c_int,
-            _x2: ::std::os::raw::c_int,
-            addCr: bool_,
-            addSpaces: bool_,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_goToLineNum: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, lineNum: ::std::os::raw::c_int) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_goToPosition: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            line: *mut EditLine,
-            y: ::std::os::raw::c_int,
-            x: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_home: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_lineDown: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_lineUp: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_load:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, f: File)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_modified: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyCaretMove_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyCaretMove: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyCharsAdded_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyCharsAdded: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyCharsDeleted_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyCharsDeleted: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyDropped_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyDropped: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyKeyDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyKeyDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyOvrToggle_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyOvrToggle: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyUnsetModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyUnsetModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_notifyUpdate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditBox_notifyUpdate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditBox_pageDown: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_pageUp: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_paste: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_printf: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_putCh:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, ch: unichar)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_putS: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, string: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_record:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, action: *mut UndoAction)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_redo: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_save:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, f: File, cr: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_selSize:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_select: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            line1: *mut EditLine,
-            y1: ::std::os::raw::c_int,
-            x1: ::std::os::raw::c_int,
-            line2: *mut EditLine,
-            y2: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_selectAll: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_setContents: ::std::option::Option<
-        unsafe extern "C" fn(__this: EditBox, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_setCursorToView:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_setModified:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, flag: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_setSelPos: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: EditBox,
-            l1: *mut EditLine,
-            y1: ::std::os::raw::c_int,
-            x1: ::std::os::raw::c_int,
-            l2: *mut EditLine,
-            y2: ::std::os::raw::c_int,
-            x2: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_setViewToCursor:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBox, setCaret: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_undo: ::std::option::Option<unsafe extern "C" fn(__this: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_textHorzScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_textHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_textHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_textVertScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_textVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_textVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_readOnly: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_readOnly:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_readOnly:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_multiLine: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_multiLine:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_multiLine:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_freeCaret: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_freeCaret:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_freeCaret:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_tabKey: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_tabKey:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_tabKey:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_tabSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_tabSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_tabSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_tabSelection: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_tabSelection:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_tabSelection:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_smartHome: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_smartHome:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_smartHome:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_autoEmpty: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_autoEmpty:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_autoEmpty:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_noCaret: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_noCaret:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_noCaret:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_maxLineSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_maxLineSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_maxLineSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_maxNumLines: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_maxNumLines:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_maxNumLines:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_useTab: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_useTab:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_useTab:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_syntaxHighlighting: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_syntaxHighlighting:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: EditSyntaxHL)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_syntaxHighlighting:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> EditSyntaxHL>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_noSelect: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_noSelect:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_noSelect:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_allCaps: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_allCaps:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_allCaps:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_autoSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_autoSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_autoSize:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_wrap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_wrap:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_wrap:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_numLines: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_numLines:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_lineNumber: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_lineNumber:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_column: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_column:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_charPos: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_charPos:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_firstLine: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_firstLine:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> *mut EditLine>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_lastLine: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_lastLine:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> *mut EditLine>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_line: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_line:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> *mut EditLine>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_contents: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_contents: ::std::option::Option<
-        unsafe extern "C" fn(e: EditBox, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_contents:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_overwrite: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_overwrite:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_caretFollowsScrolling: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_caretFollowsScrolling:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_caretFollowsScrolling:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_multiLineContents: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_multiLineContents:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> *mut ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_selectionColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_isSet_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_selectionText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_isSet_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBox_recordUndoEvent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBox_set_recordUndoEvent:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditBox_get_recordUndoEvent:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut EditBoxStream_deleteBytes:
-        ::std::option::Option<unsafe extern "C" fn(__this: EditBoxStream, count: uint)>;
-}
-unsafe extern "C" {
-    pub static mut property_EditBoxStream_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditBoxStream_set_editBox:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBoxStream, value: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut EditBoxStream_get_editBox:
-        ::std::option::Option<unsafe extern "C" fn(e: EditBoxStream) -> EditBox>;
-}
-unsafe extern "C" {
-    pub static mut property_EditLine_text: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditLine_set_text: ::std::option::Option<
-        unsafe extern "C" fn(e: *const EditLine, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut EditLine_get_text: ::std::option::Option<
-        unsafe extern "C" fn(e: *const EditLine) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_EditLine_prev: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditLine_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(e: *const EditLine) -> *mut EditLine>;
-}
-unsafe extern "C" {
-    pub static mut property_EditLine_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditLine_get_next:
-        ::std::option::Option<unsafe extern "C" fn(e: *const EditLine) -> *mut EditLine>;
-}
-unsafe extern "C" {
-    pub static mut property_EditLine_count: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditLine_get_count:
-        ::std::option::Option<unsafe extern "C" fn(e: *const EditLine) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_canImpactOtherLines_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_canImpactOtherLines: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_figureStartSyntaxStates_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_figureStartSyntaxStates: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_gotSpace_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_gotSpace: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_initDraw_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_initDraw: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_nextLine_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_nextLine: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_parseWord_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_parseWord: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_process_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_process: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_resetState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_resetState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditSyntaxHL_startLine_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditSyntaxHL_startLine: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut EditableSelectorButton_onRename_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_EditableSelectorButton_onRename: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_EditableSelectorButton_renameable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditableSelectorButton_set_renameable:
-        ::std::option::Option<unsafe extern "C" fn(e: EditableSelectorButton, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut EditableSelectorButton_get_renameable:
-        ::std::option::Option<unsafe extern "C" fn(e: EditableSelectorButton) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_EditableSelectorButton_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut EditableSelectorButton_get_editBox:
-        ::std::option::Option<unsafe extern "C" fn(e: EditableSelectorButton) -> EditBox>;
-}
-unsafe extern "C" {
-    pub static mut property_Label_labeledWindow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Label_set_labeledWindow:
-        ::std::option::Option<unsafe extern "C" fn(l: Label, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Label_get_labeledWindow:
-        ::std::option::Option<unsafe extern "C" fn(l: Label) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Label_isGroupBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Label_set_isGroupBox:
-        ::std::option::Option<unsafe extern "C" fn(l: Label, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Label_get_isGroupBox:
-        ::std::option::Option<unsafe extern "C" fn(l: Label) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addField:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, addedField: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addRowAfter:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, after: DataRow) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addRowNone:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addString: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, string: *const ::std::os::raw::c_char) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_addStringf: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ListBox,
-            format: *const ::std::os::raw::c_char,
-            ...
-        ) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_clear: ::std::option::Option<unsafe extern "C" fn(__this: ListBox)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_clearFields:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_deleteRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, row: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findString: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ListBox,
-            searchedString: *const ::std::os::raw::c_char,
-        ) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findSubRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, tag: int64) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findSubString: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, subString: *const ::std::os::raw::c_char) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findSubStringAfter: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ListBox,
-            after: DataRow,
-            subString: *const ::std::os::raw::c_char,
-        ) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_findSubStringi: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, subString: *const ::std::os::raw::c_char) -> DataRow,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_getData: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, field: DataField) -> any_object,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_getMultiSelection:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, list: *mut OldList)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_getTag:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_multiSort:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, fields: Array)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyChanged_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyChanged: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyCollapse_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyCollapse: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyEditDone_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyEditDone: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyEdited_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyEdited: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyEditing_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyEditing: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyHighlight_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyHighlight: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyKeyDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyKeyDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyKeyHit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyKeyHit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyMove_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyMove: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyMoved_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyMoved: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyMovedField_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyMovedField: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyReclick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyReclick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyResized_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyResized: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifyRightClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifyRightClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifySelect_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifySelect: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_notifySort_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_ListBox_notifySort: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut ListBox_removeField:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, field: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_selectRow:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, row: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_setData: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ListBox,
-            field: DataField,
-            data: any_object,
-        ) -> *mut ::std::os::raw::c_void,
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_sort: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, field: DataField, order: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_sortAlsoBy: ::std::option::Option<
-        unsafe extern "C" fn(__this: ListBox, field: DataField, order: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut ListBox_stopEditing:
-        ::std::option::Option<unsafe extern "C" fn(__this: ListBox, save: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_freeSelect: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_freeSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_freeSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_currentRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_currentRow:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: DataRow)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_currentRow:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_currentField: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_currentField:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: DataField)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_currentField:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> DataField>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_rowHeight: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_rowHeight:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_rowHeight:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_isSet_rowHeight:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_typingTimeout: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_typingTimeout:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: Time)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_typingTimeout:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> Time>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_moveRows: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_moveRows:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_moveRows:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_moveFields: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_moveFields:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_moveFields:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_resizable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_resizable:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_resizable:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_autoScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_autoScroll:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_autoScroll:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_alwaysHighLight: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_alwaysHighLight:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_alwaysHighLight:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_hasClearHeader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_hasClearHeader:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_hasClearHeader:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_hasHeader: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_hasHeader:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_hasHeader:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_multiSelect: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_multiSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_multiSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_alwaysEdit: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_alwaysEdit:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_alwaysEdit:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_fullRowSelect: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_fullRowSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_fullRowSelect:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_collapseControl: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_collapseControl:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_collapseControl:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_treeBranches: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_treeBranches:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_treeBranches:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_rootCollapseButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_rootCollapseButton:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_rootCollapseButton:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_sortable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_sortable:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_sortable:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_noDragging: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_noDragging:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_noDragging:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_fillLastField: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_fillLastField:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_fillLastField:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_numSelections: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_numSelections:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_currentIndex: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_currentIndex:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_lastRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_lastRow:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_firstRow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_firstRow:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> DataRow>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_rowCount: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_rowCount:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_firstField: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_firstField:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> DataField>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_selectionColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_isSet_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_selectionText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_isSet_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_stippleColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_stippleColor:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_stippleColor:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_ListBox_expandOnAdd: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ListBox_set_expandOnAdd:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ListBox_get_expandOnAdd:
-        ::std::option::Option<unsafe extern "C" fn(l: ListBox) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Menu_addDynamic: ::std::option::Option<
-        unsafe extern "C" fn(__this: Menu, addedItem: MenuItem, master: Window, persistent: bool_),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Menu_addItem:
-        ::std::option::Option<unsafe extern "C" fn(__this: Menu, item: MenuItem)>;
-}
-unsafe extern "C" {
-    pub static mut Menu_addSubMenu:
-        ::std::option::Option<unsafe extern "C" fn(__this: Menu, subMenu: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut Menu_clean:
-        ::std::option::Option<unsafe extern "C" fn(__this: Menu, window: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Menu_clear: ::std::option::Option<unsafe extern "C" fn(__this: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut Menu_findItem: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Menu,
-            notifySelect: ::std::option::Option<
-                unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-            >,
-            id: uint64,
-        ) -> MenuItem,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Menu_findMenu: ::std::option::Option<
-        unsafe extern "C" fn(__this: Menu, name: *const ::std::os::raw::c_char) -> Menu,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Menu_merge: ::std::option::Option<
-        unsafe extern "C" fn(__this: Menu, menuBeingMerged: Menu, menuBar: bool_, window: Window),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Menu_removeItem:
-        ::std::option::Option<unsafe extern "C" fn(__this: Menu, item: MenuItem)>;
-}
-unsafe extern "C" {
-    pub static mut property_Menu_parent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Menu_set_parent:
-        ::std::option::Option<unsafe extern "C" fn(m: Menu, value: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut property_Menu_text: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Menu_set_text:
-        ::std::option::Option<unsafe extern "C" fn(m: Menu, value: *const ::std::os::raw::c_char)>;
-}
-unsafe extern "C" {
-    pub static mut property_Menu_hotKey: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Menu_set_hotKey:
-        ::std::option::Option<unsafe extern "C" fn(m: Menu, value: Key)>;
-}
-unsafe extern "C" {
-    pub static mut property_Menu_hasMargin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Menu_set_hasMargin:
-        ::std::option::Option<unsafe extern "C" fn(m: Menu, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_Menu_copyText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Menu_set_copyText:
-        ::std::option::Option<unsafe extern "C" fn(m: Menu, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_notifySelect_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_MenuItem_notifySelect: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_parent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_parent:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_text: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_text: ::std::option::Option<
-        unsafe extern "C" fn(m: MenuItem, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_hotKey: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_hotKey:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: Key)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_accelerator: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_accelerator:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: Key)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_checked: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_checked:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_get_checked:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_disabled: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_disabled:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_checkable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_checkable:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_isRadio: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_isRadio:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_id: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_id:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: uint64)>;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_get_id:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem) -> uint64>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_bitmap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: BitmapResource)>;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_get_bitmap:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem) -> BitmapResource>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_copyText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_copyText:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_MenuItem_bold: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_set_bold:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut MenuItem_get_bold:
-        ::std::option::Option<unsafe extern "C" fn(m: MenuItem) -> bool_>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_OldArray {
-    pub type_: *mut Class,
-    pub __ecere_padding: [byte; 8usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_OldArray"][::std::mem::size_of::<class_members_OldArray>() - 16usize];
-    ["Alignment of class_members_OldArray"]
-        [::std::mem::align_of::<class_members_OldArray>() - 8usize];
-    ["Offset of field: class_members_OldArray::type_"]
-        [::std::mem::offset_of!(class_members_OldArray, type_) - 0usize];
-    ["Offset of field: class_members_OldArray::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_OldArray, __ecere_padding) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut property_OldArray_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut OldArray_set_size:
-        ::std::option::Option<unsafe extern "C" fn(o: OldArray, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut OldArray_get_size:
-        ::std::option::Option<unsafe extern "C" fn(o: OldArray) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut property_OldArray_data: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut OldArray_set_data: ::std::option::Option<
-        unsafe extern "C" fn(o: OldArray, value: *mut ::std::os::raw::c_void),
-    >;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_notifyResized_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_PaneSplitter_notifyResized: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_toolSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_toolSize:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_toolSize:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_toolGap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_toolGap:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_toolGap:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_leftPane: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_leftPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_leftPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_rightPane: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_rightPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_rightPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_topPane: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_topPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_topPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_bottomPane: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_bottomPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_bottomPane:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_scaleSplit: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_scaleSplit:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: f64)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_scaleSplit:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_orientation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_orientation:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: ScrollDirection)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_orientation:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> ScrollDirection>;
-}
-unsafe extern "C" {
-    pub static mut property_PaneSplitter_split: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_set_split:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut PaneSplitter_get_split:
-        ::std::option::Option<unsafe extern "C" fn(p: PaneSplitter) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_deselect: ::std::option::Option<unsafe extern "C" fn(__this: PathBox)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_end: ::std::option::Option<unsafe extern "C" fn(__this: PathBox)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_home: ::std::option::Option<unsafe extern "C" fn(__this: PathBox)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_notifyModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_PathBox_notifyModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut PathBox_selectAll: ::std::option::Option<unsafe extern "C" fn(__this: PathBox)>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_editBox:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> EditBox>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_typeExpected: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_set_typeExpected:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox, value: PathTypeExpected)>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_browseDialog: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_set_browseDialog:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox, value: FileDialog)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_browseDialog:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> FileDialog>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_path: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_set_path:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_path:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> constString>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_slashPath: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_slashPath:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> String>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_systemPath: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_systemPath:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> String>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_selectionColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_set_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_selectionColor:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_PathBox_selectionText: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PathBox_set_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut PathBox_get_selectionText:
-        ::std::option::Option<unsafe extern "C" fn(p: PathBox) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Picture_tint: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Picture_set_tint:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut property_Picture_image: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Picture_set_image:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture, value: BitmapResource)>;
-}
-unsafe extern "C" {
-    pub static mut Picture_get_image:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture) -> BitmapResource>;
-}
-unsafe extern "C" {
-    pub static mut property_Picture_filter: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Picture_set_filter:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Picture_get_filter:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Picture_bitmapImage: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Picture_set_bitmapImage:
-        ::std::option::Option<unsafe extern "C" fn(p: Picture, value: Bitmap)>;
-}
-unsafe extern "C" {
-    pub static mut property_PopupMenu_menu: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PopupMenu_set_menu:
-        ::std::option::Option<unsafe extern "C" fn(p: PopupMenu, value: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut PopupMenu_get_menu:
-        ::std::option::Option<unsafe extern "C" fn(p: PopupMenu) -> Menu>;
-}
-unsafe extern "C" {
-    pub static mut property_PopupMenu_isMenuBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PopupMenu_set_isMenuBar:
-        ::std::option::Option<unsafe extern "C" fn(p: PopupMenu, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_PopupMenu_focus: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut PopupMenu_get_focus:
-        ::std::option::Option<unsafe extern "C" fn(p: PopupMenu) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ProgressBar_progress: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ProgressBar_set_progress:
-        ::std::option::Option<unsafe extern "C" fn(p: ProgressBar, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut ProgressBar_get_progress:
-        ::std::option::Option<unsafe extern "C" fn(p: ProgressBar) -> uint>;
-}
-unsafe extern "C" {
-    pub static mut property_ProgressBar_range: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ProgressBar_set_range:
-        ::std::option::Option<unsafe extern "C" fn(p: ProgressBar, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut ProgressBar_get_range:
-        ::std::option::Option<unsafe extern "C" fn(p: ProgressBar) -> uint>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_ScrollBar {
-    pub __ecerePrivateData0: [byte; 24usize],
-    pub downBtn: Button,
-    pub upBtn: Button,
-    pub thumb: Button,
-    pub __ecerePrivateData1: [byte; 12usize],
-    pub thumbSize: ::std::os::raw::c_int,
+pub struct Mutex {
     pub __ecere_padding: [byte; 56usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of class_members_ScrollBar"]
-        [::std::mem::size_of::<class_members_ScrollBar>() - 120usize];
-    ["Alignment of class_members_ScrollBar"]
-        [::std::mem::align_of::<class_members_ScrollBar>() - 8usize];
-    ["Offset of field: class_members_ScrollBar::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_ScrollBar, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_ScrollBar::downBtn"]
-        [::std::mem::offset_of!(class_members_ScrollBar, downBtn) - 24usize];
-    ["Offset of field: class_members_ScrollBar::upBtn"]
-        [::std::mem::offset_of!(class_members_ScrollBar, upBtn) - 32usize];
-    ["Offset of field: class_members_ScrollBar::thumb"]
-        [::std::mem::offset_of!(class_members_ScrollBar, thumb) - 40usize];
-    ["Offset of field: class_members_ScrollBar::__ecerePrivateData1"]
-        [::std::mem::offset_of!(class_members_ScrollBar, __ecerePrivateData1) - 48usize];
-    ["Offset of field: class_members_ScrollBar::thumbSize"]
-        [::std::mem::offset_of!(class_members_ScrollBar, thumbSize) - 60usize];
-    ["Offset of field: class_members_ScrollBar::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_ScrollBar, __ecere_padding) - 64usize];
+    ["Size of Mutex"][::std::mem::size_of::<Mutex>() - 56usize];
+    ["Alignment of Mutex"][::std::mem::align_of::<Mutex>() - 1usize];
+    ["Offset of field: Mutex::__ecere_padding"]
+        [::std::mem::offset_of!(Mutex, __ecere_padding) - 0usize];
 };
 unsafe extern "C" {
-    pub static mut ScrollBar_action: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: ScrollBar,
-            action: ScrollBarAction,
-            newPosition: ::std::os::raw::c_int,
-            key: Key,
-        ) -> bool_,
-    >;
+    pub static mut Mutex_release: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
 }
 unsafe extern "C" {
-    pub static mut ScrollBar_notifyScrolling_vTblID: ::std::os::raw::c_int;
+    pub static mut Mutex_wait: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
 }
 unsafe extern "C" {
-    pub static mut method_ScrollBar_notifyScrolling: *mut Method;
+    pub static mut property_Mutex_lockCount: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut property_ScrollBar_direction: *mut Property;
+    pub static mut Mutex_get_lockCount:
+        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> ::std::os::raw::c_int>;
 }
 unsafe extern "C" {
-    pub static mut ScrollBar_set_direction:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ScrollDirection)>;
+    pub static mut property_Mutex_owningThread: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut ScrollBar_get_direction:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ScrollDirection>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_windowOwned: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_windowOwned:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_snap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_snap:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_snap:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_range: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_range:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_range:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_seen: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_seen:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_seen:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_total: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_total:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_total:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_lineStep: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_lineStep:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_lineStep:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_pageStep: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_pageStep:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_pageStep:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_ScrollBar_thumbPosition: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_set_thumbPosition:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut ScrollBar_get_thumbPosition:
-        ::std::option::Option<unsafe extern "C" fn(s: ScrollBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_addButton:
-        ::std::option::Option<unsafe extern "C" fn(__this: SelectorBar, button: SelectorButton)>;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: SelectorBar)>;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_findButtonByID: ::std::option::Option<
-        unsafe extern "C" fn(__this: SelectorBar, id: int64) -> SelectorButton,
-    >;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_removeButton:
-        ::std::option::Option<unsafe extern "C" fn(__this: SelectorBar, button: SelectorButton)>;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_select:
-        ::std::option::Option<unsafe extern "C" fn(__this: SelectorBar, button: SelectorButton)>;
-}
-unsafe extern "C" {
-    pub static mut property_SelectorBar_selectedButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut SelectorBar_get_selectedButton:
-        ::std::option::Option<unsafe extern "C" fn(s: SelectorBar) -> SelectorButton>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_destroyChildren:
-        ::std::option::Option<unsafe extern "C" fn(__this: Stacker)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_getNextStackedItem: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Stacker,
-            current: Window,
-            previous: bool_,
-            filter: *mut Class,
-        ) -> Window,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Stacker_makeControlVisible:
-        ::std::option::Option<unsafe extern "C" fn(__this: Stacker, control: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_moveControl: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Stacker,
-            ctrl: *mut IteratorPointer,
-            after: *mut IteratorPointer,
-            fixCycle: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_direction: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_direction:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: ScrollDirection)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_direction:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> ScrollDirection>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_gap: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_gap:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_gap:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_reverse: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_reverse:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_reverse:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_scrollable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_scrollable:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_scrollable:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_controls: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_controls:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> Array>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_flipper: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_flipper:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_flipper:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_flipSpring: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_flipSpring:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_flipSpring:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_autoSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_autoSize:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_autoSize:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_margin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_margin:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_margin:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_endButtons: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_endButtons:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_endButtons:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Stacker_hoverScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Stacker_set_hoverScroll:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Stacker_get_hoverScroll:
-        ::std::option::Option<unsafe extern "C" fn(s: Stacker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut StatusBar_addField:
-        ::std::option::Option<unsafe extern "C" fn(__this: StatusBar, field: StatusField)>;
-}
-unsafe extern "C" {
-    pub static mut StatusBar_clear: ::std::option::Option<unsafe extern "C" fn(__this: StatusBar)>;
-}
-unsafe extern "C" {
-    pub static mut StatusBar_removeField:
-        ::std::option::Option<unsafe extern "C" fn(__this: StatusBar, field: StatusField)>;
-}
-unsafe extern "C" {
-    pub static mut property_StatusBar_minInfoWidth: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusBar_set_minInfoWidth:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusBar, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut StatusBar_get_minInfoWidth:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusBar) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut StatusField_setTextf: ::std::option::Option<
-        unsafe extern "C" fn(__this: StatusField, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_statusBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_statusBar:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusField, value: StatusBar)>;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_color:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusField, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_backColor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_backColor:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusField, value: ColorAlpha)>;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_bold: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_bold:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusField, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_text: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_text: ::std::option::Option<
-        unsafe extern "C" fn(s: StatusField, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_StatusField_width: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut StatusField_set_width:
-        ::std::option::Option<unsafe extern "C" fn(s: StatusField, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut Tab_selectTab: ::std::option::Option<unsafe extern "C" fn(__this: Tab)>;
-}
-unsafe extern "C" {
-    pub static mut property_Tab_tabControl: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Tab_set_tabControl:
-        ::std::option::Option<unsafe extern "C" fn(t: Tab, value: TabControl)>;
-}
-unsafe extern "C" {
-    pub static mut Tab_get_tabControl:
-        ::std::option::Option<unsafe extern "C" fn(t: Tab) -> TabControl>;
-}
-unsafe extern "C" {
-    pub static mut property_Tab_isAdded: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Tab_get_isAdded: ::std::option::Option<unsafe extern "C" fn(t: Tab) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut TabControl_addTab:
-        ::std::option::Option<unsafe extern "C" fn(__this: TabControl, tab: Tab)>;
-}
-unsafe extern "C" {
-    pub static mut TabControl_removeTab:
-        ::std::option::Option<unsafe extern "C" fn(__this: TabControl, tab: Tab)>;
-}
-unsafe extern "C" {
-    pub static mut property_TabControl_placement: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TabControl_set_placement:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl, value: TabsPlacement)>;
-}
-unsafe extern "C" {
-    pub static mut TabControl_get_placement:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl) -> TabsPlacement>;
-}
-unsafe extern "C" {
-    pub static mut property_TabControl_buttonsOffset: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TabControl_set_buttonsOffset:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut TabControl_get_buttonsOffset:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_TabControl_curTab: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut TabControl_set_curTab:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl, value: Tab)>;
-}
-unsafe extern "C" {
-    pub static mut TabControl_get_curTab:
-        ::std::option::Option<unsafe extern "C" fn(t: TabControl) -> Tab>;
-}
-unsafe extern "C" {
-    pub static mut property_ToolButton_menuItemPtr: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ToolButton_set_menuItemPtr:
-        ::std::option::Option<unsafe extern "C" fn(t: ToolButton, value: *mut MenuItem)>;
-}
-unsafe extern "C" {
-    pub static mut property_ToolButton_menuItem: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ToolButton_get_menuItem:
-        ::std::option::Option<unsafe extern "C" fn(t: ToolButton) -> MenuItem>;
-}
-unsafe extern "C" {
-    pub static mut property_ToolTip_tip: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ToolTip_set_tip:
-        ::std::option::Option<unsafe extern "C" fn(t: ToolTip, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut ToolTip_get_tip:
-        ::std::option::Option<unsafe extern "C" fn(t: ToolTip) -> constString>;
+    pub static mut Mutex_get_owningThread:
+        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> int64>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct UndoAction {
-    pub type_: *mut Class,
-    pub continued: bool_,
+pub struct Semaphore {
+    pub __ecere_padding: [byte; 40usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
-    ["Size of UndoAction"][::std::mem::size_of::<UndoAction>() - 16usize];
-    ["Alignment of UndoAction"][::std::mem::align_of::<UndoAction>() - 8usize];
-    ["Offset of field: UndoAction::type_"][::std::mem::offset_of!(UndoAction, type_) - 0usize];
-    ["Offset of field: UndoAction::continued"]
-        [::std::mem::offset_of!(UndoAction, continued) - 8usize];
+    ["Size of Semaphore"][::std::mem::size_of::<Semaphore>() - 40usize];
+    ["Alignment of Semaphore"][::std::mem::align_of::<Semaphore>() - 1usize];
+    ["Offset of field: Semaphore::__ecere_padding"]
+        [::std::mem::offset_of!(Semaphore, __ecere_padding) - 0usize];
 };
 unsafe extern "C" {
-    pub static mut UndoAction_redo_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_UndoAction_redo: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut UndoAction_undo_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_UndoAction_undo: *mut Method;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_UndoBuffer {
-    pub __ecerePrivateData0: [byte; 8usize],
-    pub count: ::std::os::raw::c_int,
-    pub curAction: ::std::os::raw::c_int,
-    pub data: *mut ::std::os::raw::c_void,
-    pub dontRecord: ::std::os::raw::c_int,
-    pub insideRedo: bool_,
-    pub recordAsOne: bool_,
-    pub firstEvent: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_UndoBuffer"]
-        [::std::mem::size_of::<class_members_UndoBuffer>() - 40usize];
-    ["Alignment of class_members_UndoBuffer"]
-        [::std::mem::align_of::<class_members_UndoBuffer>() - 8usize];
-    ["Offset of field: class_members_UndoBuffer::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_UndoBuffer::count"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, count) - 8usize];
-    ["Offset of field: class_members_UndoBuffer::curAction"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, curAction) - 12usize];
-    ["Offset of field: class_members_UndoBuffer::data"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, data) - 16usize];
-    ["Offset of field: class_members_UndoBuffer::dontRecord"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, dontRecord) - 24usize];
-    ["Offset of field: class_members_UndoBuffer::insideRedo"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, insideRedo) - 28usize];
-    ["Offset of field: class_members_UndoBuffer::recordAsOne"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, recordAsOne) - 32usize];
-    ["Offset of field: class_members_UndoBuffer::firstEvent"]
-        [::std::mem::offset_of!(class_members_UndoBuffer, firstEvent) - 36usize];
-};
-unsafe extern "C" {
-    pub static mut UndoBuffer_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: UndoBuffer)>;
-}
-unsafe extern "C" {
-    pub static mut UndoBuffer_record:
-        ::std::option::Option<unsafe extern "C" fn(__this: UndoBuffer, action: *mut UndoAction)>;
-}
-unsafe extern "C" {
-    pub static mut UndoBuffer_redo: ::std::option::Option<unsafe extern "C" fn(__this: UndoBuffer)>;
-}
-unsafe extern "C" {
-    pub static mut UndoBuffer_undo: ::std::option::Option<unsafe extern "C" fn(__this: UndoBuffer)>;
-}
-pub type AnchorValueType = ::std::os::raw::c_int;
-pub const AnchorValueType_AnchorValueType_none: AnchorValueType = 0;
-pub const AnchorValueType_AnchorValueType_offset: AnchorValueType = 1;
-pub const AnchorValueType_AnchorValueType_relative: AnchorValueType = 2;
-pub const AnchorValueType_AnchorValueType_middleRelative: AnchorValueType = 3;
-pub const AnchorValueType_AnchorValueType_cascade: AnchorValueType = 4;
-pub const AnchorValueType_AnchorValueType_vTiled: AnchorValueType = 5;
-pub const AnchorValueType_AnchorValueType_hTiled: AnchorValueType = 6;
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct AnchorValue {
-    pub type_: AnchorValueType,
-    pub __bindgen_anon_1: AnchorValue__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union AnchorValue__bindgen_ty_1 {
-    pub distance: ::std::os::raw::c_int,
-    pub percent: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of AnchorValue__bindgen_ty_1"]
-        [::std::mem::size_of::<AnchorValue__bindgen_ty_1>() - 4usize];
-    ["Alignment of AnchorValue__bindgen_ty_1"]
-        [::std::mem::align_of::<AnchorValue__bindgen_ty_1>() - 4usize];
-    ["Offset of field: AnchorValue__bindgen_ty_1::distance"]
-        [::std::mem::offset_of!(AnchorValue__bindgen_ty_1, distance) - 0usize];
-    ["Offset of field: AnchorValue__bindgen_ty_1::percent"]
-        [::std::mem::offset_of!(AnchorValue__bindgen_ty_1, percent) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of AnchorValue"][::std::mem::size_of::<AnchorValue>() - 8usize];
-    ["Alignment of AnchorValue"][::std::mem::align_of::<AnchorValue>() - 4usize];
-    ["Offset of field: AnchorValue::type_"][::std::mem::offset_of!(AnchorValue, type_) - 0usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct MiddleAnchorValue {
-    pub type_: AnchorValueType,
-    pub __bindgen_anon_1: MiddleAnchorValue__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union MiddleAnchorValue__bindgen_ty_1 {
-    pub distance: ::std::os::raw::c_int,
-    pub percent: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MiddleAnchorValue__bindgen_ty_1"]
-        [::std::mem::size_of::<MiddleAnchorValue__bindgen_ty_1>() - 4usize];
-    ["Alignment of MiddleAnchorValue__bindgen_ty_1"]
-        [::std::mem::align_of::<MiddleAnchorValue__bindgen_ty_1>() - 4usize];
-    ["Offset of field: MiddleAnchorValue__bindgen_ty_1::distance"]
-        [::std::mem::offset_of!(MiddleAnchorValue__bindgen_ty_1, distance) - 0usize];
-    ["Offset of field: MiddleAnchorValue__bindgen_ty_1::percent"]
-        [::std::mem::offset_of!(MiddleAnchorValue__bindgen_ty_1, percent) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of MiddleAnchorValue"][::std::mem::size_of::<MiddleAnchorValue>() - 8usize];
-    ["Alignment of MiddleAnchorValue"][::std::mem::align_of::<MiddleAnchorValue>() - 4usize];
-    ["Offset of field: MiddleAnchorValue::type_"]
-        [::std::mem::offset_of!(MiddleAnchorValue, type_) - 0usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct Anchor {
-    pub __bindgen_anon_1: Anchor__bindgen_ty_1,
-    pub __bindgen_anon_2: Anchor__bindgen_ty_2,
-    pub right: AnchorValue,
-    pub bottom: AnchorValue,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Anchor__bindgen_ty_1 {
-    pub left: AnchorValue,
-    pub horz: MiddleAnchorValue,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Anchor__bindgen_ty_1"][::std::mem::size_of::<Anchor__bindgen_ty_1>() - 8usize];
-    ["Alignment of Anchor__bindgen_ty_1"][::std::mem::align_of::<Anchor__bindgen_ty_1>() - 4usize];
-    ["Offset of field: Anchor__bindgen_ty_1::left"]
-        [::std::mem::offset_of!(Anchor__bindgen_ty_1, left) - 0usize];
-    ["Offset of field: Anchor__bindgen_ty_1::horz"]
-        [::std::mem::offset_of!(Anchor__bindgen_ty_1, horz) - 0usize];
-};
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union Anchor__bindgen_ty_2 {
-    pub top: AnchorValue,
-    pub vert: MiddleAnchorValue,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Anchor__bindgen_ty_2"][::std::mem::size_of::<Anchor__bindgen_ty_2>() - 8usize];
-    ["Alignment of Anchor__bindgen_ty_2"][::std::mem::align_of::<Anchor__bindgen_ty_2>() - 4usize];
-    ["Offset of field: Anchor__bindgen_ty_2::top"]
-        [::std::mem::offset_of!(Anchor__bindgen_ty_2, top) - 0usize];
-    ["Offset of field: Anchor__bindgen_ty_2::vert"]
-        [::std::mem::offset_of!(Anchor__bindgen_ty_2, vert) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Anchor"][::std::mem::size_of::<Anchor>() - 32usize];
-    ["Alignment of Anchor"][::std::mem::align_of::<Anchor>() - 4usize];
-    ["Offset of field: Anchor::right"][::std::mem::offset_of!(Anchor, right) - 16usize];
-    ["Offset of field: Anchor::bottom"][::std::mem::offset_of!(Anchor, bottom) - 24usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct SizeAnchor {
-    pub size: Size,
-    pub isClientW: bool_,
-    pub isClientH: bool_,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of SizeAnchor"][::std::mem::size_of::<SizeAnchor>() - 16usize];
-    ["Alignment of SizeAnchor"][::std::mem::align_of::<SizeAnchor>() - 4usize];
-    ["Offset of field: SizeAnchor::size"][::std::mem::offset_of!(SizeAnchor, size) - 0usize];
-    ["Offset of field: SizeAnchor::isClientW"]
-        [::std::mem::offset_of!(SizeAnchor, isClientW) - 8usize];
-    ["Offset of field: SizeAnchor::isClientH"]
-        [::std::mem::offset_of!(SizeAnchor, isClientH) - 12usize];
-};
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_WindowController {
-    pub windowVTbl: *mut ::std::option::Option<unsafe extern "C" fn() -> ::std::os::raw::c_int>,
-    pub __ecere_padding: [byte; 16usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_WindowController"]
-        [::std::mem::size_of::<class_members_WindowController>() - 24usize];
-    ["Alignment of class_members_WindowController"]
-        [::std::mem::align_of::<class_members_WindowController>() - 8usize];
-    ["Offset of field: class_members_WindowController::windowVTbl"]
-        [::std::mem::offset_of!(class_members_WindowController, windowVTbl) - 0usize];
-    ["Offset of field: class_members_WindowController::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_WindowController, __ecere_padding) - 8usize];
-};
-pub type BorderBits = uint32;
-pub type BorderStyle = BorderBits;
-pub const BorderStyle_BorderStyle_none: BorderStyle = 0;
-pub const BorderStyle_BorderStyle_contour: BorderStyle = 1;
-pub const BorderStyle_BorderStyle_fixed: BorderStyle = 3;
-pub const BorderStyle_BorderStyle_sizable: BorderStyle = 7;
-pub const BorderStyle_BorderStyle_thin: BorderStyle = 35;
-pub const BorderStyle_BorderStyle_sizableThin: BorderStyle = 39;
-pub const BorderStyle_BorderStyle_deep: BorderStyle = 8;
-pub const BorderStyle_BorderStyle_bevel: BorderStyle = 16;
-pub const BorderStyle_BorderStyle_sizableDeep: BorderStyle = 15;
-pub const BorderStyle_BorderStyle_sizableBevel: BorderStyle = 23;
-pub const BorderStyle_BorderStyle_fixedDeep: BorderStyle = 11;
-pub const BorderStyle_BorderStyle_fixedBevel: BorderStyle = 19;
-pub const BorderStyle_BorderStyle_deepContour: BorderStyle = 9;
-pub type CreationActivationOption = ::std::os::raw::c_int;
-pub const CreationActivationOption_CreationActivationOption_activate: CreationActivationOption = 0;
-pub const CreationActivationOption_CreationActivationOption_flash: CreationActivationOption = 1;
-pub const CreationActivationOption_CreationActivationOption_doNothing: CreationActivationOption = 2;
-pub type Cursor = Instance;
-pub type DialogResult = int64;
-pub const DialogResult_DialogResult_cancel: DialogResult = 0;
-pub const DialogResult_DialogResult_yes: DialogResult = 1;
-pub const DialogResult_DialogResult_no: DialogResult = 2;
-pub const DialogResult_DialogResult_ok: DialogResult = 3;
-pub type GuiApplication = Application;
-pub type Interface = Instance;
-pub type MouseButtons = uint32;
-pub type Skin = Instance;
-pub type SkinBitmap = ::std::os::raw::c_int;
-pub const SkinBitmap_SkinBitmap_minimize: SkinBitmap = 0;
-pub const SkinBitmap_SkinBitmap_maximize: SkinBitmap = 1;
-pub const SkinBitmap_SkinBitmap_restore: SkinBitmap = 2;
-pub const SkinBitmap_SkinBitmap_close: SkinBitmap = 3;
-pub type SystemCursor = ::std::os::raw::c_int;
-pub const SystemCursor_SystemCursor_arrow: SystemCursor = 0;
-pub const SystemCursor_SystemCursor_iBeam: SystemCursor = 1;
-pub const SystemCursor_SystemCursor_cross: SystemCursor = 2;
-pub const SystemCursor_SystemCursor_moving: SystemCursor = 3;
-pub const SystemCursor_SystemCursor_sizeNESW: SystemCursor = 4;
-pub const SystemCursor_SystemCursor_sizeNS: SystemCursor = 5;
-pub const SystemCursor_SystemCursor_sizeNWSE: SystemCursor = 6;
-pub const SystemCursor_SystemCursor_sizeWE: SystemCursor = 7;
-pub const SystemCursor_SystemCursor_hand: SystemCursor = 8;
-pub type TouchPointerEvent = ::std::os::raw::c_int;
-pub const TouchPointerEvent_TouchPointerEvent_move: TouchPointerEvent = 0;
-pub const TouchPointerEvent_TouchPointerEvent_up: TouchPointerEvent = 1;
-pub const TouchPointerEvent_TouchPointerEvent_down: TouchPointerEvent = 2;
-pub const TouchPointerEvent_TouchPointerEvent_pointerUp: TouchPointerEvent = 3;
-pub const TouchPointerEvent_TouchPointerEvent_pointerDown: TouchPointerEvent = 4;
-pub type WindowController = Instance;
-pub type WindowState = ::std::os::raw::c_int;
-pub const WindowState_WindowState_normal: WindowState = 0;
-pub const WindowState_WindowState_minimized: WindowState = 1;
-pub const WindowState_WindowState_maximized: WindowState = 2;
-pub type ControllableWindow = Window;
-pub type KeyCode = Key;
-pub const KeyCode_KeyCode_escape: KeyCode = 1;
-pub const KeyCode_KeyCode_k1: KeyCode = 2;
-pub const KeyCode_KeyCode_bang: KeyCode = 2;
-pub const KeyCode_KeyCode_k2: KeyCode = 3;
-pub const KeyCode_KeyCode_commercial: KeyCode = 3;
-pub const KeyCode_KeyCode_k3: KeyCode = 4;
-pub const KeyCode_KeyCode_pound: KeyCode = 4;
-pub const KeyCode_KeyCode_k4: KeyCode = 5;
-pub const KeyCode_KeyCode_dollar: KeyCode = 5;
-pub const KeyCode_KeyCode_k5: KeyCode = 6;
-pub const KeyCode_KeyCode_percent: KeyCode = 6;
-pub const KeyCode_KeyCode_k6: KeyCode = 7;
-pub const KeyCode_KeyCode_circumflex: KeyCode = 7;
-pub const KeyCode_KeyCode_k7: KeyCode = 8;
-pub const KeyCode_KeyCode_ampersand: KeyCode = 8;
-pub const KeyCode_KeyCode_k8: KeyCode = 9;
-pub const KeyCode_KeyCode_star: KeyCode = 9;
-pub const KeyCode_KeyCode_k9: KeyCode = 10;
-pub const KeyCode_KeyCode_leftParanthesis: KeyCode = 10;
-pub const KeyCode_KeyCode_k0: KeyCode = 11;
-pub const KeyCode_KeyCode_rightParanthesis: KeyCode = 10;
-pub const KeyCode_KeyCode_minus: KeyCode = 12;
-pub const KeyCode_KeyCode_underscore: KeyCode = 12;
-pub const KeyCode_KeyCode_equal: KeyCode = 13;
-pub const KeyCode_KeyCode_plus: KeyCode = 13;
-pub const KeyCode_KeyCode_backSpace: KeyCode = 14;
-pub const KeyCode_KeyCode_tab: KeyCode = 15;
-pub const KeyCode_KeyCode_q: KeyCode = 16;
-pub const KeyCode_KeyCode_w: KeyCode = 17;
-pub const KeyCode_KeyCode_e: KeyCode = 18;
-pub const KeyCode_KeyCode_r: KeyCode = 19;
-pub const KeyCode_KeyCode_t: KeyCode = 20;
-pub const KeyCode_KeyCode_y: KeyCode = 21;
-pub const KeyCode_KeyCode_u: KeyCode = 22;
-pub const KeyCode_KeyCode_i: KeyCode = 23;
-pub const KeyCode_KeyCode_o: KeyCode = 24;
-pub const KeyCode_KeyCode_p: KeyCode = 25;
-pub const KeyCode_KeyCode_leftBracket: KeyCode = 26;
-pub const KeyCode_KeyCode_rightBracket: KeyCode = 27;
-pub const KeyCode_KeyCode_enter: KeyCode = 28;
-pub const KeyCode_KeyCode_leftControl: KeyCode = 29;
-pub const KeyCode_KeyCode_a: KeyCode = 30;
-pub const KeyCode_KeyCode_s: KeyCode = 31;
-pub const KeyCode_KeyCode_d: KeyCode = 32;
-pub const KeyCode_KeyCode_f: KeyCode = 33;
-pub const KeyCode_KeyCode_g: KeyCode = 34;
-pub const KeyCode_KeyCode_h: KeyCode = 35;
-pub const KeyCode_KeyCode_j: KeyCode = 36;
-pub const KeyCode_KeyCode_k: KeyCode = 37;
-pub const KeyCode_KeyCode_l: KeyCode = 38;
-pub const KeyCode_KeyCode_semicolon: KeyCode = 39;
-pub const KeyCode_KeyCode_colon: KeyCode = 39;
-pub const KeyCode_KeyCode_quote: KeyCode = 40;
-pub const KeyCode_KeyCode_doubleQuote: KeyCode = 40;
-pub const KeyCode_KeyCode_tilde: KeyCode = 41;
-pub const KeyCode_KeyCode_backQuote: KeyCode = 41;
-pub const KeyCode_KeyCode_leftShift: KeyCode = 42;
-pub const KeyCode_KeyCode_backSlash: KeyCode = 43;
-pub const KeyCode_KeyCode_pipe: KeyCode = 43;
-pub const KeyCode_KeyCode_z: KeyCode = 44;
-pub const KeyCode_KeyCode_x: KeyCode = 45;
-pub const KeyCode_KeyCode_c: KeyCode = 46;
-pub const KeyCode_KeyCode_v: KeyCode = 47;
-pub const KeyCode_KeyCode_b: KeyCode = 48;
-pub const KeyCode_KeyCode_n: KeyCode = 49;
-pub const KeyCode_KeyCode_m: KeyCode = 50;
-pub const KeyCode_KeyCode_comma: KeyCode = 51;
-pub const KeyCode_KeyCode_smallerThan: KeyCode = 51;
-pub const KeyCode_KeyCode_period: KeyCode = 52;
-pub const KeyCode_KeyCode_greaterThan: KeyCode = 52;
-pub const KeyCode_KeyCode_slash: KeyCode = 53;
-pub const KeyCode_KeyCode_questionMark: KeyCode = 53;
-pub const KeyCode_KeyCode_rightShift: KeyCode = 54;
-pub const KeyCode_KeyCode_keyPadStar: KeyCode = 55;
-pub const KeyCode_KeyCode_leftAlt: KeyCode = 56;
-pub const KeyCode_KeyCode_space: KeyCode = 57;
-pub const KeyCode_KeyCode_capsLock: KeyCode = 58;
-pub const KeyCode_KeyCode_f1: KeyCode = 59;
-pub const KeyCode_KeyCode_f2: KeyCode = 60;
-pub const KeyCode_KeyCode_f3: KeyCode = 61;
-pub const KeyCode_KeyCode_f4: KeyCode = 62;
-pub const KeyCode_KeyCode_f5: KeyCode = 63;
-pub const KeyCode_KeyCode_f6: KeyCode = 64;
-pub const KeyCode_KeyCode_f7: KeyCode = 65;
-pub const KeyCode_KeyCode_f8: KeyCode = 66;
-pub const KeyCode_KeyCode_f9: KeyCode = 67;
-pub const KeyCode_KeyCode_f10: KeyCode = 68;
-pub const KeyCode_KeyCode_numLock: KeyCode = 69;
-pub const KeyCode_KeyCode_scrollLock: KeyCode = 70;
-pub const KeyCode_KeyCode_keyPadHome: KeyCode = 71;
-pub const KeyCode_KeyCode_keyPad7: KeyCode = 71;
-pub const KeyCode_KeyCode_keyPadUp: KeyCode = 72;
-pub const KeyCode_KeyCode_keyPad8: KeyCode = 72;
-pub const KeyCode_KeyCode_keyPadPageUp: KeyCode = 73;
-pub const KeyCode_KeyCode_keyPad9: KeyCode = 73;
-pub const KeyCode_KeyCode_keyPadMinus: KeyCode = 74;
-pub const KeyCode_KeyCode_keyPadLeft: KeyCode = 75;
-pub const KeyCode_KeyCode_keyPad4: KeyCode = 75;
-pub const KeyCode_KeyCode_keyPad5: KeyCode = 76;
-pub const KeyCode_KeyCode_keyPadRight: KeyCode = 77;
-pub const KeyCode_KeyCode_keyPad6: KeyCode = 77;
-pub const KeyCode_KeyCode_keyPadPlus: KeyCode = 78;
-pub const KeyCode_KeyCode_keyPadEnd: KeyCode = 79;
-pub const KeyCode_KeyCode_keyPad1: KeyCode = 79;
-pub const KeyCode_KeyCode_keyPadDown: KeyCode = 80;
-pub const KeyCode_KeyCode_keyPad2: KeyCode = 80;
-pub const KeyCode_KeyCode_keyPadPageDown: KeyCode = 81;
-pub const KeyCode_KeyCode_keyPad3: KeyCode = 81;
-pub const KeyCode_KeyCode_keyPadInsert: KeyCode = 82;
-pub const KeyCode_KeyCode_keyPad0: KeyCode = 82;
-pub const KeyCode_KeyCode_keyPadDelete: KeyCode = 83;
-pub const KeyCode_KeyCode_f11: KeyCode = 87;
-pub const KeyCode_KeyCode_f12: KeyCode = 88;
-pub const KeyCode_KeyCode_keyPadEnter: KeyCode = 96;
-pub const KeyCode_KeyCode_rightControl: KeyCode = 97;
-pub const KeyCode_KeyCode_keyPadSlash: KeyCode = 98;
-pub const KeyCode_KeyCode_printScreen: KeyCode = 99;
-pub const KeyCode_KeyCode_rightAlt: KeyCode = 100;
-pub const KeyCode_KeyCode_pauseBreak: KeyCode = 101;
-pub const KeyCode_KeyCode_home: KeyCode = 102;
-pub const KeyCode_KeyCode_up: KeyCode = 103;
-pub const KeyCode_KeyCode_pageUp: KeyCode = 104;
-pub const KeyCode_KeyCode_left: KeyCode = 105;
-pub const KeyCode_KeyCode_right: KeyCode = 106;
-pub const KeyCode_KeyCode_end: KeyCode = 107;
-pub const KeyCode_KeyCode_down: KeyCode = 108;
-pub const KeyCode_KeyCode_pageDown: KeyCode = 109;
-pub const KeyCode_KeyCode_insert: KeyCode = 110;
-pub const KeyCode_KeyCode_del: KeyCode = 111;
-pub const KeyCode_KeyCode_shift: KeyCode = 256;
-pub const KeyCode_KeyCode_alt: KeyCode = 257;
-pub const KeyCode_KeyCode_control: KeyCode = 258;
-pub const KeyCode_KeyCode_wheelUp: KeyCode = 259;
-pub const KeyCode_KeyCode_wheelDown: KeyCode = 260;
-pub const KeyCode_KeyCode_hotKey: KeyCode = 261;
-pub const KeyCode_KeyCode_defaultKey: KeyCode = 262;
-pub const KeyCode_KeyCode_capsState: KeyCode = 263;
-pub const KeyCode_KeyCode_numState: KeyCode = 264;
-pub const KeyCode_KeyCode_scrollState: KeyCode = 265;
-pub const KeyCode_KeyCode_play: KeyCode = 513;
-pub const KeyCode_KeyCode_record: KeyCode = 514;
-pub const KeyCode_KeyCode_pause: KeyCode = 515;
-pub const KeyCode_KeyCode_rewind: KeyCode = 516;
-pub const KeyCode_KeyCode_fastForward: KeyCode = 517;
-pub const KeyCode_KeyCode_previousTrack: KeyCode = 518;
-pub const KeyCode_KeyCode_nextTrack: KeyCode = 519;
-pub const KeyCode_KeyCode_stop: KeyCode = 520;
-pub const KeyCode_KeyCode_eject: KeyCode = 521;
-pub const KeyCode_KeyCode_volumeUp: KeyCode = 522;
-pub const KeyCode_KeyCode_volumeDown: KeyCode = 523;
-pub const KeyCode_KeyCode_mute: KeyCode = 524;
-pub const KeyCode_KeyCode_remoteHome: KeyCode = 531;
-pub const KeyCode_KeyCode_back: KeyCode = 59;
-pub const KeyCode_KeyCode_menu1: KeyCode = 60;
-pub const KeyCode_KeyCode_menu2: KeyCode = 61;
-pub const KeyCode_KeyCode_menu3: KeyCode = 62;
-pub const KeyCode_KeyCode_menu4: KeyCode = 63;
-pub const KeyCode_KeyCode_select: KeyCode = 28;
-pub const KeyCode_KeyCode_bassBoost: KeyCode = 532;
-pub const KeyCode_KeyCode_bassDown: KeyCode = 533;
-pub const KeyCode_KeyCode_bassUp: KeyCode = 534;
-pub const KeyCode_KeyCode_browserBackward: KeyCode = 535;
-pub const KeyCode_KeyCode_browserFavorites: KeyCode = 536;
-pub const KeyCode_KeyCode_browserForward: KeyCode = 537;
-pub const KeyCode_KeyCode_browserHome: KeyCode = 538;
-pub const KeyCode_KeyCode_browserRefresh: KeyCode = 539;
-pub const KeyCode_KeyCode_browserSearch: KeyCode = 540;
-pub const KeyCode_KeyCode_browserStop: KeyCode = 541;
-pub const KeyCode_KeyCode_launchApp1: KeyCode = 542;
-pub const KeyCode_KeyCode_launchApp2: KeyCode = 543;
-pub const KeyCode_KeyCode_launchMail: KeyCode = 544;
-pub const KeyCode_KeyCode_launchMediaSelect: KeyCode = 545;
-pub const KeyCode_KeyCode_micVolumeDown: KeyCode = 546;
-pub const KeyCode_KeyCode_micMute: KeyCode = 547;
-pub const KeyCode_KeyCode_micVolumeUp: KeyCode = 548;
-pub const KeyCode_KeyCode_trebleDown: KeyCode = 549;
-pub const KeyCode_KeyCode_trebleUp: KeyCode = 550;
-pub type MultiLineString = *mut ::std::os::raw::c_char;
-pub type PredefinedKey = Key;
-pub const PredefinedKey_PredefinedKey_alt0: PredefinedKey = 262155;
-pub const PredefinedKey_PredefinedKey_alt1: PredefinedKey = 262146;
-pub const PredefinedKey_PredefinedKey_alt2: PredefinedKey = 262147;
-pub const PredefinedKey_PredefinedKey_alt3: PredefinedKey = 262148;
-pub const PredefinedKey_PredefinedKey_alt4: PredefinedKey = 262149;
-pub const PredefinedKey_PredefinedKey_alt5: PredefinedKey = 262150;
-pub const PredefinedKey_PredefinedKey_alt6: PredefinedKey = 262151;
-pub const PredefinedKey_PredefinedKey_alt7: PredefinedKey = 262152;
-pub const PredefinedKey_PredefinedKey_alt8: PredefinedKey = 262153;
-pub const PredefinedKey_PredefinedKey_alt9: PredefinedKey = 262154;
-pub const PredefinedKey_PredefinedKey_altA: PredefinedKey = 262174;
-pub const PredefinedKey_PredefinedKey_altB: PredefinedKey = 262192;
-pub const PredefinedKey_PredefinedKey_altC: PredefinedKey = 262190;
-pub const PredefinedKey_PredefinedKey_altD: PredefinedKey = 262176;
-pub const PredefinedKey_PredefinedKey_altE: PredefinedKey = 262162;
-pub const PredefinedKey_PredefinedKey_altF: PredefinedKey = 262177;
-pub const PredefinedKey_PredefinedKey_altG: PredefinedKey = 262178;
-pub const PredefinedKey_PredefinedKey_altH: PredefinedKey = 262179;
-pub const PredefinedKey_PredefinedKey_altI: PredefinedKey = 262167;
-pub const PredefinedKey_PredefinedKey_altJ: PredefinedKey = 262180;
-pub const PredefinedKey_PredefinedKey_altK: PredefinedKey = 262181;
-pub const PredefinedKey_PredefinedKey_altL: PredefinedKey = 262182;
-pub const PredefinedKey_PredefinedKey_altM: PredefinedKey = 262194;
-pub const PredefinedKey_PredefinedKey_altN: PredefinedKey = 262193;
-pub const PredefinedKey_PredefinedKey_altO: PredefinedKey = 262168;
-pub const PredefinedKey_PredefinedKey_altP: PredefinedKey = 262169;
-pub const PredefinedKey_PredefinedKey_altQ: PredefinedKey = 262160;
-pub const PredefinedKey_PredefinedKey_altR: PredefinedKey = 262163;
-pub const PredefinedKey_PredefinedKey_altS: PredefinedKey = 262175;
-pub const PredefinedKey_PredefinedKey_altT: PredefinedKey = 262164;
-pub const PredefinedKey_PredefinedKey_altU: PredefinedKey = 262166;
-pub const PredefinedKey_PredefinedKey_altV: PredefinedKey = 262191;
-pub const PredefinedKey_PredefinedKey_altW: PredefinedKey = 262161;
-pub const PredefinedKey_PredefinedKey_altX: PredefinedKey = 262189;
-pub const PredefinedKey_PredefinedKey_altY: PredefinedKey = 262165;
-pub const PredefinedKey_PredefinedKey_altZ: PredefinedKey = 262188;
-pub const PredefinedKey_PredefinedKey_altF1: PredefinedKey = 262203;
-pub const PredefinedKey_PredefinedKey_altF2: PredefinedKey = 262204;
-pub const PredefinedKey_PredefinedKey_altF3: PredefinedKey = 262205;
-pub const PredefinedKey_PredefinedKey_altF4: PredefinedKey = 262206;
-pub const PredefinedKey_PredefinedKey_altF5: PredefinedKey = 262207;
-pub const PredefinedKey_PredefinedKey_altF6: PredefinedKey = 262208;
-pub const PredefinedKey_PredefinedKey_altF7: PredefinedKey = 262209;
-pub const PredefinedKey_PredefinedKey_altF8: PredefinedKey = 262210;
-pub const PredefinedKey_PredefinedKey_altF9: PredefinedKey = 262211;
-pub const PredefinedKey_PredefinedKey_altF10: PredefinedKey = 262212;
-pub const PredefinedKey_PredefinedKey_altF11: PredefinedKey = 262231;
-pub const PredefinedKey_PredefinedKey_altF12: PredefinedKey = 262232;
-pub const PredefinedKey_PredefinedKey_altLeft: PredefinedKey = 262249;
-pub const PredefinedKey_PredefinedKey_altRight: PredefinedKey = 262250;
-pub const PredefinedKey_PredefinedKey_altUp: PredefinedKey = 262247;
-pub const PredefinedKey_PredefinedKey_altDown: PredefinedKey = 262252;
-pub const PredefinedKey_PredefinedKey_altEnter: PredefinedKey = 262172;
-pub const PredefinedKey_PredefinedKey_altKeyPadEnter: PredefinedKey = 262240;
-pub const PredefinedKey_PredefinedKey_altHome: PredefinedKey = 262246;
-pub const PredefinedKey_PredefinedKey_altEnd: PredefinedKey = 262251;
-pub const PredefinedKey_PredefinedKey_altMinus: PredefinedKey = 262156;
-pub const PredefinedKey_PredefinedKey_altSpace: PredefinedKey = 262201;
-pub const PredefinedKey_PredefinedKey_ctrl0: PredefinedKey = 131083;
-pub const PredefinedKey_PredefinedKey_ctrl1: PredefinedKey = 131074;
-pub const PredefinedKey_PredefinedKey_ctrl2: PredefinedKey = 131075;
-pub const PredefinedKey_PredefinedKey_ctrl3: PredefinedKey = 131076;
-pub const PredefinedKey_PredefinedKey_ctrl4: PredefinedKey = 131077;
-pub const PredefinedKey_PredefinedKey_ctrl5: PredefinedKey = 131078;
-pub const PredefinedKey_PredefinedKey_ctrl6: PredefinedKey = 131079;
-pub const PredefinedKey_PredefinedKey_ctrl7: PredefinedKey = 131080;
-pub const PredefinedKey_PredefinedKey_ctrl8: PredefinedKey = 131081;
-pub const PredefinedKey_PredefinedKey_ctrl9: PredefinedKey = 131082;
-pub const PredefinedKey_PredefinedKey_ctrlA: PredefinedKey = 131102;
-pub const PredefinedKey_PredefinedKey_ctrlB: PredefinedKey = 131120;
-pub const PredefinedKey_PredefinedKey_ctrlC: PredefinedKey = 131118;
-pub const PredefinedKey_PredefinedKey_ctrlD: PredefinedKey = 131104;
-pub const PredefinedKey_PredefinedKey_ctrlE: PredefinedKey = 131090;
-pub const PredefinedKey_PredefinedKey_ctrlF: PredefinedKey = 131105;
-pub const PredefinedKey_PredefinedKey_ctrlG: PredefinedKey = 131106;
-pub const PredefinedKey_PredefinedKey_ctrlH: PredefinedKey = 131107;
-pub const PredefinedKey_PredefinedKey_ctrlI: PredefinedKey = 131095;
-pub const PredefinedKey_PredefinedKey_ctrlJ: PredefinedKey = 131108;
-pub const PredefinedKey_PredefinedKey_ctrlK: PredefinedKey = 131109;
-pub const PredefinedKey_PredefinedKey_ctrlL: PredefinedKey = 131110;
-pub const PredefinedKey_PredefinedKey_ctrlM: PredefinedKey = 131122;
-pub const PredefinedKey_PredefinedKey_ctrlN: PredefinedKey = 131121;
-pub const PredefinedKey_PredefinedKey_ctrlO: PredefinedKey = 131096;
-pub const PredefinedKey_PredefinedKey_ctrlP: PredefinedKey = 131097;
-pub const PredefinedKey_PredefinedKey_ctrlQ: PredefinedKey = 131088;
-pub const PredefinedKey_PredefinedKey_ctrlR: PredefinedKey = 131091;
-pub const PredefinedKey_PredefinedKey_ctrlS: PredefinedKey = 131103;
-pub const PredefinedKey_PredefinedKey_ctrlT: PredefinedKey = 131092;
-pub const PredefinedKey_PredefinedKey_ctrlU: PredefinedKey = 131094;
-pub const PredefinedKey_PredefinedKey_ctrlV: PredefinedKey = 131119;
-pub const PredefinedKey_PredefinedKey_ctrlW: PredefinedKey = 131089;
-pub const PredefinedKey_PredefinedKey_ctrlX: PredefinedKey = 131117;
-pub const PredefinedKey_PredefinedKey_ctrlY: PredefinedKey = 131093;
-pub const PredefinedKey_PredefinedKey_ctrlZ: PredefinedKey = 131116;
-pub const PredefinedKey_PredefinedKey_ctrlF1: PredefinedKey = 131131;
-pub const PredefinedKey_PredefinedKey_ctrlF2: PredefinedKey = 131132;
-pub const PredefinedKey_PredefinedKey_ctrlF3: PredefinedKey = 131133;
-pub const PredefinedKey_PredefinedKey_ctrlF4: PredefinedKey = 131134;
-pub const PredefinedKey_PredefinedKey_ctrlF5: PredefinedKey = 131135;
-pub const PredefinedKey_PredefinedKey_ctrlF6: PredefinedKey = 131136;
-pub const PredefinedKey_PredefinedKey_ctrlF7: PredefinedKey = 131137;
-pub const PredefinedKey_PredefinedKey_ctrlF8: PredefinedKey = 131138;
-pub const PredefinedKey_PredefinedKey_ctrlF9: PredefinedKey = 131139;
-pub const PredefinedKey_PredefinedKey_ctrlF10: PredefinedKey = 131140;
-pub const PredefinedKey_PredefinedKey_ctrlF11: PredefinedKey = 131159;
-pub const PredefinedKey_PredefinedKey_ctrlF12: PredefinedKey = 131160;
-pub const PredefinedKey_PredefinedKey_ctrlLeft: PredefinedKey = 131177;
-pub const PredefinedKey_PredefinedKey_ctrlRight: PredefinedKey = 131178;
-pub const PredefinedKey_PredefinedKey_ctrlUp: PredefinedKey = 131175;
-pub const PredefinedKey_PredefinedKey_ctrlDown: PredefinedKey = 131180;
-pub const PredefinedKey_PredefinedKey_ctrlEnter: PredefinedKey = 131100;
-pub const PredefinedKey_PredefinedKey_ctrlHome: PredefinedKey = 131174;
-pub const PredefinedKey_PredefinedKey_ctrlEnd: PredefinedKey = 131179;
-pub const PredefinedKey_PredefinedKey_ctrlPageUp: PredefinedKey = 131176;
-pub const PredefinedKey_PredefinedKey_ctrlPageDown: PredefinedKey = 131181;
-pub const PredefinedKey_PredefinedKey_ctrlInsert: PredefinedKey = 131182;
-pub const PredefinedKey_PredefinedKey_ctrlSpace: PredefinedKey = 131129;
-pub const PredefinedKey_PredefinedKey_shiftTab: PredefinedKey = 65551;
-pub const PredefinedKey_PredefinedKey_shiftF1: PredefinedKey = 65595;
-pub const PredefinedKey_PredefinedKey_shiftF2: PredefinedKey = 65596;
-pub const PredefinedKey_PredefinedKey_shiftF3: PredefinedKey = 65597;
-pub const PredefinedKey_PredefinedKey_shiftF4: PredefinedKey = 65598;
-pub const PredefinedKey_PredefinedKey_shiftF5: PredefinedKey = 65599;
-pub const PredefinedKey_PredefinedKey_shiftF6: PredefinedKey = 65600;
-pub const PredefinedKey_PredefinedKey_shiftF7: PredefinedKey = 65601;
-pub const PredefinedKey_PredefinedKey_shiftF8: PredefinedKey = 65602;
-pub const PredefinedKey_PredefinedKey_shiftF9: PredefinedKey = 65603;
-pub const PredefinedKey_PredefinedKey_shiftF10: PredefinedKey = 65604;
-pub const PredefinedKey_PredefinedKey_shiftF11: PredefinedKey = 65623;
-pub const PredefinedKey_PredefinedKey_shiftF12: PredefinedKey = 65624;
-pub const PredefinedKey_PredefinedKey_shiftInsert: PredefinedKey = 65646;
-pub const PredefinedKey_PredefinedKey_shiftDel: PredefinedKey = 65647;
-pub type SmartKey = uint32;
-pub type tparam_WindowController_V = u64;
-unsafe extern "C" {
-    pub static mut property_AnchorValue_MinMaxValue: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_from_MinMaxValue:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AnchorValue, value: MinMaxValue)>;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_to_MinMaxValue:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AnchorValue) -> MinMaxValue>;
-}
-unsafe extern "C" {
-    pub static mut property_AnchorValue_int: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_from_int: ::std::option::Option<
-        unsafe extern "C" fn(a: *const AnchorValue, value: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_to_int:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AnchorValue) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_AnchorValue_double: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_from_double:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AnchorValue, value: f64)>;
-}
-unsafe extern "C" {
-    pub static mut AnchorValue_to_double:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AnchorValue) -> f64>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct ClipBoard {
-    pub text: *mut ::std::os::raw::c_char,
-    pub handle: *mut ::std::os::raw::c_void,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of ClipBoard"][::std::mem::size_of::<ClipBoard>() - 16usize];
-    ["Alignment of ClipBoard"][::std::mem::align_of::<ClipBoard>() - 8usize];
-    ["Offset of field: ClipBoard::text"][::std::mem::offset_of!(ClipBoard, text) - 0usize];
-    ["Offset of field: ClipBoard::handle"][::std::mem::offset_of!(ClipBoard, handle) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut ClipBoard_allocate:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut ClipBoard, size: uint) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut ClipBoard_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut ClipBoard)>;
-}
-unsafe extern "C" {
-    pub static mut ClipBoard_load:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut ClipBoard) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut ClipBoard_save:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut ClipBoard) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut ClipBoard_unload:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut ClipBoard)>;
-}
-unsafe extern "C" {
-    pub static mut property_ClipBoard_memory: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ClipBoard_get_memory: ::std::option::Option<
-        unsafe extern "C" fn(c: *const ClipBoard) -> *mut ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_CommonControl_toolTip: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut CommonControl_set_toolTip:
-        ::std::option::Option<unsafe extern "C" fn(c: CommonControl, value: constString)>;
-}
-unsafe extern "C" {
-    pub static mut CommonControl_get_toolTip:
-        ::std::option::Option<unsafe extern "C" fn(c: CommonControl) -> constString>;
-}
-unsafe extern "C" {
-    pub static mut Cursor_free: ::std::option::Option<unsafe extern "C" fn(__this: Cursor)>;
-}
-unsafe extern "C" {
-    pub static mut Cursor_load: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Cursor,
-            name: *const ::std::os::raw::c_char,
-            hotSpotX: ::std::os::raw::c_int,
-            hotSpotY: ::std::os::raw::c_int,
-            paletteShades: *mut byte,
-            ds: DisplaySystem,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Cursor_systemCursor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Cursor_set_systemCursor:
-        ::std::option::Option<unsafe extern "C" fn(c: Cursor, value: SystemCursor)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Extent {
-    pub first: *mut ::std::os::raw::c_void,
-    pub last: *mut ::std::os::raw::c_void,
-    pub count: ::std::os::raw::c_int,
-    pub offset: uint,
-    pub circ: bool_,
-    pub __ecere_padding: [byte; 28usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Extent"][::std::mem::size_of::<Extent>() - 56usize];
-    ["Alignment of Extent"][::std::mem::align_of::<Extent>() - 8usize];
-    ["Offset of field: Extent::first"][::std::mem::offset_of!(Extent, first) - 0usize];
-    ["Offset of field: Extent::last"][::std::mem::offset_of!(Extent, last) - 8usize];
-    ["Offset of field: Extent::count"][::std::mem::offset_of!(Extent, count) - 16usize];
-    ["Offset of field: Extent::offset"][::std::mem::offset_of!(Extent, offset) - 20usize];
-    ["Offset of field: Extent::circ"][::std::mem::offset_of!(Extent, circ) - 24usize];
-    ["Offset of field: Extent::__ecere_padding"]
-        [::std::mem::offset_of!(Extent, __ecere_padding) - 28usize];
-};
-unsafe extern "C" {
-    pub static mut Extent_addBox:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Extent, box_: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Extent_copy:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Extent, source: *mut Extent)>;
-}
-unsafe extern "C" {
-    pub static mut Extent_empty: ::std::option::Option<unsafe extern "C" fn(__this: *mut Extent)>;
-}
-unsafe extern "C" {
-    pub static mut Extent_excludeBox: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Extent, box_: *mut Box, temp: *mut Extent),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Extent_exclusion: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Extent, b: *mut Extent, temp: *mut Extent),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Extent_intersectBox:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Extent, box_: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Extent_intersection: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Extent,
-            b: *mut Extent,
-            temp: *mut Extent,
-            temp2: *mut Extent,
-            temp3: *mut Extent,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Extent_offset: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut Extent,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Extent_union: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Extent, b: *mut Extent, temp: *mut Extent),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Extent_unionBox: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Extent, box_: *mut Box, temp: *mut Extent),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_cycle_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_GuiApplication_cycle: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_getCursor: ::std::option::Option<
-        unsafe extern "C" fn(__this: GuiApplication, cursor: SystemCursor) -> Cursor,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_getKeyState:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication, key: Key) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_getMouseState: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: GuiApplication,
-            buttons: *mut MouseButtons,
-            x: *mut ::std::os::raw::c_int,
-            y: *mut ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_init_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_GuiApplication_init: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_lock:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_lockEx: ::std::option::Option<
-        unsafe extern "C" fn(__this: GuiApplication, count: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_pauseNetworkEvents:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_processFileNotifications:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_processInput: ::std::option::Option<
-        unsafe extern "C" fn(__this: GuiApplication, useProcessAll: bool_) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_processNetworkEvents:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_resumeNetworkEvents:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_setDesktopPosition: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: GuiApplication,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-            moveChildren: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_signalEvent:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_switchMode: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: GuiApplication,
-            fullScreen: bool_,
-            driverName: *const ::std::os::raw::c_char,
-            resolution: Resolution,
-            colorDepth: PixelFormat,
-            refreshRate: ::std::os::raw::c_int,
-            skinName: *const ::std::os::raw::c_char,
-            fallBack: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_terminate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_GuiApplication_terminate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_unlock:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_unlockEx: ::std::option::Option<
-        unsafe extern "C" fn(__this: GuiApplication) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_updateDisplay:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_wait:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_waitEvent:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_waitNetworkEvent:
-        ::std::option::Option<unsafe extern "C" fn(__this: GuiApplication)>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_appName: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_appName: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_appName: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_semaphore: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_semaphore:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> *mut Semaphore>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_alwaysEmptyInput: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_alwaysEmptyInput:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_alwaysEmptyInput:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_fullScreen: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_fullScreen:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_fullScreen:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_driver: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_driver: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_driver: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_resolution: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_resolution:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: Resolution)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_resolution:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> Resolution>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_pixelFormat: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_pixelFormat:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: PixelFormat)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_pixelFormat:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> PixelFormat>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_refreshRate: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_refreshRate: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication, value: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_refreshRate:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_skin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_skin: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_skin: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_textMode: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_textMode:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_textMode:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_desktop: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_desktop:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_drivers: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_drivers: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication) -> *mut *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_skins: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_skins: ::std::option::Option<
-        unsafe extern "C" fn(g: GuiApplication) -> *mut *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_currentSkin: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_currentSkin:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> *mut Class>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_numDrivers: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_numDrivers:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_numSkins: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_numSkins:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_timerResolution: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_set_timerResolution:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication, value: uint)>;
-}
-unsafe extern "C" {
-    pub static mut property_GuiApplication_acquiredWindow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GuiApplication_get_acquiredWindow:
-        ::std::option::Option<unsafe extern "C" fn(g: GuiApplication) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut Interface_acquireInput_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_acquireInput: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_activateRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_activateRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_allocateClipboard_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_allocateClipboard: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_clearClipboard_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_clearClipboard: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_createRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_createRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_destroyRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_destroyRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_ensureFullScreen_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_ensureFullScreen: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_flashRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_flashRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getCurrentMode_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getCurrentMode: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getExtendedKey:
-        ::std::option::Option<unsafe extern "C" fn(key: Key) -> Key>;
-}
-unsafe extern "C" {
-    pub static mut Interface_getJoystickState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getJoystickState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getKeyState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getKeyState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getMousePosition_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getMousePosition: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getMouseState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getMouseState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_getScreenArea_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_getScreenArea: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_graphicsDrivers_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_graphicsDrivers: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_initialize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_initialize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_loadClipboard_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_loadClipboard: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_lock_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_lock: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_offsetWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_offsetWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_orderRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_orderRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_positionRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_positionRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_processInput_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_processInput: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_saveClipboard_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_saveClipboard: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_screenMode_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_screenMode: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setCaret_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setCaret: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setIcon_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setIcon: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setMouseCapture_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setMouseCapture: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setMouseCursor_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setMouseCursor: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setMousePosition_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setMousePosition: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setMouseRange_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setMouseRange: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setRootWindowCaption_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setRootWindowCaption: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setRootWindowColor_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setRootWindowColor: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setRootWindowState_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setRootWindowState: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_setTimerResolution_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_setTimerResolution: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_startMoving_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_startMoving: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_stopMoving_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_stopMoving: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_terminate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_terminate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_translateKey: ::std::option::Option<
-        unsafe extern "C" fn(key: Key, shift: bool_) -> ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Interface_unloadClipboard_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_unloadClipboard: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_unlock_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_unlock: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_updateRootWindow_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_updateRootWindow: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_wait_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Interface_wait: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Interface_writeKeyedText: ::std::option::Option<
-        unsafe extern "C" fn(
-            surface: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            text: *const ::std::os::raw::c_char,
-            hotKey: Key,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Interface_writeKeyedTextDisabled: ::std::option::Option<
-        unsafe extern "C" fn(
-            surface: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            text: *const ::std::os::raw::c_char,
-            hotKey: Key,
-            disabled: bool_,
-        ),
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Joystick {
-    pub x: ::std::os::raw::c_int,
-    pub y: ::std::os::raw::c_int,
-    pub z: ::std::os::raw::c_int,
-    pub rx: ::std::os::raw::c_int,
-    pub ry: ::std::os::raw::c_int,
-    pub rz: ::std::os::raw::c_int,
-    pub buttons: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Joystick"][::std::mem::size_of::<Joystick>() - 28usize];
-    ["Alignment of Joystick"][::std::mem::align_of::<Joystick>() - 4usize];
-    ["Offset of field: Joystick::x"][::std::mem::offset_of!(Joystick, x) - 0usize];
-    ["Offset of field: Joystick::y"][::std::mem::offset_of!(Joystick, y) - 4usize];
-    ["Offset of field: Joystick::z"][::std::mem::offset_of!(Joystick, z) - 8usize];
-    ["Offset of field: Joystick::rx"][::std::mem::offset_of!(Joystick, rx) - 12usize];
-    ["Offset of field: Joystick::ry"][::std::mem::offset_of!(Joystick, ry) - 16usize];
-    ["Offset of field: Joystick::rz"][::std::mem::offset_of!(Joystick, rz) - 20usize];
-    ["Offset of field: Joystick::buttons"][::std::mem::offset_of!(Joystick, buttons) - 24usize];
-};
-unsafe extern "C" {
-    pub static mut property_Key_SmartKey: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Key_to_SmartKey:
-        ::std::option::Option<unsafe extern "C" fn(key: Key) -> SmartKey>;
-}
-unsafe extern "C" {
-    pub static mut property_MiddleAnchorValue_MinMaxValue: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_from_MinMaxValue: ::std::option::Option<
-        unsafe extern "C" fn(m: *const MiddleAnchorValue, value: MinMaxValue),
-    >;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_to_MinMaxValue:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MiddleAnchorValue) -> MinMaxValue>;
-}
-unsafe extern "C" {
-    pub static mut property_MiddleAnchorValue_int: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_from_int: ::std::option::Option<
-        unsafe extern "C" fn(m: *const MiddleAnchorValue, value: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_to_int: ::std::option::Option<
-        unsafe extern "C" fn(m: *const MiddleAnchorValue) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_MiddleAnchorValue_double: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_from_double:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MiddleAnchorValue, value: f64)>;
-}
-unsafe extern "C" {
-    pub static mut MiddleAnchorValue_to_double:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MiddleAnchorValue) -> f64>;
-}
-unsafe extern "C" {
-    pub static mut Skin_captionFont_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_captionFont: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_cursorsBitmaps_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_cursorsBitmaps: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_getBitmap_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_getBitmap: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_getDecorationsSize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_getDecorationsSize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_horizontalSBH_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_horizontalSBH: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_isMouseMoving_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_isMouseMoving: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_isMouseResizing_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_isMouseResizing: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_setWindowArea_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_setWindowArea: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_setWindowMinimum_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_setWindowMinimum: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_showDecorations_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_showDecorations: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_systemFont_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_systemFont: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_updateNonClient_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_updateNonClient: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Skin_verticalSBW_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Skin_verticalSBW: *mut Method;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_Timer {
-    pub __ecerePrivateData0: [byte; 16usize],
-    pub _delay: Time,
-    pub __ecere_padding: [byte; 24usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_Timer"][::std::mem::size_of::<class_members_Timer>() - 48usize];
-    ["Alignment of class_members_Timer"][::std::mem::align_of::<class_members_Timer>() - 8usize];
-    ["Offset of field: class_members_Timer::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_Timer, __ecerePrivateData0) - 0usize];
-    ["Offset of field: class_members_Timer::_delay"]
-        [::std::mem::offset_of!(class_members_Timer, _delay) - 16usize];
-    ["Offset of field: class_members_Timer::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_Timer, __ecere_padding) - 24usize];
-};
-unsafe extern "C" {
-    pub static mut Timer_delayExpired_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Timer_delayExpired: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Timer_start: ::std::option::Option<unsafe extern "C" fn(__this: Timer)>;
-}
-unsafe extern "C" {
-    pub static mut Timer_stop: ::std::option::Option<unsafe extern "C" fn(__this: Timer)>;
-}
-unsafe extern "C" {
-    pub static mut property_Timer_userData: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Timer_set_userData:
-        ::std::option::Option<unsafe extern "C" fn(t: Timer, value: *mut ::std::os::raw::c_void)>;
-}
-unsafe extern "C" {
-    pub static mut Timer_get_userData:
-        ::std::option::Option<unsafe extern "C" fn(t: Timer) -> *mut ::std::os::raw::c_void>;
-}
-unsafe extern "C" {
-    pub static mut property_Timer_delay: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Timer_set_delay:
-        ::std::option::Option<unsafe extern "C" fn(t: Timer, value: Time)>;
-}
-unsafe extern "C" {
-    pub static mut Timer_get_delay: ::std::option::Option<unsafe extern "C" fn(t: Timer) -> Time>;
-}
-unsafe extern "C" {
-    pub static mut property_Timer_started: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Timer_set_started:
-        ::std::option::Option<unsafe extern "C" fn(t: Timer, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Timer_get_started:
-        ::std::option::Option<unsafe extern "C" fn(t: Timer) -> bool_>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct TouchPointerInfo {
-    pub id: ::std::os::raw::c_int,
-    pub point: Point,
-    pub size: f32,
-    pub pressure: f32,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of TouchPointerInfo"][::std::mem::size_of::<TouchPointerInfo>() - 20usize];
-    ["Alignment of TouchPointerInfo"][::std::mem::align_of::<TouchPointerInfo>() - 4usize];
-    ["Offset of field: TouchPointerInfo::id"]
-        [::std::mem::offset_of!(TouchPointerInfo, id) - 0usize];
-    ["Offset of field: TouchPointerInfo::point"]
-        [::std::mem::offset_of!(TouchPointerInfo, point) - 4usize];
-    ["Offset of field: TouchPointerInfo::size"]
-        [::std::mem::offset_of!(TouchPointerInfo, size) - 12usize];
-    ["Offset of field: TouchPointerInfo::pressure"]
-        [::std::mem::offset_of!(TouchPointerInfo, pressure) - 16usize];
-};
-unsafe extern "C" {
-    pub static mut Window_acquireInput:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, acquired: bool_) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_activate: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_addResource:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, resource: Resource)>;
-}
-unsafe extern "C" {
-    pub static mut Window_buttonCloseDialog: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            button: Button,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            mods: Modifiers,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_capture:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_closeConfirmation:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, parentClosing: bool_) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_create:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_cycleChildren: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            backward: bool_,
-            clientOnly: bool_,
-            tabCycleOnly: bool_,
-            cycleParents: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_deactivate: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_destroy:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, code: int64) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_doModal:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> DialogResult>;
-}
-unsafe extern "C" {
-    pub static mut Window_doModalEnd:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> DialogResult>;
-}
-unsafe extern "C" {
-    pub static mut Window_doModalLoop:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_doModalStart: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_externalPosition: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_flash: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_freeMouseRange: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut Window_getCaretPosition:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, caretPos: *mut Point)>;
-}
-unsafe extern "C" {
-    pub static mut Window_getCaretSize:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut Window_getDecorationsSize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_getDecorationsSize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_getIcon: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, iconID: SkinBitmap) -> BitmapResource,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_getMousePosition: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            x: *mut ::std::os::raw::c_int,
-            y: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_getNCMousePosition: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            x: *mut ::std::os::raw::c_int,
-            y: *mut ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_grab: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            bitmap: Bitmap,
-            box_: *mut Box,
-            decorations: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_isInside_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_isInside: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_isMouseMoving_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_isMouseMoving: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_isMouseResizing_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_isMouseResizing: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_isOpaque_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_isOpaque: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_makeActive: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_menuFileClose: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuFileExit: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuFileSave: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuFileSaveAll: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuFileSaveAs: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowArrangeIcons: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowCascade: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowClose: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowCloseAll: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowMaximize: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowMinimize: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowMove: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowNext: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowPrevious: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowRestore: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowSelectWindow: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowSize: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowStayOnTop: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowTileHorz: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowTileVert: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_menuWindowWindows: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, selection: MenuItem, mods: Modifiers) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_modal:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window) -> DialogResult>;
-}
-unsafe extern "C" {
-    pub static mut Window_mouseMessage: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            method: uint,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            mods: *mut Modifiers,
-            consequential: bool_,
-            activate: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_move: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            w: ::std::os::raw::c_int,
-            h: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_multiTouchMessage: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            event: TouchPointerEvent,
-            infos: Array,
-            mods: *mut Modifiers,
-            consequential: bool_,
-            activate: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_notifyActivate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_notifyActivate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_notifyDestroyed_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_notifyDestroyed: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_notifySaved_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_notifySaved: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onActivate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onActivate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onActivateClient_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onActivateClient: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onApplyGraphics_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onApplyGraphics: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onChildAddedOrRemoved_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onChildAddedOrRemoved: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onChildResized_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onChildResized: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onChildVisibilityToggled_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onChildVisibilityToggled: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onClose_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onClose: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onCreate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onCreate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onDestroy_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onDestroy: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onDestroyed_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onDestroyed: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onDrawOverChildren_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onDrawOverChildren: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onFileModified_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onFileModified: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onHScroll_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onHScroll: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onKeyDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onKeyDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onKeyHit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onKeyHit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onKeyUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onKeyUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onLeftButtonDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onLeftButtonDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onLeftButtonUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onLeftButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onLeftDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onLeftDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onLoadGraphics_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onLoadGraphics: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMiddleButtonDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMiddleButtonDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMiddleButtonUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMiddleButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMiddleDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMiddleDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMouseCaptureLost_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMouseCaptureLost: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMouseLeave_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMouseLeave: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMouseMove_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMouseMove: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMouseOver_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMouseOver: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMoving_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMoving: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onMultiTouch_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onMultiTouch: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onPosition_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onPosition: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onPostCreate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onPostCreate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onRedraw_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onRedraw: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onResize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onResize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onResizing_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onResizing: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onRightButtonDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onRightButtonDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onRightButtonUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onRightButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onRightDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onRightDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onSaveFile_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onSaveFile: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onStateChange_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onStateChange: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onSysKeyDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onSysKeyDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onSysKeyHit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onSysKeyHit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onSysKeyUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onSysKeyUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onUnloadGraphics_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onUnloadGraphics: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_onVScroll_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_onVScroll: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_preShowDecorations_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_preShowDecorations: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_releaseCapture:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_removeResource:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, resource: Resource)>;
-}
-unsafe extern "C" {
-    pub static mut Window_restoreCaret: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut Window_scroll: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setBox_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_setBox: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_setCaption: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setCaret: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            size: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setMousePosition: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setMouseRange:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, range: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut Window_setMouseRangeToClient:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_setMouseRangeToWindow:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_setScrollArea: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            width: ::std::os::raw::c_int,
-            height: ::std::os::raw::c_int,
-            snapToStep: bool_,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setScrollLineStep: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            stepX: ::std::os::raw::c_int,
-            stepY: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setScrollPosition: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setState: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            newState: WindowState,
-            activate: bool_,
-            mods: Modifiers,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setText: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, format: *const ::std::os::raw::c_char, ...),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_setWindowArea_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_setWindowArea: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_setWindowMinimum_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_setWindowMinimum: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_showDecorations_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_showDecorations: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_showSysMenu: ::std::option::Option<
-        unsafe extern "C" fn(__this: Window, x: ::std::os::raw::c_int, y: ::std::os::raw::c_int),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_softActivate: ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_update:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window, region: *const Box)>;
-}
-unsafe extern "C" {
-    pub static mut Window_updateDisplay:
-        ::std::option::Option<unsafe extern "C" fn(__this: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_updateNonClient_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_Window_updateNonClient: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut Window_writeCaption: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Window,
-            surface: Surface,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_Window_parent: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_parent:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_parent:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_master: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_master:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Window)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_master:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_caption: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_caption: ::std::option::Option<
-        unsafe extern "C" fn(w: Window, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_get_caption:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hotKey: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hotKey:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Key)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hotKey: ::std::option::Option<unsafe extern "C" fn(w: Window) -> Key>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_background: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_background:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_background:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_opacity: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_opacity:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Percentage)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_opacity:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Percentage>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_foreground: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_foreground:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_foreground:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_borderStyle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_borderStyle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: BorderStyle)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_borderStyle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> BorderStyle>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_minClientSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_minClientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_minClientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_maxClientSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_maxClientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_maxClientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasMaximize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasMaximize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasMaximize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasMinimize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasMinimize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasMinimize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasClose: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasClose:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasClose:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_nonClient: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_nonClient:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_nonClient:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_inactive: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_inactive:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_inactive:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_clickThrough: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_clickThrough:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_clickThrough:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isRemote: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_isRemote:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isRemote:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_noCycle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_noCycle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_noCycle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isModal: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_isModal:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isModal:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_interim: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_interim:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_interim:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_tabCycle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_tabCycle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_tabCycle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isDefault: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_isDefault:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isDefault:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_drawBehind: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_drawBehind:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_drawBehind:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasMenuBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasMenuBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasMenuBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasStatusBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasStatusBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasStatusBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_stayOnTop: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_stayOnTop:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_stayOnTop:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_menu: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_menu:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Menu)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_menu: ::std::option::Option<unsafe extern "C" fn(w: Window) -> Menu>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_font: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_font:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: FontResource)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_font:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> FontResource>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_font:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_sizeAnchor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_sizeAnchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const SizeAnchor)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_sizeAnchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut SizeAnchor)>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_sizeAnchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_size: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_size:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_size:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_size:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_clientSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_clientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_clientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_clientSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_initSize: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_initSize:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_anchor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_anchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Anchor)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_anchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Anchor)>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_anchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_position: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_position:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Point)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_position:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Point)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_disabled: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_disabled:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_disabled:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isEnabled: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isEnabled:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_state: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_state:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: WindowState)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_state:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> WindowState>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_visible: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_visible:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_visible:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isDocument: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_isDocument:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isDocument:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_mergeMenus: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_mergeMenus:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_mergeMenus:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasHorzScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_hasVertScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_hasVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_hasVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_dontHideScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_dontHideScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_dontHideScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_dontScrollVert: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_dontScrollVert:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_dontScrollVert:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_dontScrollHorz: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_dontScrollHorz:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_dontScrollHorz:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_snapVertScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_snapVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_snapVertScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_snapHorzScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_snapHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_snapHorzScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_scroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_scroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Point)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_scroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Point)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_modifyVirtualArea: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_modifyVirtualArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_modifyVirtualArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_dontAutoScrollArea: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_dontAutoScrollArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_dontAutoScrollArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_fileName: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_fileName: ::std::option::Option<
-        unsafe extern "C" fn(w: Window, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_get_fileName:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_id: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_id:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: int64)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_id: ::std::option::Option<unsafe extern "C" fn(w: Window) -> int64>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_modifiedDocument: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_modifiedDocument:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_modifiedDocument:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_showInTaskBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_showInTaskBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_showInTaskBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_saveDialog: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_saveDialog:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: FileDialog)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_isActiveClient: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_isActiveClient:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_isActiveClient:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_cursor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_cursor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: Cursor)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_cursor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Cursor>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_name: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_name: ::std::option::Option<
-        unsafe extern "C" fn(w: Window, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_get_name:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_displayDriver: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_displayDriver: ::std::option::Option<
-        unsafe extern "C" fn(w: Window, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_get_displayDriver:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_autoCreate: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_autoCreate:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_autoCreate:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_scrollArea: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_scrollArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *const Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_scrollArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Size)>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_scrollArea:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_is3D: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_is3D:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_is3D: ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_fontObject: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_fontObject:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *mut Font>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_clientStart: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_clientStart:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Point)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_absPosition: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_absPosition:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Point)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_normalAnchor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_normalAnchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut Anchor)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_normalSizeAnchor: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_normalSizeAnchor:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: *mut SizeAnchor)>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_active: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_active:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_created: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_created:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_destroyed: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_destroyed:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_firstSlave: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_firstSlave:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_firstChild: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_firstChild:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_lastChild: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_lastChild:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_activeClient: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_activeClient:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_activeChild: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_activeChild:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_display: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_display:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Display>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_displaySystem: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_displaySystem:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> DisplaySystem>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_horzScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_horzScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> ScrollBar>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_vertScroll: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_vertScroll:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> ScrollBar>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_statusBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_statusBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> StatusBar>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_rootWindow: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_rootWindow:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_closing: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_closing:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_closing:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_documentID: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_documentID:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_previous: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_previous:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_next: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_next:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_nextSlave: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_nextSlave:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_menuBar: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_menuBar:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> PopupMenu>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_sbv: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_sbv:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> ScrollBar>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_sbh: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_sbh:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> ScrollBar>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_fullRender: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_fullRender:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_fullRender:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_systemHandle: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_systemHandle:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *mut ::std::os::raw::c_void>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_minimizeButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_minimizeButton:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Button>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_maximizeButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_maximizeButton:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Button>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_closeButton: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_get_closeButton:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> Button>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_icon: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_icon:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: BitmapResource)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_icon:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> BitmapResource>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_moveable: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_moveable:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_moveable:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_alphaBlend: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_alphaBlend:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_useSharedMemory: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_useSharedMemory:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_useSharedMemory:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_glCapabilities: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_glCapabilities:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: GLCapabilities)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_glCapabilities:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> GLCapabilities>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_creationActivation: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_creationActivation:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: CreationActivationOption)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_creationActivation:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> CreationActivationOption>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_nativeDecorations: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_nativeDecorations:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_nativeDecorations:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut Window_isSet_nativeDecorations:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_manageDisplay: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_manageDisplay:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_manageDisplay:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_text: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_text: ::std::option::Option<
-        unsafe extern "C" fn(w: Window, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut Window_get_text:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_controller: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_controller:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: WindowController)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_controller:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> WindowController>;
-}
-unsafe extern "C" {
-    pub static mut property_Window_noConsequential: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut Window_set_noConsequential:
-        ::std::option::Option<unsafe extern "C" fn(w: Window, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut Window_get_noConsequential:
-        ::std::option::Option<unsafe extern "C" fn(w: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onCreate_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onCreate: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onKeyDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onKeyDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onKeyHit_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onKeyHit: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onKeyUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onKeyUp: *mut Method;
+    pub static mut Semaphore_release:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
 }
 unsafe extern "C" {
-    pub static mut WindowController_onLeftButtonDown_vTblID: ::std::os::raw::c_int;
+    pub static mut Semaphore_tryWait:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore) -> bool_>;
 }
 unsafe extern "C" {
-    pub static mut method_WindowController_onLeftButtonDown: *mut Method;
+    pub static mut Semaphore_wait:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
 }
 unsafe extern "C" {
-    pub static mut WindowController_onLeftButtonUp_vTblID: ::std::os::raw::c_int;
+    pub static mut property_Semaphore_initCount: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut method_WindowController_onLeftButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onLeftDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onLeftDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onLoadGraphics_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onLoadGraphics: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onMiddleButtonDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onMiddleButtonDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onMiddleButtonUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onMiddleButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onMiddleDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onMiddleDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onMouseMove_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onMouseMove: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onMultiTouch_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onMultiTouch: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onRedraw_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onRedraw: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onResize_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onResize: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onRightButtonDown_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onRightButtonDown: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onRightButtonUp_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onRightButtonUp: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onRightDoubleClick_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onRightDoubleClick: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut WindowController_onUnloadGraphics_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_WindowController_onUnloadGraphics: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut property_WindowController_window: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut WindowController_get_window:
-        ::std::option::Option<unsafe extern "C" fn(w: WindowController) -> Window>;
-}
-unsafe extern "C" {
-    pub static mut property_WindowController_controlled: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut WindowController_set_controlled: ::std::option::Option<
-        unsafe extern "C" fn(w: WindowController, value: tparam_WindowController_V),
-    >;
-}
-unsafe extern "C" {
-    pub static mut WindowController_get_controlled: ::std::option::Option<
-        unsafe extern "C" fn(w: WindowController) -> tparam_WindowController_V,
-    >;
-}
-unsafe extern "C" {
-    pub static mut applySkin: ::std::option::Option<
-        unsafe extern "C" fn(
-            c: *mut Class,
-            name: *const ::std::os::raw::c_char,
-            vTbl: *mut *mut ::std::os::raw::c_void,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut desktop3DFullScreen:
-        ::std::option::Option<unsafe extern "C" fn(window: Window) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut desktop3DGetClipBox: ::std::option::Option<unsafe extern "C" fn(box_: *mut Box)>;
-}
-unsafe extern "C" {
-    pub static mut desktop3DGetClippedWindow:
-        ::std::option::Option<unsafe extern "C" fn() -> Window>;
-}
-unsafe extern "C" {
-    pub static mut desktop3DGetWindowHandle:
-        ::std::option::Option<unsafe extern "C" fn(window: Window) -> *mut ::std::os::raw::c_void>;
-}
-unsafe extern "C" {
-    pub static mut desktop3DInitialize: ::std::option::Option<
-        unsafe extern "C" fn(
-            window: Window,
-            setup: ::std::option::Option<
-                unsafe extern "C" fn(
-                    window: Window,
-                    w: ::std::os::raw::c_int,
-                    h: ::std::os::raw::c_int,
-                ),
-            >,
-            update: ::std::option::Option<unsafe extern "C" fn(window: Window, box_: *mut Box)>,
-        ),
-    >;
-}
-unsafe extern "C" {
-    pub static mut desktop3DMouseMessage: ::std::option::Option<
-        unsafe extern "C" fn(
-            window: Window,
-            method: uint,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-            mods: *mut Modifiers,
-            consequential: bool_,
-            activate: bool_,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut desktop3DSetDesktopDirty: ::std::option::Option<unsafe extern "C" fn()>;
-}
-unsafe extern "C" {
-    pub static mut desktop3DTitleBarClicked: ::std::option::Option<
-        unsafe extern "C" fn(
-            clickedWindow: Window,
-            x: ::std::os::raw::c_int,
-            y: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut desktop3DUpdateDisplay: ::std::option::Option<unsafe extern "C" fn() -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut queryCompass: ::std::option::Option<unsafe extern "C" fn(value: *mut Euler)>;
-}
-unsafe extern "C" {
-    pub static mut unapplySkin: ::std::option::Option<unsafe extern "C" fn(c: *mut Class)>;
-}
-pub type FileDialogType = ::std::os::raw::c_int;
-pub const FileDialogType_FileDialogType_open: FileDialogType = 0;
-pub const FileDialogType_FileDialogType_save: FileDialogType = 1;
-pub const FileDialogType_FileDialogType_selectDir: FileDialogType = 2;
-pub const FileDialogType_FileDialogType_multiOpen: FileDialogType = 3;
-pub type FileForceExtension = ::std::os::raw::c_int;
-pub const FileForceExtension_FileForceExtension_never: FileForceExtension = 0;
-pub const FileForceExtension_FileForceExtension_always: FileForceExtension = 1;
-pub const FileForceExtension_FileForceExtension_whenNoneGiven: FileForceExtension = 2;
-pub type FileNameType = ::std::os::raw::c_int;
-pub const FileNameType_FileNameType_folder: FileNameType = 0;
-pub const FileNameType_FileNameType_folderOpen: FileNameType = 1;
-pub const FileNameType_FileNameType_computer: FileNameType = 2;
-pub const FileNameType_FileNameType_drive: FileNameType = 3;
-pub const FileNameType_FileNameType_netDrive: FileNameType = 4;
-pub const FileNameType_FileNameType_cdrom: FileNameType = 5;
-pub const FileNameType_FileNameType_removable: FileNameType = 6;
-pub const FileNameType_FileNameType_floppy: FileNameType = 7;
-pub const FileNameType_FileNameType_network: FileNameType = 8;
-pub const FileNameType_FileNameType_server: FileNameType = 9;
-pub const FileNameType_FileNameType_share: FileNameType = 10;
-pub const FileNameType_FileNameType_normalFile: FileNameType = 11;
-pub const FileNameType_FileNameType_ewsFile: FileNameType = 12;
-pub const FileNameType_FileNameType_epjFile: FileNameType = 13;
-pub const FileNameType_FileNameType_ecFile: FileNameType = 14;
-pub const FileNameType_FileNameType_ehFile: FileNameType = 15;
-pub const FileNameType_FileNameType_cFile: FileNameType = 16;
-pub const FileNameType_FileNameType_hFile: FileNameType = 17;
-pub const FileNameType_FileNameType_cppFile: FileNameType = 18;
-pub const FileNameType_FileNameType_hppFile: FileNameType = 19;
-pub const FileNameType_FileNameType_textFile: FileNameType = 20;
-pub const FileNameType_FileNameType_webFile: FileNameType = 21;
-pub const FileNameType_FileNameType_pictureFile: FileNameType = 22;
-pub const FileNameType_FileNameType_soundFile: FileNameType = 23;
-pub const FileNameType_FileNameType_archiveFile: FileNameType = 24;
-pub const FileNameType_FileNameType_packageFile: FileNameType = 25;
-pub const FileNameType_FileNameType_opticalMediaImageFile: FileNameType = 26;
-pub type MessageBoxType = ::std::os::raw::c_int;
-pub const MessageBoxType_MessageBoxType_ok: MessageBoxType = 0;
-pub const MessageBoxType_MessageBoxType_yesNo: MessageBoxType = 1;
-pub const MessageBoxType_MessageBoxType_okCancel: MessageBoxType = 2;
-pub const MessageBoxType_MessageBoxType_yesNoCancel: MessageBoxType = 3;
-pub type ColorPicker = Window;
-pub type CreateDirectoryDialog = Window;
-pub type FindDialog = Window;
-pub type GoToDialog = Window;
-pub type MessageBox = Window;
-pub type ReplaceDialog = Window;
-pub type WindowList = Window;
-unsafe extern "C" {
-    pub static mut property_ColorPicker_color: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorPicker_set_color:
-        ::std::option::Option<unsafe extern "C" fn(c: ColorPicker, value: Color)>;
-}
-unsafe extern "C" {
-    pub static mut ColorPicker_get_color:
-        ::std::option::Option<unsafe extern "C" fn(c: ColorPicker) -> Color>;
-}
-unsafe extern "C" {
-    pub static mut property_ColorPicker_hasAlpha: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ColorPicker_set_hasAlpha:
-        ::std::option::Option<unsafe extern "C" fn(c: ColorPicker, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ColorPicker_get_hasAlpha:
-        ::std::option::Option<unsafe extern "C" fn(c: ColorPicker) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_CreateDirectoryDialog_currentDirectory: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut CreateDirectoryDialog_set_currentDirectory: ::std::option::Option<
-        unsafe extern "C" fn(c: CreateDirectoryDialog, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut CreateDirectoryDialog_get_currentDirectory: ::std::option::Option<
-        unsafe extern "C" fn(c: CreateDirectoryDialog) -> *const ::std::os::raw::c_char,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_type: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_type:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: FileDialogType)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_type:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> FileDialogType>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_filePath: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_filePath: ::std::option::Option<
-        unsafe extern "C" fn(f: FileDialog, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_filePath:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_currentDirectory: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_currentDirectory: ::std::option::Option<
-        unsafe extern "C" fn(f: FileDialog, value: *const ::std::os::raw::c_char),
-    >;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_currentDirectory:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_filters: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_filters:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: *mut FileFilter)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_filters:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> *mut FileFilter>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_types: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_types:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: *mut FileType)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_types:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> *mut FileType>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_sizeFilters: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_sizeFilters:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_sizeFilters:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_sizeTypes: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_sizeTypes:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_sizeTypes:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_filter: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_filter:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_filter:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_fileType: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_fileType:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_fileType:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_mayNotExist: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_set_mayNotExist:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_mayNotExist:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_numSelections: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_numSelections:
-        ::std::option::Option<unsafe extern "C" fn(f: FileDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_FileDialog_multiFilePaths: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileDialog_get_multiFilePaths: ::std::option::Option<
-        unsafe extern "C" fn(f: FileDialog) -> *mut *const ::std::os::raw::c_char,
-    >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FileFilter {
-    pub name: *const ::std::os::raw::c_char,
-    pub extensions: *const ::std::os::raw::c_char,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FileFilter"][::std::mem::size_of::<FileFilter>() - 16usize];
-    ["Alignment of FileFilter"][::std::mem::align_of::<FileFilter>() - 8usize];
-    ["Offset of field: FileFilter::name"][::std::mem::offset_of!(FileFilter, name) - 0usize];
-    ["Offset of field: FileFilter::extensions"]
-        [::std::mem::offset_of!(FileFilter, extensions) - 8usize];
-};
-unsafe extern "C" {
-    pub static mut FileFilter_validateFileName: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut FileFilter, name: *const ::std::os::raw::c_char) -> bool_,
+    pub static mut Semaphore_set_initCount: ::std::option::Option<
+        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
     >;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FileName {
-    pub name: *const ::std::os::raw::c_char,
-    pub type_: FileNameType,
-    pub indent: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FileName"][::std::mem::size_of::<FileName>() - 16usize];
-    ["Alignment of FileName"][::std::mem::align_of::<FileName>() - 8usize];
-    ["Offset of field: FileName::name"][::std::mem::offset_of!(FileName, name) - 0usize];
-    ["Offset of field: FileName::type_"][::std::mem::offset_of!(FileName, type_) - 8usize];
-    ["Offset of field: FileName::indent"][::std::mem::offset_of!(FileName, indent) - 12usize];
-};
-unsafe extern "C" {
-    pub static mut FileNameType_selectByExtension: ::std::option::Option<
-        unsafe extern "C" fn(extension: *const ::std::os::raw::c_char) -> FileNameType,
-    >;
-}
-unsafe extern "C" {
-    pub static mut property_FileNameType_isFolderType: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FileNameType_get_isFolderType:
-        ::std::option::Option<unsafe extern "C" fn(f: FileNameType) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FileNameType_isFileType: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut FileNameType_get_isFileType:
-        ::std::option::Option<unsafe extern "C" fn(f: FileNameType) -> bool_>;
+    pub static mut Semaphore_get_initCount:
+        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct FileType {
-    pub name: *const ::std::os::raw::c_char,
-    pub typeExtension: *const ::std::os::raw::c_char,
-    pub forceExtension: FileForceExtension,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FileType"][::std::mem::size_of::<FileType>() - 24usize];
-    ["Alignment of FileType"][::std::mem::align_of::<FileType>() - 8usize];
-    ["Offset of field: FileType::name"][::std::mem::offset_of!(FileType, name) - 0usize];
-    ["Offset of field: FileType::typeExtension"]
-        [::std::mem::offset_of!(FileType, typeExtension) - 8usize];
-    ["Offset of field: FileType::forceExtension"]
-        [::std::mem::offset_of!(FileType, forceExtension) - 16usize];
-};
-unsafe extern "C" {
-    pub static mut property_FindDialog_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_set_editBox:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog, value: EditBox)>;
-}
 unsafe extern "C" {
-    pub static mut property_FindDialog_searchString: *mut Property;
+    pub static mut property_Semaphore_maxCount: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut FindDialog_set_searchString: ::std::option::Option<
-        unsafe extern "C" fn(f: FindDialog, value: *const ::std::os::raw::c_char),
+    pub static mut Semaphore_set_maxCount: ::std::option::Option<
+        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
     >;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_get_searchString:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog) -> *const ::std::os::raw::c_char>;
-}
-unsafe extern "C" {
-    pub static mut property_FindDialog_wholeWord: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_set_wholeWord:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_get_wholeWord:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FindDialog_matchCase: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_set_matchCase:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_get_matchCase:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_FindDialog_searchUp: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_set_searchUp:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut FindDialog_get_searchUp:
-        ::std::option::Option<unsafe extern "C" fn(f: FindDialog) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_GoToDialog_line: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GoToDialog_set_line:
-        ::std::option::Option<unsafe extern "C" fn(g: GoToDialog, value: ::std::os::raw::c_int)>;
-}
-unsafe extern "C" {
-    pub static mut GoToDialog_get_line:
-        ::std::option::Option<unsafe extern "C" fn(g: GoToDialog) -> ::std::os::raw::c_int>;
-}
-unsafe extern "C" {
-    pub static mut property_GoToDialog_editBox: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut GoToDialog_set_editBox:
-        ::std::option::Option<unsafe extern "C" fn(g: GoToDialog, value: EditBox)>;
-}
-unsafe extern "C" {
-    pub static mut GoToDialog_get_editBox:
-        ::std::option::Option<unsafe extern "C" fn(g: GoToDialog) -> EditBox>;
-}
-unsafe extern "C" {
-    pub static mut property_MessageBox_type: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut MessageBox_set_type:
-        ::std::option::Option<unsafe extern "C" fn(m: MessageBox, value: MessageBoxType)>;
 }
 unsafe extern "C" {
-    pub static mut property_MessageBox_contents: *mut Property;
+    pub static mut Semaphore_get_maxCount:
+        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
 }
 unsafe extern "C" {
-    pub static mut MessageBox_set_contents: ::std::option::Option<
-        unsafe extern "C" fn(m: MessageBox, value: *const ::std::os::raw::c_char),
-    >;
+    pub static mut Thread_create: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
 }
 unsafe extern "C" {
-    pub static mut property_ReplaceDialog_editBox: *mut Property;
+    pub static mut Thread_kill: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
 }
 unsafe extern "C" {
-    pub static mut ReplaceDialog_set_editBox:
-        ::std::option::Option<unsafe extern "C" fn(r: ReplaceDialog, value: EditBox)>;
+    pub static mut Thread_main_vTblID: ::std::os::raw::c_int;
 }
 unsafe extern "C" {
-    pub static mut property_ReplaceDialog_searchString: *mut Property;
+    pub static mut method_Thread_main: *mut Method;
 }
 unsafe extern "C" {
-    pub static mut ReplaceDialog_set_searchString: ::std::option::Option<
-        unsafe extern "C" fn(r: ReplaceDialog, value: *const ::std::os::raw::c_char),
-    >;
+    pub static mut Thread_setPriority:
+        ::std::option::Option<unsafe extern "C" fn(__this: Thread, priority: ThreadPriority)>;
 }
 unsafe extern "C" {
-    pub static mut ReplaceDialog_get_searchString: ::std::option::Option<
-        unsafe extern "C" fn(r: ReplaceDialog) -> *const ::std::os::raw::c_char,
-    >;
+    pub static mut Thread_wait: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
 }
 unsafe extern "C" {
-    pub static mut property_ReplaceDialog_replaceString: *mut Property;
+    pub static mut property_Thread_created: *mut Property;
 }
 unsafe extern "C" {
-    pub static mut ReplaceDialog_set_replaceString: ::std::option::Option<
-        unsafe extern "C" fn(r: ReplaceDialog, value: *const ::std::os::raw::c_char),
-    >;
+    pub static mut Thread_get_created:
+        ::std::option::Option<unsafe extern "C" fn(t: Thread) -> bool_>;
 }
 unsafe extern "C" {
-    pub static mut ReplaceDialog_get_replaceString: ::std::option::Option<
-        unsafe extern "C" fn(r: ReplaceDialog) -> *const ::std::os::raw::c_char,
-    >;
+    pub static mut getCurrentThreadID: ::std::option::Option<unsafe extern "C" fn() -> int64>;
 }
 unsafe extern "C" {
-    pub static mut property_ReplaceDialog_wholeWord: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ReplaceDialog_set_wholeWord:
-        ::std::option::Option<unsafe extern "C" fn(r: ReplaceDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ReplaceDialog_get_wholeWord:
-        ::std::option::Option<unsafe extern "C" fn(r: ReplaceDialog) -> bool_>;
-}
-unsafe extern "C" {
-    pub static mut property_ReplaceDialog_matchCase: *mut Property;
-}
-unsafe extern "C" {
-    pub static mut ReplaceDialog_set_matchCase:
-        ::std::option::Option<unsafe extern "C" fn(r: ReplaceDialog, value: bool_)>;
-}
-unsafe extern "C" {
-    pub static mut ReplaceDialog_get_matchCase:
-        ::std::option::Option<unsafe extern "C" fn(r: ReplaceDialog) -> bool_>;
-}
-pub type TVisionSkin_Window = Window;
-pub type WindowsSkin_Button = Button;
-pub type WindowsSkin_Window = Window;
-pub type Socket = Instance;
-pub type DCOMClientObject = Socket;
-pub type DCOMSendControl = Instance;
-pub type DCOMServerObject = Instance;
-pub type DCOMServerSocket = Socket;
-pub type Service = Instance;
-pub type DCOMService = Service;
-pub type DisconnectCode = ::std::os::raw::c_int;
-pub const DisconnectCode_DisconnectCode_remoteLost: DisconnectCode = 1;
-pub const DisconnectCode_DisconnectCode_remoteClosed: DisconnectCode = 2;
-pub const DisconnectCode_DisconnectCode_resolveFailed: DisconnectCode = 3;
-pub const DisconnectCode_DisconnectCode_connectFailed: DisconnectCode = 4;
-pub type FileServerConnection = Socket;
-pub type HTTPFile = File;
-pub type NetworkClientFile = File;
-pub type SSLSocket = Socket;
-pub type SocketType = ::std::os::raw::c_int;
-pub const SocketType_SocketType_tcp: SocketType = 0;
-pub const SocketType_SocketType_udp: SocketType = 1;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DCOMClientObject {
-    pub objectID: uint,
-    pub answered: bool_,
-    pub __ecereBuffer: SerialBuffer,
-    pub __ecerePrivateData0: [byte; 8usize],
-    pub nextCallID: ::std::os::raw::c_int,
-    pub __ecere_padding: [byte; 12usize],
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DCOMClientObject"]
-        [::std::mem::size_of::<class_members_DCOMClientObject>() - 40usize];
-    ["Alignment of class_members_DCOMClientObject"]
-        [::std::mem::align_of::<class_members_DCOMClientObject>() - 8usize];
-    ["Offset of field: class_members_DCOMClientObject::objectID"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, objectID) - 0usize];
-    ["Offset of field: class_members_DCOMClientObject::answered"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, answered) - 4usize];
-    ["Offset of field: class_members_DCOMClientObject::__ecereBuffer"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, __ecereBuffer) - 8usize];
-    ["Offset of field: class_members_DCOMClientObject::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, __ecerePrivateData0) - 16usize];
-    ["Offset of field: class_members_DCOMClientObject::nextCallID"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, nextCallID) - 24usize];
-    ["Offset of field: class_members_DCOMClientObject::__ecere_padding"]
-        [::std::mem::offset_of!(class_members_DCOMClientObject, __ecere_padding) - 28usize];
-};
-unsafe extern "C" {
-    pub static mut DCOMClientObject_callMethod: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DCOMClientObject,
-            methodID: uint,
-            hasReturnValue: bool_,
-        ) -> bool_,
-    >;
+    pub static mut class_Application: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut DCOMClientObject_callVirtualMethod_vTblID: ::std::os::raw::c_int;
+    pub static mut class_Instance: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_DCOMClientObject_callVirtualMethod: *mut Method;
+    pub static mut class_Module: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut DCOMClientObject_connect: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DCOMClientObject,
-            server: *const ::std::os::raw::c_char,
-            port: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
+    pub static mut class_AccessMode: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut DCOMSendControl_resume:
-        ::std::option::Option<unsafe extern "C" fn(__this: DCOMSendControl)>;
-}
-unsafe extern "C" {
-    pub static mut DCOMSendControl_stop:
-        ::std::option::Option<unsafe extern "C" fn(__this: DCOMSendControl)>;
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct class_members_DCOMServerObject {
-    pub instance: Instance,
-    pub serverSocket: DCOMServerSocket,
-    pub id: uint,
-    pub argsBuffer: SerialBuffer,
-    pub returnBuffer: SerialBuffer,
-    pub __ecerePrivateData0: [byte; 8usize],
-    pub mutex: *mut Mutex,
-    pub nextCallID: ::std::os::raw::c_int,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of class_members_DCOMServerObject"]
-        [::std::mem::size_of::<class_members_DCOMServerObject>() - 64usize];
-    ["Alignment of class_members_DCOMServerObject"]
-        [::std::mem::align_of::<class_members_DCOMServerObject>() - 8usize];
-    ["Offset of field: class_members_DCOMServerObject::instance"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, instance) - 0usize];
-    ["Offset of field: class_members_DCOMServerObject::serverSocket"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, serverSocket) - 8usize];
-    ["Offset of field: class_members_DCOMServerObject::id"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, id) - 16usize];
-    ["Offset of field: class_members_DCOMServerObject::argsBuffer"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, argsBuffer) - 24usize];
-    ["Offset of field: class_members_DCOMServerObject::returnBuffer"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, returnBuffer) - 32usize];
-    ["Offset of field: class_members_DCOMServerObject::__ecerePrivateData0"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, __ecerePrivateData0) - 40usize];
-    ["Offset of field: class_members_DCOMServerObject::mutex"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, mutex) - 48usize];
-    ["Offset of field: class_members_DCOMServerObject::nextCallID"]
-        [::std::mem::offset_of!(class_members_DCOMServerObject, nextCallID) - 56usize];
-};
-unsafe extern "C" {
-    pub static mut DCOMServerObject_callMethod_vTblID: ::std::os::raw::c_int;
-}
-unsafe extern "C" {
-    pub static mut method_DCOMServerObject_callMethod: *mut Method;
-}
-unsafe extern "C" {
-    pub static mut DCOMServerObject_callVirtualMethod: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: DCOMServerObject,
-            methodID: uint,
-            hasReturnValue: bool_,
-        ) -> bool_,
-    >;
+    pub static mut class_Angle: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut DCOMService_start:
-        ::std::option::Option<unsafe extern "C" fn(__this: DCOMService) -> bool_>;
+    pub static mut class_BTNamedLink: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut DCOMService_stop:
-        ::std::option::Option<unsafe extern "C" fn(__this: DCOMService) -> bool_>;
+    pub static mut class_BackSlashEscaping: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut FileServerConnection_open: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: FileServerConnection,
-            fileName: *const ::std::os::raw::c_char,
-            mode: FileOpenMode,
-        ) -> NetworkClientFile,
-    >;
+    pub static mut class_BitMember: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_openURL: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: HTTPFile,
-            name: *const ::std::os::raw::c_char,
-            referer: *const ::std::os::raw::c_char,
-            relocation: *mut ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
+    pub static mut class_Box: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_openURLEx: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: HTTPFile,
-            name: *const ::std::os::raw::c_char,
-            referer: *const ::std::os::raw::c_char,
-            relocation: *mut ::std::os::raw::c_char,
-            acceptHeader: *const ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
+    pub static mut class_CIString: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_HTTPFile_reuseConnection: *mut Property;
+    pub static mut class_Centimeters: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_set_reuseConnection:
-        ::std::option::Option<unsafe extern "C" fn(h: HTTPFile, value: bool_)>;
+    pub static mut class_Class: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_get_reuseConnection:
-        ::std::option::Option<unsafe extern "C" fn(h: HTTPFile) -> bool_>;
+    pub static mut class_ClassDesignerBase: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_HTTPFile_contentType: *mut Property;
+    pub static mut class_ClassProperty: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_get_contentType:
-        ::std::option::Option<unsafe extern "C" fn(h: HTTPFile) -> String>;
+    pub static mut class_ClassTemplateArgument: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_HTTPFile_contentDisposition: *mut Property;
+    pub static mut class_ClassTemplateParameter: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_get_contentDisposition:
-        ::std::option::Option<unsafe extern "C" fn(h: HTTPFile) -> String>;
+    pub static mut class_ClassType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_HTTPFile_httpCode: *mut Property;
+    pub static mut class_DataMember: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut HTTPFile_get_httpCode:
-        ::std::option::Option<unsafe extern "C" fn(h: HTTPFile) -> ::std::os::raw::c_int>;
+    pub static mut class_DataMemberType: *mut Class;
 }
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct Packet {
-    pub size: uint,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of Packet"][::std::mem::size_of::<Packet>() - 4usize];
-    ["Alignment of Packet"][::std::mem::align_of::<Packet>() - 4usize];
-    ["Offset of field: Packet::size"][::std::mem::offset_of!(Packet, size) - 0usize];
-};
 unsafe extern "C" {
-    pub static mut SSLSocket_establishConnection:
-        ::std::option::Option<unsafe extern "C" fn(__this: SSLSocket) -> bool_>;
+    pub static mut class_DataValue: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_SSLSocket_autoEstablish: *mut Property;
+    pub static mut class_DefinedExpression: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut SSLSocket_set_autoEstablish:
-        ::std::option::Option<unsafe extern "C" fn(s: SSLSocket, value: bool_)>;
+    pub static mut class_Degrees: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut SSLSocket_get_autoEstablish:
-        ::std::option::Option<unsafe extern "C" fn(s: SSLSocket) -> bool_>;
+    pub static mut class_DesignerBase: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_onAccept_vTblID: ::std::os::raw::c_int;
+    pub static mut class_Distance: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Service_onAccept: *mut Method;
+    pub static mut class_EnumClassData: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_process:
-        ::std::option::Option<unsafe extern "C" fn(__this: Service) -> bool_>;
+    pub static mut class_EscapeCStringOptions: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_processTimeOut:
-        ::std::option::Option<unsafe extern "C" fn(__this: Service, timeOut: Time) -> bool_>;
+    pub static mut class_Feet: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_start:
-        ::std::option::Option<unsafe extern "C" fn(__this: Service) -> bool_>;
+    pub static mut class_GlobalFunction: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_stop:
-        ::std::option::Option<unsafe extern "C" fn(__this: Service) -> bool_>;
+    pub static mut class_IOChannel: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Service_port: *mut Property;
+    pub static mut class_ImportType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_set_port:
-        ::std::option::Option<unsafe extern "C" fn(s: Service, value: ::std::os::raw::c_int)>;
+    pub static mut class_Meters: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_get_port:
-        ::std::option::Option<unsafe extern "C" fn(s: Service) -> ::std::os::raw::c_int>;
+    pub static mut class_Method: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Service_firstClient: *mut Property;
+    pub static mut class_MethodType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_get_firstClient:
-        ::std::option::Option<unsafe extern "C" fn(s: Service) -> Socket>;
+    pub static mut class_MinMaxValue: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Service_processAlone: *mut Property;
+    pub static mut class_NameSpace: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_set_processAlone:
-        ::std::option::Option<unsafe extern "C" fn(s: Service, value: bool_)>;
+    pub static mut class_ObjectInfo: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_get_processAlone:
-        ::std::option::Option<unsafe extern "C" fn(s: Service) -> bool_>;
+    pub static mut class_ObjectNotationType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Service_started: *mut Property;
+    pub static mut class_Platform: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Service_get_started:
-        ::std::option::Option<unsafe extern "C" fn(s: Service) -> bool_>;
+    pub static mut class_Point: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_connect: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Socket,
-            address: *const ::std::os::raw::c_char,
-            port: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
+    pub static mut class_Pointd: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_datagramConnect: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Socket,
-            sendAddress: *const ::std::os::raw::c_char,
-            port: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
+    pub static mut class_Pointf: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_datagramHost: ::std::option::Option<
-        unsafe extern "C" fn(__this: Socket, port: ::std::os::raw::c_int) -> bool_,
-    >;
+    pub static mut class_Property: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_disconnect:
-        ::std::option::Option<unsafe extern "C" fn(__this: Socket, code: DisconnectCode)>;
+    pub static mut class_Radians: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_onConnect_vTblID: ::std::os::raw::c_int;
+    pub static mut class_SerialBuffer: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_onConnect: *mut Method;
+    pub static mut class_Size: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_onDisconnect_vTblID: ::std::os::raw::c_int;
+    pub static mut class_StaticString: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_onDisconnect: *mut Method;
+    pub static mut class_StringAllocType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_onEstablishConnection_vTblID: ::std::os::raw::c_int;
+    pub static mut class_SubModule: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_onEstablishConnection: *mut Method;
+    pub static mut class_TemplateMemberType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_onReceive_vTblID: ::std::os::raw::c_int;
+    pub static mut class_TemplateParameterType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_onReceive: *mut Method;
+    pub static mut class_ZString: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_onReceivePacket_vTblID: ::std::os::raw::c_int;
+    pub static mut class_String: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_onReceivePacket: *mut Method;
+    pub static mut class_byte: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_process:
-        ::std::option::Option<unsafe extern "C" fn(__this: Socket) -> bool_>;
+    pub static mut class_char: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_processTimeOut:
-        ::std::option::Option<unsafe extern "C" fn(__this: Socket, timeOut: Time) -> bool_>;
+    pub static mut class_class: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_receiveData_vTblID: ::std::os::raw::c_int;
+    pub static mut class_double: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_receiveData: *mut Method;
+    pub static mut class_enum: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_send: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: Socket,
-            buffer: *const ::std::os::raw::c_void,
-            size: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
+    pub static mut class_float: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_sendData_vTblID: ::std::os::raw::c_int;
+    pub static mut class_int: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut method_Socket_sendData: *mut Method;
+    pub static mut class_int64: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_sendPacket:
-        ::std::option::Option<unsafe extern "C" fn(__this: Socket, packet: *mut Packet) -> bool_>;
+    pub static mut class_intptr: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_sendString: ::std::option::Option<
-        unsafe extern "C" fn(__this: Socket, string: *const ::std::os::raw::c_char) -> bool_,
-    >;
+    pub static mut class_intsize: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_sendf: ::std::option::Option<
-        unsafe extern "C" fn(__this: Socket, format: *const ::std::os::raw::c_char, ...) -> bool_,
-    >;
+    pub static mut class_short: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_safeDecRef: ::std::option::Option<unsafe extern "C" fn(__this: Socket)>;
+    pub static mut class_struct: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_safeIncRef: ::std::option::Option<unsafe extern "C" fn(__this: Socket)>;
+    pub static mut class_uint: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_service: *mut Property;
+    pub static mut class_uint16: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_set_service:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket, value: Service)>;
+    pub static mut class_uint32: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_service:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> Service>;
+    pub static mut class_uint64: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_inetAddress: *mut Property;
+    pub static mut class_uintptr: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_inetAddress:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> *const ::std::os::raw::c_char>;
+    pub static mut class_uintsize: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_inetPort: *mut Property;
+    pub static mut class_FieldType: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_inetPort:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> ::std::os::raw::c_int>;
+    pub static mut class_FieldTypeEx: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_next: *mut Property;
+    pub static mut class_FieldValue: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_next:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> Socket>;
+    pub static mut class_FieldValueFormat: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_connected: *mut Property;
+    pub static mut class_AVLNode: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_connected:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> bool_>;
+    pub static mut class_AVLTree: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut property_Socket_processAlone: *mut Property;
+    pub static mut class_Array: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_set_processAlone:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket, value: bool_)>;
+    pub static mut class_BTNode: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut Socket_get_processAlone:
-        ::std::option::Option<unsafe extern "C" fn(s: Socket) -> bool_>;
+    pub static mut class_BinaryTree: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut connectToFileServer: ::std::option::Option<
-        unsafe extern "C" fn(
-            hostName: *const ::std::os::raw::c_char,
-            port: ::std::os::raw::c_int,
-        ) -> FileServerConnection,
-    >;
+    pub static mut class_BuiltInContainer: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut fileOpenURL: ::std::option::Option<
-        unsafe extern "C" fn(name: *const ::std::os::raw::c_char) -> HTTPFile,
-    >;
+    pub static mut class_Container: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut getAddressFromName: ::std::option::Option<
-        unsafe extern "C" fn(
-            hostName: *const ::std::os::raw::c_char,
-            inetAddress: *mut ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
+    pub static mut class_CustomAVLTree: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut getHostName: ::std::option::Option<
-        unsafe extern "C" fn(
-            hostName: *mut ::std::os::raw::c_char,
-            size: ::std::os::raw::c_int,
-        ) -> bool_,
-    >;
+    pub static mut class_HashMap: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut getNameFromAddress: ::std::option::Option<
-        unsafe extern "C" fn(
-            inetAddress: *const ::std::os::raw::c_char,
-            hostName: *mut ::std::os::raw::c_char,
-        ) -> bool_,
-    >;
+    pub static mut class_HashMapIterator: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut setCurlEmbeddedCA: ::std::option::Option<
-        unsafe extern "C" fn(curlHandle: *mut ::std::os::raw::c_void) -> bool_,
-    >;
+    pub static mut class_HashTable: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_BlockEntry: *mut Class;
+    pub static mut class_Item: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_CompiledDefaultShader: *mut Class;
+    pub static mut class_Iterator: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_CompiledShader: *mut Class;
+    pub static mut class_IteratorPointer: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_DefaultShader: *mut Class;
+    pub static mut class_Link: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_DefaultShaderBits: *mut Class;
+    pub static mut class_LinkElement: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_FreeBlockMap: *mut Class;
+    pub static mut class_LinkList: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLAB: *mut Class;
+    pub static mut class_List: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLAttribMode: *mut Class;
+    pub static mut class_ListItem: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLB: *mut Class;
+    pub static mut class_Map: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLBType: *mut Class;
+    pub static mut class_MapIterator: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLBufferContents: *mut Class;
+    pub static mut class_MapNode: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLBufferUsage: *mut Class;
+    pub static mut class_NamedItem: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLCAB: *mut Class;
+    pub static mut class_NamedLink: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLEAB: *mut Class;
+    pub static mut class_NamedLink64: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLFB: *mut Class;
+    pub static mut class_OldLink: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLIMTKMode: *mut Class;
+    pub static mut class_OldList: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLMB: *mut Class;
+    pub static mut class_StringBTNode: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLMSWhatToGet: *mut Class;
+    pub static mut class_StringBinaryTree: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_GLStats: *mut Class;
+    pub static mut class_TreePrintStyle: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LFBDisplay: *mut Class;
+    pub static mut class_Date: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LFBDisplayDriver: *mut Class;
+    pub static mut class_DateTime: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LFBSurface: *mut Class;
+    pub static mut class_DayOfTheWeek: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LFBSystem: *mut Class;
+    pub static mut class_Month: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LightMode: *mut Class;
+    pub static mut class_SecSince1970: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_MatrixMode: *mut Class;
+    pub static mut class_Seconds: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Shader: *mut Class;
+    pub static mut class_Time: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_ShaderModifiedUniforms: *mut Class;
+    pub static mut class_TimeStamp: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_SwizzleMode: *mut Class;
+    pub static mut class_TimeStamp32: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_Archive: *mut Class;
@@ -23590,58 +7387,19 @@ unsafe extern "C" {
     pub static mut class_ArchiveOpenFlags: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Box: *mut Class;
-}
-unsafe extern "C" {
     pub static mut class_BufferedFile: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Centimeters: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CharCategories: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CharCategory: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Condition: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_ConsoleFile: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Date: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DateTime: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DayOfTheWeek: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Degrees: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Distance: *mut Class;
-}
-unsafe extern "C" {
     pub static mut class_DualPipe: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ECONGlobalSettings: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ECONParser: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_ErrorCode: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_ErrorLevel: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Feet: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_File: *mut Class;
@@ -23677,6 +7435,42 @@ unsafe extern "C" {
     pub static mut class_FileStats: *mut Class;
 }
 unsafe extern "C" {
+    pub static mut class_GuiErrorCode: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_LoggingMode: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_MoveFileOptions: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_PipeOpenMode: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_SysErrorCode: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_TempFile: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_CharCategories: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_CharCategory: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_PredefinedCharCategories: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_UnicodeDecomposition: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_ECONGlobalSettings: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_ECONParser: *mut Class;
+}
+unsafe extern "C" {
     pub static mut class_GlobalAppSettings: *mut Class;
 }
 unsafe extern "C" {
@@ -23690,9 +7484,6 @@ unsafe extern "C" {
 }
 unsafe extern "C" {
     pub static mut class_GlobalSettingsDriver: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GuiErrorCode: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_JSONFirstLetterCapitalization: *mut Class;
@@ -23710,52 +7501,7 @@ unsafe extern "C" {
     pub static mut class_JSONTypeOptions: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_LoggingMode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Meters: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MinMaxValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Month: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MoveFileOptions: *mut Class;
-}
-unsafe extern "C" {
     pub static mut class_OptionsMap: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PipeOpenMode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Point: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Pointd: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Pointf: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PredefinedCharCategories: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Radians: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_RepButton: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SecSince1970: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Seconds: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Semaphore: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_SetBool: *mut Class;
@@ -23764,13 +7510,13 @@ unsafe extern "C" {
     pub static mut class_SettingsIOResult: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Size: *mut Class;
+    pub static mut class_Condition: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_SysErrorCode: *mut Class;
+    pub static mut class_Mutex: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_TempFile: *mut Class;
+    pub static mut class_Semaphore: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_Thread: *mut Class;
@@ -23779,704 +7525,453 @@ unsafe extern "C" {
     pub static mut class_ThreadPriority: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Time: *mut Class;
+    #[doc = " dll function imports //////// ////////////////\n ////////////////\n ////////////////"]
+    pub fn __eCNameSpace__eC__i18n__GetTranslatedString(
+        name: constString,
+        string: *const ::std::os::raw::c_char,
+        stringAndContext: *const ::std::os::raw::c_char,
+    ) -> *const ::std::os::raw::c_char;
 }
 unsafe extern "C" {
-    pub static mut class_TimeStamp: *mut Class;
+    pub fn __eCNameSpace__eC__i18n__LoadTranslatedStrings(
+        moduleName: constString,
+        name: *const ::std::os::raw::c_char,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_TimeStamp32: *mut Class;
+    pub fn __eCNameSpace__eC__i18n__UnloadTranslatedStrings(name: constString);
 }
 unsafe extern "C" {
-    pub static mut class_UnicodeDecomposition: *mut Class;
+    pub fn __eCNameSpace__eC__types__MemoryGuard_PopLoc();
 }
 unsafe extern "C" {
-    pub static mut class_Camera: *mut Class;
+    pub fn __eCNameSpace__eC__types__MemoryGuard_PushLoc(loc: *const ::std::os::raw::c_char);
 }
 unsafe extern "C" {
-    pub static mut class_CameraType: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddBitMember(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        bitSize: ::std::os::raw::c_int,
+        bitPos: ::std::os::raw::c_int,
+        declMode: AccessMode,
+    ) -> *mut BitMember;
 }
 unsafe extern "C" {
-    pub static mut class_ClippingPlane: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddClassProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        dataType: *const ::std::os::raw::c_char,
+        setStmt: *mut ::std::os::raw::c_void,
+        getStmt: *mut ::std::os::raw::c_void,
+    ) -> *mut ClassProperty;
 }
 unsafe extern "C" {
-    pub static mut class_Euler: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddDataMember(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        size: uint,
+        alignment: uint,
+        declMode: AccessMode,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_EulerRotationOrder: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddMember(
+        _class: *mut Class,
+        dataMember: *mut DataMember,
+    ) -> bool_;
 }
 unsafe extern "C" {
-    pub static mut class_FovDirection: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddMethod(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        function: *mut ::std::os::raw::c_void,
+        declMode: AccessMode,
+    ) -> *mut Method;
 }
 unsafe extern "C" {
-    pub static mut class_FrameKey: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        dataType: *const ::std::os::raw::c_char,
+        setStmt: *mut ::std::os::raw::c_void,
+        getStmt: *mut ::std::os::raw::c_void,
+        declMode: AccessMode,
+    ) -> *mut Property;
 }
 unsafe extern "C" {
-    pub static mut class_FrameTrack: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddTemplateParameter(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        type_: TemplateParameterType,
+        info: *const ::std::os::raw::c_void,
+        defaultArg: *mut ClassTemplateArgument,
+    ) -> *mut ClassTemplateParameter;
 }
 unsafe extern "C" {
-    pub static mut class_FrameTrackBits: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_AddVirtualMethod(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        function: *mut ::std::os::raw::c_void,
+        declMode: AccessMode,
+    ) -> *mut Method;
 }
 unsafe extern "C" {
-    pub static mut class_FrameTrackType: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_DestructionWatchable(_class: *mut Class);
 }
 unsafe extern "C" {
-    pub static mut class_FrustumPlacement: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_DoneAddingTemplateParameters(base: *mut Class);
 }
 unsafe extern "C" {
-    pub static mut class_Line: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindClassProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+    ) -> *mut ClassProperty;
 }
 unsafe extern "C" {
-    pub static mut class_Material: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindDataMember(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        module: Module,
+        subMemberStack: *mut DataMember,
+        subMemberStackPos: *mut ::std::os::raw::c_int,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_MaterialFlags: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindDataMemberAndId(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        id: *mut ::std::os::raw::c_int,
+        module: Module,
+        subMemberStack: *mut DataMember,
+        subMemberStackPos: *mut ::std::os::raw::c_int,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_Matrix: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindDataMemberAndOffset(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        offset: *mut uint,
+        module: Module,
+        subMemberStack: *mut DataMember,
+        subMemberStackPos: *mut ::std::os::raw::c_int,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_Matrixf: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindMethod(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        module: Module,
+    ) -> *mut Method;
 }
 unsafe extern "C" {
-    pub static mut class_Mesh: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindNextMember(
+        _class: *mut Class,
+        curClass: *mut Class,
+        curMember: *mut DataMember,
+        subMemberStack: *mut DataMember,
+        subMemberStackPos: *mut ::std::os::raw::c_int,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_MeshFeatures: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_FindProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        module: Module,
+    ) -> *mut Property;
 }
 unsafe extern "C" {
-    pub static mut class_MeshMorph: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_GetDesigner(_class: *mut Class) -> *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_MeshPart: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_GetProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+    ) -> int64;
 }
 unsafe extern "C" {
-    pub static mut class_MeshSkin: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_IsDerived(
+        _class: *mut Class,
+        from: *mut Class,
+    ) -> bool_;
 }
 unsafe extern "C" {
-    pub static mut class_Object: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_Resize(
+        _class: *mut Class,
+        newSize: ::std::os::raw::c_int,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_ObjectFlags: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_SetProperty(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        value: int64,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_ObjectFormat: *mut Class;
+    pub fn __eCNameSpace__eC__types__eClass_Unregister(_class: *mut Class);
 }
 unsafe extern "C" {
-    pub static mut class_Plane: *mut Class;
+    pub fn __eCNameSpace__eC__types__eCrt_Initialize(
+        guiApp: bool_,
+        argc: ::std::os::raw::c_int,
+        argv: *mut *mut ::std::os::raw::c_char,
+    ) -> Application;
 }
 unsafe extern "C" {
-    pub static mut class_PrimitiveGroup: *mut Class;
+    pub fn __eCNameSpace__eC__types__eEnum_AddFixedValue(
+        _class: *mut Class,
+        string: *const ::std::os::raw::c_char,
+        value: int64,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_PrimitiveGroupType: *mut Class;
+    pub fn __eCNameSpace__eC__types__eEnum_AddValue(
+        _class: *mut Class,
+        string: *const ::std::os::raw::c_char,
+    ) -> int64;
 }
 unsafe extern "C" {
-    pub static mut class_PrimitiveSingle: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_DecRef(instance: Instance);
 }
 unsafe extern "C" {
-    pub static mut class_Quaternion: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_Delete(instance: Instance);
 }
 unsafe extern "C" {
-    pub static mut class_RenderPrimitiveType: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_Evolve(
+        instancePtr: *mut Instance,
+        _class: *mut Class,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_SkinBone: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_FireSelfWatchers(
+        instance: Instance,
+        _property: *mut Property,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_SkinVert: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_FireWatchers(
+        instance: Instance,
+        _property: *mut Property,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_Transform: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_GetDesigner(instance: Instance) -> *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_Vector3D: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_IncRef(instance: Instance);
 }
 unsafe extern "C" {
-    pub static mut class_Vector3Df: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_IsDerived(
+        instance: Instance,
+        from: *mut Class,
+    ) -> bool_;
 }
 unsafe extern "C" {
-    pub static mut class_Alignment: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_New(
+        _class: *mut Class,
+    ) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_AlphaWriteMode: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_NewEx(
+        _class: *mut Class,
+        bindingsAlloc: bool_,
+    ) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_Bitmap: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_SetMethod(
+        instance: Instance,
+        name: *const ::std::os::raw::c_char,
+        function: *mut ::std::os::raw::c_void,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_BitmapFormat: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_StopWatching(
+        instance: Instance,
+        _property: *mut Property,
+        object: Instance,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_BitmapResource: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_Watch(
+        instance: Instance,
+        _property: *mut Property,
+        object: *mut ::std::os::raw::c_void,
+        callback: ::std::option::Option<
+            unsafe extern "C" fn(
+                arg1: *mut ::std::os::raw::c_void,
+                arg2: *mut ::std::os::raw::c_void,
+            ),
+        >,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_ClearType: *mut Class;
+    pub fn __eCNameSpace__eC__types__eInstance_WatchDestruction(
+        instance: Instance,
+        object: Instance,
+        callback: ::std::option::Option<
+            unsafe extern "C" fn(
+                arg1: *mut ::std::os::raw::c_void,
+                arg2: *mut ::std::os::raw::c_void,
+            ),
+        >,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_Color: *mut Class;
+    pub fn __eCNameSpace__eC__types__eMember_AddDataMember(
+        member: *mut DataMember,
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        size: uint,
+        alignment: uint,
+        declMode: AccessMode,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_Color444: *mut Class;
+    pub fn __eCNameSpace__eC__types__eMember_AddMember(
+        addTo: *mut DataMember,
+        dataMember: *mut DataMember,
+    ) -> bool_;
 }
 unsafe extern "C" {
-    pub static mut class_Color555: *mut Class;
+    pub fn __eCNameSpace__eC__types__eMember_New(
+        type_: DataMemberType,
+        declMode: AccessMode,
+    ) -> *mut DataMember;
 }
 unsafe extern "C" {
-    pub static mut class_Color565: *mut Class;
+    pub fn __eCNameSpace__eC__types__eModule_Load(
+        fromModule: Module,
+        name: *const ::std::os::raw::c_char,
+        importAccess: AccessMode,
+    ) -> Module;
 }
 unsafe extern "C" {
-    pub static mut class_ColorAlpha: *mut Class;
+    pub fn __eCNameSpace__eC__types__eModule_LoadStatic(
+        fromModule: Module,
+        name: *const ::std::os::raw::c_char,
+        importAccess: AccessMode,
+        Load: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
+        Unload: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
+    ) -> Module;
 }
 unsafe extern "C" {
-    pub static mut class_ColorCMYK: *mut Class;
+    pub fn __eCNameSpace__eC__types__eModule_LoadStrict(
+        fromModule: Module,
+        name: *const ::std::os::raw::c_char,
+        importAccess: AccessMode,
+    ) -> Module;
 }
 unsafe extern "C" {
-    pub static mut class_ColorHSV: *mut Class;
+    pub fn __eCNameSpace__eC__types__eModule_Unload(fromModule: Module, module: Module);
 }
 unsafe extern "C" {
-    pub static mut class_ColorKey: *mut Class;
+    pub fn __eCNameSpace__eC__types__eProperty_SelfWatch(
+        _class: *mut Class,
+        name: *const ::std::os::raw::c_char,
+        callback: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_ColorLab: *mut Class;
+    pub fn __eCNameSpace__eC__types__eProperty_Watchable(_property: *mut Property);
 }
 unsafe extern "C" {
-    pub static mut class_ColorRGB: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_Delete(memory: *mut ::std::os::raw::c_void);
 }
 unsafe extern "C" {
-    pub static mut class_ColorRGBA: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_FindClass(
+        module: Module,
+        name: *const ::std::os::raw::c_char,
+    ) -> *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_ColorRGBAf: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_FindDefine(
+        module: Module,
+        name: *const ::std::os::raw::c_char,
+    ) -> *mut DefinedExpression;
 }
 unsafe extern "C" {
-    pub static mut class_CubeMap: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_FindFunction(
+        module: Module,
+        name: *const ::std::os::raw::c_char,
+    ) -> *mut GlobalFunction;
 }
 unsafe extern "C" {
-    pub static mut class_DefinedColor: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_New(size: uint) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_Display: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_New0(size: uint) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_DisplayDriver: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_RegisterClass(
+        type_: ClassType,
+        name: *const ::std::os::raw::c_char,
+        baseName: *const ::std::os::raw::c_char,
+        size: ::std::os::raw::c_int,
+        sizeClass: ::std::os::raw::c_int,
+        Constructor: ::std::option::Option<
+            unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_,
+        >,
+        Destructor: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        module: Module,
+        declMode: AccessMode,
+        inheritanceAccess: AccessMode,
+    ) -> *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_DisplayFlags: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_RegisterDefine(
+        name: *const ::std::os::raw::c_char,
+        value: *const ::std::os::raw::c_char,
+        module: Module,
+        declMode: AccessMode,
+    ) -> *mut DefinedExpression;
 }
 unsafe extern "C" {
-    pub static mut class_DisplaySystem: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_RegisterFunction(
+        name: *const ::std::os::raw::c_char,
+        type_: *const ::std::os::raw::c_char,
+        func: *mut ::std::os::raw::c_void,
+        module: Module,
+        declMode: AccessMode,
+    ) -> *mut GlobalFunction;
 }
 unsafe extern "C" {
-    pub static mut class_DisplaySystemResPtr: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_Renew(
+        memory: *mut ::std::os::raw::c_void,
+        size: uint,
+    ) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_DrawList: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_Renew0(
+        memory: *mut ::std::os::raw::c_void,
+        size: uint,
+    ) -> *mut ::std::os::raw::c_void;
 }
 unsafe extern "C" {
-    pub static mut class_DrawManager: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_SetArgs(
+        app: Application,
+        argc: ::std::os::raw::c_int,
+        argv: *mut *mut ::std::os::raw::c_char,
+    );
 }
 unsafe extern "C" {
-    pub static mut class_DrawSlot: *mut Class;
+    pub fn __eCNameSpace__eC__types__eSystem_SetPoolingDisabled(disabled: bool_);
 }
 unsafe extern "C" {
-    pub static mut class_FMFont: *mut Class;
+    pub static mut __thisModule: Module;
 }
 unsafe extern "C" {
-    pub static mut class_FMPathDraw: *mut Class;
+    pub fn ecrt_init(
+        fromModule: Module,
+        loadEcere: bool_,
+        guiApp: bool_,
+        argc: ::std::os::raw::c_int,
+        argv: *mut *mut ::std::os::raw::c_char,
+    ) -> Application;
 }
-unsafe extern "C" {
-    pub static mut class_FMTextAlignment: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FMVerticalAlignment: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FaceInfo: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FillModeValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Font: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontFlags: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontInfo: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontManager: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontManagerRenderer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontRenderer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FontResource: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLCapabilities: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLSamplesCount: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GradientDirection: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_HitRecord: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Light: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_LightFlags: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PixelFormat: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_RenderState: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_RenderStateFloat: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Resolution: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Resource: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Surface: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SystemColor: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FreeSpots: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLArrayTexture: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLDrawCommand: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLMultiDraw: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GLTextureFilter: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PNGOptions: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Cube: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SkyBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Sphere: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BoxAlignment: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BufferLocation: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Button: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ButtonState: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CalendarControl: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataDisplayFlags: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataField: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataFieldSort: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DataRow: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DirPath: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DirectoriesBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DropBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditBoxFindResult: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditBoxStream: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditLine: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditSyntaxHL: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_EditableSelectorButton: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FilePath: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Label: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ListBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Menu: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MenuDivider: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MenuItem: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MenuPlacement: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_OldArray: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PaneSplitter: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PathBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PathTypeExpected: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Picture: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PopupMenu: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ProgressBar: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SavingDataBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ScrollBar: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ScrollBarAction: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ScrollDirection: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SelectorBar: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SelectorButton: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Stacker: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StatusBar: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_StatusField: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Tab: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TabControl: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TabsPlacement: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ToolBar: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ToolButton: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ToolSeparator: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ToolTip: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_UndoAction: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_UndoBuffer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Anchor: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_AnchorValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_AnchorValueType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BorderBits: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_BorderStyle: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ClipBoard: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CommonControl: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ControllableWindow: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CreationActivationOption: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Cursor: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DialogResult: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Extent: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GuiApplication: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Interface: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Joystick: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Key: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_KeyCode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MiddleAnchorValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Modifiers: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MouseButtons: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MultiLineString: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Percentage: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_PredefinedKey: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SizeAnchor: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Skin: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SkinBitmap: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SmartKey: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SystemCursor: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Timer: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TouchPointerEvent: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TouchPointerInfo: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_WindowController: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_WindowState: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ColorPicker: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_CreateDirectoryDialog: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileDialog: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileDialogType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileFilter: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileForceExtension: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileName: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileNameType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FindDialog: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_GoToDialog: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MessageBox: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_MessageBoxType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_ReplaceDialog: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_WindowList: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_TVisionSkin_Window: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_WindowsSkin_Button: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_WindowsSkin_Window: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DCOMClientObject: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DCOMSendControl: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DCOMServerObject: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DCOMServerSocket: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DCOMService: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_DisconnectCode: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FileServerConnection: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_HTTPFile: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_NetworkClientFile: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Packet: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SSLSocket: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Service: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_Socket: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_SocketType: *mut Class;
-}
-unsafe extern "C" {
-    pub fn ecere_init(fromModule: Module) -> Module;
-}
-pub type FieldTypeEx = ::std::os::raw::c_int;
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub struct FieldValue {
-    pub type_: FieldTypeEx,
-    pub __bindgen_anon_1: FieldValue__bindgen_ty_1,
-}
-#[repr(C)]
-#[derive(Copy, Clone)]
-pub union FieldValue__bindgen_ty_1 {
-    pub i: int64,
-    pub r: f64,
-    pub s: String,
-    pub b: *mut ::std::os::raw::c_void,
-    pub a: Array,
-    pub m: Map,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FieldValue__bindgen_ty_1"]
-        [::std::mem::size_of::<FieldValue__bindgen_ty_1>() - 8usize];
-    ["Alignment of FieldValue__bindgen_ty_1"]
-        [::std::mem::align_of::<FieldValue__bindgen_ty_1>() - 8usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::i"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, i) - 0usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::r"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, r) - 0usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::s"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, s) - 0usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::b"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, b) - 0usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::a"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, a) - 0usize];
-    ["Offset of field: FieldValue__bindgen_ty_1::m"]
-        [::std::mem::offset_of!(FieldValue__bindgen_ty_1, m) - 0usize];
-};
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of FieldValue"][::std::mem::size_of::<FieldValue>() - 16usize];
-    ["Alignment of FieldValue"][::std::mem::align_of::<FieldValue>() - 8usize];
-    ["Offset of field: FieldValue::type_"][::std::mem::offset_of!(FieldValue, type_) - 0usize];
-};
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GeoPoint {
@@ -24489,6 +7984,21 @@ const _: () = {
     ["Alignment of GeoPoint"][::std::mem::align_of::<GeoPoint>() - 8usize];
     ["Offset of field: GeoPoint::lat"][::std::mem::offset_of!(GeoPoint, lat) - 0usize];
     ["Offset of field: GeoPoint::lon"][::std::mem::offset_of!(GeoPoint, lon) - 8usize];
+};
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Vector3D {
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Vector3D"][::std::mem::size_of::<Vector3D>() - 24usize];
+    ["Alignment of Vector3D"][::std::mem::align_of::<Vector3D>() - 8usize];
+    ["Offset of field: Vector3D::x"][::std::mem::offset_of!(Vector3D, x) - 0usize];
+    ["Offset of field: Vector3D::y"][::std::mem::offset_of!(Vector3D, y) - 8usize];
+    ["Offset of field: Vector3D::z"][::std::mem::offset_of!(Vector3D, z) - 16usize];
 };
 pub type CRS = uint64;
 pub type DGGRS = Instance;
@@ -24505,43 +8015,31 @@ pub const JSONSchemaType_JSONSchemaType_null: JSONSchemaType = 4;
 pub const JSONSchemaType_JSONSchemaType_number: JSONSchemaType = 5;
 pub const JSONSchemaType_JSONSchemaType_object: JSONSchemaType = 6;
 pub const JSONSchemaType_JSONSchemaType_string: JSONSchemaType = 7;
+pub type RhombicIcosahedral3H = DGGRS;
+pub type RhombicIcosahedral9R = DGGRS;
+pub type BCTA3H = RhombicIcosahedral3H;
 pub type CRSRegistry = ::std::os::raw::c_int;
 pub const CRSRegistry_CRSRegistry_epsg: CRSRegistry = 0;
 pub const CRSRegistry_CRSRegistry_ogc: CRSRegistry = 1;
 pub type DGGSJSONDepth = Instance;
 pub type DGGSJSONGrid = Instance;
-pub type FieldType = ::std::os::raw::c_int;
-pub const FieldType_FieldType_integer: FieldType = 1;
-pub const FieldType_FieldType_real: FieldType = 2;
-pub const FieldType_FieldType_text: FieldType = 3;
-pub const FieldType_FieldType_blob: FieldType = 4;
-pub const FieldType_FieldType_nil: FieldType = 5;
-pub const FieldType_FieldType_array: FieldType = 6;
-pub const FieldType_FieldType_map: FieldType = 7;
-pub type FieldValueFormat = ::std::os::raw::c_int;
-pub const FieldValueFormat_FieldValueFormat_decimal: FieldValueFormat = 0;
-pub const FieldValueFormat_FieldValueFormat_unset: FieldValueFormat = 0;
-pub const FieldValueFormat_FieldValueFormat_hex: FieldValueFormat = 1;
-pub const FieldValueFormat_FieldValueFormat_octal: FieldValueFormat = 2;
-pub const FieldValueFormat_FieldValueFormat_binary: FieldValueFormat = 3;
-pub const FieldValueFormat_FieldValueFormat_exponential: FieldValueFormat = 4;
-pub const FieldValueFormat_FieldValueFormat_boolean: FieldValueFormat = 5;
-pub const FieldValueFormat_FieldValueFormat_textObj: FieldValueFormat = 6;
-pub const FieldValueFormat_FieldValueFormat_color: FieldValueFormat = 7;
 pub type GGGZone = uint64;
 pub type GNOSISGlobalGrid = DGGRS;
-pub type ISEA3H = DGGRS;
-pub type ISEA3HZone = uint64;
-pub type ISEA9R = DGGRS;
-pub type ISEA9RZone = uint64;
+pub type GPP3H = RhombicIcosahedral3H;
+pub type I3HZone = uint64;
+pub type I9RZone = uint64;
+pub type ISEA3H = RhombicIcosahedral3H;
+pub type ISEA9R = RhombicIcosahedral9R;
+pub type IVEA3H = RhombicIcosahedral3H;
+pub type IVEA9R = RhombicIcosahedral9R;
 pub type template_Array_JSONSchema = Array;
 pub type template_Map_String_JSONSchema = Map;
-pub type template_Array_FieldValue = Array;
+pub type template_Array_String = Array;
 pub type template_Array_double = Array;
-pub type template_Map_String_FieldValue = Map;
 pub type template_Map_String_int = Map;
 pub type template_Array_DGGSJSONDepth = Array;
 pub type template_Map_String_template_Array_DGGSJSONDepth = Map;
+pub type template_Array_int = Array;
 pub type template_Array_DGGRSZone = Array;
 pub type template_Array_GeoPoint = Array;
 pub type template_Array_Pointd = Array;
@@ -25008,80 +8506,6 @@ const _: () = {
     ["Offset of field: class_members_DGGSJSONShape::dimensions"]
         [::std::mem::offset_of!(class_members_DGGSJSONShape, dimensions) - 8usize];
 };
-unsafe extern "C" {
-    pub static mut FieldValue_compareInt: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            other: *mut FieldValue,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_compareReal: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            other: *mut FieldValue,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_compareText: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            other: *mut FieldValue,
-        ) -> ::std::os::raw::c_int,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_formatArray: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            tempString: *mut ::std::os::raw::c_char,
-            fieldData: *mut ::std::os::raw::c_void,
-            onType: *mut ObjectNotationType,
-        ) -> String,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_formatFloat: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            stringOutput: *mut ::std::os::raw::c_char,
-            fixDot: bool_,
-        ) -> String,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_formatInteger: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            stringOutput: *mut ::std::os::raw::c_char,
-        ) -> String,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_formatMap: ::std::option::Option<
-        unsafe extern "C" fn(
-            __this: *mut FieldValue,
-            tempString: *mut ::std::os::raw::c_char,
-            fieldData: *mut ::std::os::raw::c_void,
-            onType: *mut ObjectNotationType,
-        ) -> String,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_getArrayOrMap: ::std::option::Option<
-        unsafe extern "C" fn(
-            string: *const ::std::os::raw::c_char,
-            destClass: *mut Class,
-            destination: *mut *mut ::std::os::raw::c_void,
-        ) -> bool_,
-    >;
-}
-unsafe extern "C" {
-    pub static mut FieldValue_stringify:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FieldValue) -> String>;
-}
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GeoExtent {
@@ -25353,8 +8777,100 @@ unsafe extern "C" {
     pub static mut JSONSchema_isSet_Default:
         ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
 }
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct Plane {
+    pub __bindgen_anon_1: Plane__bindgen_ty_1,
+    pub d: f64,
+}
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub union Plane__bindgen_ty_1 {
+    pub __bindgen_anon_1: Plane__bindgen_ty_1__bindgen_ty_1,
+    pub normal: Vector3D,
+}
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Plane__bindgen_ty_1__bindgen_ty_1 {
+    pub a: f64,
+    pub b: f64,
+    pub c: f64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Plane__bindgen_ty_1__bindgen_ty_1"]
+        [::std::mem::size_of::<Plane__bindgen_ty_1__bindgen_ty_1>() - 24usize];
+    ["Alignment of Plane__bindgen_ty_1__bindgen_ty_1"]
+        [::std::mem::align_of::<Plane__bindgen_ty_1__bindgen_ty_1>() - 8usize];
+    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::a"]
+        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, a) - 0usize];
+    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::b"]
+        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, b) - 8usize];
+    ["Offset of field: Plane__bindgen_ty_1__bindgen_ty_1::c"]
+        [::std::mem::offset_of!(Plane__bindgen_ty_1__bindgen_ty_1, c) - 16usize];
+};
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Plane__bindgen_ty_1"][::std::mem::size_of::<Plane__bindgen_ty_1>() - 24usize];
+    ["Alignment of Plane__bindgen_ty_1"][::std::mem::align_of::<Plane__bindgen_ty_1>() - 8usize];
+    ["Offset of field: Plane__bindgen_ty_1::normal"]
+        [::std::mem::offset_of!(Plane__bindgen_ty_1, normal) - 0usize];
+};
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Plane"][::std::mem::size_of::<Plane>() - 32usize];
+    ["Alignment of Plane"][::std::mem::align_of::<Plane>() - 8usize];
+    ["Offset of field: Plane::d"][::std::mem::offset_of!(Plane, d) - 24usize];
+};
+unsafe extern "C" {
+    pub static mut Plane_fromPoints: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut Plane,
+            v1: *const Vector3D,
+            v2: *const Vector3D,
+            v3: *const Vector3D,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut Vector3D_crossProduct: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut Vector3D,
+            vector1: *const Vector3D,
+            vector2: *const Vector3D,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut Vector3D_dotProduct: ::std::option::Option<
+        unsafe extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3D) -> f64,
+    >;
+}
+unsafe extern "C" {
+    pub static mut Vector3D_normalize:
+        ::std::option::Option<unsafe extern "C" fn(__this: *mut Vector3D, source: *const Vector3D)>;
+}
+unsafe extern "C" {
+    pub static mut Vector3D_subtract: ::std::option::Option<
+        unsafe extern "C" fn(
+            __this: *mut Vector3D,
+            vector1: *const Vector3D,
+            vector2: *const Vector3D,
+        ),
+    >;
+}
+unsafe extern "C" {
+    pub static mut property_Vector3D_length: *mut Property;
+}
+unsafe extern "C" {
+    pub static mut Vector3D_get_length:
+        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3D) -> f64>;
+}
 unsafe extern "C" {
     pub static mut readDGGSJSON: ::std::option::Option<unsafe extern "C" fn(f: File) -> DGGSJSON>;
+}
+unsafe extern "C" {
+    pub static mut class_BCTA3H: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_CRS: *mut Class;
@@ -25384,22 +8900,13 @@ unsafe extern "C" {
     pub static mut class_DGGSJSONShape: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_FieldType: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FieldTypeEx: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FieldValue: *mut Class;
-}
-unsafe extern "C" {
-    pub static mut class_FieldValueFormat: *mut Class;
-}
-unsafe extern "C" {
     pub static mut class_GGGZone: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_GNOSISGlobalGrid: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_GPP3H: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_GeoExtent: *mut Class;
@@ -25408,22 +8915,40 @@ unsafe extern "C" {
     pub static mut class_GeoPoint: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_ISEA3H: *mut Class;
+    pub static mut class_I3HZone: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_ISEA3HZone: *mut Class;
+    pub static mut class_I9RZone: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_ISEA3H: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_ISEA9R: *mut Class;
 }
 unsafe extern "C" {
-    pub static mut class_ISEA9RZone: *mut Class;
+    pub static mut class_IVEA3H: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_IVEA9R: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_JSONSchema: *mut Class;
 }
 unsafe extern "C" {
     pub static mut class_JSONSchemaType: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_Plane: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_RhombicIcosahedral3H: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_RhombicIcosahedral9R: *mut Class;
+}
+unsafe extern "C" {
+    pub static mut class_Vector3D: *mut Class;
 }
 unsafe extern "C" {
     pub fn dggal_init(fromModule: Module) -> Module;

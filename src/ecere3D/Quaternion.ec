@@ -1,9 +1,9 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 
 import "Vector3D"
 import "Quaternion"
 
-public struct DGGQuaternion
+public struct Quaternion
 {
    double w, x, y, z;
 
