@@ -1,6 +1,6 @@
 // This serves as a basis for aperture 9 rhombic grids
 // using different projections based on the Rhombic Icosahedral 5x6 space
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 import "dggrs"

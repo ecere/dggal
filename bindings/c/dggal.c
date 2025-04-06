@@ -1,6 +1,6 @@
 #include "dggal.h"
 
-#if defined(ECERE_STATIC)
+#if defined(EC_STATIC)
 // REVIEW: Clashes between function pointers and functions building statically?
 #define readDGGSJSON fnptr_readDGGSJSON
 #endif
@@ -70,18 +70,15 @@ LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneImmediateParentOf);
 LIB_EXPORT C(Method) * METHOD(DGGRS, listZones);
 LIB_EXPORT C(Method) * METHOD(DGGRS, zoneHasSubZone);
 
-LIB_EXPORT C(Method) * METHOD(FieldValue, compareInt);
-LIB_EXPORT C(Method) * METHOD(FieldValue, compareReal);
-LIB_EXPORT C(Method) * METHOD(FieldValue, compareText);
-LIB_EXPORT C(Method) * METHOD(FieldValue, formatArray);
-LIB_EXPORT C(Method) * METHOD(FieldValue, formatFloat);
-LIB_EXPORT C(Method) * METHOD(FieldValue, formatInteger);
-LIB_EXPORT C(Method) * METHOD(FieldValue, formatMap);
-LIB_EXPORT C(Method) * METHOD(FieldValue, getArrayOrMap);
-LIB_EXPORT C(Method) * METHOD(FieldValue, stringify);
-
 LIB_EXPORT C(Method) * METHOD(GeoExtent, clear);
 LIB_EXPORT C(Method) * METHOD(GeoExtent, intersects);
+
+LIB_EXPORT C(Method) * METHOD(Plane, fromPoints);
+
+LIB_EXPORT C(Method) * METHOD(Vector3D, crossProduct);
+LIB_EXPORT C(Method) * METHOD(Vector3D, dotProduct);
+LIB_EXPORT C(Method) * METHOD(Vector3D, normalize);
+LIB_EXPORT C(Method) * METHOD(Vector3D, subtract);
 
 
 
@@ -108,18 +105,15 @@ LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateChildOf)(C(DGGRS) __this, C(DGGRSZone
 LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateParentOf)(C(DGGRS) __this, C(DGGRSZone) parent, C(DGGRSZone) child);
 LIB_EXPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
-LIB_EXPORT int (* FieldValue_compareInt)(C(FieldValue) * __this, C(FieldValue) * other);
-LIB_EXPORT int (* FieldValue_compareReal)(C(FieldValue) * __this, C(FieldValue) * other);
-LIB_EXPORT int (* FieldValue_compareText)(C(FieldValue) * __this, C(FieldValue) * other);
-LIB_EXPORT C(String) (* FieldValue_formatArray)(C(FieldValue) * __this, char * tempString, void * fieldData, C(ObjectNotationType) * onType);
-LIB_EXPORT C(String) (* FieldValue_formatFloat)(C(FieldValue) * __this, char * stringOutput, C(bool) fixDot);
-LIB_EXPORT C(String) (* FieldValue_formatInteger)(C(FieldValue) * __this, char * stringOutput);
-LIB_EXPORT C(String) (* FieldValue_formatMap)(C(FieldValue) * __this, char * tempString, void * fieldData, C(ObjectNotationType) * onType);
-LIB_EXPORT C(bool) (* FieldValue_getArrayOrMap)(const char * string, C(Class) * destClass, void ** destination);
-LIB_EXPORT C(String) (* FieldValue_stringify)(C(FieldValue) * __this);
-
 LIB_EXPORT void (* GeoExtent_clear)(C(GeoExtent) * __this);
 LIB_EXPORT C(bool) (* GeoExtent_intersects)(C(GeoExtent) * __this, const C(GeoExtent) * b);
+
+LIB_EXPORT void (* Plane_fromPoints)(C(Plane) * __this, const C(Vector3D) * v1, const C(Vector3D) * v2, const C(Vector3D) * v3);
+
+LIB_EXPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
+LIB_EXPORT double (* Vector3D_dotProduct)(C(Vector3D) * __this, const C(Vector3D) * vector2);
+LIB_EXPORT void (* Vector3D_normalize)(C(Vector3D) * __this, const C(Vector3D) * source);
+LIB_EXPORT void (* Vector3D_subtract)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 
 
 
@@ -164,6 +158,9 @@ LIB_EXPORT C(bool) (* JSONSchema_isSet_xogcpropertySeq)(const C(JSONSchema) j);
 LIB_EXPORT C(Property) * PROPERTY(JSONSchema, Default);
 LIB_EXPORT C(bool) (* JSONSchema_isSet_Default)(const C(JSONSchema) j);
 
+LIB_EXPORT C(Property) * PROPERTY(Vector3D, length);
+LIB_EXPORT double (* Vector3D_get_length)(const C(Vector3D) * v);
+
 
 // Properties
 
@@ -175,33 +172,40 @@ LIB_EXPORT C(bool) (* JSONSchema_isSet_Default)(const C(JSONSchema) j);
 // bitClass
 LIB_EXPORT C(Class) * CO(CRS);
 LIB_EXPORT C(Class) * CO(DGGRSZone);
-LIB_EXPORT C(Class) * CO(FieldTypeEx);
 LIB_EXPORT C(Class) * CO(GGGZone);
-LIB_EXPORT C(Class) * CO(ISEA3HZone);
-LIB_EXPORT C(Class) * CO(ISEA9RZone);
+LIB_EXPORT C(Class) * CO(I3HZone);
+LIB_EXPORT C(Class) * CO(I9RZone);
 // enumClass
 LIB_EXPORT C(Class) * CO(CRSRegistry);
-LIB_EXPORT C(Class) * CO(FieldType);
-LIB_EXPORT C(Class) * CO(FieldValueFormat);
 LIB_EXPORT C(Class) * CO(JSONSchemaType);
 // unitClass
 // systemClass
 // structClass
 LIB_EXPORT C(Class) * CO(CRSExtent);
-LIB_EXPORT C(Class) * CO(FieldValue);
 LIB_EXPORT C(Class) * CO(GeoExtent);
 LIB_EXPORT C(Class) * CO(GeoPoint);
+LIB_EXPORT C(Class) * CO(Plane);
+LIB_EXPORT C(Class) * CO(Vector3D);
 // noHeadClass
 // normalClass
+LIB_EXPORT C(Class) * CO(BCTA3H);
 LIB_EXPORT C(Class) * CO(DGGRS);
 LIB_EXPORT C(Class) * CO(DGGSJSON);
 LIB_EXPORT C(Class) * CO(DGGSJSONDepth);
 LIB_EXPORT C(Class) * CO(DGGSJSONGrid);
 LIB_EXPORT C(Class) * CO(DGGSJSONShape);
 LIB_EXPORT C(Class) * CO(GNOSISGlobalGrid);
+LIB_EXPORT C(Class) * CO(GPP3H);
 LIB_EXPORT C(Class) * CO(ISEA3H);
 LIB_EXPORT C(Class) * CO(ISEA9R);
+LIB_EXPORT C(Class) * CO(IVEA3H);
+LIB_EXPORT C(Class) * CO(IVEA9R);
+LIB_EXPORT C(Class) * CO(RTEA3H);
+LIB_EXPORT C(Class) * CO(RTEA9R);
+LIB_EXPORT C(Class) * CO(rHEALPix);
 LIB_EXPORT C(Class) * CO(JSONSchema);
+LIB_EXPORT C(Class) * CO(RhombicIcosahedral3H);
+LIB_EXPORT C(Class) * CO(RhombicIcosahedral9R);
 
 
 
@@ -246,19 +250,21 @@ LIB_EXPORT int M_VTBLID(DGGRS, isZoneCentroidChild);
 LIB_EXPORT int M_VTBLID(DGGRS, listZones);
 
 
-#ifdef ECERE_STATIC
-unsigned int __ecereDll_Load_dggal(C(Module) * module);
-unsigned int __ecereDll_Unload_dggal(C(Module) * module);
+#ifdef EC_STATIC
+unsigned int __eCDll_Load_dggal(C(Module) * module);
+unsigned int __eCDll_Unload_dggal(C(Module) * module);
 #endif
+
 
 // Global Functions
 
 LIB_EXPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 
+
 LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 {
-#ifdef ECERE_STATIC
-   C(Module) module = Module_loadStatic(fromModule, DGGAL_MODULE_NAME, true, (void *)(__ecereDll_Load_dggal), (void *)(__ecereDll_Unload_dggal));
+#ifdef EC_STATIC
+   C(Module) module = Module_loadStatic(fromModule, DGGAL_MODULE_NAME, true, (void *)(__eCDll_Load_dggal), (void *)(__eCDll_Unload_dggal));
 #else
    C(Module) module = Module_load(fromModule, DGGAL_MODULE_NAME, AccessMode_publicAccess);
 #endif
@@ -272,6 +278,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
       // Set up all the CO(x) *, property, method, ...
 
 
+      CO(BCTA3H) = eC_findClass(module, "BCTA3H");
       CO(CRS) = eC_findClass(module, "CRS");
       CO(CRSExtent) = eC_findClass(module, "CRSExtent");
       CO(CRSRegistry) = eC_findClass(module, "CRSRegistry");
@@ -507,50 +514,9 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
       CO(DGGSJSONDepth) = eC_findClass(module, "DGGSJSONDepth");
       CO(DGGSJSONGrid) = eC_findClass(module, "DGGSJSONGrid");
       CO(DGGSJSONShape) = eC_findClass(module, "DGGSJSONShape");
-      CO(FieldType) = eC_findClass(module, "FieldType");
-      CO(FieldTypeEx) = eC_findClass(module, "FieldTypeEx");
-      CO(FieldValue) = eC_findClass(module, "FieldValue");
-      if(CO(FieldValue))
-      {
-         METHOD(FieldValue, compareInt) = Class_findMethod(CO(FieldValue), "compareInt", module);
-         if(METHOD(FieldValue, compareInt))
-            FieldValue_compareInt = (int (*)(C(FieldValue) *, C(FieldValue) *))METHOD(FieldValue, compareInt)->function;
-
-         METHOD(FieldValue, compareReal) = Class_findMethod(CO(FieldValue), "compareReal", module);
-         if(METHOD(FieldValue, compareReal))
-            FieldValue_compareReal = (int (*)(C(FieldValue) *, C(FieldValue) *))METHOD(FieldValue, compareReal)->function;
-
-         METHOD(FieldValue, compareText) = Class_findMethod(CO(FieldValue), "compareText", module);
-         if(METHOD(FieldValue, compareText))
-            FieldValue_compareText = (int (*)(C(FieldValue) *, C(FieldValue) *))METHOD(FieldValue, compareText)->function;
-
-         METHOD(FieldValue, formatArray) = Class_findMethod(CO(FieldValue), "formatArray", module);
-         if(METHOD(FieldValue, formatArray))
-            FieldValue_formatArray = (C(String) (*)(C(FieldValue) *, char *, void *, C(ObjectNotationType) *))METHOD(FieldValue, formatArray)->function;
-
-         METHOD(FieldValue, formatFloat) = Class_findMethod(CO(FieldValue), "formatFloat", module);
-         if(METHOD(FieldValue, formatFloat))
-            FieldValue_formatFloat = (C(String) (*)(C(FieldValue) *, char *, C(bool)))METHOD(FieldValue, formatFloat)->function;
-
-         METHOD(FieldValue, formatInteger) = Class_findMethod(CO(FieldValue), "formatInteger", module);
-         if(METHOD(FieldValue, formatInteger))
-            FieldValue_formatInteger = (C(String) (*)(C(FieldValue) *, char *))METHOD(FieldValue, formatInteger)->function;
-
-         METHOD(FieldValue, formatMap) = Class_findMethod(CO(FieldValue), "formatMap", module);
-         if(METHOD(FieldValue, formatMap))
-            FieldValue_formatMap = (C(String) (*)(C(FieldValue) *, char *, void *, C(ObjectNotationType) *))METHOD(FieldValue, formatMap)->function;
-
-         METHOD(FieldValue, getArrayOrMap) = Class_findMethod(CO(FieldValue), "getArrayOrMap", module);
-         if(METHOD(FieldValue, getArrayOrMap))
-            FieldValue_getArrayOrMap = (C(bool) (*)(const char *, C(Class) *, void **))METHOD(FieldValue, getArrayOrMap)->function;
-
-         METHOD(FieldValue, stringify) = Class_findMethod(CO(FieldValue), "stringify", module);
-         if(METHOD(FieldValue, stringify))
-            FieldValue_stringify = (C(String) (*)(C(FieldValue) *))METHOD(FieldValue, stringify)->function;
-      }
-      CO(FieldValueFormat) = eC_findClass(module, "FieldValueFormat");
       CO(GGGZone) = eC_findClass(module, "GGGZone");
       CO(GNOSISGlobalGrid) = eC_findClass(module, "GNOSISGlobalGrid");
+      CO(GPP3H) = eC_findClass(module, "GPP3H");
       CO(GeoExtent) = eC_findClass(module, "GeoExtent");
       if(CO(GeoExtent))
       {
@@ -567,10 +533,15 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
             GeoExtent_get_geodeticArea = (void *)PROPERTY(GeoExtent, geodeticArea)->Get;
       }
       CO(GeoPoint) = eC_findClass(module, "GeoPoint");
+      CO(I3HZone) = eC_findClass(module, "I3HZone");
+      CO(I9RZone) = eC_findClass(module, "I9RZone");
       CO(ISEA3H) = eC_findClass(module, "ISEA3H");
-      CO(ISEA3HZone) = eC_findClass(module, "ISEA3HZone");
       CO(ISEA9R) = eC_findClass(module, "ISEA9R");
-      CO(ISEA9RZone) = eC_findClass(module, "ISEA9RZone");
+      CO(IVEA3H) = eC_findClass(module, "IVEA3H");
+      CO(IVEA9R) = eC_findClass(module, "IVEA9R");
+      CO(RTEA3H) = eC_findClass(module, "RTEA3H");
+      CO(RTEA9R) = eC_findClass(module, "RTEA9R");
+      CO(rHEALPix) = eC_findClass(module, "rHEALPix");
       CO(JSONSchema) = eC_findClass(module, "JSONSchema");
       if(CO(JSONSchema))
       {
@@ -639,6 +610,38 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
             JSONSchema_isSet_Default = (void *)PROPERTY(JSONSchema, Default)->IsSet;
       }
       CO(JSONSchemaType) = eC_findClass(module, "JSONSchemaType");
+      CO(Plane) = eC_findClass(module, "Plane");
+      if(CO(Plane))
+      {
+         METHOD(Plane, fromPoints) = Class_findMethod(CO(Plane), "FromPoints", module);
+         if(METHOD(Plane, fromPoints))
+            Plane_fromPoints = (void (*)(C(Plane) *, const C(Vector3D) *, const C(Vector3D) *, const C(Vector3D) *))METHOD(Plane, fromPoints)->function;
+      }
+      CO(RhombicIcosahedral3H) = eC_findClass(module, "RhombicIcosahedral3H");
+      CO(RhombicIcosahedral9R) = eC_findClass(module, "RhombicIcosahedral9R");
+      CO(Vector3D) = eC_findClass(module, "Vector3D");
+      if(CO(Vector3D))
+      {
+         METHOD(Vector3D, crossProduct) = Class_findMethod(CO(Vector3D), "CrossProduct", module);
+         if(METHOD(Vector3D, crossProduct))
+            Vector3D_crossProduct = (void (*)(C(Vector3D) *, const C(Vector3D) *, const C(Vector3D) *))METHOD(Vector3D, crossProduct)->function;
+
+         METHOD(Vector3D, dotProduct) = Class_findMethod(CO(Vector3D), "DotProduct", module);
+         if(METHOD(Vector3D, dotProduct))
+            Vector3D_dotProduct = (double (*)(C(Vector3D) *, const C(Vector3D) *))METHOD(Vector3D, dotProduct)->function;
+
+         METHOD(Vector3D, normalize) = Class_findMethod(CO(Vector3D), "Normalize", module);
+         if(METHOD(Vector3D, normalize))
+            Vector3D_normalize = (void (*)(C(Vector3D) *, const C(Vector3D) *))METHOD(Vector3D, normalize)->function;
+
+         METHOD(Vector3D, subtract) = Class_findMethod(CO(Vector3D), "Subtract", module);
+         if(METHOD(Vector3D, subtract))
+            Vector3D_subtract = (void (*)(C(Vector3D) *, const C(Vector3D) *, const C(Vector3D) *))METHOD(Vector3D, subtract)->function;
+
+         PROPERTY(Vector3D, length) = Class_findProperty(CO(Vector3D), "length", module);
+         if(PROPERTY(Vector3D, length))
+            Vector3D_get_length = (void *)PROPERTY(Vector3D, length)->Get;
+      }
 
 
 

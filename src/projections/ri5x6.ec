@@ -1,20 +1,16 @@
 // This is the basis for defined projections from the WGS84 ellipsoid to the
 // Cartesian 5x6 icosahedral / rhombic space, where a 1x1 square correspond to
 // a root rhombus combining two triangular faces of an icosahedron
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 import "GeoExtent"
 import "authalic"
 
-#ifdef ECERE_STATIC
-// 3D Math is excluded from libecere's static config
+// TODO: We should probably set up a separate 3D math lib
 import "Plane"
-
-#define Vector3D DGGVector3D
-#define Quaternion DGGQuaternion
-#define Plane DGGPlane
-#endif
+import "Quaternion"
+import "Vector3D"
 
 define ANCHORS_5x6 = 33;
 

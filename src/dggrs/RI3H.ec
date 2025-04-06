@@ -1,6 +1,6 @@
 // This forms a basis for a number of aperture 3 hexagonal grids
 // using different projections based on the Rhombic Icosahedral 5x6 space
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 import "dggrs"

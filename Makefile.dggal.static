@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := dggal
-VERSION := 
+VERSION :=
 CONFIG := static
 ifndef COMPILER
 COMPILER := default
@@ -33,11 +33,11 @@ CONSOLE = -mwindows
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 
@@ -45,7 +45,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET_NAME := dggalStatic
 
@@ -72,7 +72,6 @@ _ECSOURCES = \
 	src/projections/rHEALPix.ec \
 	src/dggsJSON/dggsJSON.ec \
 	src/dggsJSON/JSONSchema.ec \
-	$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec \
 	src/ecere3D/Plane.ec \
 	src/ecere3D/Vector3D.ec \
 	src/ecere3D/Quaternion.ec \
@@ -113,15 +112,9 @@ else
 RESOURCES_EAR = $(RESOURCES)
 endif
 
-LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
-
-ifndef STATIC_LIBRARY_TARGET
-LIBS +=
-endif
-
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -DECERE_STATIC \
+			 -DEC_STATIC \
 			 -DIMPORT_STATIC=static
 
 ECFLAGS += -module $(MODULE)
@@ -135,8 +128,8 @@ all: objdir $(TARGET)
 
 objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
-	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
-	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+	$(if $(EC_SDK_SRC),$(if $(wildcard $(call escspace,$(EC_SDK_SRC)/crossplatform.mk)),,@$(call echo,eC SDK Source Warning: The value of EC_SDK_SRC is pointing to an incorrect ($(EC_SDK_SRC)) location.)),)
+	$(if $(EC_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define EC_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	@$(call rm,$(OBJ)symbols.lst)
@@ -156,25 +149,10 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
-ifndef STATIC_LIBRARY_TARGET
-	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
-ifndef NOSTRIP
-	$(STRIP) $(STRIPOPT) $(TARGET)
-endif
-else
 ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
-endif
-endif
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
-endif
 endif
 
 # SYMBOL RULES
@@ -238,9 +216,6 @@ $(OBJ)dggsJSON.sym: src/dggsJSON/dggsJSON.ec
 
 $(OBJ)JSONSchema.sym: src/dggsJSON/JSONSchema.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/JSONSchema.ec) -o $(call quote_path,$@)
-
-$(OBJ)fieldValue.sym: $(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec) -o $(call quote_path,$@)
 
 $(OBJ)Plane.sym: src/ecere3D/Plane.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@)
@@ -319,9 +294,6 @@ $(OBJ)dggsJSON.c: src/dggsJSON/dggsJSON.ec $(OBJ)dggsJSON.sym | $(SYMBOLS)
 $(OBJ)JSONSchema.c: src/dggsJSON/JSONSchema.ec $(OBJ)JSONSchema.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/JSONSchema.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)fieldValue.c: $(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec $(OBJ)fieldValue.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
 $(OBJ)Plane.c: src/ecere3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -399,9 +371,6 @@ $(OBJ)dggsJSON$(O): $(OBJ)dggsJSON.c
 $(OBJ)JSONSchema$(O): $(OBJ)JSONSchema.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)JSONSchema.c) -o $(call quote_path,$@)
 
-$(OBJ)fieldValue$(O): $(OBJ)fieldValue.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)fieldValue.c) -o $(call quote_path,$@)
-
 $(OBJ)Plane$(O): $(OBJ)Plane.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Plane.c) -o $(call quote_path,$@)
 
@@ -425,14 +394,6 @@ cleantarget:
 	$(call rm,$(OBJ)symbols.lst)
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
-ifdef LINUX_TARGET
-ifdef LINUX_HOST
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
-	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
-endif
-endif
 
 clean: cleantarget
 	$(call rm,$(_OBJECTS))

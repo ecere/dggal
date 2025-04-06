@@ -1,14 +1,9 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 private:
 
 import "ri5x6"
 
-#ifdef ECERE_STATIC
-// 3D Math is excluded from libecere's static config
 import "Vector3D"
-
-#define Vector3D DGGVector3D
-#endif
 
 public class GoldbergPolyhedraProjection : BarycentricSphericalTriAreaProjection
 {

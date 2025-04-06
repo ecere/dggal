@@ -1,4 +1,4 @@
-public import IMPORT_STATIC "ecere"
+public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
 int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String> options)

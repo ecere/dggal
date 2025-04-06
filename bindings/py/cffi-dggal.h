@@ -1,21 +1,13 @@
-typedef int eC_FieldTypeEx;
-struct eC_FieldValue
-{
-   eC_FieldTypeEx type;
-   union
-   {
-      int64 i;
-      double r;
-      eC_String s;
-      void * b;
-      eC_Array a;
-      eC_Map m;
-   };
-};
 struct eC_GeoPoint
 {
    eC_Angle lat;
    eC_Angle lon;
+};
+struct eC_Vector3D
+{
+   double x;
+   double y;
+   double z;
 };
 typedef uint64 eC_CRS;
 typedef struct eC_CRSExtent eC_CRSExtent;
@@ -23,7 +15,6 @@ typedef eC_Instance eC_DGGRS;
 typedef uint64 eC_DGGRSZone;
 typedef eC_Instance eC_DGGSJSON;
 typedef eC_Instance eC_DGGSJSONShape;
-typedef struct eC_FieldValue eC_FieldValue;
 typedef struct eC_GeoExtent eC_GeoExtent;
 typedef struct eC_GeoPoint eC_GeoPoint;
 typedef eC_Instance eC_JSONSchema;
@@ -40,12 +31,17 @@ enum
    JSONSchemaType_string = 0x7
 };
 
+typedef struct eC_Plane eC_Plane;
+typedef eC_DGGRS eC_RhombicIcosahedral3H;
+typedef eC_DGGRS eC_RhombicIcosahedral9R;
+typedef struct eC_Vector3D eC_Vector3D;
 static const uint64 nullZone;
 
 static const double wgs84InvFlattening;
 
 static const eC_Distance wgs84Minor;
 
+typedef eC_RhombicIcosahedral3H eC_BCTA3H;
 typedef int eC_CRSRegistry;
 enum
 {
@@ -55,44 +51,23 @@ enum
 
 typedef eC_Instance eC_DGGSJSONDepth;
 typedef eC_Instance eC_DGGSJSONGrid;
-typedef int eC_FieldType;
-enum
-{
-   FieldType_integer = 0x1,
-   FieldType_real = 0x2,
-   FieldType_text = 0x3,
-   FieldType_blob = 0x4,
-   FieldType_nil = 0x5,
-   FieldType_array = 0x6,
-   FieldType_map = 0x7
-};
-
-typedef int eC_FieldValueFormat;
-enum
-{
-   FieldValueFormat_decimal = 0x0,
-   FieldValueFormat_unset = 0x0,
-   FieldValueFormat_hex = 0x1,
-   FieldValueFormat_octal = 0x2,
-   FieldValueFormat_binary = 0x3,
-   FieldValueFormat_exponential = 0x4,
-   FieldValueFormat_boolean = 0x5,
-   FieldValueFormat_textObj = 0x6,
-   FieldValueFormat_color = 0x7
-};
-
 typedef uint64 eC_GGGZone;
 typedef eC_DGGRS eC_GNOSISGlobalGrid;
-typedef eC_DGGRS eC_ISEA3H;
-typedef uint64 eC_ISEA3HZone;
-typedef eC_DGGRS eC_ISEA9R;
-typedef uint64 eC_ISEA9RZone;
+typedef eC_RhombicIcosahedral3H eC_GPP3H;
+typedef uint64 eC_I3HZone;
+typedef uint64 eC_I9RZone;
+typedef eC_RhombicIcosahedral3H eC_ISEA3H;
+typedef eC_RhombicIcosahedral9R eC_ISEA9R;
+typedef eC_RhombicIcosahedral3H eC_IVEA3H;
+typedef eC_RhombicIcosahedral9R eC_IVEA9R;
+typedef eC_RhombicIcosahedral3H eC_RTEA3H;
+typedef eC_RhombicIcosahedral9R eC_RTEA9R;
+typedef eC_DGGRS eC_rHEALPix;
 typedef eC_Array template_Array_JSONSchema;
 typedef eC_Map template_Map_String_JSONSchema;
 typedef eC_Array template_Array_String;
 typedef eC_Array template_Array_FieldValue;
 typedef eC_Array template_Array_double;
-typedef eC_Map template_Map_String_FieldValue;
 typedef eC_Map template_Map_String_int;
 typedef eC_Array template_Array_DGGSJSONDepth;
 typedef eC_Map template_Map_String_template_Array_DGGSJSONDepth;
@@ -339,36 +314,6 @@ struct class_members_DGGSJSONShape
    int subZones;
    eC_Map dimensions;
 };
-#define FIELDTYPEEX_type_SHIFT                           0
-#define FIELDTYPEEX_type_MASK                            0x7
-#define FIELDTYPEEX_mustFree_SHIFT                       3
-#define FIELDTYPEEX_mustFree_MASK                        0x8
-#define FIELDTYPEEX_format_SHIFT                         4
-#define FIELDTYPEEX_format_MASK                          0xF0
-#define FIELDTYPEEX_isUnsigned_SHIFT                     8
-#define FIELDTYPEEX_isUnsigned_MASK                      0x100
-#define FIELDTYPEEX_isDateTime_SHIFT                     9
-#define FIELDTYPEEX_isDateTime_MASK                      0x200
-
-
-extern int (* FieldValue_compareInt)(eC_FieldValue * __this, eC_FieldValue * other);
-
-extern int (* FieldValue_compareReal)(eC_FieldValue * __this, eC_FieldValue * other);
-
-extern int (* FieldValue_compareText)(eC_FieldValue * __this, eC_FieldValue * other);
-
-extern eC_String (* FieldValue_formatArray)(eC_FieldValue * __this, char * tempString, void * fieldData, eC_ObjectNotationType * onType);
-
-extern eC_String (* FieldValue_formatFloat)(eC_FieldValue * __this, char * stringOutput, eC_bool fixDot);
-
-extern eC_String (* FieldValue_formatInteger)(eC_FieldValue * __this, char * stringOutput);
-
-extern eC_String (* FieldValue_formatMap)(eC_FieldValue * __this, char * tempString, void * fieldData, eC_ObjectNotationType * onType);
-
-extern eC_bool (* FieldValue_getArrayOrMap)(const char * string, eC_Class * destClass, void ** destination);
-
-extern eC_String (* FieldValue_stringify)(eC_FieldValue * __this);
-
 #define GGGZONE_level_SHIFT                              59
 #define GGGZONE_level_MASK                               0xF800000000000000LL
 #define GGGZONE_row_SHIFT                                30
@@ -389,22 +334,22 @@ extern eC_bool (* GeoExtent_intersects)(eC_GeoExtent * __this, const eC_GeoExten
 extern eC_Property * property_GeoExtent_geodeticArea;
 extern double (* GeoExtent_get_geodeticArea)(const eC_GeoExtent * g);
 
-#define ISEA3HZONE_levelISEA9R_SHIFT                     58
-#define ISEA3HZONE_levelISEA9R_MASK                      0x7C00000000000000LL
-#define ISEA3HZONE_rootRhombus_SHIFT                     54
-#define ISEA3HZONE_rootRhombus_MASK                      0x3C0000000000000LL
-#define ISEA3HZONE_rhombusIX_SHIFT                       3
-#define ISEA3HZONE_rhombusIX_MASK                        0x3FFFFFFFFFFFF8LL
-#define ISEA3HZONE_subHex_SHIFT                          0
-#define ISEA3HZONE_subHex_MASK                           0x7
+#define I3HZONE_levelI9R_SHIFT                           58
+#define I3HZONE_levelI9R_MASK                            0x7C00000000000000LL
+#define I3HZONE_rootRhombus_SHIFT                        54
+#define I3HZONE_rootRhombus_MASK                         0x3C0000000000000LL
+#define I3HZONE_rhombusIX_SHIFT                          3
+#define I3HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
+#define I3HZONE_subHex_SHIFT                             0
+#define I3HZONE_subHex_MASK                              0x7
 
 
-#define ISEA9RZONE_level_SHIFT                           59
-#define ISEA9RZONE_level_MASK                            0xF800000000000000LL
-#define ISEA9RZONE_row_SHIFT                             30
-#define ISEA9RZONE_row_MASK                              0x7FFFFFFC0000000LL
-#define ISEA9RZONE_col_SHIFT                             0
-#define ISEA9RZONE_col_MASK                              0x3FFFFFFF
+#define I9RZONE_level_SHIFT                              59
+#define I9RZONE_level_MASK                               0xF800000000000000LL
+#define I9RZONE_row_SHIFT                                30
+#define I9RZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define I9RZONE_col_SHIFT                                0
+#define I9RZONE_col_MASK                                 0x3FFFFFFF
 
 
 struct class_members_JSONSchema
@@ -491,7 +436,35 @@ extern eC_bool (* JSONSchema_isSet_xogcpropertySeq)(const eC_JSONSchema j);
 extern eC_Property * property_JSONSchema_Default;
 extern eC_bool (* JSONSchema_isSet_Default)(const eC_JSONSchema j);
 
+struct eC_Plane
+{
+   union
+   {
+      struct
+      {
+         double a;
+         double b;
+         double c;
+      };
+      eC_Vector3D normal;
+   };
+   double d;
+};
+extern void (* Plane_fromPoints)(eC_Plane * __this, const eC_Vector3D * v1, const eC_Vector3D * v2, const eC_Vector3D * v3);
+
+extern void (* Vector3D_crossProduct)(eC_Vector3D * __this, const eC_Vector3D * vector1, const eC_Vector3D * vector2);
+
+extern double (* Vector3D_dotProduct)(eC_Vector3D * __this, const eC_Vector3D * vector2);
+
+extern void (* Vector3D_normalize)(eC_Vector3D * __this, const eC_Vector3D * source);
+
+extern void (* Vector3D_subtract)(eC_Vector3D * __this, const eC_Vector3D * vector1, const eC_Vector3D * vector2);
+
+extern eC_Property * property_Vector3D_length;
+extern double (* Vector3D_get_length)(const eC_Vector3D * v);
+
 extern eC_DGGSJSON (* eC_readDGGSJSON)(eC_File f);
+extern eC_Class * class_BCTA3H;
 extern eC_Class * class_CRS;
 extern eC_Class * class_CRSExtent;
 extern eC_Class * class_CRSRegistry;
@@ -501,20 +474,26 @@ extern eC_Class * class_DGGSJSON;
 extern eC_Class * class_DGGSJSONDepth;
 extern eC_Class * class_DGGSJSONGrid;
 extern eC_Class * class_DGGSJSONShape;
-extern eC_Class * class_FieldType;
-extern eC_Class * class_FieldTypeEx;
-extern eC_Class * class_FieldValue;
-extern eC_Class * class_FieldValueFormat;
 extern eC_Class * class_GGGZone;
 extern eC_Class * class_GNOSISGlobalGrid;
+extern eC_Class * class_GPP3H;
 extern eC_Class * class_GeoExtent;
 extern eC_Class * class_GeoPoint;
+extern eC_Class * class_I3HZone;
+extern eC_Class * class_I9RZone;
 extern eC_Class * class_ISEA3H;
-extern eC_Class * class_ISEA3HZone;
 extern eC_Class * class_ISEA9R;
-extern eC_Class * class_ISEA9RZone;
+extern eC_Class * class_IVEA3H;
+extern eC_Class * class_IVEA9R;
+extern eC_Class * class_RTEA3H;
+extern eC_Class * class_RTEA9R;
+extern eC_Class * class_rHEALPix;
 extern eC_Class * class_JSONSchema;
 extern eC_Class * class_JSONSchemaType;
+extern eC_Class * class_Plane;
+extern eC_Class * class_RhombicIcosahedral3H;
+extern eC_Class * class_RhombicIcosahedral9R;
+extern eC_Class * class_Vector3D;
 
 extern eC_Module dggal_init(eC_Module fromModule);
 

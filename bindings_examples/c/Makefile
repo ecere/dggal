@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := info
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -31,13 +31,13 @@ CONSOLE = -mconsole
 
 # INCLUDES
 
-DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../../
+DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../
 
-ifndef ECERE_SDK_SRC
-ECERE_SDK_SRC := $(DGGAL_ABSPATH)../ecere-sdk
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(ECERE_SDK_SRC)/
+_CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
 ifndef WINDOWS_HOST
@@ -50,23 +50,21 @@ endif
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET_NAME := info
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(TARGET_NAME)$(OUT)
 
 _OBJECTS = \
-	$(OBJ)eC$(O) \
-	$(OBJ)ecere$(O) \
+	$(OBJ)ecrt$(O) \
 	$(OBJ)dggal$(O) \
 	$(OBJ)info$(O)
 
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	../../bindings/c/eC.c \
-	../../bindings/c/ecere.c \
+	../../bindings/c/ecrt.c \
 	../../bindings/c/dggal.c \
 	info.c
 
@@ -80,10 +78,7 @@ endif
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-ifndef STATIC_LIBRARY_TARGET
-LIBS += \
-	$(call _L,ecere)
-endif
+LIBS += $(call _L,ecrt)
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
@@ -92,10 +87,12 @@ PRJ_CFLAGS += \
 ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
-ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_CONFIG))
-endif
+	 -L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)) \
+	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
+	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_CONFIG)/bin) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/bin)
 
 # TARGETS
 
@@ -110,24 +107,14 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call rm,$(OBJ)objects.lst)
 	@$(call touch,$(OBJ)objects.lst)
 	$(call addtolistfile,$(_OBJECTS),$(OBJ)objects.lst)
-ifndef STATIC_LIBRARY_TARGET
 	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-else
-ifdef WINDOWS_HOST
-	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
-else
-	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
-endif
-endif
-ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
-endif
 endif
 endif
 
@@ -137,11 +124,8 @@ endif
 
 # OBJECT RULES
 
-$(OBJ)eC$(O): ../../bindings/c/eC.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/eC.c) -o $(call quote_path,$@)
-
-$(OBJ)ecere$(O): ../../bindings/c/ecere.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecere.c) -o $(call quote_path,$@)
+$(OBJ)ecrt$(O): ../../bindings/c/ecrt.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecrt.c) -o $(call quote_path,$@)
 
 $(OBJ)dggal$(O): ../../bindings/c/dggal.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/dggal.c) -o $(call quote_path,$@)
@@ -152,12 +136,10 @@ $(OBJ)info$(O): info.c
 cleantarget:
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))
-ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
 	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
 	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
-endif
 endif
 endif
 

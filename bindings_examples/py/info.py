@@ -34,7 +34,7 @@ def zoneInfo(dggrs, zone):
    if parents.count:
       printLn("Parent", "s" if parents.count > 1 else "", " (", parents.count, "):")
       for p in parents:
-         pID = dggrs.getZoneTextID(parents[i], pID)
+         pID = dggrs.getZoneTextID(p)
          printx("   ", pID)
          if centroidParent == p:
             printx(" (centroid child)")

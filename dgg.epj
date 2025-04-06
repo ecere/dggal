@@ -6,7 +6,7 @@
       "TargetType" : "Executable",
       "TargetFileName" : "dgg",
       "Libraries" : [
-         "ecere"
+         "ecrt"
       ],
       "Console" : true
    },
@@ -43,7 +43,7 @@
             ],
             "Libraries" : [
                "dggalStatic",
-               "ecereVanilla"
+               "ecrtStatic"
             ],
             "LibraryDirs" : [
                "obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
