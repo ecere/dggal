@@ -497,12 +497,14 @@ pub struct _G_fpos_t {
     pub __state: __mbstate_t,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
+/*
 const _: () = {
     ["Size of _G_fpos_t"][::std::mem::size_of::<_G_fpos_t>() - 16usize];
     ["Alignment of _G_fpos_t"][::std::mem::align_of::<_G_fpos_t>() - 8usize];
     ["Offset of field: _G_fpos_t::__pos"][::std::mem::offset_of!(_G_fpos_t, __pos) - 0usize];
     ["Offset of field: _G_fpos_t::__state"][::std::mem::offset_of!(_G_fpos_t, __state) - 8usize];
 };
+*/
 pub type __fpos_t = _G_fpos_t;
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -511,6 +513,7 @@ pub struct _G_fpos64_t {
     pub __state: __mbstate_t,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
+/*
 const _: () = {
     ["Size of _G_fpos64_t"][::std::mem::size_of::<_G_fpos64_t>() - 16usize];
     ["Alignment of _G_fpos64_t"][::std::mem::align_of::<_G_fpos64_t>() - 8usize];
@@ -518,6 +521,7 @@ const _: () = {
     ["Offset of field: _G_fpos64_t::__state"]
         [::std::mem::offset_of!(_G_fpos64_t, __state) - 8usize];
 };
+*/
 pub type __fpos64_t = _G_fpos64_t;
 pub type __FILE = _IO_FILE;
 pub type FILE = _IO_FILE;
@@ -571,6 +575,7 @@ pub struct _IO_FILE {
     pub _unused2: [::std::os::raw::c_char; 20usize],
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
+/*
 const _: () = {
     ["Size of _IO_FILE"][::std::mem::size_of::<_IO_FILE>() - 216usize];
     ["Alignment of _IO_FILE"][::std::mem::align_of::<_IO_FILE>() - 8usize];
@@ -623,29 +628,30 @@ const _: () = {
     ["Offset of field: _IO_FILE::_mode"][::std::mem::offset_of!(_IO_FILE, _mode) - 192usize];
     ["Offset of field: _IO_FILE::_unused2"][::std::mem::offset_of!(_IO_FILE, _unused2) - 196usize];
 };
+*/
 pub type cookie_read_function_t = ::std::option::Option<
-    unsafe extern "C" fn(
+    /*unsafe*/ extern "C" fn(
         __cookie: *mut ::std::os::raw::c_void,
         __buf: *mut ::std::os::raw::c_char,
         __nbytes: usize,
     ) -> __ssize_t,
 >;
 pub type cookie_write_function_t = ::std::option::Option<
-    unsafe extern "C" fn(
+    /*unsafe*/ extern "C" fn(
         __cookie: *mut ::std::os::raw::c_void,
         __buf: *const ::std::os::raw::c_char,
         __nbytes: usize,
     ) -> __ssize_t,
 >;
 pub type cookie_seek_function_t = ::std::option::Option<
-    unsafe extern "C" fn(
+    /*unsafe*/ extern "C" fn(
         __cookie: *mut ::std::os::raw::c_void,
         __pos: *mut __off64_t,
         __w: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int,
 >;
 pub type cookie_close_function_t = ::std::option::Option<
-    unsafe extern "C" fn(__cookie: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
+    /*unsafe*/ extern "C" fn(__cookie: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
 >;
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -674,25 +680,25 @@ pub type cookie_io_functions_t = _IO_cookie_io_functions_t;
 pub type va_list = __gnuc_va_list;
 pub type off_t = __off_t;
 pub type fpos_t = __fpos_t;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stdin: *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stdout: *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stderr: *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn remove(__filename: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn rename(
         __old: *const ::std::os::raw::c_char,
         __new: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn renameat(
         __oldfd: ::std::os::raw::c_int,
         __old: *const ::std::os::raw::c_char,
@@ -700,71 +706,71 @@ unsafe extern "C" {
         __new: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fclose(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn tmpfile() -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn tmpnam(arg1: *mut ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn tmpnam_r(__s: *mut ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn tempnam(
         __dir: *const ::std::os::raw::c_char,
         __pfx: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fflush(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fflush_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fopen(
         __filename: *const ::std::os::raw::c_char,
         __modes: *const ::std::os::raw::c_char,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn freopen(
         __filename: *const ::std::os::raw::c_char,
         __modes: *const ::std::os::raw::c_char,
         __stream: *mut FILE,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fdopen(__fd: ::std::os::raw::c_int, __modes: *const ::std::os::raw::c_char)
         -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fopencookie(
         __magic_cookie: *mut ::std::os::raw::c_void,
         __modes: *const ::std::os::raw::c_char,
         __io_funcs: cookie_io_functions_t,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fmemopen(
         __s: *mut ::std::os::raw::c_void,
         __len: usize,
         __modes: *const ::std::os::raw::c_char,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn open_memstream(
         __bufloc: *mut *mut ::std::os::raw::c_char,
         __sizeloc: *mut usize,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn setbuf(__stream: *mut FILE, __buf: *mut ::std::os::raw::c_char);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn setvbuf(
         __stream: *mut FILE,
         __buf: *mut ::std::os::raw::c_char,
@@ -772,50 +778,50 @@ unsafe extern "C" {
         __n: usize,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn setbuffer(__stream: *mut FILE, __buf: *mut ::std::os::raw::c_char, __size: usize);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn setlinebuf(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fprintf(
         __stream: *mut FILE,
         __format: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn printf(__format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn sprintf(
         __s: *mut ::std::os::raw::c_char,
         __format: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vfprintf(
         __s: *mut FILE,
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vprintf(
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vsprintf(
         __s: *mut ::std::os::raw::c_char,
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn snprintf(
         __s: *mut ::std::os::raw::c_char,
         __maxlen: ::std::os::raw::c_ulong,
@@ -823,7 +829,7 @@ unsafe extern "C" {
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vsnprintf(
         __s: *mut ::std::os::raw::c_char,
         __maxlen: ::std::os::raw::c_ulong,
@@ -831,52 +837,52 @@ unsafe extern "C" {
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vasprintf(
         __ptr: *mut *mut ::std::os::raw::c_char,
         __f: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __asprintf(
         __ptr: *mut *mut ::std::os::raw::c_char,
         __fmt: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn asprintf(
         __ptr: *mut *mut ::std::os::raw::c_char,
         __fmt: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vdprintf(
         __fd: ::std::os::raw::c_int,
         __fmt: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn dprintf(
         __fd: ::std::os::raw::c_int,
         __fmt: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fscanf(
         __stream: *mut FILE,
         __format: *const ::std::os::raw::c_char,
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn scanf(__format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn sscanf(
         __s: *const ::std::os::raw::c_char,
         __format: *const ::std::os::raw::c_char,
@@ -887,7 +893,7 @@ pub type _Float32 = f32;
 pub type _Float64 = f64;
 pub type _Float32x = f64;
 pub type _Float64x = u128;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_fscanf"]
     pub fn fscanf1(
         __stream: *mut FILE,
@@ -895,11 +901,11 @@ unsafe extern "C" {
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_scanf"]
     pub fn scanf1(__format: *const ::std::os::raw::c_char, ...) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_sscanf"]
     pub fn sscanf1(
         __s: *const ::std::os::raw::c_char,
@@ -907,27 +913,27 @@ unsafe extern "C" {
         ...
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vfscanf(
         __s: *mut FILE,
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vscanf(
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn vsscanf(
         __s: *const ::std::os::raw::c_char,
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_vfscanf"]
     pub fn vfscanf1(
         __s: *mut FILE,
@@ -935,14 +941,14 @@ unsafe extern "C" {
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_vscanf"]
     pub fn vscanf1(
         __format: *const ::std::os::raw::c_char,
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__isoc99_vsscanf"]
     pub fn vsscanf1(
         __s: *const ::std::os::raw::c_char,
@@ -950,57 +956,57 @@ unsafe extern "C" {
         __arg: *mut __va_list_tag,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fgetc(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getc(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getchar() -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getc_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getchar_unlocked() -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fgetc_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fputc(__c: ::std::os::raw::c_int, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn putc(__c: ::std::os::raw::c_int, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn putchar(__c: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fputc_unlocked(__c: ::std::os::raw::c_int, __stream: *mut FILE)
         -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn putc_unlocked(__c: ::std::os::raw::c_int, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn putchar_unlocked(__c: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getw(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn putw(__w: ::std::os::raw::c_int, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fgets(
         __s: *mut ::std::os::raw::c_char,
         __n: ::std::os::raw::c_int,
         __stream: *mut FILE,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __getdelim(
         __lineptr: *mut *mut ::std::os::raw::c_char,
         __n: *mut usize,
@@ -1008,7 +1014,7 @@ unsafe extern "C" {
         __stream: *mut FILE,
     ) -> __ssize_t;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getdelim(
         __lineptr: *mut *mut ::std::os::raw::c_char,
         __n: *mut usize,
@@ -1016,23 +1022,23 @@ unsafe extern "C" {
         __stream: *mut FILE,
     ) -> __ssize_t;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn getline(
         __lineptr: *mut *mut ::std::os::raw::c_char,
         __n: *mut usize,
         __stream: *mut FILE,
     ) -> __ssize_t;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fputs(__s: *const ::std::os::raw::c_char, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn puts(__s: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ungetc(__c: ::std::os::raw::c_int, __stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fread(
         __ptr: *mut ::std::os::raw::c_void,
         __size: ::std::os::raw::c_ulong,
@@ -1040,7 +1046,7 @@ unsafe extern "C" {
         __stream: *mut FILE,
     ) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fwrite(
         __ptr: *const ::std::os::raw::c_void,
         __size: ::std::os::raw::c_ulong,
@@ -1048,7 +1054,7 @@ unsafe extern "C" {
         __s: *mut FILE,
     ) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fread_unlocked(
         __ptr: *mut ::std::os::raw::c_void,
         __size: usize,
@@ -1056,7 +1062,7 @@ unsafe extern "C" {
         __stream: *mut FILE,
     ) -> usize;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fwrite_unlocked(
         __ptr: *const ::std::os::raw::c_void,
         __size: usize,
@@ -1064,87 +1070,87 @@ unsafe extern "C" {
         __stream: *mut FILE,
     ) -> usize;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fseek(
         __stream: *mut FILE,
         __off: ::std::os::raw::c_long,
         __whence: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ftell(__stream: *mut FILE) -> ::std::os::raw::c_long;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn rewind(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fseeko(
         __stream: *mut FILE,
         __off: __off_t,
         __whence: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ftello(__stream: *mut FILE) -> __off_t;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fgetpos(__stream: *mut FILE, __pos: *mut fpos_t) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fsetpos(__stream: *mut FILE, __pos: *const fpos_t) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn clearerr(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn feof(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ferror(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn clearerr_unlocked(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn feof_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ferror_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn perror(__s: *const ::std::os::raw::c_char);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fileno(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn fileno_unlocked(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn pclose(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn popen(
         __command: *const ::std::os::raw::c_char,
         __modes: *const ::std::os::raw::c_char,
     ) -> *mut FILE;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ctermid(__s: *mut ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn flockfile(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ftrylockfile(__stream: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn funlockfile(__stream: *mut FILE);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __uflow(arg1: *mut FILE) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __overflow(arg1: *mut FILE, arg2: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 pub type int_least8_t = __int_least8_t;
@@ -1165,21 +1171,21 @@ pub type uint_fast32_t = ::std::os::raw::c_ulong;
 pub type uint_fast64_t = ::std::os::raw::c_ulong;
 pub type intmax_t = __intmax_t;
 pub type uintmax_t = __uintmax_t;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memcpy(
         __dest: *mut ::std::os::raw::c_void,
         __src: *const ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memmove(
         __dest: *mut ::std::os::raw::c_void,
         __src: *const ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memccpy(
         __dest: *mut ::std::os::raw::c_void,
         __src: *const ::std::os::raw::c_void,
@@ -1187,80 +1193,80 @@ unsafe extern "C" {
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memset(
         __s: *mut ::std::os::raw::c_void,
         __c: ::std::os::raw::c_int,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memcmp(
         __s1: *const ::std::os::raw::c_void,
         __s2: *const ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __memcmpeq(
         __s1: *const ::std::os::raw::c_void,
         __s2: *const ::std::os::raw::c_void,
         __n: usize,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memchr(
         __s: *const ::std::os::raw::c_void,
         __c: ::std::os::raw::c_int,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strncpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcat(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strncat(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcmp(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strncmp(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcoll(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strxfrm(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
@@ -1293,14 +1299,14 @@ const _: () = {
 };
 pub type __locale_t = *mut __locale_struct;
 pub type locale_t = __locale_t;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcoll_l(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
         __l: locale_t,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strxfrm_l(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
@@ -1308,84 +1314,84 @@ unsafe extern "C" {
         __l: locale_t,
     ) -> usize;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strdup(__s: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strndup(
         __string: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strchr(
         __s: *const ::std::os::raw::c_char,
         __c: ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strrchr(
         __s: *const ::std::os::raw::c_char,
         __c: ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strchrnul(
         __s: *const ::std::os::raw::c_char,
         __c: ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcspn(
         __s: *const ::std::os::raw::c_char,
         __reject: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strspn(
         __s: *const ::std::os::raw::c_char,
         __accept: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strpbrk(
         __s: *const ::std::os::raw::c_char,
         __accept: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strstr(
         __haystack: *const ::std::os::raw::c_char,
         __needle: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strtok(
         __s: *mut ::std::os::raw::c_char,
         __delim: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __strtok_r(
         __s: *mut ::std::os::raw::c_char,
         __delim: *const ::std::os::raw::c_char,
         __save_ptr: *mut *mut ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strtok_r(
         __s: *mut ::std::os::raw::c_char,
         __delim: *const ::std::os::raw::c_char,
         __save_ptr: *mut *mut ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcasestr(
         __haystack: *const ::std::os::raw::c_char,
         __needle: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn memmem(
         __haystack: *const ::std::os::raw::c_void,
         __haystacklen: usize,
@@ -1393,30 +1399,30 @@ unsafe extern "C" {
         __needlelen: usize,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __mempcpy(
         __dest: *mut ::std::os::raw::c_void,
         __src: *const ::std::os::raw::c_void,
         __n: usize,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn mempcpy(
         __dest: *mut ::std::os::raw::c_void,
         __src: *const ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strlen(__s: *const ::std::os::raw::c_char) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strnlen(__string: *const ::std::os::raw::c_char, __maxlen: usize) -> usize;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strerror(__errnum: ::std::os::raw::c_int) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[link_name = "\u{1}__xpg_strerror_r"]
     pub fn strerror_r(
         __errnum: ::std::os::raw::c_int,
@@ -1424,71 +1430,71 @@ unsafe extern "C" {
         __buflen: usize,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strerror_l(
         __errnum: ::std::os::raw::c_int,
         __l: locale_t,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn bcmp(
         __s1: *const ::std::os::raw::c_void,
         __s2: *const ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn bcopy(
         __src: *const ::std::os::raw::c_void,
         __dest: *mut ::std::os::raw::c_void,
         __n: ::std::os::raw::c_ulong,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn bzero(__s: *mut ::std::os::raw::c_void, __n: ::std::os::raw::c_ulong);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn index(
         __s: *const ::std::os::raw::c_char,
         __c: ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn rindex(
         __s: *const ::std::os::raw::c_char,
         __c: ::std::os::raw::c_int,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ffs(__i: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ffsl(__l: ::std::os::raw::c_long) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ffsll(__ll: ::std::os::raw::c_longlong) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcasecmp(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strncasecmp(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strcasecmp_l(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
         __loc: locale_t,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strncasecmp_l(
         __s1: *const ::std::os::raw::c_char,
         __s2: *const ::std::os::raw::c_char,
@@ -1496,52 +1502,52 @@ unsafe extern "C" {
         __loc: locale_t,
     ) -> ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn explicit_bzero(__s: *mut ::std::os::raw::c_void, __n: usize);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strsep(
         __stringp: *mut *mut ::std::os::raw::c_char,
         __delim: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strsignal(__sig: ::std::os::raw::c_int) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __stpcpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn stpcpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __stpncpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
         __n: usize,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn stpncpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> *mut ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strlcpy(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
         __n: ::std::os::raw::c_ulong,
     ) -> ::std::os::raw::c_ulong;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn strlcat(
         __dest: *mut ::std::os::raw::c_char,
         __src: *const ::std::os::raw::c_char,
@@ -1605,13 +1611,13 @@ pub struct BinaryTree {
     pub root: *mut BTNode,
     pub count: ::std::os::raw::c_int,
     pub CompareKey: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             tree: *mut BinaryTree,
             a: uintptr,
             b: uintptr,
         ) -> ::std::os::raw::c_int,
     >,
-    pub FreeKey: ::std::option::Option<unsafe extern "C" fn(key: *mut ::std::os::raw::c_void)>,
+    pub FreeKey: ::std::option::Option</*unsafe*/ extern "C" fn(key: *mut ::std::os::raw::c_void)>,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
@@ -1764,8 +1770,8 @@ pub struct Class {
     pub _vTbl: *mut *mut ::std::os::raw::c_void,
     pub vTblSize: ::std::os::raw::c_int,
     pub Constructor:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_>,
-    pub Destructor: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_>,
+    pub Destructor: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
     pub offsetClass: ::std::os::raw::c_int,
     pub sizeClass: ::std::os::raw::c_int,
     pub base: *mut Class,
@@ -1784,7 +1790,7 @@ pub struct Class {
     pub dataType: *mut Type,
     pub typeSize: ::std::os::raw::c_int,
     pub defaultAlignment: ::std::os::raw::c_int,
-    pub Initialize: ::std::option::Option<unsafe extern "C" fn()>,
+    pub Initialize: ::std::option::Option</*unsafe*/ extern "C" fn()>,
     pub memberOffset: ::std::os::raw::c_int,
     pub selfWatchers: OldList,
     pub designerClass: *const ::std::os::raw::c_char,
@@ -1929,10 +1935,10 @@ const _: () = {
     ["Offset of field: class_members_Application::systemNameSpace"]
         [::std::mem::offset_of!(class_members_Application, systemNameSpace) - 64usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Application_main_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Application_main: *mut Method;
 }
 #[repr(C)]
@@ -1954,16 +1960,16 @@ const _: () = {
     ["Offset of field: class_members_Instance::_refCount"]
         [::std::mem::offset_of!(class_members_Instance, _refCount) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Module_onLoad_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Module_onLoad: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Module_onUnload_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Module_onUnload: *mut Method;
 }
 #[repr(C)]
@@ -2042,8 +2048,8 @@ pub struct ClassProperty {
     pub left: *mut ClassProperty,
     pub right: *mut ClassProperty,
     pub depth: ::std::os::raw::c_int,
-    pub Set: ::std::option::Option<unsafe extern "C" fn(arg1: *mut Class, arg2: int64)>,
-    pub Get: ::std::option::Option<unsafe extern "C" fn(arg1: *mut Class) -> int64>,
+    pub Set: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut Class, arg2: int64)>,
+    pub Get: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut Class) -> int64>,
     pub dataTypeString: *const ::std::os::raw::c_char,
     pub dataType: *mut Type,
     pub constant: bool_,
@@ -2190,7 +2196,7 @@ pub struct Method {
     pub left: *mut Method,
     pub right: *mut Method,
     pub depth: ::std::os::raw::c_int,
-    pub function: ::std::option::Option<unsafe extern "C" fn() -> ::std::os::raw::c_int>,
+    pub function: ::std::option::Option</*unsafe*/ extern "C" fn() -> ::std::os::raw::c_int>,
     pub vid: ::std::os::raw::c_int,
     pub type_: MethodType,
     pub _class: *mut Class,
@@ -2233,13 +2239,13 @@ pub struct Property {
     pub dataTypeClass: *mut Class,
     pub dataType: *mut Type,
     pub Set: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void, arg2: ::std::os::raw::c_int),
+        /*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void, arg2: ::std::os::raw::c_int),
     >,
     pub Get: ::std::option::Option<
-        unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
+        /*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
     >,
     pub IsSet:
-        ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_>,
+        ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_>,
     pub data: *mut ::std::os::raw::c_void,
     pub symbol: *mut ::std::os::raw::c_void,
     pub vid: ::std::os::raw::c_int,
@@ -2468,7 +2474,7 @@ pub struct GlobalFunction {
     pub prev: *mut GlobalFunction,
     pub next: *mut GlobalFunction,
     pub name: *const ::std::os::raw::c_char,
-    pub function: ::std::option::Option<unsafe extern "C" fn() -> ::std::os::raw::c_int>,
+    pub function: ::std::option::Option</*unsafe*/ extern "C" fn() -> ::std::os::raw::c_int>,
     pub module: Module,
     pub nameSpace: *mut NameSpace,
     pub dataTypeString: *const ::std::os::raw::c_char,
@@ -2597,13 +2603,13 @@ const _: () = {
     ["Offset of field: Box::right"][::std::mem::offset_of!(Box, right) - 8usize];
     ["Offset of field: Box::bottom"][::std::mem::offset_of!(Box, bottom) - 12usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_clip:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, against: *mut Box)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Box, against: *mut Box)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_clipOffset: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Box,
             against: *mut Box,
             x: ::std::os::raw::c_int,
@@ -2611,136 +2617,136 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_isPointInside:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, point: *mut Point) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Box, point: *mut Point) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_overlap:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Box, box_: *mut Box) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Box, box_: *mut Box) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Box_width: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_set_width:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_get_width:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Box_height: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_set_height:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const Box, value: ::std::os::raw::c_int)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Box_get_height:
-        ::std::option::Option<unsafe extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const Box) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Centimeters_Meters: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Centimeters_from_Meters:
-        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(meters: Distance) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Centimeters_to_Meters:
-        ::std::option::Option<unsafe extern "C" fn(centimeters: f64) -> Distance>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(centimeters: f64) -> Distance>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Class_char_ptr: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Class_from_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Class, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(c: *const Class, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Class_to_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Class) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(c: *const Class) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_addObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_addObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_createNew_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_createNew: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_createObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_createObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_destroyObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_destroyObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_droppedObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_droppedObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_fixProperty_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_fixProperty: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_listToolBoxClasses_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_listToolBoxClasses: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_postCreateObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_postCreateObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_prepareTestObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_prepareTestObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_reset_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_reset: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ClassDesignerBase_selectObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ClassDesignerBase_selectObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Degrees_Radians: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Degrees_from_Radians:
-        ::std::option::Option<unsafe extern "C" fn(radians: Angle) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(radians: Angle) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Degrees_to_Radians:
-        ::std::option::Option<unsafe extern "C" fn(degrees: f64) -> Angle>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(degrees: f64) -> Angle>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -2762,106 +2768,106 @@ const _: () = {
     ["Offset of field: class_members_DesignerBase::isDragging"]
         [::std::mem::offset_of!(class_members_DesignerBase, isDragging) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_addDefaultMethod_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_addDefaultMethod: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_addToolBoxClass_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_addToolBoxClass: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_codeAddObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_codeAddObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_deleteObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_deleteObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_findObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_findObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_modifyCode_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_modifyCode: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_objectContainsCode_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_objectContainsCode: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_renameObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_renameObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_selectObjectFromDesigner_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_selectObjectFromDesigner: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_sheetAddObject_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_sheetAddObject: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_updateProperties_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DesignerBase_updateProperties: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DesignerBase_classDesigner: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_set_classDesigner:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: ClassDesignerBase)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: DesignerBase, value: ClassDesignerBase)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_get_classDesigner:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> ClassDesignerBase>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: DesignerBase) -> ClassDesignerBase>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DesignerBase_objectClass: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_set_objectClass: ::std::option::Option<
-        unsafe extern "C" fn(d: DesignerBase, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(d: DesignerBase, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_get_objectClass: ::std::option::Option<
-        unsafe extern "C" fn(d: DesignerBase) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(d: DesignerBase) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DesignerBase_isDragging: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_set_isDragging:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: DesignerBase, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DesignerBase_get_isDragging:
-        ::std::option::Option<unsafe extern "C" fn(d: DesignerBase) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: DesignerBase) -> bool_>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -2878,75 +2884,75 @@ const _: () = {
     ["Offset of field: EnumClassData::largest"]
         [::std::mem::offset_of!(EnumClassData, largest) - 32usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Feet_Meters: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Feet_from_Meters:
-        ::std::option::Option<unsafe extern "C" fn(meters: Distance) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(meters: Distance) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Feet_to_Meters:
-        ::std::option::Option<unsafe extern "C" fn(feet: f64) -> Distance>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(feet: f64) -> Distance>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_get: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: IOChannel,
             class_data: typed_object_class_ptr,
             data: *mut ::std::os::raw::c_void,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_put: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: IOChannel,
             class_data: typed_object_class_ptr,
             data: *mut ::std::os::raw::c_void,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_readData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_IOChannel_readData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_serialize: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: IOChannel,
             class_data: typed_object_class_ptr,
             data: *mut ::std::os::raw::c_void,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_unserialize: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: IOChannel,
             class_data: typed_object_class_ptr,
             data: *mut ::std::os::raw::c_void,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut IOChannel_writeData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_IOChannel_writeData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Platform_char_ptr: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Platform_from_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> Platform>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(c: *const ::std::os::raw::c_char) -> Platform>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Platform_to_char_ptr: ::std::option::Option<
-        unsafe extern "C" fn(platform: Platform) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(platform: Platform) -> *const ::std::os::raw::c_char,
     >;
 }
 #[repr(C)]
@@ -3011,31 +3017,31 @@ const _: () = {
     ["Offset of field: class_members_SerialBuffer::pos"]
         [::std::mem::offset_of!(class_members_SerialBuffer, pos) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SerialBuffer_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: SerialBuffer)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: SerialBuffer)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_SerialBuffer_buffer: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SerialBuffer_set_buffer:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: *mut byte)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: SerialBuffer, value: *mut byte)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SerialBuffer_get_buffer:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> *mut byte>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: SerialBuffer) -> *mut byte>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_SerialBuffer_size: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SerialBuffer_set_size:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer, value: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: SerialBuffer, value: uint)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SerialBuffer_get_size:
-        ::std::option::Option<unsafe extern "C" fn(s: SerialBuffer) -> uint>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: SerialBuffer) -> uint>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -3077,23 +3083,23 @@ const _: () = {
     ["Offset of field: class_members_ZString::maxSize"]
         [::std::mem::offset_of!(class_members_ZString, maxSize) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_concat:
-        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: ZString, s: ZString)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_concatf: ::std::option::Option<
-        unsafe extern "C" fn(__this: ZString, format: *const ::std::os::raw::c_char, ...),
+        /*unsafe*/ extern "C" fn(__this: ZString, format: *const ::std::os::raw::c_char, ...),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_concatn: ::std::option::Option<
-        unsafe extern "C" fn(__this: ZString, s: ZString, l: ::std::os::raw::c_int),
+        /*unsafe*/ extern "C" fn(__this: ZString, s: ZString, l: ::std::os::raw::c_int),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_concatx: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: ZString,
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
@@ -3101,121 +3107,121 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_copy:
-        ::std::option::Option<unsafe extern "C" fn(__this: ZString, s: ZString)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: ZString, s: ZString)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_copyString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: ZString,
             value: *const ::std::os::raw::c_char,
             newLen: ::std::os::raw::c_int,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_ZString_string: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_set_string: ::std::option::Option<
-        unsafe extern "C" fn(z: ZString, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(z: ZString, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_get_string:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_ZString_char_ptr: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_from_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(c: *const ::std::os::raw::c_char) -> ZString>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(c: *const ::std::os::raw::c_char) -> ZString>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_to_char_ptr:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(z: ZString) -> *const ::std::os::raw::c_char>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_ZString_String: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_from_String:
-        ::std::option::Option<unsafe extern "C" fn(string: String) -> ZString>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: String) -> ZString>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ZString_to_String:
-        ::std::option::Option<unsafe extern "C" fn(z: ZString) -> constString>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(z: ZString) -> constString>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut changeCh: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             ch1: ::std::os::raw::c_char,
             ch2: ::std::os::raw::c_char,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut changeChars: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             chars: *const ::std::os::raw::c_char,
             alt: ::std::os::raw::c_char,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut changeExtension: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             ext: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
-    pub static mut checkConsistency: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut checkConsistency: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
-unsafe extern "C" {
-    pub static mut checkMemory: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut checkMemory: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copyBytes: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             dest: *mut ::std::os::raw::c_void,
             source: *const ::std::os::raw::c_void,
             count: uint64,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copyBytesBy2: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             dest: *mut ::std::os::raw::c_void,
             source: *const ::std::os::raw::c_void,
             count: uint,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copyBytesBy4: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             dest: *mut ::std::os::raw::c_void,
             source: *const ::std::os::raw::c_void,
             count: uint,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copyString: ::std::option::Option<
-        unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(string: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut escapeCString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             outString: String,
             bufferLen: ::std::os::raw::c_int,
             s: constString,
@@ -3223,137 +3229,137 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fillBytes: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: byte, count: uint),
+        /*unsafe*/ extern "C" fn(area: *mut ::std::os::raw::c_void, value: byte, count: uint),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fillBytesBy2: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint16, count: uint),
+        /*unsafe*/ extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint16, count: uint),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fillBytesBy4: ::std::option::Option<
-        unsafe extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint, count: uint),
+        /*unsafe*/ extern "C" fn(area: *mut ::std::os::raw::c_void, value: uint, count: uint),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut floatFromString:
-        ::std::option::Option<unsafe extern "C" fn(string: *const ::std::os::raw::c_char) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: *const ::std::os::raw::c_char) -> f64>;
 }
-unsafe extern "C" {
-    pub static mut getActiveDesigner: ::std::option::Option<unsafe extern "C" fn() -> DesignerBase>;
+/*unsafe*/ extern "C" {
+    pub static mut getActiveDesigner: ::std::option::Option</*unsafe*/ extern "C" fn() -> DesignerBase>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getExtension: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getHexValue: ::std::option::Option<
-        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> uint,
+        /*unsafe*/ extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> uint,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getLastDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
-    pub static mut getRuntimePlatform: ::std::option::Option<unsafe extern "C" fn() -> Platform>;
+/*unsafe*/ extern "C" {
+    pub static mut getRuntimePlatform: ::std::option::Option</*unsafe*/ extern "C" fn() -> Platform>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *mut *const ::std::os::raw::c_char,
             string: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getValue: ::std::option::Option<
-        unsafe extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> ::std::os::raw::c_int,
+        /*unsafe*/ extern "C" fn(buffer: *mut *const ::std::os::raw::c_char) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut isPathInsideOf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             path: *const ::std::os::raw::c_char,
             of: *const ::std::os::raw::c_char,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut locateModule: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             name: *const ::std::os::raw::c_char,
             fileName: *const ::std::os::raw::c_char,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut makePathRelative: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             path: *const ::std::os::raw::c_char,
             to: *const ::std::os::raw::c_char,
             destination: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut moveBytes: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             dest: *mut ::std::os::raw::c_void,
             source: *const ::std::os::raw::c_void,
             count: uint,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut pathCat: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             addedPath: *const ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut pathCatSlash: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             addedPath: *const ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printx: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
             ...
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printBigSize: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             size: f64,
             prec: ::std::os::raw::c_int,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printBuf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *mut ::std::os::raw::c_char,
             maxLen: ::std::os::raw::c_int,
             class_object: typed_object_class_ptr,
@@ -3362,18 +3368,18 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printLn: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
             ...
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printLnBuf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *mut ::std::os::raw::c_char,
             maxLen: ::std::os::raw::c_int,
             class_object: typed_object_class_ptr,
@@ -3382,27 +3388,27 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printLnString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
             ...
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printSize: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             size: uint64,
             prec: ::std::os::raw::c_int,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printStdArgsToBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *mut ::std::os::raw::c_char,
             maxLen: ::std::os::raw::c_int,
             class_object: typed_object_class_ptr,
@@ -3411,18 +3417,18 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
             ...
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut rSearchString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *const ::std::os::raw::c_char,
             subStr: *const ::std::os::raw::c_char,
             maxLen: ::std::os::raw::c_int,
@@ -3431,18 +3437,18 @@ unsafe extern "C" {
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut repeatCh: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             count: ::std::os::raw::c_int,
             ch: ::std::os::raw::c_char,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut searchString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buffer: *const ::std::os::raw::c_char,
             start: ::std::os::raw::c_int,
             subStr: *const ::std::os::raw::c_char,
@@ -3451,61 +3457,61 @@ unsafe extern "C" {
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut setActiveDesigner:
-        ::std::option::Option<unsafe extern "C" fn(designer: DesignerBase)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(designer: DesignerBase)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut splitArchivePath: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             archiveName: *mut ::std::os::raw::c_char,
             archiveFile: *mut *const ::std::os::raw::c_char,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut splitDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             part: *mut ::std::os::raw::c_char,
             rest: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stringLikePattern: ::std::option::Option<
-        unsafe extern "C" fn(string: constString, pattern: constString) -> bool_,
+        /*unsafe*/ extern "C" fn(string: constString, pattern: constString) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stripChars: ::std::option::Option<
-        unsafe extern "C" fn(string: String, chars: constString) -> *mut ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(string: String, chars: constString) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stripExtension:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: *mut ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stripLastDirectory: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stripQuotes: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut tokenize: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             maxTokens: ::std::os::raw::c_int,
             tokens: *mut *mut ::std::os::raw::c_char,
@@ -3513,9 +3519,9 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut tokenizeWith: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *mut ::std::os::raw::c_char,
             maxTokens: ::std::os::raw::c_int,
             tokens: *mut *mut ::std::os::raw::c_char,
@@ -3524,67 +3530,67 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut trimLSpaces: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut trimRSpaces: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             output: *mut ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut unescapeCString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             d: *mut ::std::os::raw::c_char,
             s: *const ::std::os::raw::c_char,
             len: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut unescapeCStringLoose: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             d: *mut ::std::os::raw::c_char,
             s: *const ::std::os::raw::c_char,
             len: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
-    pub static mut eSystem_LockMem: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut eSystem_LockMem: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
-unsafe extern "C" {
-    pub static mut eSystem_UnlockMem: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut eSystem_UnlockMem: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ishexdigit:
-        ::std::option::Option<unsafe extern "C" fn(x: ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(x: ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
-    pub static mut log2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
+/*unsafe*/ extern "C" {
+    pub static mut log2i: ::std::option::Option</*unsafe*/ extern "C" fn(number: uint) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut memswap:
-        ::std::option::Option<unsafe extern "C" fn(a: *mut byte, b: *mut byte, size: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *mut byte, b: *mut byte, size: uint)>;
 }
-unsafe extern "C" {
-    pub static mut pow2i: ::std::option::Option<unsafe extern "C" fn(number: uint) -> uint>;
+/*unsafe*/ extern "C" {
+    pub static mut pow2i: ::std::option::Option</*unsafe*/ extern "C" fn(number: uint) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut queryMemInfo:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: *mut ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut strchrmax: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             s: *const ::std::os::raw::c_char,
             c: ::std::os::raw::c_int,
             max: ::std::os::raw::c_int,
@@ -3600,115 +3606,115 @@ pub type intsize = isize;
 pub type template_Map_String_FieldValue = Map;
 pub type template_Array_FieldValue = Array;
 pub type template_Map_String_JSONTypeOptions = Map;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onCompare_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onCompare: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onCopy_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onCopy: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onDisplay_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onDisplay: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onEdit_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onEdit: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onFree_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onFree: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onGetDataFromString_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onGetDataFromString: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onGetString_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onGetString: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onSaveEdit_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onSaveEdit: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onSerialize_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onSerialize: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_onUnserialize_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_class_onUnserialize: *mut Method;
 }
-unsafe extern "C" {
-    pub static mut double_inf: ::std::option::Option<unsafe extern "C" fn() -> f64>;
+/*unsafe*/ extern "C" {
+    pub static mut double_inf: ::std::option::Option</*unsafe*/ extern "C" fn() -> f64>;
 }
-unsafe extern "C" {
-    pub static mut double_nan: ::std::option::Option<unsafe extern "C" fn() -> f64>;
+/*unsafe*/ extern "C" {
+    pub static mut double_nan: ::std::option::Option</*unsafe*/ extern "C" fn() -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_double_isNan: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut double_get_isNan: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut double_get_isNan: ::std::option::Option</*unsafe*/ extern "C" fn(d: f64) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_double_isInf: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut double_get_isInf: ::std::option::Option<unsafe extern "C" fn(d: f64) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut double_get_isInf: ::std::option::Option</*unsafe*/ extern "C" fn(d: f64) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_double_signBit: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut double_get_signBit:
-        ::std::option::Option<unsafe extern "C" fn(d: f64) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: f64) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
-    pub static mut float_inf: ::std::option::Option<unsafe extern "C" fn() -> f32>;
+/*unsafe*/ extern "C" {
+    pub static mut float_inf: ::std::option::Option</*unsafe*/ extern "C" fn() -> f32>;
 }
-unsafe extern "C" {
-    pub static mut float_nan: ::std::option::Option<unsafe extern "C" fn() -> f32>;
+/*unsafe*/ extern "C" {
+    pub static mut float_nan: ::std::option::Option</*unsafe*/ extern "C" fn() -> f32>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_float_isNan: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut float_get_isNan: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut float_get_isNan: ::std::option::Option</*unsafe*/ extern "C" fn(f: f32) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_float_isInf: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut float_get_isInf: ::std::option::Option<unsafe extern "C" fn(f: f32) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut float_get_isInf: ::std::option::Option</*unsafe*/ extern "C" fn(f: f32) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_float_signBit: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut float_get_signBit:
-        ::std::option::Option<unsafe extern "C" fn(f: f32) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: f32) -> ::std::os::raw::c_int>;
 }
 pub type unichar = u32;
 pub type tparam_Container_T = u64;
@@ -3790,33 +3796,33 @@ const _: () = {
     ["Alignment of FieldValue"][::std::mem::align_of::<FieldValue>() - 8usize];
     ["Offset of field: FieldValue::type_"][::std::mem::offset_of!(FieldValue, type_) - 0usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_compareInt: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             other: *mut FieldValue,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_compareReal: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             other: *mut FieldValue,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_compareText: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             other: *mut FieldValue,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_formatArray: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             tempString: *mut ::std::os::raw::c_char,
             fieldData: *mut ::std::os::raw::c_void,
@@ -3824,26 +3830,26 @@ unsafe extern "C" {
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_formatFloat: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             stringOutput: *mut ::std::os::raw::c_char,
             fixDot: bool_,
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_formatInteger: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             stringOutput: *mut ::std::os::raw::c_char,
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_formatMap: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut FieldValue,
             tempString: *mut ::std::os::raw::c_char,
             fieldData: *mut ::std::os::raw::c_void,
@@ -3851,18 +3857,18 @@ unsafe extern "C" {
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_getArrayOrMap: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             destClass: *mut Class,
             destination: *mut *mut ::std::os::raw::c_void,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FieldValue_stringify:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FieldValue) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut FieldValue) -> String>;
 }
 pub type tparam_AVLNode_T = u64;
 pub type tparam_CustomAVLTree_BT = u64;
@@ -4052,227 +4058,227 @@ const _: () = {
         [::std::mem::offset_of!(AVLNode, __eCPrivateData0) - 0usize];
     ["Offset of field: AVLNode::key"][::std::mem::offset_of!(AVLNode, key) - 32usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_find: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut AVLNode,
             Tclass: *mut Class,
             key: tparam_AVLNode_T,
         ) -> *mut AVLNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_prev: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_next: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_next:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_minimum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_minimum:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_maximum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_maximum:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> *mut AVLNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_count: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_count:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_AVLNode_depthProp: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut AVLNode_get_depthProp:
-        ::std::option::Option<unsafe extern "C" fn(a: *const AVLNode) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: *const AVLNode) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Array_size: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Array_set_size:
-        ::std::option::Option<unsafe extern "C" fn(a: Array, value: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Array, value: uint)>;
 }
-unsafe extern "C" {
-    pub static mut Array_get_size: ::std::option::Option<unsafe extern "C" fn(a: Array) -> uint>;
+/*unsafe*/ extern "C" {
+    pub static mut Array_get_size: ::std::option::Option</*unsafe*/ extern "C" fn(a: Array) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Array_minAllocSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Array_set_minAllocSize:
-        ::std::option::Option<unsafe extern "C" fn(a: Array, value: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Array, value: uint)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Array_get_minAllocSize:
-        ::std::option::Option<unsafe extern "C" fn(a: Array) -> uint>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Array) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_findPrefix: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BTNode,
             key: *const ::std::os::raw::c_char,
         ) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_findString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BTNode,
             key: *const ::std::os::raw::c_char,
         ) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_prev: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> *mut BTNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_next: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_next:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> *mut BTNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_minimum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_minimum:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> *mut BTNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_maximum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_maximum:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> *mut BTNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_count: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_count:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BTNode_depthProp: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BTNode_get_depthProp:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BTNode) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_add: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_check:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut BinaryTree) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_compareInt: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BinaryTree,
             a: uintptr,
             b: uintptr,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_compareString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BinaryTree,
             a: *const ::std::os::raw::c_char,
             b: *const ::std::os::raw::c_char,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_delete:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_find: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
+        /*unsafe*/ extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_findAll: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
+        /*unsafe*/ extern "C" fn(__this: *mut BinaryTree, key: uintptr) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_findPrefix: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BinaryTree,
             key: *const ::std::os::raw::c_char,
         ) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_findString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BinaryTree,
             key: *const ::std::os::raw::c_char,
         ) -> *mut BTNode,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut BinaryTree)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_freeString:
-        ::std::option::Option<unsafe extern "C" fn(string: *mut ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: *mut ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_print: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut BinaryTree,
             output: *mut ::std::os::raw::c_char,
             tps: TreePrintStyle,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_remove:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut BinaryTree, node: *mut BTNode)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BinaryTree_first: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_get_first:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BinaryTree_last: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BinaryTree_get_last:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BinaryTree) -> *mut BTNode>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4301,266 +4307,266 @@ const _: () = {
     ["Offset of field: BuiltInContainer::type_"]
         [::std::mem::offset_of!(BuiltInContainer, type_) - 40usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_add_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_add: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_copy_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_copy: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_delete_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_delete: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_find_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_find: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_free_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_free: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_freeIterator_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_freeIterator: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getAtPosition_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getAtPosition: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getCount_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getCount: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getFirst_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getFirst: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getLast_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getLast: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getNext_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getNext: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_getPrev_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_getPrev: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_insert_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_insert: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_move_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_move: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_remove_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_remove: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_removeAll_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_removeAll: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_setData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_setData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_sort_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_BuiltInContainer_sort: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BuiltInContainer_Container: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BuiltInContainer_to_Container:
-        ::std::option::Option<unsafe extern "C" fn(b: *const BuiltInContainer) -> Container>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: *const BuiltInContainer) -> Container>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_add_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_add: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_copy_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_copy: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_delete_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_delete: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_find_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_find: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_free_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_free: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_freeIterator_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_freeIterator: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getAtPosition_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getAtPosition: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getCount_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getCount: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getFirst_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getFirst: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getLast_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getLast: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getNext_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getNext: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_getPrev_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_getPrev: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_insert_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_insert: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_move_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_move: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_remove_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_remove: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_removeAll_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_removeAll: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_setData_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_setData: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_sort_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Container_sort: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_takeOut: ::std::option::Option<
-        unsafe extern "C" fn(__this: Container, d: tparam_Container_D) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: Container, d: tparam_Container_D) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Container_copySrc: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_set_copySrc:
-        ::std::option::Option<unsafe extern "C" fn(c: Container, value: Container)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(c: Container, value: Container)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Container_firstIterator: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_get_firstIterator:
-        ::std::option::Option<unsafe extern "C" fn(c: Container, value: *mut Iterator)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(c: Container, value: *mut Iterator)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Container_lastIterator: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Container_get_lastIterator:
-        ::std::option::Option<unsafe extern "C" fn(c: Container, value: *mut Iterator)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(c: Container, value: *mut Iterator)>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4579,36 +4585,36 @@ const _: () = {
     ["Offset of field: class_members_CustomAVLTree::count"]
         [::std::mem::offset_of!(class_members_CustomAVLTree, count) - 8usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut CustomAVLTree_check:
-        ::std::option::Option<unsafe extern "C" fn(__this: CustomAVLTree) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: CustomAVLTree) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut CustomAVLTree_freeKey:
-        ::std::option::Option<unsafe extern "C" fn(__this: CustomAVLTree, item: *mut AVLNode)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: CustomAVLTree, item: *mut AVLNode)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMap_removeIterating:
-        ::std::option::Option<unsafe extern "C" fn(__this: HashMap, it: *mut IteratorPointer)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: HashMap, it: *mut IteratorPointer)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMap_resize: ::std::option::Option<
-        unsafe extern "C" fn(__this: HashMap, movedEntry: *mut IteratorPointer),
+        /*unsafe*/ extern "C" fn(__this: HashMap, movedEntry: *mut IteratorPointer),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashMap_count: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMap_get_count:
-        ::std::option::Option<unsafe extern "C" fn(h: HashMap) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(h: HashMap) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashMap_initSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMap_set_initSize:
-        ::std::option::Option<unsafe extern "C" fn(h: HashMap, value: ::std::os::raw::c_int)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(h: HashMap, value: ::std::os::raw::c_int)>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4625,99 +4631,99 @@ const _: () = {
     ["Offset of field: HashMapIterator::pointer"]
         [::std::mem::offset_of!(HashMapIterator, pointer) - 8usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashMapIterator_map: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMapIterator_set_map:
-        ::std::option::Option<unsafe extern "C" fn(h: *const HashMapIterator, value: HashMap)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(h: *const HashMapIterator, value: HashMap)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMapIterator_get_map:
-        ::std::option::Option<unsafe extern "C" fn(h: *const HashMapIterator) -> HashMap>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(h: *const HashMapIterator) -> HashMap>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashMapIterator_key: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMapIterator_get_key: ::std::option::Option<
-        unsafe extern "C" fn(h: *const HashMapIterator) -> tparam_HashMapIterator_KT,
+        /*unsafe*/ extern "C" fn(h: *const HashMapIterator) -> tparam_HashMapIterator_KT,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashMapIterator_value: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMapIterator_set_value: ::std::option::Option<
-        unsafe extern "C" fn(h: *const HashMapIterator, value: tparam_HashMapIterator_VT),
+        /*unsafe*/ extern "C" fn(h: *const HashMapIterator, value: tparam_HashMapIterator_VT),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashMapIterator_get_value: ::std::option::Option<
-        unsafe extern "C" fn(h: *const HashMapIterator) -> tparam_HashMapIterator_VT,
+        /*unsafe*/ extern "C" fn(h: *const HashMapIterator) -> tparam_HashMapIterator_VT,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_HashTable_initSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut HashTable_set_initSize:
-        ::std::option::Option<unsafe extern "C" fn(h: HashTable, value: ::std::os::raw::c_int)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(h: HashTable, value: ::std::os::raw::c_int)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Item_copy: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Item, src: *mut Item, size: ::std::os::raw::c_int),
+        /*unsafe*/ extern "C" fn(__this: *mut Item, src: *mut Item, size: ::std::os::raw::c_int),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_find: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Iterator, value: tparam_Iterator_T) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: *mut Iterator, value: tparam_Iterator_T) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_free:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Iterator)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Iterator)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_getData:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Iterator) -> tparam_Iterator_T>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Iterator) -> tparam_Iterator_T>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_index: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Iterator,
             index: tparam_Iterator_IT,
             create: bool_,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_next:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Iterator) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Iterator) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_prev:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Iterator) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Iterator) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_remove:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Iterator)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Iterator)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_setData: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Iterator, value: tparam_Iterator_T) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: *mut Iterator, value: tparam_Iterator_T) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Iterator_data: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_set_data:
-        ::std::option::Option<unsafe extern "C" fn(i: *const Iterator, value: tparam_Iterator_T)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(i: *const Iterator, value: tparam_Iterator_T)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Iterator_get_data:
-        ::std::option::Option<unsafe extern "C" fn(i: *const Iterator) -> tparam_Iterator_T>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(i: *const Iterator) -> tparam_Iterator_T>;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -4780,9 +4786,9 @@ const _: () = {
     ["Offset of field: class_members_LinkList::count"]
         [::std::mem::offset_of!(class_members_LinkList, count) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut LinkList__Sort: ::std::option::Option<
-        unsafe extern "C" fn(__this: LinkList, ascending: bool_, lists: *mut LinkList),
+        /*unsafe*/ extern "C" fn(__this: LinkList, ascending: bool_, lists: *mut LinkList),
     >;
 }
 #[repr(C)]
@@ -4826,11 +4832,11 @@ const _: () = {
     ["Size of ListItem"][::std::mem::size_of::<ListItem>() - 16usize];
     ["Alignment of ListItem"][::std::mem::align_of::<ListItem>() - 8usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Map_mapSrc: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut Map_set_mapSrc: ::std::option::Option<unsafe extern "C" fn(m: Map, value: Map)>;
+/*unsafe*/ extern "C" {
+    pub static mut Map_set_mapSrc: ::std::option::Option</*unsafe*/ extern "C" fn(m: Map, value: Map)>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4847,35 +4853,35 @@ const _: () = {
     ["Offset of field: MapIterator::pointer"]
         [::std::mem::offset_of!(MapIterator, pointer) - 8usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapIterator_map: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapIterator_set_map:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapIterator, value: Map)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapIterator, value: Map)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapIterator_get_map:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapIterator) -> Map>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapIterator) -> Map>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapIterator_key: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapIterator_get_key:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapIterator) -> tparam_MapIterator_KT>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapIterator) -> tparam_MapIterator_KT>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapIterator_value: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapIterator_set_value: ::std::option::Option<
-        unsafe extern "C" fn(m: *const MapIterator, value: tparam_MapIterator_V),
+        /*unsafe*/ extern "C" fn(m: *const MapIterator, value: tparam_MapIterator_V),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapIterator_get_value:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapIterator) -> tparam_MapIterator_V>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapIterator) -> tparam_MapIterator_V>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -4893,80 +4899,80 @@ const _: () = {
     ["Offset of field: MapNode::key"][::std::mem::offset_of!(MapNode, key) - 32usize];
     ["Offset of field: MapNode::value"][::std::mem::offset_of!(MapNode, value) - 40usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_key: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_set_key:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode, value: tparam_MapNode_KT)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode, value: tparam_MapNode_KT)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_key:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> tparam_MapNode_KT>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> tparam_MapNode_KT>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_value: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_set_value:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode, value: tparam_MapNode_V)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode, value: tparam_MapNode_V)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_value:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> tparam_MapNode_V>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> tparam_MapNode_V>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_prev: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_prev:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> *mut MapNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> *mut MapNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_next: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_next:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> *mut MapNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> *mut MapNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_minimum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_minimum:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> *mut MapNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> *mut MapNode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_MapNode_maximum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut MapNode_get_maximum:
-        ::std::option::Option<unsafe extern "C" fn(m: *const MapNode) -> *mut MapNode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const MapNode) -> *mut MapNode>;
 }
-unsafe extern "C" {
-    pub static mut OldLink_free: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldLink)>;
+/*unsafe*/ extern "C" {
+    pub static mut OldLink_free: ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut OldLink)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_add: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
+        /*unsafe*/ extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_addName: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void) -> bool_,
     >;
 }
-unsafe extern "C" {
-    pub static mut OldList_clear: ::std::option::Option<unsafe extern "C" fn(__this: *mut OldList)>;
+/*unsafe*/ extern "C" {
+    pub static mut OldList_clear: ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut OldList)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_copy: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             src: *mut OldList,
             size: ::std::os::raw::c_int,
             copy: ::std::option::Option<
-                unsafe extern "C" fn(
+                /*unsafe*/ extern "C" fn(
                     dest: *mut ::std::os::raw::c_void,
                     src: *mut ::std::os::raw::c_void,
                 ),
@@ -4974,91 +4980,91 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_delete: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
+        /*unsafe*/ extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_findLink: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             data: *mut ::std::os::raw::c_void,
         ) -> *mut OldLink,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_findName: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             name: *const ::std::os::raw::c_char,
             warn: bool_,
         ) -> *mut ::std::os::raw::c_void,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_findNamedLink: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             name: *const ::std::os::raw::c_char,
             warn: bool_,
         ) -> *mut ::std::os::raw::c_void,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_free: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
-            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+            freeFn: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_insert: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             prevItem: *mut ::std::os::raw::c_void,
             item: *mut ::std::os::raw::c_void,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_move: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             item: *mut ::std::os::raw::c_void,
             prevItem: *mut ::std::os::raw::c_void,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_placeName: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             name: *const ::std::os::raw::c_char,
             place: *mut *mut ::std::os::raw::c_void,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_remove: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
+        /*unsafe*/ extern "C" fn(__this: *mut OldList, item: *mut ::std::os::raw::c_void),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_removeAll: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
-            freeFn: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+            freeFn: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_sort: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             compare: ::std::option::Option<
-                unsafe extern "C" fn(
+                /*unsafe*/ extern "C" fn(
                     arg1: *mut ::std::os::raw::c_void,
                     arg2: *mut ::std::os::raw::c_void,
                     arg3: *mut ::std::os::raw::c_void,
@@ -5068,9 +5074,9 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut OldList_swap: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut OldList,
             item1: *mut ::std::os::raw::c_void,
             item2: *mut ::std::os::raw::c_void,
@@ -5083,13 +5089,13 @@ pub struct StringBinaryTree {
     pub root: *mut BTNode,
     pub count: ::std::os::raw::c_int,
     pub CompareKey: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             tree: *mut BinaryTree,
             a: uintptr,
             b: uintptr,
         ) -> ::std::os::raw::c_int,
     >,
-    pub FreeKey: ::std::option::Option<unsafe extern "C" fn(key: *mut ::std::os::raw::c_void)>,
+    pub FreeKey: ::std::option::Option</*unsafe*/ extern "C" fn(key: *mut ::std::os::raw::c_void)>,
 }
 #[allow(clippy::unnecessary_operation, clippy::identity_op)]
 const _: () = {
@@ -5104,14 +5110,14 @@ const _: () = {
     ["Offset of field: StringBinaryTree::FreeKey"]
         [::std::mem::offset_of!(StringBinaryTree, FreeKey) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut qsortr: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             base: *mut ::std::os::raw::c_void,
             nel: uintsize,
             width: uintsize,
             compare: ::std::option::Option<
-                unsafe extern "C" fn(
+                /*unsafe*/ extern "C" fn(
                     arg: *mut ::std::os::raw::c_void,
                     a: *const ::std::os::raw::c_void,
                     b: *const ::std::os::raw::c_void,
@@ -5121,21 +5127,21 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut qsortrx: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             base: *mut ::std::os::raw::c_void,
             nel: uintsize,
             width: uintsize,
             compare: ::std::option::Option<
-                unsafe extern "C" fn(
+                /*unsafe*/ extern "C" fn(
                     arg: *mut ::std::os::raw::c_void,
                     a: *const ::std::os::raw::c_void,
                     b: *const ::std::os::raw::c_void,
                 ) -> ::std::os::raw::c_int,
             >,
             optCompareArgLast: ::std::option::Option<
-                unsafe extern "C" fn(
+                /*unsafe*/ extern "C" fn(
                     a: *const ::std::os::raw::c_void,
                     b: *const ::std::os::raw::c_void,
                     arg: *mut ::std::os::raw::c_void,
@@ -5186,9 +5192,9 @@ const _: () = {
     ["Offset of field: Date::month"][::std::mem::offset_of!(Date, month) - 4usize];
     ["Offset of field: Date::day"][::std::mem::offset_of!(Date, day) - 8usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Date_onGetStringEn: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Date,
             stringOutput: *mut ::std::os::raw::c_char,
             fieldData: *mut ::std::os::raw::c_void,
@@ -5196,12 +5202,12 @@ unsafe extern "C" {
         ) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Date_dayOfTheWeek: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Date_get_dayOfTheWeek:
-        ::std::option::Option<unsafe extern "C" fn(d: *const Date) -> DayOfTheWeek>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const Date) -> DayOfTheWeek>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5230,100 +5236,100 @@ const _: () = {
     ["Offset of field: DateTime::dayInTheYear"]
         [::std::mem::offset_of!(DateTime, dayInTheYear) - 28usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_fixDayOfYear:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut DateTime) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_getLocalTime:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut DateTime) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut DateTime) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DateTime_global: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_set_global:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *const DateTime)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_get_global:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DateTime_local: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_set_local:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const DateTime)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *const DateTime)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_get_local:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *mut DateTime)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DateTime_daysSince1970: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_get_daysSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> int64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime) -> int64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DateTime_SecSince1970: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_from_SecSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: SecSince1970)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: SecSince1970)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_to_SecSince1970:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime) -> SecSince1970>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime) -> SecSince1970>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_DateTime_Date: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_from_Date:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *const Date)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *const Date)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DateTime_to_Date:
-        ::std::option::Option<unsafe extern "C" fn(d: *const DateTime, value: *mut Date)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(d: *const DateTime, value: *mut Date)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Month_getNumDays: ::std::option::Option<
-        unsafe extern "C" fn(__this: Month, year: ::std::os::raw::c_int) -> ::std::os::raw::c_int,
+        /*unsafe*/ extern "C" fn(__this: Month, year: ::std::os::raw::c_int) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_SecSince1970_global: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SecSince1970_get_global:
-        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: int64) -> SecSince1970>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_SecSince1970_local: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut SecSince1970_get_local:
-        ::std::option::Option<unsafe extern "C" fn(s: int64) -> SecSince1970>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: int64) -> SecSince1970>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getRandom: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             lo: ::std::os::raw::c_int,
             hi: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
-    pub static mut getTime: ::std::option::Option<unsafe extern "C" fn() -> Time>;
+/*unsafe*/ extern "C" {
+    pub static mut getTime: ::std::option::Option</*unsafe*/ extern "C" fn() -> Time>;
 }
-unsafe extern "C" {
-    pub static mut randomSeed: ::std::option::Option<unsafe extern "C" fn(seed: uint)>;
+/*unsafe*/ extern "C" {
+    pub static mut randomSeed: ::std::option::Option</*unsafe*/ extern "C" fn(seed: uint)>;
 }
-unsafe extern "C" {
-    pub static mut __sleep: ::std::option::Option<unsafe extern "C" fn(seconds: Time)>;
+/*unsafe*/ extern "C" {
+    pub static mut __sleep: ::std::option::Option</*unsafe*/ extern "C" fn(seconds: Time)>;
 }
 pub type FileAttribs = uint32;
 #[repr(C)]
@@ -5405,82 +5411,82 @@ pub const SysErrorCode_SysErrorCode_nameExists: SysErrorCode = 4099;
 pub const SysErrorCode_SysErrorCode_missingLibrary: SysErrorCode = 4100;
 pub const SysErrorCode_SysErrorCode_fileNotFound: SysErrorCode = 12293;
 pub const SysErrorCode_SysErrorCode_writeFailed: SysErrorCode = 8198;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_clear_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_clear: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_fileExists_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_fileExists: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_fileOpen_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_fileOpen: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_fileOpenAtPosition_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_fileOpenAtPosition: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_fileOpenCompressed_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_fileOpenCompressed: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_openDirectory_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_openDirectory: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_setBufferRead_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_setBufferRead: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_setBufferSize_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Archive_setBufferSize: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Archive_totalSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_set_totalSize:
-        ::std::option::Option<unsafe extern "C" fn(a: Archive, value: FileSize)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Archive, value: FileSize)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_get_totalSize:
-        ::std::option::Option<unsafe extern "C" fn(a: Archive) -> FileSize>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Archive) -> FileSize>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Archive_bufferSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_set_bufferSize:
-        ::std::option::Option<unsafe extern "C" fn(a: Archive, value: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Archive, value: uint)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Archive_bufferRead: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Archive_set_bufferRead:
-        ::std::option::Option<unsafe extern "C" fn(a: Archive, value: uint)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: Archive, value: uint)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_add: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: ArchiveDir,
             name: *const ::std::os::raw::c_char,
             path: *const ::std::os::raw::c_char,
@@ -5491,94 +5497,94 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_addFromFile_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_addFromFile: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_addFromFileAtPosition_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_addFromFileAtPosition: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_delete_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_delete: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_fileExists_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_fileExists: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_fileOpen_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_fileOpen: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_move_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_move: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_openDirectory_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_openDirectory: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut ArchiveDir_rename_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_ArchiveDir_rename: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BufferedFile_handle: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_set_handle:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile, value: File)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile, value: File)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_get_handle:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile) -> File>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile) -> File>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BufferedFile_bufferSize: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_set_bufferSize:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile, value: uintsize)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile, value: uintsize)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_get_bufferSize:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile) -> uintsize>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile) -> uintsize>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_BufferedFile_bufferRead: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_set_bufferRead:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile, value: uintsize)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile, value: uintsize)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut BufferedFile_get_bufferRead:
-        ::std::option::Option<unsafe extern "C" fn(b: BufferedFile) -> uintsize>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(b: BufferedFile) -> uintsize>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DualPipe_getExitCode:
-        ::std::option::Option<unsafe extern "C" fn(__this: DualPipe) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DualPipe) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DualPipe_getLinePeek: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DualPipe,
             s: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
@@ -5586,79 +5592,79 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DualPipe_getProcessID:
-        ::std::option::Option<unsafe extern "C" fn(__this: DualPipe) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DualPipe) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DualPipe_peek:
-        ::std::option::Option<unsafe extern "C" fn(__this: DualPipe) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DualPipe) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DualPipe_terminate:
-        ::std::option::Option<unsafe extern "C" fn(__this: DualPipe)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DualPipe)>;
 }
-unsafe extern "C" {
-    pub static mut DualPipe_wait: ::std::option::Option<unsafe extern "C" fn(__this: DualPipe)>;
+/*unsafe*/ extern "C" {
+    pub static mut DualPipe_wait: ::std::option::Option</*unsafe*/ extern "C" fn(__this: DualPipe)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_close_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_close: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_closeInput_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_closeInput: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_closeOutput_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_closeOutput: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_copyTo: ::std::option::Option<
-        unsafe extern "C" fn(__this: File, outputFileName: *const ::std::os::raw::c_char) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: File, outputFileName: *const ::std::os::raw::c_char) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_copyToFile:
-        ::std::option::Option<unsafe extern "C" fn(__this: File, f: File) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: File, f: File) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_eof_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_eof: *mut Method;
 }
-unsafe extern "C" {
-    pub static mut File_flush: ::std::option::Option<unsafe extern "C" fn(__this: File) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut File_flush: ::std::option::Option</*unsafe*/ extern "C" fn(__this: File) -> bool_>;
 }
-unsafe extern "C" {
-    pub static mut File_getDouble: ::std::option::Option<unsafe extern "C" fn(__this: File) -> f64>;
+/*unsafe*/ extern "C" {
+    pub static mut File_getDouble: ::std::option::Option</*unsafe*/ extern "C" fn(__this: File) -> f64>;
 }
-unsafe extern "C" {
-    pub static mut File_getFloat: ::std::option::Option<unsafe extern "C" fn(__this: File) -> f32>;
+/*unsafe*/ extern "C" {
+    pub static mut File_getFloat: ::std::option::Option</*unsafe*/ extern "C" fn(__this: File) -> f32>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getHexValue:
-        ::std::option::Option<unsafe extern "C" fn(__this: File) -> uint>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: File) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getLine: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             s: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getLineEx: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             s: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
@@ -5666,40 +5672,40 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getSize_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_getSize: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             string: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getValue:
-        ::std::option::Option<unsafe extern "C" fn(__this: File) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: File) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_getc_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_getc: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_lock_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_lock: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_print: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
@@ -5707,9 +5713,9 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_printLn: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             class_object: typed_object_class_ptr,
             object: *const ::std::os::raw::c_void,
@@ -5717,97 +5723,97 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_printf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: File,
             format: *const ::std::os::raw::c_char,
             ...
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_putc_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_putc: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_puts_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_puts: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_read_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_read: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_seek_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_seek: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_tell_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_tell: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_truncate_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_truncate: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_unlock_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_unlock: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_write_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_File_write: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_File_input: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_set_input:
-        ::std::option::Option<unsafe extern "C" fn(f: File, value: *mut ::std::os::raw::c_void)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: File, value: *mut ::std::os::raw::c_void)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_get_input:
-        ::std::option::Option<unsafe extern "C" fn(f: File) -> *mut ::std::os::raw::c_void>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> *mut ::std::os::raw::c_void>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_File_output: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_set_output:
-        ::std::option::Option<unsafe extern "C" fn(f: File, value: *mut ::std::os::raw::c_void)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: File, value: *mut ::std::os::raw::c_void)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_get_output:
-        ::std::option::Option<unsafe extern "C" fn(f: File) -> *mut ::std::os::raw::c_void>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> *mut ::std::os::raw::c_void>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_File_buffered: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut File_set_buffered:
-        ::std::option::Option<unsafe extern "C" fn(f: File, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: File, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_File_eof: *mut Property;
 }
-unsafe extern "C" {
-    pub static mut File_get_eof: ::std::option::Option<unsafe extern "C" fn(f: File) -> bool_>;
+/*unsafe*/ extern "C" {
+    pub static mut File_get_eof: ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> bool_>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -5827,214 +5833,214 @@ const _: () = {
     ["Offset of field: FileListing::__ecere_padding"]
         [::std::mem::offset_of!(FileListing, __ecere_padding) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileListing_find:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FileListing) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut FileListing) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileListing_stop:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut FileListing)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut FileListing)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileListing_name: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileListing_get_name: ::std::option::Option<
-        unsafe extern "C" fn(f: *const FileListing) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(f: *const FileListing) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileListing_path: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileListing_get_path: ::std::option::Option<
-        unsafe extern "C" fn(f: *const FileListing) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(f: *const FileListing) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileListing_stats: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileListing_get_stats:
-        ::std::option::Option<unsafe extern "C" fn(f: *const FileListing, value: *mut FileStats)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: *const FileListing, value: *mut FileStats)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_onDirNotify_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_FileMonitor_onDirNotify: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_onFileNotify_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_FileMonitor_onFileNotify: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_startMonitoring:
-        ::std::option::Option<unsafe extern "C" fn(__this: FileMonitor)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: FileMonitor)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_stopMonitoring:
-        ::std::option::Option<unsafe extern "C" fn(__this: FileMonitor)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: FileMonitor)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileMonitor_userData: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_set_userData: ::std::option::Option<
-        unsafe extern "C" fn(f: FileMonitor, value: *mut ::std::os::raw::c_void),
+        /*unsafe*/ extern "C" fn(f: FileMonitor, value: *mut ::std::os::raw::c_void),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileMonitor_fileChange: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_set_fileChange:
-        ::std::option::Option<unsafe extern "C" fn(f: FileMonitor, value: FileChange)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(f: FileMonitor, value: FileChange)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileMonitor_fileName: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_set_fileName: ::std::option::Option<
-        unsafe extern "C" fn(f: FileMonitor, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(f: FileMonitor, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_get_fileName: ::std::option::Option<
-        unsafe extern "C" fn(f: FileMonitor) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(f: FileMonitor) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_FileMonitor_directoryName: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_set_directoryName: ::std::option::Option<
-        unsafe extern "C" fn(f: FileMonitor, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(f: FileMonitor, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut FileMonitor_get_directoryName: ::std::option::Option<
-        unsafe extern "C" fn(f: FileMonitor) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(f: FileMonitor) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_stealBuffer:
-        ::std::option::Option<unsafe extern "C" fn(__this: TempFile) -> *mut byte>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: TempFile) -> *mut byte>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_TempFile_openMode: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_set_openMode:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: FileOpenMode)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile, value: FileOpenMode)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_get_openMode:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> FileOpenMode>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile) -> FileOpenMode>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_TempFile_buffer: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_set_buffer:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: *mut byte)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile, value: *mut byte)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_get_buffer:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> *mut byte>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile) -> *mut byte>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_TempFile_size: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_set_size:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile, value: uintsize)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_get_size:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile) -> uintsize>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_TempFile_allocated: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_set_allocated:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile, value: uintsize)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile, value: uintsize)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut TempFile_get_allocated:
-        ::std::option::Option<unsafe extern "C" fn(t: TempFile) -> uintsize>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: TempFile) -> uintsize>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut archiveOpen: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             flags: ArchiveOpenFlags,
         ) -> Archive,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut archiveQuerySize: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut changeWorkingDir:
-        ::std::option::Option<unsafe extern "C" fn(buf: *const ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(buf: *const ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copySystemPath: ::std::option::Option<
-        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut copyUnixPath: ::std::option::Option<
-        unsafe extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(p: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut createTemporaryDir: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             tempFileName: *mut ::std::os::raw::c_char,
             _template: *const ::std::os::raw::c_char,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut createTemporaryFile: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             tempFileName: *mut ::std::os::raw::c_char,
             _template: *const ::std::os::raw::c_char,
         ) -> File,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut deleteFile: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> bool_,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut dualPipeOpen: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             mode: PipeOpenMode,
             commandLine: *const ::std::os::raw::c_char,
         ) -> DualPipe,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut dualPipeOpenEnv: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             mode: PipeOpenMode,
             env: *const ::std::os::raw::c_char,
             commandLine: *const ::std::os::raw::c_char,
         ) -> DualPipe,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut dualPipeOpenEnvf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             mode: PipeOpenMode,
             env: *const ::std::os::raw::c_char,
             command: *const ::std::os::raw::c_char,
@@ -6042,83 +6048,83 @@ unsafe extern "C" {
         ) -> DualPipe,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut dualPipeOpenf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             mode: PipeOpenMode,
             command: *const ::std::os::raw::c_char,
             ...
         ) -> DualPipe,
     >;
 }
-unsafe extern "C" {
-    pub static mut dumpErrors: ::std::option::Option<unsafe extern "C" fn(display: bool_)>;
+/*unsafe*/ extern "C" {
+    pub static mut dumpErrors: ::std::option::Option</*unsafe*/ extern "C" fn(display: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut execute: ::std::option::Option<
-        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
+        /*unsafe*/ extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut executeEnv: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             env: *const ::std::os::raw::c_char,
             command: *const ::std::os::raw::c_char,
             ...
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut executeWait: ::std::option::Option<
-        unsafe extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
+        /*unsafe*/ extern "C" fn(command: *const ::std::os::raw::c_char, ...) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileExists: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char) -> FileAttribs,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char) -> FileAttribs,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileFixCase:
-        ::std::option::Option<unsafe extern "C" fn(file: *mut ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(file: *mut ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileGetSize: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char, size: *mut FileSize) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileGetStats: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             stats: *mut FileStats,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileOpen: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, mode: FileOpenMode) -> File,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char, mode: FileOpenMode) -> File,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileOpenBuffered: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             mode: FileOpenMode,
         ) -> BufferedFile,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileSetAttribs: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             attribs: FileAttribs,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileSetTime: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             fileName: *const ::std::os::raw::c_char,
             created: SecSince1970,
             accessed: SecSince1970,
@@ -6126,136 +6132,136 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut fileTruncate: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, size: uint64) -> bool_,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char, size: uint64) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getEnvironment: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             envName: *const ::std::os::raw::c_char,
             envValue: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getFreeSpace: ::std::option::Option<
-        unsafe extern "C" fn(path: *const ::std::os::raw::c_char, size: *mut FileSize64),
+        /*unsafe*/ extern "C" fn(path: *const ::std::os::raw::c_char, size: *mut FileSize64),
     >;
 }
-unsafe extern "C" {
-    pub static mut getLastErrorCode: ::std::option::Option<unsafe extern "C" fn() -> uint>;
+/*unsafe*/ extern "C" {
+    pub static mut getLastErrorCode: ::std::option::Option</*unsafe*/ extern "C" fn() -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getSlashPathBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             d: *mut ::std::os::raw::c_char,
             p: *const ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getSystemPathBuffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             d: *mut ::std::os::raw::c_char,
             p: *const ::std::os::raw::c_char,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getWorkingDir: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             buf: *mut ::std::os::raw::c_char,
             size: ::std::os::raw::c_int,
         ) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut __e_log:
-        ::std::option::Option<unsafe extern "C" fn(text: *const ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(text: *const ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut logErrorCode: ::std::option::Option<
-        unsafe extern "C" fn(errorCode: ErrorCode, details: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(errorCode: ErrorCode, details: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut __e_logf:
-        ::std::option::Option<unsafe extern "C" fn(format: *const ::std::os::raw::c_char, ...)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(format: *const ::std::os::raw::c_char, ...)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut makeDir:
-        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut makeSlashPath:
-        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(p: *mut ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut makeSystemPath:
-        ::std::option::Option<unsafe extern "C" fn(p: *mut ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(p: *mut ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut moveFile: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *const ::std::os::raw::c_char,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut moveFileEx: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *const ::std::os::raw::c_char,
             options: MoveFileOptions,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut removeDir:
-        ::std::option::Option<unsafe extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(path: *const ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut renameFile: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             oldName: *const ::std::os::raw::c_char,
             newName: *const ::std::os::raw::c_char,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
-    pub static mut resetError: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut resetError: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut setEnvironment: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             envName: *const ::std::os::raw::c_char,
             envValue: *const ::std::os::raw::c_char,
         ),
     >;
 }
-unsafe extern "C" {
-    pub static mut setErrorLevel: ::std::option::Option<unsafe extern "C" fn(level: ErrorLevel)>;
+/*unsafe*/ extern "C" {
+    pub static mut setErrorLevel: ::std::option::Option</*unsafe*/ extern "C" fn(level: ErrorLevel)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut setLoggingMode: ::std::option::Option<
-        unsafe extern "C" fn(mode: LoggingMode, where_: *mut ::std::os::raw::c_void),
+        /*unsafe*/ extern "C" fn(mode: LoggingMode, where_: *mut ::std::os::raw::c_void),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut shellOpen: ::std::option::Option<
-        unsafe extern "C" fn(fileName: *const ::std::os::raw::c_char, ...) -> bool_,
+        /*unsafe*/ extern "C" fn(fileName: *const ::std::os::raw::c_char, ...) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut unsetEnvironment:
-        ::std::option::Option<unsafe extern "C" fn(envName: *const ::std::os::raw::c_char)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(envName: *const ::std::os::raw::c_char)>;
 }
-unsafe extern "C" {
-    pub static mut debugBreakpoint: ::std::option::Option<unsafe extern "C" fn()>;
+/*unsafe*/ extern "C" {
+    pub static mut debugBreakpoint: ::std::option::Option</*unsafe*/ extern "C" fn()>;
 }
 pub type CharCategories = uint32;
 pub type CharCategory = ::std::os::raw::c_int;
@@ -6337,63 +6343,63 @@ pub const PredefinedCharCategories_PredefinedCharCategories_symbols: PredefinedC
     2013265920;
 pub const PredefinedCharCategories_PredefinedCharCategories_connector: PredefinedCharCategories =
     1048576;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut charMatchCategories: ::std::option::Option<
-        unsafe extern "C" fn(ch: unichar, categories: CharCategories) -> bool_,
+        /*unsafe*/ extern "C" fn(ch: unichar, categories: CharCategories) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getAlNum: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             input: *mut *const ::std::os::raw::c_char,
             string: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getCharCategory:
-        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> CharCategory>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(ch: unichar) -> CharCategory>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut getCombiningClass:
-        ::std::option::Option<unsafe extern "C" fn(ch: unichar) -> uint>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(ch: unichar) -> uint>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut iSO8859_1toUTF8: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF16BEtoUTF8Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const uint16,
             dest: *mut byte,
             max: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF16toUTF8: ::std::option::Option<
-        unsafe extern "C" fn(source: *const uint16) -> *mut ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(source: *const uint16) -> *mut ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF16toUTF8Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const uint16,
             dest: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF32toUTF8Len: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const unichar,
             count: ::std::os::raw::c_int,
             dest: *mut ::std::os::raw::c_char,
@@ -6401,47 +6407,47 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8GetChar: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: *const ::std::os::raw::c_char,
             numBytes: *mut ::std::os::raw::c_int,
         ) -> unichar,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8Validate:
-        ::std::option::Option<unsafe extern "C" fn(source: *const ::std::os::raw::c_char) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(source: *const ::std::os::raw::c_char) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8toISO8859_1: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *mut ::std::os::raw::c_char,
             max: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8toUTF16: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             wordCount: *mut ::std::os::raw::c_int,
         ) -> *mut uint16,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8toUTF16Buffer: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *mut uint16,
             max: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8toUTF16BufferLen: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             dest: *mut uint16,
             max: ::std::os::raw::c_int,
@@ -6449,68 +6455,68 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut uTF8toUTF16Len: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             source: *const ::std::os::raw::c_char,
             byteCount: ::std::os::raw::c_int,
             wordCount: *mut ::std::os::raw::c_int,
         ) -> *mut uint16,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut accenti:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut casei:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut encodeArrayToString:
-        ::std::option::Option<unsafe extern "C" fn(array: Array) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(array: Array) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeNFC:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeNFD:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeNFKC:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeNFKD:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> String>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeNFKDArray:
-        ::std::option::Option<unsafe extern "C" fn(string: constString) -> Array>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString) -> Array>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeUnicode: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: constString,
             type_: UnicodeDecomposition,
             compose: bool_,
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut normalizeUnicodeArray: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             string: constString,
             type_: UnicodeDecomposition,
             compose: bool_,
         ) -> Array,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stripUnicodeCategory:
-        ::std::option::Option<unsafe extern "C" fn(string: constString, c: CharCategory) -> String>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(string: constString, c: CharCategory) -> String>;
 }
 pub type GlobalSettings = Instance;
 pub type GlobalAppSettings = GlobalSettings;
@@ -6547,9 +6553,9 @@ pub type SetBool = uint;
 pub const SetBool_SetBool_unset: SetBool = 0;
 pub const SetBool_SetBool_false: SetBool = 1;
 pub const SetBool_SetBool_true: SetBool = 2;
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalAppSettings_getGlobalValue: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: GlobalAppSettings,
             section: *const ::std::os::raw::c_char,
             name: *const ::std::os::raw::c_char,
@@ -6558,9 +6564,9 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalAppSettings_putGlobalValue: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: GlobalAppSettings,
             section: *const ::std::os::raw::c_char,
             name: *const ::std::os::raw::c_char,
@@ -6592,163 +6598,163 @@ const _: () = {
     ["Offset of field: class_members_GlobalSettings::__ecere_padding"]
         [::std::mem::offset_of!(class_members_GlobalSettings, __ecere_padding) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_close:
-        ::std::option::Option<unsafe extern "C" fn(__this: GlobalSettings)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: GlobalSettings)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_closeAndMonitor:
-        ::std::option::Option<unsafe extern "C" fn(__this: GlobalSettings)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: GlobalSettings)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_load_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_GlobalSettings_load: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_onAskReloadSettings_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_GlobalSettings_onAskReloadSettings: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_openAndLock: ::std::option::Option<
-        unsafe extern "C" fn(__this: GlobalSettings, fileSize: *mut FileSize) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: GlobalSettings, fileSize: *mut FileSize) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_save_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_GlobalSettings_save: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_settingsName: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_settingsName: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_settingsName: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_settingsExtension: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_settingsExtension: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_settingsExtension: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_settingsDirectory: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_settingsDirectory: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_settingsDirectory: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_settingsLocation: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_settingsLocation: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_settingsLocation: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_settingsFilePath: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_settingsFilePath: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(g: GlobalSettings, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_settingsFilePath: ::std::option::Option<
-        unsafe extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(g: GlobalSettings) -> *const ::std::os::raw::c_char,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_allowDefaultLocations: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_allowDefaultLocations:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_allowDefaultLocations:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_allUsers: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_allUsers:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_allUsers:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_portable: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_portable:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_portable:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_driver: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_set_driver:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings, value: constString)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings, value: constString)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_driver:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings) -> constString>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings) -> constString>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GlobalSettings_isGlobalPath: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettings_get_isGlobalPath:
-        ::std::option::Option<unsafe extern "C" fn(g: GlobalSettings) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: GlobalSettings) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettingsDriver_load_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_GlobalSettingsDriver_load: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GlobalSettingsDriver_save_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_GlobalSettingsDriver_save: *mut Method;
 }
 #[repr(C)]
@@ -6771,49 +6777,49 @@ const _: () = {
     ["Offset of field: class_members_JSONParser::__ecere_padding"]
         [::std::mem::offset_of!(class_members_JSONParser, __ecere_padding) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONParser_getObject: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: JSONParser,
             objectType: *mut Class,
             object: *mut *mut ::std::os::raw::c_void,
         ) -> JSONResult,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONParser_debug: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONParser_set_debug:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONParser, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONParser, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONParser_get_debug:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONParser) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONParser) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONParser_warnings: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONParser_set_warnings:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONParser, value: bool_)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONParser, value: bool_)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONParser_get_warnings:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONParser) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONParser) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printECONObject: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
             indent: ::std::os::raw::c_int,
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut printObjectNotationString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
             onType: ObjectNotationType,
@@ -6823,18 +6829,18 @@ unsafe extern "C" {
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut stringIndent: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             base: constString,
             nSpaces: ::std::os::raw::c_int,
             indentFirst: bool_,
         ) -> String,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut writeECONObject: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             f: File,
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
@@ -6842,9 +6848,9 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut writeJSONObject: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             f: File,
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
@@ -6852,9 +6858,9 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut writeJSONObject2: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             f: File,
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
@@ -6863,9 +6869,9 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut writeJSONObjectMapped: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             f: File,
             objectType: *mut Class,
             object: *mut ::std::os::raw::c_void,
@@ -6874,9 +6880,9 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut writeONString: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             f: File,
             s: constString,
             eCON: bool_,
@@ -6905,25 +6911,25 @@ const _: () = {
     ["Offset of field: Condition::__ecere_padding"]
         [::std::mem::offset_of!(Condition, __ecere_padding) - 0usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Condition_signal:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Condition)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Condition_wait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Condition, mutex: *mut Mutex)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Condition, mutex: *mut Mutex)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Condition_name: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Condition_set_name: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Condition, value: *const ::std::os::raw::c_char),
+        /*unsafe*/ extern "C" fn(c: *const Condition, value: *const ::std::os::raw::c_char),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Condition_get_name: ::std::option::Option<
-        unsafe extern "C" fn(c: *const Condition) -> *const ::std::os::raw::c_char,
+        /*unsafe*/ extern "C" fn(c: *const Condition) -> *const ::std::os::raw::c_char,
     >;
 }
 #[repr(C)]
@@ -6938,25 +6944,25 @@ const _: () = {
     ["Offset of field: Mutex::__ecere_padding"]
         [::std::mem::offset_of!(Mutex, __ecere_padding) - 0usize];
 };
-unsafe extern "C" {
-    pub static mut Mutex_release: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
+/*unsafe*/ extern "C" {
+    pub static mut Mutex_release: ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Mutex)>;
 }
-unsafe extern "C" {
-    pub static mut Mutex_wait: ::std::option::Option<unsafe extern "C" fn(__this: *mut Mutex)>;
+/*unsafe*/ extern "C" {
+    pub static mut Mutex_wait: ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Mutex)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Mutex_lockCount: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Mutex_get_lockCount:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const Mutex) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Mutex_owningThread: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Mutex_get_owningThread:
-        ::std::option::Option<unsafe extern "C" fn(m: *const Mutex) -> int64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(m: *const Mutex) -> int64>;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -6970,561 +6976,561 @@ const _: () = {
     ["Offset of field: Semaphore::__ecere_padding"]
         [::std::mem::offset_of!(Semaphore, __ecere_padding) - 0usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_release:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Semaphore)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_tryWait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Semaphore) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_wait:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Semaphore)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Semaphore)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Semaphore_initCount: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_set_initCount: ::std::option::Option<
-        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
+        /*unsafe*/ extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_get_initCount:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Semaphore_maxCount: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_set_maxCount: ::std::option::Option<
-        unsafe extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
+        /*unsafe*/ extern "C" fn(s: *const Semaphore, value: ::std::os::raw::c_int),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Semaphore_get_maxCount:
-        ::std::option::Option<unsafe extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(s: *const Semaphore) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
-    pub static mut Thread_create: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
+/*unsafe*/ extern "C" {
+    pub static mut Thread_create: ::std::option::Option</*unsafe*/ extern "C" fn(__this: Thread)>;
 }
-unsafe extern "C" {
-    pub static mut Thread_kill: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
+/*unsafe*/ extern "C" {
+    pub static mut Thread_kill: ::std::option::Option</*unsafe*/ extern "C" fn(__this: Thread)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Thread_main_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_Thread_main: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Thread_setPriority:
-        ::std::option::Option<unsafe extern "C" fn(__this: Thread, priority: ThreadPriority)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: Thread, priority: ThreadPriority)>;
 }
-unsafe extern "C" {
-    pub static mut Thread_wait: ::std::option::Option<unsafe extern "C" fn(__this: Thread)>;
+/*unsafe*/ extern "C" {
+    pub static mut Thread_wait: ::std::option::Option</*unsafe*/ extern "C" fn(__this: Thread)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Thread_created: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Thread_get_created:
-        ::std::option::Option<unsafe extern "C" fn(t: Thread) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(t: Thread) -> bool_>;
 }
-unsafe extern "C" {
-    pub static mut getCurrentThreadID: ::std::option::Option<unsafe extern "C" fn() -> int64>;
+/*unsafe*/ extern "C" {
+    pub static mut getCurrentThreadID: ::std::option::Option</*unsafe*/ extern "C" fn() -> int64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Application: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Instance: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Module: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_AccessMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Angle: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BTNamedLink: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BackSlashEscaping: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BitMember: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Box: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CIString: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Centimeters: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Class: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ClassDesignerBase: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ClassProperty: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ClassTemplateArgument: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ClassTemplateParameter: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ClassType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DataMember: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DataMemberType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DataValue: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DefinedExpression: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Degrees: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DesignerBase: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Distance: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_EnumClassData: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_EscapeCStringOptions: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Feet: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalFunction: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_IOChannel: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ImportType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Meters: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Method: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_MethodType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_MinMaxValue: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_NameSpace: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ObjectInfo: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ObjectNotationType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Platform: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Point: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Pointd: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Pointf: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Property: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Radians: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SerialBuffer: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Size: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_StaticString: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_StringAllocType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SubModule: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TemplateMemberType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TemplateParameterType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ZString: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_String: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_byte: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_char: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_class: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_double: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_enum: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_float: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_int: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_int64: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_intptr: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_intsize: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_short: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_struct: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uint: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uint16: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uint32: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uint64: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uintptr: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_uintsize: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FieldType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FieldTypeEx: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FieldValue: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FieldValueFormat: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_AVLNode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_AVLTree: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Array: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BTNode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BinaryTree: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BuiltInContainer: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Container: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CustomAVLTree: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_HashMap: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_HashMapIterator: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_HashTable: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Item: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Iterator: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_IteratorPointer: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Link: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_LinkElement: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_LinkList: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_List: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ListItem: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Map: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_MapIterator: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_MapNode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_NamedItem: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_NamedLink: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_NamedLink64: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_OldLink: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_OldList: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_StringBTNode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_StringBinaryTree: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TreePrintStyle: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Date: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DateTime: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DayOfTheWeek: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Month: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SecSince1970: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Seconds: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Time: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TimeStamp: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TimeStamp32: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Archive: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ArchiveAddMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ArchiveDir: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ArchiveOpenFlags: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BufferedFile: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ConsoleFile: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DualPipe: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ErrorCode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ErrorLevel: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_File: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileAttribs: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileChange: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileListing: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileLock: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileMonitor: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileOpenMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileSeekMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileSize: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileSize64: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_FileStats: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GuiErrorCode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_LoggingMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_MoveFileOptions: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_PipeOpenMode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SysErrorCode: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_TempFile: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CharCategories: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CharCategory: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_PredefinedCharCategories: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_UnicodeDecomposition: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ECONGlobalSettings: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ECONParser: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalAppSettings: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalSettingType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalSettings: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalSettingsData: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GlobalSettingsDriver: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONFirstLetterCapitalization: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONGlobalSettings: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONParser: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONResult: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONTypeOptions: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_OptionsMap: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SetBool: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_SettingsIOResult: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Condition: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Mutex: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Semaphore: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Thread: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ThreadPriority: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     #[doc = " dll function imports //////// ////////////////\n ////////////////\n ////////////////"]
     pub fn __eCNameSpace__eC__i18n__GetTranslatedString(
         name: constString,
@@ -7532,22 +7538,22 @@ unsafe extern "C" {
         stringAndContext: *const ::std::os::raw::c_char,
     ) -> *const ::std::os::raw::c_char;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__i18n__LoadTranslatedStrings(
         moduleName: constString,
         name: *const ::std::os::raw::c_char,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__i18n__UnloadTranslatedStrings(name: constString);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__MemoryGuard_PopLoc();
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__MemoryGuard_PushLoc(loc: *const ::std::os::raw::c_char);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddBitMember(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7557,7 +7563,7 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut BitMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddClassProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7566,7 +7572,7 @@ unsafe extern "C" {
         getStmt: *mut ::std::os::raw::c_void,
     ) -> *mut ClassProperty;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddDataMember(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7576,13 +7582,13 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddMember(
         _class: *mut Class,
         dataMember: *mut DataMember,
     ) -> bool_;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddMethod(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7591,7 +7597,7 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7601,7 +7607,7 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddTemplateParameter(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7610,7 +7616,7 @@ unsafe extern "C" {
         defaultArg: *mut ClassTemplateArgument,
     ) -> *mut ClassTemplateParameter;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_AddVirtualMethod(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7619,19 +7625,19 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_DestructionWatchable(_class: *mut Class);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_DoneAddingTemplateParameters(base: *mut Class);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindClassProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
     ) -> *mut ClassProperty;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindDataMember(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7640,7 +7646,7 @@ unsafe extern "C" {
         subMemberStackPos: *mut ::std::os::raw::c_int,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindDataMemberAndId(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7650,7 +7656,7 @@ unsafe extern "C" {
         subMemberStackPos: *mut ::std::os::raw::c_int,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindDataMemberAndOffset(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
@@ -7660,14 +7666,14 @@ unsafe extern "C" {
         subMemberStackPos: *mut ::std::os::raw::c_int,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindMethod(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
         module: Module,
     ) -> *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindNextMember(
         _class: *mut Class,
         curClass: *mut Class,
@@ -7676,151 +7682,151 @@ unsafe extern "C" {
         subMemberStackPos: *mut ::std::os::raw::c_int,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_FindProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
         module: Module,
     ) -> *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_GetDesigner(_class: *mut Class) -> *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_GetProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
     ) -> int64;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_IsDerived(
         _class: *mut Class,
         from: *mut Class,
     ) -> bool_;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_Resize(
         _class: *mut Class,
         newSize: ::std::os::raw::c_int,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_SetProperty(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
         value: int64,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eClass_Unregister(_class: *mut Class);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eCrt_Initialize(
         guiApp: bool_,
         argc: ::std::os::raw::c_int,
         argv: *mut *mut ::std::os::raw::c_char,
     ) -> Application;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eEnum_AddFixedValue(
         _class: *mut Class,
         string: *const ::std::os::raw::c_char,
         value: int64,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eEnum_AddValue(
         _class: *mut Class,
         string: *const ::std::os::raw::c_char,
     ) -> int64;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_DecRef(instance: Instance);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_Delete(instance: Instance);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_Evolve(
         instancePtr: *mut Instance,
         _class: *mut Class,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_FireSelfWatchers(
         instance: Instance,
         _property: *mut Property,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_FireWatchers(
         instance: Instance,
         _property: *mut Property,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_GetDesigner(instance: Instance) -> *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_IncRef(instance: Instance);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_IsDerived(
         instance: Instance,
         from: *mut Class,
     ) -> bool_;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_New(
         _class: *mut Class,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_NewEx(
         _class: *mut Class,
         bindingsAlloc: bool_,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_SetMethod(
         instance: Instance,
         name: *const ::std::os::raw::c_char,
         function: *mut ::std::os::raw::c_void,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_StopWatching(
         instance: Instance,
         _property: *mut Property,
         object: Instance,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_Watch(
         instance: Instance,
         _property: *mut Property,
         object: *mut ::std::os::raw::c_void,
         callback: ::std::option::Option<
-            unsafe extern "C" fn(
+            /*unsafe*/ extern "C" fn(
                 arg1: *mut ::std::os::raw::c_void,
                 arg2: *mut ::std::os::raw::c_void,
             ),
         >,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eInstance_WatchDestruction(
         instance: Instance,
         object: Instance,
         callback: ::std::option::Option<
-            unsafe extern "C" fn(
+            /*unsafe*/ extern "C" fn(
                 arg1: *mut ::std::os::raw::c_void,
                 arg2: *mut ::std::os::raw::c_void,
             ),
         >,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eMember_AddDataMember(
         member: *mut DataMember,
         name: *const ::std::os::raw::c_char,
@@ -7830,82 +7836,82 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eMember_AddMember(
         addTo: *mut DataMember,
         dataMember: *mut DataMember,
     ) -> bool_;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eMember_New(
         type_: DataMemberType,
         declMode: AccessMode,
     ) -> *mut DataMember;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eModule_Load(
         fromModule: Module,
         name: *const ::std::os::raw::c_char,
         importAccess: AccessMode,
     ) -> Module;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eModule_LoadStatic(
         fromModule: Module,
         name: *const ::std::os::raw::c_char,
         importAccess: AccessMode,
-        Load: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
-        Unload: ::std::option::Option<unsafe extern "C" fn(module: Module) -> bool_>,
+        Load: ::std::option::Option</*unsafe*/ extern "C" fn(module: Module) -> bool_>,
+        Unload: ::std::option::Option</*unsafe*/ extern "C" fn(module: Module) -> bool_>,
     ) -> Module;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eModule_LoadStrict(
         fromModule: Module,
         name: *const ::std::os::raw::c_char,
         importAccess: AccessMode,
     ) -> Module;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eModule_Unload(fromModule: Module, module: Module);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eProperty_SelfWatch(
         _class: *mut Class,
         name: *const ::std::os::raw::c_char,
-        callback: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        callback: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eProperty_Watchable(_property: *mut Property);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_Delete(memory: *mut ::std::os::raw::c_void);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_FindClass(
         module: Module,
         name: *const ::std::os::raw::c_char,
     ) -> *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_FindDefine(
         module: Module,
         name: *const ::std::os::raw::c_char,
     ) -> *mut DefinedExpression;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_FindFunction(
         module: Module,
         name: *const ::std::os::raw::c_char,
     ) -> *mut GlobalFunction;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_New(size: uint) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_New0(size: uint) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_RegisterClass(
         type_: ClassType,
         name: *const ::std::os::raw::c_char,
@@ -7913,15 +7919,15 @@ unsafe extern "C" {
         size: ::std::os::raw::c_int,
         sizeClass: ::std::os::raw::c_int,
         Constructor: ::std::option::Option<
-            unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_,
+            /*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void) -> bool_,
         >,
-        Destructor: ::std::option::Option<unsafe extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
+        Destructor: ::std::option::Option</*unsafe*/ extern "C" fn(arg1: *mut ::std::os::raw::c_void)>,
         module: Module,
         declMode: AccessMode,
         inheritanceAccess: AccessMode,
     ) -> *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_RegisterDefine(
         name: *const ::std::os::raw::c_char,
         value: *const ::std::os::raw::c_char,
@@ -7929,7 +7935,7 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut DefinedExpression;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_RegisterFunction(
         name: *const ::std::os::raw::c_char,
         type_: *const ::std::os::raw::c_char,
@@ -7938,32 +7944,32 @@ unsafe extern "C" {
         declMode: AccessMode,
     ) -> *mut GlobalFunction;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_Renew(
         memory: *mut ::std::os::raw::c_void,
         size: uint,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_Renew0(
         memory: *mut ::std::os::raw::c_void,
         size: uint,
     ) -> *mut ::std::os::raw::c_void;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_SetArgs(
         app: Application,
         argc: ::std::os::raw::c_int,
         argv: *mut *mut ::std::os::raw::c_char,
     );
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn __eCNameSpace__eC__types__eSystem_SetPoolingDisabled(disabled: bool_);
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut __thisModule: Module;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn ecrt_init(
         fromModule: Module,
         loadEcere: bool_,
@@ -8058,78 +8064,78 @@ const _: () = {
     ["Offset of field: CRSExtent::tl"][::std::mem::offset_of!(CRSExtent, tl) - 8usize];
     ["Offset of field: CRSExtent::br"][::std::mem::offset_of!(CRSExtent, br) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_areZonesNeighbors: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_areZonesSiblings: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_compactZones_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_compactZones: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_countSubZones_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_countSubZones: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_countZoneEdges_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_countZoneEdges: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_countZones_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_countZones: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_doZonesOverlap: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_doesZoneContain: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, hayStack: DGGRSZone, needle: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, hayStack: DGGRSZone, needle: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_get64KDepth:
-        ::std::option::Option<unsafe extern "C" fn(__this: DGGRS) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DGGRS) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getFirstSubZone_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getFirstSubZone: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getIndexMaxDepth_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getIndexMaxDepth: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getLevelFromMetersPerSubZone: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             physicalMetersPerSubZone: f64,
             relativeDepth: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getLevelFromPixelsAndExtent: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             extent: *const GeoExtent,
             pixels: *mut Point,
@@ -8137,14 +8143,14 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getLevelFromRefZoneArea: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, metersSquared: f64) -> ::std::os::raw::c_int,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, metersSquared: f64) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getLevelFromScaleDenominator: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             scaleDenominator: f64,
             relativeDepth: ::std::os::raw::c_int,
@@ -8152,57 +8158,57 @@ unsafe extern "C" {
         ) -> ::std::os::raw::c_int,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMaxChildren_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getMaxChildren: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMaxDGGRSZoneLevel_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getMaxDGGRSZoneLevel: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMaxDepth:
-        ::std::option::Option<unsafe extern "C" fn(__this: DGGRS) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: DGGRS) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMaxNeighbors_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getMaxNeighbors: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMaxParents_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getMaxParents: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getMetersPerSubZoneFromLevel: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             parentLevel: ::std::os::raw::c_int,
             relativeDepth: ::std::os::raw::c_int,
         ) -> f64,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getRefZoneArea: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, level: ::std::os::raw::c_int) -> f64,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, level: ::std::os::raw::c_int) -> f64,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getRefinementRatio_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getRefinementRatio: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getScaleDenominatorFromLevel: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             parentLevel: ::std::os::raw::c_int,
             relativeDepth: ::std::os::raw::c_int,
@@ -8210,153 +8216,153 @@ unsafe extern "C" {
         ) -> f64,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getSubZoneAtIndex_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getSubZoneAtIndex: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getSubZoneCRSCentroids_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getSubZoneCRSCentroids: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getSubZoneIndex_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getSubZoneIndex: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getSubZoneWGS84Centroids_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getSubZoneWGS84Centroids: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getSubZones_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getSubZones: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneArea_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneArea: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneCRSCentroid_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneCRSCentroid: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneCRSExtent_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneCRSExtent: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneCRSVertices_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneCRSVertices: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneCentroidChild_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneCentroidChild: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneCentroidParent_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneCentroidParent: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneChildren_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneChildren: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneFromCRSCentroid_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneFromCRSCentroid: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneFromTextID_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneFromTextID: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneFromWGS84Centroid_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneFromWGS84Centroid: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneLevel_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneLevel: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneNeighbors_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneNeighbors: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneParents_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneParents: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneRefinedCRSVertices_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneRefinedCRSVertices: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneRefinedWGS84Vertices_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneRefinedWGS84Vertices: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneTextID_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneTextID: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneWGS84Centroid_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneWGS84Centroid: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneWGS84Extent_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneWGS84Extent: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_getZoneWGS84Vertices_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_getZoneWGS84Vertices: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneAncestorOf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             ancestor: DGGRSZone,
             descendant: DGGRSZone,
@@ -8364,20 +8370,20 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneCentroidChild_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_isZoneCentroidChild: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneContainedIn: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, needle: DGGRSZone, hayStack: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, needle: DGGRSZone, hayStack: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneDescendantOf: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             descendant: DGGRSZone,
             ancestor: DGGRSZone,
@@ -8385,25 +8391,25 @@ unsafe extern "C" {
         ) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneImmediateChildOf: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, child: DGGRSZone, parent: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, child: DGGRSZone, parent: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_isZoneImmediateParentOf: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, parent: DGGRSZone, child: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, parent: DGGRSZone, child: DGGRSZone) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_listZones_vTblID: ::std::os::raw::c_int;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut method_DGGRS_listZones: *mut Method;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut DGGRS_zoneHasSubZone: ::std::option::Option<
-        unsafe extern "C" fn(__this: DGGRS, hayStack: DGGRSZone, needle: DGGRSZone) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: DGGRS, hayStack: DGGRSZone, needle: DGGRSZone) -> bool_,
     >;
 }
 #[repr(C)]
@@ -8519,21 +8525,21 @@ const _: () = {
     ["Offset of field: GeoExtent::ll"][::std::mem::offset_of!(GeoExtent, ll) - 0usize];
     ["Offset of field: GeoExtent::ur"][::std::mem::offset_of!(GeoExtent, ur) - 16usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GeoExtent_clear:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut GeoExtent)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut GeoExtent)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GeoExtent_intersects: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut GeoExtent, b: *const GeoExtent) -> bool_,
+        /*unsafe*/ extern "C" fn(__this: *mut GeoExtent, b: *const GeoExtent) -> bool_,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_GeoExtent_geodeticArea: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut GeoExtent_get_geodeticArea:
-        ::std::option::Option<unsafe extern "C" fn(g: *const GeoExtent) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: *const GeoExtent) -> f64>;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -8675,107 +8681,107 @@ const _: () = {
     ["Offset of field: class_members_JSONSchema::xogcpropertySeq"]
         [::std::mem::offset_of!(class_members_JSONSchema, xogcpropertySeq) - 320usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_maximum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_maximum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_maximum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_exclusiveMaximum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_exclusiveMaximum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_exclusiveMaximum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_minimum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_minimum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_minimum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_exclusiveMinimum: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_exclusiveMinimum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> f64>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_exclusiveMinimum:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_maxItems: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_maxItems:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_maxItems:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_minItems: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_minItems:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_minItems:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_maxProperties: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_maxProperties:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_maxProperties:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_minProperties: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_get_minProperties:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_minProperties:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_xogcpropertySeq: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_xogcpropertySeq:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_JSONSchema_Default: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut JSONSchema_isSet_Default:
-        ::std::option::Option<unsafe extern "C" fn(j: JSONSchema) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(j: JSONSchema) -> bool_>;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -8822,9 +8828,9 @@ const _: () = {
     ["Alignment of Plane"][::std::mem::align_of::<Plane>() - 8usize];
     ["Offset of field: Plane::d"][::std::mem::offset_of!(Plane, d) - 24usize];
 };
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Plane_fromPoints: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Plane,
             v1: *const Vector3D,
             v2: *const Vector3D,
@@ -8832,125 +8838,125 @@ unsafe extern "C" {
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Vector3D_crossProduct: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Vector3D,
             vector1: *const Vector3D,
             vector2: *const Vector3D,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Vector3D_dotProduct: ::std::option::Option<
-        unsafe extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3D) -> f64,
+        /*unsafe*/ extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3D) -> f64,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Vector3D_normalize:
-        ::std::option::Option<unsafe extern "C" fn(__this: *mut Vector3D, source: *const Vector3D)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut Vector3D, source: *const Vector3D)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Vector3D_subtract: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             __this: *mut Vector3D,
             vector1: *const Vector3D,
             vector2: *const Vector3D,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut property_Vector3D_length: *mut Property;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Vector3D_get_length:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Vector3D) -> f64>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(v: *const Vector3D) -> f64>;
 }
-unsafe extern "C" {
-    pub static mut readDGGSJSON: ::std::option::Option<unsafe extern "C" fn(f: File) -> DGGSJSON>;
+/*unsafe*/ extern "C" {
+    pub static mut readDGGSJSON: ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> DGGSJSON>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_BCTA3H: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CRS: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CRSExtent: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_CRSRegistry: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGRS: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGRSZone: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGSJSON: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGSJSONDepth: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGSJSONGrid: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_DGGSJSONShape: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GGGZone: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GNOSISGlobalGrid: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GPP3H: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GeoExtent: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_GeoPoint: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_I3HZone: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_I9RZone: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ISEA3H: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_ISEA9R: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_IVEA3H: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_IVEA9R: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONSchema: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_JSONSchemaType: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Plane: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_RhombicIcosahedral3H: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_RhombicIcosahedral9R: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut class_Vector3D: *mut Class;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub fn dggal_init(fromModule: Module) -> Module;
 }
 pub type __builtin_va_list = [__va_list_tag; 1usize];

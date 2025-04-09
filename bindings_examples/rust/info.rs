@@ -1,4 +1,4 @@
-mod dggal;
+extern crate dggal;
 
 use dggal::Application;
 use dggal::DGGAL;
