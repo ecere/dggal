@@ -140,6 +140,7 @@ public:
          return ISEAPlanarProjection::crsExtentFromWGS84(wgs84Extent, topLeft, bottomRight);
    }
 
+   // TODO: Move this to base RI5x6Projection class
    void wgs84ExtentFromCRS(const Pointd topLeft, const Pointd bottomRight, GeoExtent wgs84Extent)
    {
       if(topLeft.x < 0.0001 &&

@@ -12,7 +12,7 @@ import "Vector3D"
 #define Vector3D DGGVector3D
 #endif
 
-class VertexGreatCircleIcosahedralProjection : RI5x6Projection
+public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
 {
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void resolvePointIn6thTriangle(const Pointd pi,

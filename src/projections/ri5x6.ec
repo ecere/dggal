@@ -82,7 +82,7 @@ static Pointd vertices5x6[20][3] =
 /*static */define phi = (1 + sqrt(5)) / 2;
 static define precisionPerDefinition = Degrees { 1e-5 };
 
-class RI5x6Projection
+public class RI5x6Projection
 {
    Vector3D icoVertices[12];
    double cp[2][AUTH_ORDER];
@@ -339,7 +339,7 @@ class RI5x6Projection
       const Pointd p1, const Pointd p2, const Pointd p3,
       Pointd out);
 
-   virtual bool forward(const GeoPoint p, Pointd v)
+   public virtual bool forward(const GeoPoint p, Pointd v)
    {
       bool result = false;
       GeoPoint point { latGeodeticToAuthalic(p.lat), p.lon };
@@ -371,7 +371,7 @@ class RI5x6Projection
       return result;
    }
 
-   virtual bool inverse(const Pointd v, GeoPoint p)
+   public virtual bool inverse(const Pointd v, GeoPoint p)
    {
       int face = getFace(v);
       if(face != -1)
@@ -387,7 +387,7 @@ class RI5x6Projection
       return false;
    }
 
-   void extent5x6FromWGS84(const GeoExtent wgs84Extent, Pointd topLeft, Pointd bottomRight)
+   public void extent5x6FromWGS84(const GeoExtent wgs84Extent, Pointd topLeft, Pointd bottomRight)
    {
       if((Radians)wgs84Extent.ll.lat < -Pi/2 + 0.0001 &&
          (Radians)wgs84Extent.ll.lon < -Pi   + 0.0001 &&
