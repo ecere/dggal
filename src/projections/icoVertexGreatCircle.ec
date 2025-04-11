@@ -189,6 +189,7 @@ class VertexGreatCircleIcosahedralProjection : RI5x6Projection
 
       revertOrientation(out, out);
       out.lat = latAuthalicToGeodetic(out.lat);
+      out.lon = wrapLon(out.lon);
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
