@@ -1,5 +1,5 @@
 {
-   description = "Main DGGAL classs for defining and querying a particular Discrete Global Grid Reference System",
+   description = "Main DGGAL class for defining and querying a particular Discrete Global Grid Reference System",
    methods = [
       {"areZonesNeighbors", {
          description = "Check whether two zones are neighbors ",
