@@ -1,6 +1,6 @@
 # Instructions for building DGGAL
 
-See also [this script](fetchAndBuild.sh) (running all of these commands), fetching and building everything.
+See also [this script](fetchAndBuild.sh) (running all of these commands), fetching and building everything, and [this batch file](fetchAndBuild.bat) (for the equivalent on Windows).
 
 ## Pre-requisites
 
