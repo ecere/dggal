@@ -198,23 +198,29 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       const Pointd pai, const Pointd pbi, const Pointd pci,
       Pointd out)
   {
-      const Radians beta = Degrees { 36 }, gamma = Degrees { 60 };
-      const Radians AB = atan(1/phi); //, AC = acos(sqrt((phi + 1)/3)), BC = atan(2/(phi*phi));
-      const double cosAB = cos(AB);
-      Radians x = angleBetweenUnitVectors(B, P), PA = angleBetweenUnitVectors(P, A);
-      //double EABP = PA + x + AB - Pi;
-      // Cosine formula does not work here -- rho = acos(cos(PA) - cos(AB) * cos(x)) / sin(AB) * sin(x)
-      // Half-angle formula:
-      double s = (x + PA + AB) / 2;
-      Radians rho = 2*asin(sqrt(sin(s - x) * sin(s - AB) / (sin(x) * sin(AB))));
-      Radians delta = acos(sin(rho) * cosAB);
-      double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma - Pi/2);
-      double cosXpY = rho < 1E-9 ? cosAB : 1/(tan(rho) * tan(delta));
-      // double y = acos(cosXpY) - x;
-      double xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY));
-      Pointd pdi { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
+      Radians x = angleBetweenUnitVectors(B, P);
+      if(fabs(x) < 1E-9)
+         out = pbi;
+      else
+      {
+         const Radians beta = Degrees { 36 }, gamma = Degrees { 60 };
+         const Radians AB = atan(1/phi); //, AC = acos(sqrt((phi + 1)/3)), BC = atan(2/(phi*phi));
+         const double cosAB = cos(AB);
+         Radians PA = angleBetweenUnitVectors(P, A);
+         //double EABP = PA + x + AB - Pi;
+         // Cosine formula does not work here -- rho = acos(cos(PA) - cos(AB) * cos(x)) / sin(AB) * sin(x)
+         // Half-angle formula:
+         double s = (x + PA + AB) / 2;
+         Radians rho = fabs(PA) < 1E-9 ? 0 : 2*asin(sqrt(sin(s - x) * sin(s - AB) / (sin(x) * sin(AB))));
+         Radians delta = acos(sin(rho) * cosAB);
+         double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma - Pi/2);
+         double cosXpY = rho < 1E-9 ? cosAB : 1/(tan(rho) * tan(delta));
+         // double y = acos(cosXpY) - x;
+         double xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY));
+         Pointd pdi { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
 
-      out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
+         out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
+      }
   }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
