@@ -203,7 +203,7 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       const Pointd pai, const Pointd pbi, const Pointd pci,
       Pointd out)
   {
-      Radians x = angleBetweenUnitVectors(B, P);
+      Radians x = angleBetweenUnitVectors(B, P); // x should be < AB < BC
       if(fabs(x) < 1E-9)
          out = pbi;
       else
@@ -215,10 +215,10 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          double s = (x + PA + AB) / 2;
          Radians rho = fabs(PA) < 1E-9 ? 0 : 2*asin(sqrt(sin(s - x) * sin(s - AB) / (sin(x) * sin(AB))));
          Radians delta = acos(sin(rho) * cosAB);
-         double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma - Pi/2);
+         double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma - Pi/2); // This should be between 0 and 1
          double cosXpY = rho < 1E-9 ? cosAB : 1/(tan(rho) * tan(delta));
          // double y = acos(cosXpY) - x;
-         double xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY));
+         double xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY)); // This should be between 0 and 1
          Pointd pdi { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
 
          out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
@@ -231,7 +231,6 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       const Pointd p1, const Pointd p2, const Pointd p3,
       Pointd out)
    {
-      double b[3];
       Pointd pCenter = {
          (p1.x + p2.x + p3.x) / 3,
          (p1.y + p2.y + p3.y) / 3
@@ -243,39 +242,35 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       };
       vCenter.Normalize(vCenter);
 
-      // REVIEW: We should be able to use barycentric coordinates from 3D vertices
-      // since center->vertex is on a great circle
-      cartesian3DToBary(b, v, v1, v2, v3);
-
-      if(b[0] <= b[1] && b[0] <= b[2])
+      if(vertexWithinSphericalTri(v, vCenter, v2, v3))
       {
          Pointd p23 { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
          Vector3D v23 { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
          v23.Normalize(v23);
 
-         if(b[1] < b[2])
+         if(vertexWithinSphericalTri(v, vCenter, v23, v3))
             forwardPointIn6thTriangle(v, v23, v3, vCenter, p23, p3, pCenter, out);
          else
             forwardPointIn6thTriangle(v, v23, v2, vCenter, p23, p2, pCenter, out);
       }
-      else if(b[1] <= b[0] && b[1] <= b[2])
+      else if(vertexWithinSphericalTri(v, vCenter, v3, v1))
       {
          Pointd p31 { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
          Vector3D v31 { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
          v31.Normalize(v31);
 
-         if(b[0] < b[2])
+         if(vertexWithinSphericalTri(v, vCenter, v31, v3))
             forwardPointIn6thTriangle(v, v31, v3, vCenter, p31, p3, pCenter, out);
          else
             forwardPointIn6thTriangle(v, v31, v1, vCenter, p31, p1, pCenter, out);
       }
-      else // if(b[2] <= b[0] && b[2] <= b[1])
+      else // if(vertexWithinSphericalTri(v, vCenter, v1, v2))
       {
          Pointd p12 { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
          Vector3D v12 { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
          v12.Normalize(v12);
 
-         if(b[0] < b[1])
+         if(vertexWithinSphericalTri(v, vCenter, v12, v2))
             forwardPointIn6thTriangle(v, v12, v2, vCenter, p12, p2, pCenter, out);
          else
             forwardPointIn6thTriangle(v, v12, v1, vCenter, p12, p1, pCenter, out);

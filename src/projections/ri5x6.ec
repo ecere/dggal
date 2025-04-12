@@ -167,6 +167,10 @@ public class RI5x6Projection
       };
    }
 
+   // NOTE: For representing spherical triangles, we would need instead to calculate the
+   // area of the spherical triangles formed with p and the three pairs of vertices
+   // by computing the excess over 180 degrees of the sum of the angles between the unit vectors
+
    private /*static inline */void ::cartesian3DToBary(double b[3],
       const Vector3D p, const Vector3D p1, const Vector3D p2, const Vector3D p3)
    {
@@ -317,15 +321,26 @@ public class RI5x6Projection
    {
       Plane planes[3];
       int i;
+      int sgn = 0;
 
-      planes[0].FromPoints(v1, v2, { 0, 0, 0 });
-      planes[1].FromPoints(v2, v3, { 0, 0, 0 });
-      planes[2].FromPoints(v3, v1, { 0, 0, 0 });
+      // This function assumes spherical triangle with edges smaller than 90 degrees
+      if((Radians)angleBetweenUnitVectors(v3D, v1) > Pi/2)
+         return false;
+
+      planes[0].FromPoints({ 0, 0, 0 }, v1, v2);
+      planes[1].FromPoints({ 0, 0, 0 }, v2, v3);
+      planes[2].FromPoints({ 0, 0, 0 }, v3, v1);
 
       for(i = 0; i < 3; i++)
       {
-         if(planes[i].a * v3D.x + planes[i].b * v3D.y + planes[i].c * v3D.z + planes[i].d > 0)
-            return false;
+         double d = planes[i].a * v3D.x + planes[i].b * v3D.y + planes[i].c * v3D.z;
+         if(fabs(d) > 1E-9)
+         {
+            int s = Sgn(d);
+            if(sgn && s != sgn)
+               return false;
+            sgn = s;
+         }
       }
       return true;
    }
@@ -364,10 +379,47 @@ public class RI5x6Projection
                v3D, icoVertices[icoIndices[face][0]], icoVertices[icoIndices[face][1]], icoVertices[icoIndices[face][2]],
                vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
                v);
+
+#if 0 //def _DEBUG
+            /*
+            if(!ptInTri(vertices5x6[face], v))
+               PrintLn("BUG: projection is outside face ", face, "...");
+            */
+            {
+               GeoPoint rtp;
+               if(inverse(v, rtp))
+               {
+                  const Degrees precision = 0.0008 / (wgs84Major * (double)Pi/180); // ~0.8 mm
+                  Radians dLat = rtp.lat - p.lat, dLon = rtp.lon - p.lon;
+                  while(dLon > Pi) dLon -= 2*Pi;
+                  while(dLon < -Pi) dLon += 2*Pi;
+
+                  if(fabs(dLat) > (Radians)precision ||
+                     (fabs(dLon) > (Radians)precision && fabs(fabs((double)(Degrees)p.lat) - 90) > (double)precision * 100))
+                  {
+                     PrintLn("Roundtrip: Mismatched inverse projected point! dLat: ",
+                        (Degrees)dLat, ", dLon: ", (Degrees)dLon, " at latitude ", p.lat);
+
+                     forwardIcoFace(
+                        v3D, icoVertices[icoIndices[face][0]], icoVertices[icoIndices[face][1]], icoVertices[icoIndices[face][2]],
+                        vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
+                        v);
+
+                     inverse(v, rtp);
+                  }
+               }
+               else
+                  PrintLn("Roundtrip: Failure to inverse project point!");
+            }
+#endif
             result = true;
             break;
          }
       }
+#ifdef _DEBUG
+      if(!result)
+         PrintLn("Forward projection failure");
+#endif
       return result;
    }
 
