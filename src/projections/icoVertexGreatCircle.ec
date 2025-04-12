@@ -12,17 +12,22 @@ import "Vector3D"
 #define Vector3D DGGVector3D
 #endif
 
+static const Radians beta = Degrees { 36 };
+static const Radians gamma = Degrees { 60 };
+
 public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
 {
+   Radians AB; AB = atan(1/phi);
+   Radians AC; AC = acos(sqrt((phi + 1)/3));
+   Radians BC; BC = atan(2/(phi*phi));
+   double cosAB; cosAB = cos(AB);
+
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void resolvePointIn6thTriangle(const Pointd pi,
       const Pointd pai, const Pointd pbi, const Pointd pci,
       const Vector3D A, const Vector3D B, const Vector3D C,
       GeoPoint out)
   {
-      const Radians beta = Degrees { 36 }, gamma = Degrees { 60 };
-      const Radians AB = atan(1/phi), AC = acos(sqrt((phi + 1)/3)), BC = atan(2/(phi*phi));
-      const double cosAB = cos(AB);
       // Compute D' by finding interesection between line extending from B' through P' with A'C'
       // A = y1-y2, B = x2-x1, C = Ax1 + By1
 
@@ -203,9 +208,6 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          out = pbi;
       else
       {
-         const Radians beta = Degrees { 36 }, gamma = Degrees { 60 };
-         const Radians AB = atan(1/phi); //, AC = acos(sqrt((phi + 1)/3)), BC = atan(2/(phi*phi));
-         const double cosAB = cos(AB);
          Radians PA = angleBetweenUnitVectors(P, A);
          //double EABP = PA + x + AB - Pi;
          // Cosine formula does not work here -- rho = acos(cos(PA) - cos(AB) * cos(x)) / sin(AB) * sin(x)
