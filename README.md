@@ -12,6 +12,8 @@ DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](h
 * [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
 * [ISEA3H](https://docs.ogc.org/DRAFTS/21-038.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Snyder Equal Area (ISEA) projection
 * [ISEA9R](https://docs.ogc.org/DRAFTS/21-038.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
+* **IVEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Vertex-oriented Great Circle Equal Area (tentatively called IVEA) projection based on [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), using the same global indexing and sub-zone ordering as for ISEA3H
+* **IVEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
 
 ## libDGGAL API Documentation
 
@@ -87,6 +89,8 @@ A rust example using the DGGAL rust bindings is [available here](https://github.
 * `gnosis` (Global Grid)
 * `isea3h`
 * `isea9r`
+* `ivea3h`
+* `ivea9r`
 
 ### Commands
 
@@ -141,7 +145,7 @@ EPSG:4326, OGC:CRS84, ISEA, 5x6
 **-depth** <_relative depth_>
 - For sub, specify relative depth
 Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels
-default: depth corresponding to ~64K sub-zones (ISEA: 5, ISEA3H: 10, GNOSIS: 8)
+default: depth corresponding to ~64K sub-zones (IS/VEA9R: 5, IS/VEA3H: 10, GNOSIS: 8)
 
 **-bbox** <_llLat,llLon,urLat,urLon_>
 - Specify extent for which to list zones, generate grid, or reference extent for -pixels
