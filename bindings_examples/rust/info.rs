@@ -151,7 +151,9 @@ fn main()
    let mut options = HashMap::<&str, &str>::new();
 
         if arg0.eq_ignore_ascii_case("i3h") { dggrs_name = &"ISEA3H"; }
-   else if arg0.eq_ignore_ascii_case("i9r") { dggrs_name = &"ISEA9R"; }
+   else if arg0.eq_ignore_ascii_case("v3h") { dggrs_name = &"ISEA3H"; }
+   else if arg0.eq_ignore_ascii_case("i9r") { dggrs_name = &"IVEA9R"; }
+   else if arg0.eq_ignore_ascii_case("v9r") { dggrs_name = &"IVEA9R"; }
    else if arg0.eq_ignore_ascii_case("ggg") { dggrs_name = &"GNOSISGlobalGrid"; }
 
    if dggrs_name == "" && argc > 1
@@ -159,6 +161,8 @@ fn main()
       let arg1: &str = &args[1];
            if arg1.eq_ignore_ascii_case("isea3h") { dggrs_name = &"ISEA3H"; }
       else if arg1.eq_ignore_ascii_case("isea9r") { dggrs_name = &"ISEA9R"; }
+      else if arg1.eq_ignore_ascii_case("ivea3h") { dggrs_name = &"IVEA3H"; }
+      else if arg1.eq_ignore_ascii_case("ivea9r") { dggrs_name = &"IVEA9R"; }
       else if arg1.eq_ignore_ascii_case("gnosis") { dggrs_name = &"GNOSISGlobalGrid"; }
       a += 1;
    }
