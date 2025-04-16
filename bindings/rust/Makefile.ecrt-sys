@@ -1,0 +1,116 @@
+.PHONY: all objdir cleantarget clean realclean distclean
+
+ifneq ($(V),1)
+.SILENT:
+endif
+
+MODULE := ecrt_sys
+BINDING_NAME := ecrt
+
+# CORE VARIABLES
+
+VERSION := 0.0.1
+CONFIG := release
+ifndef COMPILER
+COMPILER := default
+endif
+
+C_BINDINGS_SYMBOLS_PREFIX_ENABLE := y
+
+TARGET_TYPE = sharedlib
+
+# INCLUDES
+
+DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../
+
+ifndef EC_SDK_SRC
+EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
+endif
+
+_CF_DIR = $(EC_SDK_SRC)/
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(PLATFORM)$(COMPILER_SUFFIX)
+
+TARGET = $(OBJ)/lib$(MODULE).rlib
+
+SOURCES = $(MODULE).rs
+
+LIBS += \
+   $(call _L,ecrt_cStatic) \
+	$(call _L,ecrtStatic) \
+	$(call _L,z)
+
+ifdef WINDOWS_TARGET
+
+LIBS += \
+	$(call _L,winmm) \
+	$(call _L,kernel32) \
+	$(call _L,user32) \
+	$(call _L,mpr) \
+	$(call _L,advapi32) \
+	$(call _L,shell32)
+
+endif
+
+#	-Clink-arg=$(OBJ)/$(BINDING_NAME)$(O)
+
+OFLAGS =
+
+OFLAGS += \
+	-Lnative=obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
+	-Lnative=$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+
+PRJ_CFLAGS += $(if $(DEBUG), -g, -O2 -ffast-math) -w -I$(DGGAL_ABSPATH)bindings/c -DEC_STATIC
+
+RUSTFLAGS = --edition 2021 -Anon_snake_case -Anon_upper_case_globals -Anon_camel_case_types -Aimproper_ctypes
+
+ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
+PRJ_CFLAGS += -DECPRFX=eC_
+endif
+
+_OBJECTS = $(_DEP_OBJECTS) $(OBJ)/$(BINDING_NAME)$(O)
+
+OBJECTS = $(_OBJECTS)
+
+SOURCES = $(_DEP_SOURCES) ../c/$(BINDING_NAME).c $(BINDING_NAME)_cffi.rs
+
+CBINDING_STATIC_LIB = $(OBJ)/lib$(BINDING_NAME)_cStatic.a
+
+all: objdir $(TARGET);
+
+# OBJECT RULES
+
+$(OBJ)/$(BINDING_NAME)$(O): ../c/$(BINDING_NAME).c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
+
+# TARGETS
+
+objdir:
+	$(call mkdir,$(OBJ))
+
+$(SYMBOLS): | objdir
+$(OBJECTS): | objdir
+
+$(TARGET): $(SOURCES) $(OBJECTS) | objdir
+	$(AR) rcs $(CBINDING_STATIC_LIB) $(_OBJECTS)
+	rustc --crate-type lib --crate-name ecrt_sys $(RUSTFLAGS) $(BINDING_NAME)_cffi.rs $(OFLAGS) $(LIBS) -o $(TARGET)
+	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+	$(call cp,$(CBINDING_STATIC_LIB),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+
+cleantarget:
+	$(call rm,$(TARGET))
+
+clean: cleantarget
+	$(call rm,_OBJECTS)
+	$(call rm,$(OBJ)/$(BINDING_NAME)_cStatic.a)
+
+realclean: cleantarget
+	$(call rmr,$(OBJ))
+
+distclean:
+	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs
