@@ -29,9 +29,46 @@ While the library is written in the [eC programming language](https://ec-lang.or
 Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Partial bindings for rust are available as well.
 Support for additional languages may be added in the future.
 
-## Pre-built binaries
+## Building DGGAL
 
-The pre-built binaries for Linux and Windows include the `dgg` utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
+The recommended method to obtain and build DGGAL and the `dgg` tool is to follow the instructions in [BUILDING.md](BUILDING.md),
+or running [fetchAndBuild.sh](fetchAndBuild.sh) / [fetchAndBuild.bat](fetchAndBuild.sh).
+
+This method will use this `eC-core` branch meant to be used with the [stand-alone eC development kit and eC runtime library](https://github.com/ecere/eC),
+avoiding unnecessary dependencies on other components of the Ecere SDK runtime library.
+
+The script will clone both the eC and DGGAL repositories and build everything, including the C, C++, rust and Python bindings
+if the required development tools are properly installed and configured.
+
+## Language bindings
+
+### C Bindings
+
+C bindings are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/c).
+
+A C example implementing the `dgg info` command using the DGGAL C bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c/info.c).
+
+### C++ Bindings
+
+C++ bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/cpp).
+
+A C++ example implementing the `dgg info` command using the DGGAL C++ bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/cpp/info.cpp).
+
+### Python Bindings
+
+Python bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/py).
+
+A Python example using the DGGAL Python bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/py/info.py).
+
+### rust Bindings
+
+rust bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/rust).
+
+A rust example using the DGGAL rust bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/rust/info.rs).
+
+## (Older) Pre-built binaries
+
+These older pre-built binaries for Linux and Windows include the `dgg` utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
 
 The [Ecere SDK](https://ecere.org) should be installed to use the dynamically linked version.
 
@@ -52,31 +89,9 @@ The dynamic libraries are needed to build eC applications making use of the libr
 [cURL](https://curl.se/download.html) and/or OpenSSL ([for Windows](https://slproweb.com/products/Win32OpenSSL.html)) dynamic libraries may also be required to be installed,
 as these are currently dependencies of <em>libecere</em> which includes HTTPS support.
 
-A future version of the Ecere SDK will be better modularized so as to avoid these dependencies from the dynamic DGGAL library.
+A future version of the Ecere SDK will be better modularized, based on the stand-alone eC runtime, so as to avoid these dependencies from the dynamic DGGAL library.
 
-### C Bindings
-
-C bindings are [available here](https://github.com/ecere/dggal/tree/main/bindings/c).
-
-A C example implementing the `dgg info` command using the DGGAL C bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/c/info.c).
-
-### C++ Bindings
-
-C++ bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/cpp).
-
-A C++ example implementing the `dgg info` command using the DGGAL C++ bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/cpp/info.cpp).
-
-### Python Bindings
-
-Python bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/py).
-
-A Python example using the DGGAL Python bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/py/info.py).
-
-### rust Bindings
-
-rust bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/main/bindings/rust).
-
-A rust example using the DGGAL rust bindings is [available here](https://github.com/ecere/dggal/blob/main/bindings_examples/rust/info.rs).
+See also [**Building DGGAL**](#building-dggal) section for building a version of DGGAL without these dependencies.
 
 ## `dgg` tool
 
