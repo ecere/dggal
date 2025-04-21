@@ -3,15 +3,15 @@
 # DGGAL, the Discrete Global Grid Abstraction Library
 
 DGGAL provides a common interface to perform various operations on Discrete Global Grid Reference Systems (DGGRS), facilitating the implementation of Discrete Global Grid Systems (DGGS),
-including implementing Web APIs based on the [OGC API - DGGS Standard](https://docs.ogc.org/DRAFTS/21-038.html).
+including implementing Web APIs based on the [OGC API - DGGS Standard](https://docs.ogc.org/DRAFTS/21-038r1.html).
 
 ## Supported Discrete Global Grid Reference Systems
 
-DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038.html#annex-dggrs-def):
+DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
 
-* [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
-* [ISEA3H](https://docs.ogc.org/DRAFTS/21-038.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Snyder Equal Area (ISEA) projection
-* [ISEA9R](https://docs.ogc.org/DRAFTS/21-038.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
+* [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038r1.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
+* [ISEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Snyder Equal Area (ISEA) projection
+* [ISEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 * **IVEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Vertex-oriented Great Circle Equal Area (tentatively called IVEA) projection based on [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), using the same global indexing and sub-zone ordering as for ISEA3H
 * **IVEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
 
@@ -19,14 +19,14 @@ DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](h
 
 The `DGGRS` class provides most of the functionality of the library, allowing to resolve DGGRS zones by textual ID to a unique 64-bit zone integer identifier (`DGGRSZone`).
 The geometry and sub-zones of a particular zone can also be queried.
-The concept of [sub-zones](https://docs.ogc.org/DRAFTS/21-038.html#term-sub-zone) is key to encoding both vector and raster geospatial data quantized to a DGGRS.
+The concept of [sub-zones](https://docs.ogc.org/DRAFTS/21-038r1.html#term-sub-zone) is key to encoding both vector and raster geospatial data quantized to a DGGRS.
 The DGGAL library also allows to resolve a sub-zone index at a particular depth from a parent zone, allowing to read DGGS-optimized data such as
-[DGGS-JSON](http://dggs-json.org) and [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038.html#rc_data-dggs-jsonfg).
+[DGGS-JSON](http://dggs-json.org) and [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg).
 
 A very early draft of the API documentation can be [found here](https://dggal.org/docs/html/dggal/Classes/DGGRS.html).
 
 While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's [`bgen` tool](https://github.com/ecere/ecere-sdk/tree/latest/bgen) are provided. Partial bindings for rust are available as well.
+Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Partial bindings for rust are available as well.
 Support for additional languages may be added in the future.
 
 ## Pre-built binaries
@@ -478,7 +478,7 @@ sub-zone B6-5-E not found within parent A4-0-A
 
 #### `togeo`
 
-Converts [DGGS-JSON](http://dggs-json.org) (and eventually [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038.html#rc_data-dggs-jsonfg) and [UBJSON](https://ubjson.org/) variants) to GeoJSON
+Converts [DGGS-JSON](http://dggs-json.org) (and eventually [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg) and [UBJSON](https://ubjson.org/) variants) to GeoJSON
 to facilitate interoperability with traditional GIS software / software not aware of the DGGRS.
 
 https://maps.gnosis.earth/ogcapi/collections/sentinel2-l2a/dggs/ISEA3H/zones/G7-67252-D/data.json?zone-depth=8&datetime=2022-10-28&properties=B08
