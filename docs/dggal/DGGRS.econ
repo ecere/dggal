@@ -728,7 +728,7 @@
       }},
       {"zoneHasSubZone", {
          description = "Check whether a zone has another zone as a sub-zone",
-         remarks = "A descendant zone is a sub-zone of an ancestor zone if the descendant zone if fully or partially contained within the ancestor zone.",
+         remarks = "A descendant zone is a sub-zone of an ancestor zone if the descendant zone is fully or partially contained within the ancestor zone.",
          also = "getSubZoneIndex",
          parameters = [
             {"hayStack", {
