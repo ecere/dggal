@@ -44,34 +44,20 @@ While the library is written in the <a href='https://ec-lang.org'>eC programming
 Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Partial bindings for rust are available as well.
 Support for additional languages may be added in the future.
 
-<h3>Pre-built binaries</h3>
+<a name='building-dggal'><h2>Building DGGAL</h2></a>
 
-The pre-built binaries for Linux and Windows include the <code>dgg</code> utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
-<br/><br/>
-The <a href='https://ecere.org'>Ecere SDK</a> should be installed to use the dynamically linked version.
+The recommended method to obtain and build DGGAL and the <code>dgg</code> tool is to follow the instructions in <a href='https://github.com/ecere/dggal/blob/eC-core/BUILDING.md'>BUILDING.md</a>,
+or running <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuild.sh'>fetchAndBuild.sh<a> /
+<a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuild.bat'>fetchAndBuild.bat</a>.<br/><br/>
 
-<h4>Version 0.0.1 - build #42</h4>
+This method will use the <a href='https://github.com/ecere/dggal/tree/eC-core'>eC-core</a> branch meant to be used with
+the <a href='https://github.com/ecere/eC'>stand-alone eC development kit and eC runtime library</a>,
+avoiding unnecessary dependencies on other components of the Ecere SDK runtime library.<br/><br/>
 
-<ul>
-<li><a href='binaries/dggal-v0.0.1-b42-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
-<li><a href='binaries/dggal-v0.0.1-b42-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
-</ul>
+The script will clone both the eC and DGGAL repositories and build everything, including the C, C++, rust and Python bindings
+if the required development tools are properly installed and configured.
 
-<h4>Ecere SDK binaries (build 275)</h4>
-
-The following recent pre-built binaries from the <a href='https://ecere.org'>Ecere SDK</a> can be installed to use the dynamically linked version:
-
-<ul>
-<li><a href='binaries/ecere-sdk-b275-binaries-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
-<li><a href='binaries/ecere-sdk-b275-binaries-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
-</ul>
-
-The dynamic libraries are needed to build eC applications making use of the library, re-generate the bindings, generate the documentation, or to use the binaries or bindings built with a dependency on them.<br/><br/>
-
-<a href='https://curl.se/download.html'>cURL</a> and/or OpenSSL (<a href='https://slproweb.com/products/Win32OpenSSL.html'>for Windows</a>) dynamic libraries may also be required to be installed,
-as these are currently dependencies of <em>libecere</em> which includes HTTPS support.<br/><br/>
-
-A future version of the Ecere SDK will be better modularized so as to avoid these dependencies from the dynamic DGGAL library.
+<h2>Language bindings</h2>
 
 <h3>C Bindings</h3>
 
@@ -97,6 +83,36 @@ rust bindings (depending on the C bindings) are <a href='https://github.com/ecer
 
 A rust example using the DGGAL rust bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/rust/info.rs'>available here</a>.
 
+<h2>(Older) Pre-built binaries</h3>
+
+These older pre-built binaries for Linux and Windows include the <code>dgg</code> utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
+<br/><br/>
+   The <a href='https://ecere.org'>Ecere SDK</a> should be installed to use the dynamically linked version.
+
+<h3>Version 0.0.1 - build #42</h4>
+
+<ul>
+<li><a href='binaries/dggal-v0.0.1-b42-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
+<li><a href='binaries/dggal-v0.0.1-b42-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
+</ul>
+
+<h3>Ecere SDK binaries (build 275)</h4>
+
+The following recent pre-built binaries from the <a href='https://ecere.org'>Ecere SDK</a> can be installed to use the dynamically linked version:
+
+<ul>
+<li><a href='binaries/ecere-sdk-b275-binaries-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
+<li><a href='binaries/ecere-sdk-b275-binaries-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
+</ul>
+
+The dynamic libraries are needed to build eC applications making use of the library, re-generate the bindings, generate the documentation, or to use the binaries or bindings built with a dependency on them.<br/><br/>
+
+<a href='https://curl.se/download.html'>cURL</a> and/or OpenSSL (<a href='https://slproweb.com/products/Win32OpenSSL.html'>for Windows</a>) dynamic libraries may also be required to be installed,
+as these are currently dependencies of <em>libecere</em> which includes HTTPS support.<br/><br/>
+
+A future version of the Ecere SDK will be better modularized so as to avoid these dependencies from the dynamic DGGAL library.<br/><br/>
+
+See also <a href='#building-dggal'><b>Building DGGAL</b></a> section for building a version of DGGAL without these dependencies.
 
 <h2><code>dgg</code> tool</h2>
 
