@@ -37,7 +37,7 @@ The DGGAL library also allows to resolve a sub-zone index at a particular depth 
 ## Building DGGAL
 
 The recommended method to obtain and build DGGAL and the `dgg` tool is to follow the instructions in [BUILDING.md](BUILDING.md),
-or running [fetchAndBuild.sh](fetchAndBuild.sh) / [fetchAndBuild.bat](fetchAndBuild.sh).
+or running [fetchAndBuild.sh](fetchAndBuild.sh) / [fetchAndBuild.bat](fetchAndBuild.bat).
 
 This method will use this `eC-core` branch meant to be used with the [stand-alone eC development kit and eC runtime library](https://github.com/ecere/eC),
 avoiding unnecessary dependencies on other components of the Ecere SDK runtime library.
