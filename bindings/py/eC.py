@@ -166,10 +166,14 @@ def ecPtr(_pyObject):
    return _pyObject.impl
 
 def TA(a):
-   if type(a) == int:            return lib.TAi(a)
-   if type(a) == float:          return lib.TAf(a)
-   if isinstance(a, Instance):   return lib.TAo(a.impl)
-   return 0
+   u = ffi.new("eC_DataValue *")
+   if type(a) == int:
+      u.i64 = a
+   elif type(a) == float:
+      u.f = a
+   elif isinstance(a, Instance):
+      u.p = a.impl
+   return u.ui64
 
 def OTA(c, value):
    ffi = app.ffi
@@ -186,8 +190,16 @@ def OTA(c, value):
       elif c.type == lib.ClassType_bitClass:
          # REVIEW: new for bit classes
          return pc(impl=ffi.cast("eC_" + cn, value))
-
+   else:
+      # Review this new handling
+      u = ffi.new("eC_DataValue *")
+      u.ui64 = value
+      if cn == "int":
+         return u.i64
+      elif cn == "float":
+         return u.f
    # TODO: Fill this up
+   printLn("WARNING: OTA() Missing Implementation for ", cn)
    return None
 
 def ffis(s): return ffi.string(s).decode('u8')
@@ -552,6 +564,11 @@ class Container(Instance):
       if itPtr == ffi.NULL: raise IndexError()
       d = OTA(self.impl._class.templateArgs[0].dataTypeClass, self.getData(itPtr))
       return d
+
+   def __setitem__(self, index, d):
+      itPtr = self.getAtPosition(index, False, None)
+      if itPtr == ffi.NULL: raise IndexError()
+      self.impl._class.templateArgs[0].dataTypeClass, self.setData(itPtr, TA(d))
 
    def __len__(self): return getCount()
 

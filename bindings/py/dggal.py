@@ -89,7 +89,8 @@ def cb_DGGRS_getZoneArea(__e, zone):
 @ffi.callback("void(eC_DGGRS, eC_DGGRSZone, eC_CRS, eC_Pointd *)")
 def cb_DGGRS_getZoneCRSCentroid(__e, zone, crs, centroid):
    dggrs = pyOrNewObject(DGGRS, __e)
-   dggrs.fn_DGGRS_getZoneCRSCentroid(dggrs, DGGRSZone(impl = zone), CRS(impl = crs), Pointd(impl = centroid))
+   c = dggrs.fn_DGGRS_getZoneCRSCentroid(dggrs, DGGRSZone(impl = zone), CRS(impl = crs))
+   centroid = c.impl
 
 @ffi.callback("void(eC_DGGRS, eC_DGGRSZone, eC_CRS, eC_CRSExtent *)")
 def cb_DGGRS_getZoneCRSExtent(__e, zone, crs, extent):
@@ -112,9 +113,14 @@ def cb_DGGRS_getZoneCentroidParent(__e, zone):
    return dggrs.fn_DGGRS_getZoneCentroidParent(dggrs, DGGRSZone(impl = zone))
 
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_DGGRSZone *)")
-def cb_DGGRS_getZoneChildren(__e, zone, children):
+def cb_DGGRS_getZoneChildren(__e, zone, childrenArray):
    dggrs = pyOrNewObject(DGGRS, __e)
-   return dggrs.fn_DGGRS_getZoneChildren(dggrs, DGGRSZone(impl = zone), children)
+   children = dggrs.fn_DGGRS_getZoneChildren(dggrs, DGGRSZone(impl = zone))
+   i = 0
+   for c in children:
+      childrenArray[i] = c[i]
+      i += 1
+   return i
 
 @ffi.callback("eC_DGGRSZone(eC_DGGRS, int, eC_CRS, const eC_Pointd *)")
 def cb_DGGRS_getZoneFromCRSCentroid(__e, level, crs, centroid):
@@ -137,14 +143,27 @@ def cb_DGGRS_getZoneLevel(__e, zone):
    return dggrs.fn_DGGRS_getZoneLevel(dggrs, DGGRSZone(impl = zone))
 
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_DGGRSZone *, int *)")
-def cb_DGGRS_getZoneNeighbors(__e, zone, neighbors, nbType):
+def cb_DGGRS_getZoneNeighbors(__e, zone, neighborsArray, nbTypeArray):
    dggrs = pyOrNewObject(DGGRS, __e)
-   return dggrs.fn_DGGRS_getZoneNeighbors(dggrs, DGGRSZone(impl = zone), neighbors, nbType)
+   nbType = Array("<int>") if nbTypeArray != ffi.NULL else None
+   neighbors = dggrs.fn_DGGRS_getZoneNeighbors(dggrs, DGGRSZone(impl = zone), nbType)
+   i = 0
+   for n in neighbors:
+      neighborsArray[i] = n[i]
+      if nbType is not None:
+         nbTypeArray[i] = nbType[i]
+      i += 1
+   return i
 
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_DGGRSZone *)")
-def cb_DGGRS_getZoneParents(__e, zone, parents):
+def cb_DGGRS_getZoneParents(__e, zone, parentsArray):
    dggrs = pyOrNewObject(DGGRS, __e)
-   return dggrs.fn_DGGRS_getZoneParents(dggrs, DGGRSZone(impl = zone), parents)
+   parents = dggrs.fn_DGGRS_getZoneParents(dggrs, DGGRSZone(impl = zone))
+   i = 0
+   for p in parents:
+      parentsArray[i] = p[i]
+      i += 1
+   return i
 
 @ffi.callback("template_Array_Pointd(eC_DGGRS, eC_DGGRSZone, eC_CRS, int)")
 def cb_DGGRS_getZoneRefinedCRSVertices(__e, zone, crs, edgeRefinement):
@@ -164,7 +183,8 @@ def cb_DGGRS_getZoneTextID(__e, zone, zoneID):
 @ffi.callback("void(eC_DGGRS, eC_DGGRSZone, eC_GeoPoint *)")
 def cb_DGGRS_getZoneWGS84Centroid(__e, zone, centroid):
    dggrs = pyOrNewObject(DGGRS, __e)
-   dggrs.fn_DGGRS_getZoneWGS84Centroid(dggrs, DGGRSZone(impl = zone), GeoPoint(impl = centroid))
+   c = dggrs.fn_DGGRS_getZoneWGS84Centroid(dggrs, DGGRSZone(impl = zone))
+   centroid = c.impl
 
 @ffi.callback("void(eC_DGGRS, eC_DGGRSZone, eC_GeoExtent *)")
 def cb_DGGRS_getZoneWGS84Extent(__e, zone, extent):
@@ -494,8 +514,10 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneArea = value
       lib.Instance_setMethod(self.impl, "getZoneArea".encode('u8'), cb_DGGRS_getZoneArea)
 
-   def fn_unset_DGGRS_getZoneCRSCentroid(self, zone, crs, centroid):
-      return lib.DGGRS_getZoneCRSCentroid(self.impl, zone, crs, ffi.NULL if centroid is None else centroid.impl)
+   def fn_unset_DGGRS_getZoneCRSCentroid(self, zone, crs):
+      centroid = Pointd()
+      lib.DGGRS_getZoneCRSCentroid(self.impl, zone, crs, centroid.impl)
+      return centroid
 
    @property
    def getZoneCRSCentroid(self):
@@ -554,9 +576,15 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneCentroidParent = value
       lib.Instance_setMethod(self.impl, "getZoneCentroidParent".encode('u8'), cb_DGGRS_getZoneCentroidParent)
 
-   def fn_unset_DGGRS_getZoneChildren(self, zone, children):
-      if children is None: children = ffi.NULL
-      return lib.DGGRS_getZoneChildren(self.impl, zone, children)
+   def fn_unset_DGGRS_getZoneChildren(self, zone):
+      childrenArray = ffi.new('eC_DGGRSZone[9]')
+      nChildren = lib.DGGRS_getZoneChildren(self.impl, zone, childrenArray)
+      children = Array("<DGGRSZone>")
+      children.size = nChildren
+      # REVIEW: Simpler / faster copy?
+      for i in range(nChildren):
+         children[i] = childrenArray[i]
+      return children
 
    @property
    def getZoneChildren(self):
@@ -615,10 +643,20 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneLevel = value
       lib.Instance_setMethod(self.impl, "getZoneLevel".encode('u8'), cb_DGGRS_getZoneLevel)
 
-   def fn_unset_DGGRS_getZoneNeighbors(self, zone, neighbors, nbType):
-      if neighbors is None: neighbors = ffi.NULL
-      if nbType is None: nbType = ffi.NULL
-      return lib.DGGRS_getZoneNeighbors(self.impl, zone, neighbors, nbType)
+   def fn_unset_DGGRS_getZoneNeighbors(self, zone, nbType = None):
+      neighborsArray = ffi.new('eC_DGGRSZone[6]')
+      nbTypeArray = ffi.new('int[6]') if nbType is not None else ffi.NULL
+      nNeighbors = lib.DGGRS_getZoneNeighbors(self.impl, zone, neighborsArray, nbTypeArray)
+      neighbors = Array("<DGGRSZone>")
+      neighbors.size = nNeighbors
+      # REVIEW: Simpler / faster copy?
+      if nbType is not None:
+         nbType.size = nNeighbors
+      for i in range(nNeighbors):
+         if nbType is not None:
+            nbType[i] = nbTypeArray[i]
+         neighbors[i] = neighborsArray[i]
+      return neighbors
 
    @property
    def getZoneNeighbors(self):
@@ -629,9 +667,15 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneNeighbors = value
       lib.Instance_setMethod(self.impl, "getZoneNeighbors".encode('u8'), cb_DGGRS_getZoneNeighbors)
 
-   def fn_unset_DGGRS_getZoneParents(self, zone, parents):
-      if parents is None: parents = ffi.NULL
-      return lib.DGGRS_getZoneParents(self.impl, zone, parents)
+   def fn_unset_DGGRS_getZoneParents(self, zone):
+      parentsArray = ffi.new('eC_DGGRSZone[3]')
+      nParents = lib.DGGRS_getZoneParents(self.impl, zone, parentsArray)
+      parents = Array("<DGGRSZone>")
+      parents.size = nParents
+      # REVIEW: Simpler / faster copy?
+      for i in range(nParents):
+         parents[i] = parentsArray[i]
+      return parents
 
    @property
    def getZoneParents(self):
@@ -681,8 +725,10 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneTextID = value
       lib.Instance_setMethod(self.impl, "getZoneTextID".encode('u8'), cb_DGGRS_getZoneTextID)
 
-   def fn_unset_DGGRS_getZoneWGS84Centroid(self, zone, centroid):
-      return lib.DGGRS_getZoneWGS84Centroid(self.impl, zone, ffi.NULL if centroid is None else centroid.impl)
+   def fn_unset_DGGRS_getZoneWGS84Centroid(self, zone):
+      centroid = GeoPoint()
+      lib.DGGRS_getZoneWGS84Centroid(self.impl, zone, centroid.impl)
+      return centroid
 
    @property
    def getZoneWGS84Centroid(self):
