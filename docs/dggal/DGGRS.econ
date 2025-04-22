@@ -682,7 +682,7 @@
                position = 3
             }}
          ],
-         returnValue = "Tue if the first zone is a decendant of the second"
+         returnValue = "True if the first zone is a descendant of the second"
       }},
       {"isZoneImmediateChildOf", {
          description = "Check whether a zone is an immediate child of another zone",
