@@ -35,7 +35,7 @@ public:
    }
 }
 
-class DGGSJSONDimension
+public class DGGSJSONDimension
 {
 public:
    String name;
