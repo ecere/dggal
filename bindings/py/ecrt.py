@@ -121,7 +121,8 @@ def convertTypedArgs(args):
    cargs = ()
    ag_ffi = app.ffi
    for a in args:
-      if type(a) == str:              cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
+      if   type(a) == String:         cargs += (lib.class_String, a.impl)
+      elif type(a) == str:            cargs += (lib.class_String, ffi.new("char[]", a.encode('u8')))
       elif type(a) == int:            cargs += (lib.class_int,    ffi.new("int *", a))
       elif type(a) == float:          cargs += (lib.class_double, ffi.new("double *", a))
       elif isinstance(a, Instance):   cargs += (a.impl._class, a.impl)
@@ -177,11 +178,18 @@ def TA(a):
 
 def OTA(c, value):
    ffi = app.ffi
+
    cn = ffi.string(c.name).decode('u8')
    pc = app.appGlobals[-1].get(cn, None)
+   if not pc and c.templateClass:
+      cn = ffi.string(c.templateClass.name).decode('u8')
+      pc = app.appGlobals[-1].get(cn, None)
    if pc is not None:
       if c.type == lib.ClassType_normalClass:
-         return pc(impl=lib.oTAInstance(value))
+         if pc == String:
+            return String(impl=ffi.cast("char *", lib.pTAvoid(value)))
+         else:
+            return pc(impl=lib.oTAInstance(value))
       elif c.type == lib.ClassType_noHeadClass:
          return pc(impl=ffi.cast(cn + "*", lib.oTAInstance(value)))
       elif c.type == lib.ClassType_structClass:
@@ -4566,12 +4574,14 @@ def getHexValue(buffer):
    elif buffer is None: buffer = ffi.NULL
    return lib.eC_getHexValue(buffer)
 
-def getLastDirectory(string, output):
+def getLastDirectory(string):
    if isinstance(string, str): string = ffi.new("char[]", string.encode('u8'))
+   elif isinstance(string, String): string = string.impl
    elif string is None: string = ffi.NULL
-   if isinstance(output, str): output = ffi.new("char[]", output.encode('u8'))
-   elif output is None: output = ffi.NULL
-   return lib.eC_getLastDirectory(string, output)
+   outputArray = ffi.new("char[]", lib.MAX_LOCATION)
+   outputArray[0] = b'\0'
+   lib.eC_getLastDirectory(string, outputArray)
+   return String(outputArray)
 
 def getRuntimePlatform():
    return lib.eC_getRuntimePlatform()
@@ -7201,19 +7211,19 @@ class MapIterator(Iterator):
          if isinstance(container, tuple):
             __tuple = container
             container = None
-            if len(__tuple) > 0: container = __tuple[0]
+            if len(__tuple) > 0: map = __tuple[0]
             if len(__tuple) > 1: pointer   = __tuple[1]
-            if len(__tuple) > 2: data      = __tuple[2]
-            if len(__tuple) > 3: map       = __tuple[3]
          if pointer is not None:
             if not isinstance(pointer, IteratorPointer): pointer = IteratorPointer(pointer)
             pointer = pointer.impl
          else:
             pointer = ffi.NULL
-         self.impl = ffi.new("eC_MapIterator *", { 'container' : container, 'pointer' : pointer })
-         if data is not None:      self.data           = data
-         if map is not None:       self.map            = map
-         if value is not None:     self.value          = value
+         if map is not None:
+            if not isinstance(map, Map): map = map.impl
+            map = map.impl
+         else:
+            map = ffi.NULL
+         self.impl = ffi.new("eC_MapIterator *", { 'container' : map, 'pointer' : pointer })
 
    @property
    def map(self): return pyOrNewObject(Map, lib.MapIterator_get_map(self.impl))
@@ -7222,10 +7232,16 @@ class MapIterator(Iterator):
       lib.MapIterator_set_map(self.impl, value.impl)
 
    @property
-   def key(self): value = lib.MapIterator_get_key(self.impl); return pyOrNewObject(Instance, lib.oTAInstance(value))
+   def key(self):
+      k = lib.MapIterator_get_key(self.impl);
+      kc = self.map.impl._class.templateArgs[1].dataTypeClass
+      return OTA(kc, k)
 
    @property
-   def value(self): value = lib.MapIterator_get_value(self.impl); return pyOrNewObject(Instance, lib.oTAInstance(value))
+   def value(self):
+      v = lib.MapIterator_get_value(self.impl);
+      kc = self.map.impl._class.templateArgs[2].dataTypeClass
+      return OTA(kc, v)
    @value.setter
    def value(self, value):
       lib.MapIterator_set_value(self.impl, TA(value))
@@ -8810,4 +8826,25 @@ def log10(x):  return math.log10(x)
 def pow(x, y): return math.pow(x, y)
 def ceil(x):   return math.ceil(x)
 def floor(x):  return math.floor(x)
+
 # end of hardcoded content
+
+def strnicmp(a, b, n):
+   if isinstance(a, str): a = ffi.new("char[]", a.encode('u8'))
+   elif isinstance(a, String): a = a.impl
+   elif a is None: a = ffi.NULL
+
+   if isinstance(b, str): b = ffi.new("char[]", b.encode('u8'))
+   elif isinstance(b, String): b = b.impl
+   elif b is None: b = ffi.NULL
+   return lib.strnicmp(a, b, n)
+
+def strcmpi(a, b):
+   if isinstance(a, str): a = ffi.new("char[]", a.encode('u8'))
+   elif isinstance(a, String): a = a.impl
+   elif a is None: a = ffi.NULL
+
+   if isinstance(b, str): b = ffi.new("char[]", b.encode('u8'))
+   elif isinstance(b, String): b = b.impl
+   elif b is None: b = ffi.NULL
+   return lib.strncmpi(a, b)
