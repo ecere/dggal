@@ -5301,12 +5301,17 @@ def tokenize(string, maxTokens, tokens, esc):
    elif string is None: string = ffi.NULL
    return lib.eC_tokenize(string, maxTokens, tokens, esc)
 
-def tokenizeWith(string, maxTokens, tokens, tokenizers, escapeBackSlashes):
+def tokenizeWith(string, maxTokens, tokenizers, escapeBackSlashes):
    if isinstance(string, str): string = ffi.new("char[]", string.encode('u8'))
    elif string is None: string = ffi.NULL
    if isinstance(tokenizers, str): tokenizers = ffi.new("char[]", tokenizers.encode('u8'))
    elif tokenizers is None: tokenizers = ffi.NULL
-   return lib.eC_tokenizeWith(string, maxTokens, tokens, tokenizers, escapeBackSlashes)
+   tokensArray = ffi.new("eC_String[" + str(maxTokens) + "]")
+   nTokens = lib.eC_tokenizeWith(string, maxTokens, tokensArray, tokenizers, escapeBackSlashes)
+   tokens = []
+   for i in range(nTokens):
+      tokens.append(ffi.string(tokensArray[i]).decode('u8'))
+   return tokens
 
 def trimLSpaces(string, output):
    if isinstance(string, str): string = ffi.new("char[]", string.encode('u8'))
