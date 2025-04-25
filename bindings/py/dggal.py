@@ -872,11 +872,11 @@ class GeoExtent(Struct):
       if impl is not None:
          self.impl = ffi.new("eC_GeoExtent *", impl)
       else:
-         if isinstance(ll, tuple):
-            __tuple = ll
-            ll = None
-            if len(__tuple) > 0: ll = __tuple[0]
-            if len(__tuple) > 1: ur = __tuple[1]
+         #if isinstance(ll, tuple):
+         #   __tuple = ll
+         #   ll = None
+         #   if len(__tuple) > 0: ll = __tuple[0]
+         #   if len(__tuple) > 1: ur = __tuple[1]
          if ll is not None:
             if not isinstance(ll, GeoPoint): ll = GeoPoint(ll)
             ll = ll.impl[0]
