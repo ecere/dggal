@@ -1830,3 +1830,5 @@ def pydggal_setup(app):
    app.registerClass(JSONSchema, True)
    app.registerClass(RhombicIcosahedral3H, True)
    app.registerClass(RhombicIcosahedral9R, True)
+
+nullZone = lib.nullZone
