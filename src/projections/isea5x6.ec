@@ -23,9 +23,15 @@ class ISEAProjection : RI5x6Projection
    {
       Vector3D v3D;
       if(isea5x6PJ.geoToCartesian(p, v3D))
+      {
          v = { v3D.x, v3D.y };
-      v = { };
-      return false;
+         return true;
+      }
+      else
+      {
+         v = { };
+         return false;
+      }
    }
 
    bool inverse(const Pointd v, GeoPoint p)
