@@ -644,7 +644,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneFromCRSCentroid".encode('u8'), cb_DGGRS_getZoneFromCRSCentroid)
 
    def fn_unset_DGGRS_getZoneFromTextID(self, zoneID):
-      return lib.DGGRS_getZoneFromTextID(self.impl, ffi.NULL if zoneID is None else zoneID.encode('u8'))
+      return lib.DGGRS_getZoneFromTextID(self.impl, ffi.NULL if zoneID is None else zoneID.impl if isinstance(zoneID, String) else zoneID.encode('u8'))
 
    @property
    def getZoneFromTextID(self):
@@ -1048,7 +1048,9 @@ class DGGSJSON(Instance):
       self.init_args(list(args), kwArgs)
 
    @property
-   def dggrs(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSON).dggrs)
+   # FIXME: String members do not get generated properly. Or class String shuld be handling that?
+   #                return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSON).dggrs)
+   def dggrs(self): return String(IPTR(lib, ffi, self, DGGSJSON).dggrs)
    @dggrs.setter
    def dggrs(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1056,7 +1058,7 @@ class DGGSJSON(Instance):
       IPTR(lib, ffi, self, DGGSJSON).dggrs = value
 
    @property
-   def zoneId(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSON).zoneId)
+   def zoneId(self): return String(IPTR(lib, ffi, self, DGGSJSON).zoneId)
    @zoneId.setter
    def zoneId(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1069,7 +1071,7 @@ class DGGSJSON(Instance):
    def depths(self, value): IPTR(lib, ffi, self, DGGSJSON).depths = value.impl
 
    @property
-   def representedValue(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSON).representedValue)
+   def representedValue(self): return String(IPTR(lib, ffi, self, DGGSJSON).dggrs)
    @representedValue.setter
    def representedValue(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1403,7 +1405,7 @@ class JSONSchema(Instance):
       self.init_args(list(args), kwArgs)
 
    @property
-   def schema(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).schema)
+   def schema(self): return String(IPTR(lib, ffi, self, JSONSchema).schema)
    @schema.setter
    def schema(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1411,7 +1413,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).schema = value
 
    @property
-   def id(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).id)
+   def id(self): return String(IPTR(lib, ffi, self, JSONSchema).id)
    @id.setter
    def id(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1419,7 +1421,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).id = value
 
    @property
-   def title(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).title)
+   def title(self): return String(IPTR(lib, ffi, self, JSONSchema).title)
    @title.setter
    def title(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1427,7 +1429,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).title = value
 
    @property
-   def comment(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).comment)
+   def comment(self): return String(IPTR(lib, ffi, self, JSONSchema).comment)
    @comment.setter
    def comment(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1435,7 +1437,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).comment = value
 
    @property
-   def description(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).description)
+   def description(self): return String(IPTR(lib, ffi, self, JSONSchema).description)
    @description.setter
    def description(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1473,7 +1475,7 @@ class JSONSchema(Instance):
    def Enum(self, value): IPTR(lib, ffi, self, JSONSchema).Enum = value.impl
 
    @property
-   def format(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).format)
+   def format(self): return String(IPTR(lib, ffi, self, JSONSchema).format)
    @format.setter
    def format(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1481,7 +1483,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).format = value
 
    @property
-   def contentMediaType(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).contentMediaType)
+   def contentMediaType(self): return String(IPTR(lib, ffi, self, JSONSchema).contentMediaType)
    @contentMediaType.setter
    def contentMediaType(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1509,7 +1511,7 @@ class JSONSchema(Instance):
    # def exclusiveMinimum(self): lib.JSONSchema_isSet_exclusiveMinimum(self.impl)
 
    @property
-   def pattern(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).pattern)
+   def pattern(self): return String(IPTR(lib, ffi, self, JSONSchema).pattern)
    @pattern.setter
    def pattern(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1539,7 +1541,7 @@ class JSONSchema(Instance):
    def uniqueItems(self, value): IPTR(lib, ffi, self, JSONSchema).uniqueItems = value
 
    @property
-   def contains(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).contains)
+   def contains(self): return String(IPTR(lib, ffi, self, JSONSchema).contains)
    @contains.setter
    def contains(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1589,7 +1591,7 @@ class JSONSchema(Instance):
    def dependencies(self, value): IPTR(lib, ffi, self, JSONSchema).dependencies = value.impl
 
    @property
-   def propertyNames(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).propertyNames)
+   def propertyNames(self): return String(IPTR(lib, ffi, self, JSONSchema).propertyNames)
    @propertyNames.setter
    def propertyNames(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1597,7 +1599,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).propertyNames = value
 
    @property
-   def contentEncoding(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).contentEncoding)
+   def contentEncoding(self): return String(IPTR(lib, ffi, self, JSONSchema).contentEncoding)
    @contentEncoding.setter
    def contentEncoding(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1648,7 +1650,7 @@ class JSONSchema(Instance):
       IPTR(lib, ffi, self, JSONSchema).Not = value.impl
 
    @property
-   def xogcrole(self): return pyOrNewObject(String, IPTR(lib, ffi, self, JSONSchema).xogcrole)
+   def xogcrole(self): return String(IPTR(lib, ffi, self, JSONSchema).xogcrole)
    @xogcrole.setter
    def xogcrole(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
