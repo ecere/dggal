@@ -20,3 +20,4 @@ bindings_examples/c/Makefile linguist-vendored
 bindings_examples/c/Makefile.static linguist-vendored
 bindings_examples/cpp/Makefile.static linguist-vendored
 bindings_examples/cpp/Makefile linguist-vendored
+tutorial/** linguist-vendored
