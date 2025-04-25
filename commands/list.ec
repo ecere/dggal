@@ -54,23 +54,24 @@ int listZones(DGGRS dggrs, int level, Map<String, const String> options)
          dggrs.compactZones(zones);
 
       Print("[");
-      for(z : zones)
-      {
-         Print(i > 0 ? ", " : " ");
-         if(centroids)
+      if(zones)
+         for(z : zones)
          {
-            GeoPoint centroid;
-            dggrs.getZoneWGS84Centroid(z, centroid);
-            Print("[ ", centroid.lat, ", ", centroid.lon, " ]");
+            Print(i > 0 ? ", " : " ");
+            if(centroids)
+            {
+               GeoPoint centroid;
+               dggrs.getZoneWGS84Centroid(z, centroid);
+               Print("[ ", centroid.lat, ", ", centroid.lon, " ]");
+            }
+            else
+            {
+               char zoneID[256];
+               dggrs.getZoneTextID(z, zoneID);
+               Print("\"", zoneID, "\"");
+            }
+            i++;
          }
-         else
-         {
-            char zoneID[256];
-            dggrs.getZoneTextID(z, zoneID);
-            Print("\"", zoneID, "\"");
-         }
-         i++;
-      }
       PrintLn(" ]");
       delete zones;
    }
