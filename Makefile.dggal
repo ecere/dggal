@@ -181,6 +181,8 @@ ifdef LINUX_HOST
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 endif
 endif
+	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
 
 # SYMBOL RULES
 

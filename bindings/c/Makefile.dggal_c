@@ -108,7 +108,7 @@ ifdef LINUX_HOST
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 endif
 endif
-	$(call mkdir,-p $(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
 	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
