@@ -19,6 +19,8 @@ int convertToGeoJSON(const String inputFile, Map<String, const String> options)
          if(!strncasecmp(dggrsID, "GNOSIS", 6)) dggrsClass = class(GNOSISGlobalGrid);
          else if(!strncasecmp(dggrsID, "ISEA3H", 6))   dggrsClass = class(ISEA3H);
          else if(!strncasecmp(dggrsID, "ISEA9R", 6))   dggrsClass = class(ISEA9R);
+         else if(!strncasecmp(dggrsID, "IVEA3H", 6))   dggrsClass = class(IVEA3H);
+         else if(!strncasecmp(dggrsID, "IVEA9R", 6))   dggrsClass = class(IVEA9R);
 
          if(dggrsClass)
          {
