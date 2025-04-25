@@ -72,9 +72,9 @@ zoneInfo(dggrs, zone)
 printLn("")
 
 geom = zoneGeometry(dggrs, dggrs.getZoneFromTextID(zoneID))
-printLn("Refined geometry vertices for ", zoneID, ":")
+printLn("Refined geometry vertices for ", zoneID, " (lon, lat):")
 for v in geom:
-   printLn("   [", v.y * 180 / Pi, ", ", v.x * 180 / Pi, "]")
+   printLn("   [", v.lon, ", ", v.lat, "]")
 
 subZones = dggrs.getSubZones(zone, 3)
 print(subZones.getCount(), "sub-zones at depth 3:")

@@ -411,12 +411,13 @@ public class RhombicIcosahedral3H : DGGRS
       int numPoints = zone.getBaseRefinedVertices(crs84, vertices);
       if(numPoints)
       {
-         Array<Pointd> ap = null;
+         Array<Pointd> ap;
          bool geodesic = false; //true;
          int level = zone.level;
          bool refine = true; //zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we reifine here?
          int i;
 
+         ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
          if(crs84)
          {
             //GeoExtent e; // REVIEW: Currently only used to decide whether to wrap
@@ -434,7 +435,7 @@ public class RhombicIcosahedral3H : DGGRS
 
             if(geodesic)
             {
-               ap = { size = numPoints };
+               ap.size = numPoints;
                for(i = 0; i < numPoints; i++)
                {
                   GeoPoint point;
@@ -450,7 +451,7 @@ public class RhombicIcosahedral3H : DGGRS
                int nDivisions = edgeRefinement ? edgeRefinement :
                   level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
                Array<Pointd> r = refine5x6(numPoints, vertices, /*1024 * */ nDivisions, true); // * 1024 results in level 2 zones areas accurate to 0.01 km^2
-               ap = { minAllocSize = /*size = */r.count };
+               ap./*size*/minAllocSize = r.count;
                for(i = 0; i < r.count; i++)
                {
                   GeoPoint point;
@@ -470,14 +471,14 @@ public class RhombicIcosahedral3H : DGGRS
          else if(refine)
          {
             Array<Pointd> r = refine5x6(numPoints, vertices, 1, false);
-            ap = { size = r.count };
+            ap.size = r.count;
             for(i = 0; i < r.count; i++)
                ap[i] = { r[i].x, r[i].y };
             delete r;
          }
          else
          {
-            ap = { size = numPoints };
+            ap.size = numPoints;
             for(i = 0; i < numPoints; i++)
                ap[i] = { vertices[i].x, vertices[i].y };
          }
