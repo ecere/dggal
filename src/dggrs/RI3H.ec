@@ -570,20 +570,21 @@ public class RhombicIcosahedral3H : DGGRS
 
                if(hexSubLevel)
                {
-                  // TODO: Test whether each sub-hex is within
                   hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'E');
                   hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'F');
                }
-               if(row == 0 && col == power-1) // "North" pole
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'G' : 'B');
-               if(col == 4*power && row == 6*power-1) // "South" pole
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'H' : 'C');
 
                for(h = 0; h < nHexes; h++)
                   tsZones.Add(hexes[h]);
             }
          }
       }
+
+      // Always add the poles since they are touched at multiple points and will be checked for intersections below
+      // "North" pole
+      tsZones.Add(I3HZone::fromI9R(i9RLevel, 0, (uint)(power-1), hexSubLevel ? 'G' : 'B'));
+      // "South" pole
+      tsZones.Add(I3HZone::fromI9R(i9RLevel, (uint)(6*power-1), (uint)(4*power), hexSubLevel ? 'H' : 'C'));
 
       if(tsZones.count)
       {
