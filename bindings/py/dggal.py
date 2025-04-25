@@ -552,7 +552,7 @@ class DGGRS(Instance):
 
    def fn_unset_DGGRS_getZoneCRSCentroid(self, zone, crs):
       centroid = Pointd()
-      lib.DGGRS_getZoneCRSCentroid(self.impl, zone, crs, centroid.impl)
+      lib.DGGRS_getZoneCRSCentroid(self.impl, zone, crs.impl, centroid.impl)
       return centroid
 
    @property
@@ -565,7 +565,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneCRSCentroid".encode('u8'), cb_DGGRS_getZoneCRSCentroid)
 
    def fn_unset_DGGRS_getZoneCRSExtent(self, zone, crs, extent):
-      return lib.DGGRS_getZoneCRSExtent(self.impl, zone, crs, ffi.NULL if extent is None else extent.impl)
+      return lib.DGGRS_getZoneCRSExtent(self.impl, zone, crs.impl, ffi.NULL if extent is None else extent.impl)
 
    @property
    def getZoneCRSExtent(self):
@@ -577,7 +577,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneCRSExtent".encode('u8'), cb_DGGRS_getZoneCRSExtent)
 
    def fn_unset_DGGRS_getZoneCRSVertices(self, zone, crs, vertices):
-      return lib.DGGRS_getZoneCRSVertices(self.impl, zone, crs, vertices)
+      return lib.DGGRS_getZoneCRSVertices(self.impl, zone, crs.impl, vertices)
 
    @property
    def getZoneCRSVertices(self):
@@ -632,7 +632,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneChildren".encode('u8'), cb_DGGRS_getZoneChildren)
 
    def fn_unset_DGGRS_getZoneFromCRSCentroid(self, level, crs, centroid):
-      return lib.DGGRS_getZoneFromCRSCentroid(self.impl, level, crs, ffi.NULL if centroid is None else centroid.impl)
+      return lib.DGGRS_getZoneFromCRSCentroid(self.impl, level, crs.impl, ffi.NULL if centroid is None else centroid.impl)
 
    @property
    def getZoneFromCRSCentroid(self):
@@ -723,7 +723,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneParents".encode('u8'), cb_DGGRS_getZoneParents)
 
    def fn_unset_DGGRS_getZoneRefinedCRSVertices(self, zone, crs, edgeRefinement):
-      return pyOrNewObject(Array, lib.DGGRS_getZoneRefinedCRSVertices(self.impl, zone, crs, edgeRefinement))
+      return pyOrNewObject(Array, lib.DGGRS_getZoneRefinedCRSVertices(self.impl, zone, crs.impl, edgeRefinement))
 
    @property
    def getZoneRefinedCRSVertices(self):
@@ -941,8 +941,15 @@ class BCTA3H(RhombicIcosahedral3H):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class CRSRegistry:
+   epsg = lib.CRSRegistry_epsg
+   ogc  = lib.CRSRegistry_ogc
+
+epsg = CRSRegistry.epsg
+ogc  = CRSRegistry.ogc
+
 class CRS(pyBaseClass):
-   def __init__(self, registry = 0, crsID = 0, h = False, impl = None):
+   def __init__(self, registry = 0, crsID: CRSRegistry = 0, h = False, impl = None):
       if impl is not None:
          self.impl = impl
       elif isinstance(registry, CRS):
@@ -1024,10 +1031,6 @@ class CRSExtent(Struct):
    def br(self, value):
       if not isinstance(value, Pointd): value = Pointd(value)
       self.impl.br = value.impl[0]
-
-class CRSRegistry:
-   epsg = lib.CRSRegistry_epsg
-   ogc  = lib.CRSRegistry_ogc
 
 class DGGSJSON(Instance):
    class_members = [
