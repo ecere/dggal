@@ -570,7 +570,7 @@ class Container(Instance):
       if itPtr == ffi.NULL: raise IndexError()
       self.impl._class.templateArgs[0].dataTypeClass, self.setData(itPtr, TA(d))
 
-   def __len__(self): return getCount()
+   def __len__(self): return self.getCount()
 
    @property
    def copySrc(self): return lib.Container_get_copySrc(self.impl)
