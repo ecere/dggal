@@ -8,7 +8,7 @@ pydggal_setup(app)
 
 def parseBBox(options, bbox):
    result = True
-   bboxOption = options["bbox"] if options else None
+   bboxOption = options.get('bbox') if options else None
    if bboxOption:
       s = bboxOption
       tokens = tokenizeWith(s, 4, ",", False)
