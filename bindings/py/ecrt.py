@@ -3385,6 +3385,9 @@ class Degrees(Angle):
       elif isinstance(value, Angle): self.impl = value.impl
       else: self.value = value
 
+   def __str__(self):
+      return str(float(self.value))
+
    # conv eC_Angle <-> eC_Radians
    @property
    def value(self): return self.impl * 57.2957795130823
