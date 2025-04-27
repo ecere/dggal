@@ -5,6 +5,7 @@ private:
 import "isea"
 import "authalic"
 import "ri5x6"
+import "icoVertexGreatCircle"
 
 /*
    Icosahedron Snyder equal-area (ISEA) projection
@@ -17,8 +18,11 @@ import "ri5x6"
    made up of 2 faces of the icosahedron joined at their base
 */
 
-class ISEAProjection : RI5x6Projection
+class ISEAProjection : VertexGreatCircleIcosahedralProjection
 {
+   radialVertex = isea;
+
+#if 0
    bool forward(const GeoPoint p, Pointd v)
    {
       Vector3D v3D;
@@ -34,11 +38,33 @@ class ISEAProjection : RI5x6Projection
       }
    }
 
-   bool inverse(const Pointd v, GeoPoint p)
+   bool inverse(const Pointd vertex, GeoPoint geo)
    {
-      return isea5x6ToGeo(v, p);
+      Pointd v = vertex;
+
+      if(v.y < 0 && v.x <= 1)
+      {
+         Pointd vv
+         {
+            x = 5 + v.y;
+            y = 5 - (v.x - 0) - v.x + v.y;
+         };
+         v = vv;
+      }
+      else if(v.x < 0 && v.y <= 1)
+      {
+         Pointd vv
+         {
+            x = 5 + v.x;
+            y = 5 + v.y;
+         };
+         v = vv;
+      }
+      return isea5x6PJ.cartesianToGeo({ v.x, v.y }, geo);
    }
+#endif
 }
+
 
 // TODO: We'll probably want to replace the ISEA5x6Projection and ISEAPlanarProjection classes completely
 //       by the Slice & Dice approach in VertexGreatCircleIcosahedralProjection
@@ -219,30 +245,4 @@ public:
          }
       }
    }
-}
-
-/*static */bool isea5x6ToGeo(const Pointd vertex, GeoPoint geo)
-{
-   Pointd v = vertex;
-
-   if(v.y < 0 && v.x <= 1)
-   {
-      Pointd vv
-      {
-         x = 5 + v.y;
-         y = 5 - (v.x - 0) - v.x + v.y;
-      };
-      v = vv;
-   }
-   else if(v.x < 0 && v.y <= 1)
-   {
-      Pointd vv
-      {
-         x = 5 + v.x;
-         y = 5 + v.y;
-      };
-      v = vv;
-   }
-
-   return isea5x6PJ.cartesianToGeo({ v.x, v.y }, geo);
 }

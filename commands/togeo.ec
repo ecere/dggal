@@ -21,6 +21,8 @@ int convertToGeoJSON(const String inputFile, Map<String, const String> options)
          else if(!strncasecmp(dggrsID, "ISEA9R", 6))   dggrsClass = class(ISEA9R);
          else if(!strncasecmp(dggrsID, "IVEA3H", 6))   dggrsClass = class(IVEA3H);
          else if(!strncasecmp(dggrsID, "IVEA9R", 6))   dggrsClass = class(IVEA9R);
+         else if(!strncasecmp(dggrsID, "RTEA3H", 6))   dggrsClass = class(RTEA3H);
+         else if(!strncasecmp(dggrsID, "RTEA9R", 6))   dggrsClass = class(RTEA9R);
 
          if(dggrsClass)
          {

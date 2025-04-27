@@ -12,18 +12,87 @@ import "Vector3D"
 #define Vector3D DGGVector3D
 #endif
 
-static const Radians beta = Degrees { 36 };
-static const Radians gamma = Degrees { 60 };
+public enum VGCRadialVertex { isea, ivea, rtea };
 
 public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
 {
-   Radians AB; AB = atan(1/phi);
-   Radians AC; AC = acos(sqrt((phi + 1)/3));
-   Radians BC; BC = atan(2/(phi*phi));
-   double cosAB; cosAB = cos(AB);
+   VGCRadialVertex radialVertex; property::radialVertex = ivea;
 
+   property VGCRadialVertex radialVertex
+   {
+      set
+      {
+         radialVertex = value;
+         switch(value)
+         {
+            case isea:
+               alpha = Degrees { 90 };
+               beta = Degrees { 60 };
+               gamma = Degrees { 36 };
+               AB = acos(sqrt((phi + 1)/3));
+               AC = atan(1/phi);
+               BC = atan(2/(phi*phi));
+               break;
+            case ivea:
+               alpha = Degrees { 90 };
+               beta = Degrees { 36 };
+               gamma = Degrees { 60 };
+               AB = atan(1/phi);
+               AC = acos(sqrt((phi + 1)/3));
+               BC = atan(2/(phi*phi));
+               break;
+            case rtea:
+               alpha = Degrees { 36 };
+               beta = Degrees { 90 };
+               gamma = Degrees { 60 };
+               AB = atan(1/phi);
+               AC = atan(2/(phi*phi));
+               BC = acos(sqrt((phi + 1)/3));
+               break;
+         }
+         cosAB = cos(AB);
+      }
+   }
+
+   Radians beta, gamma, alpha;
+   Radians AB, AC, BC, cosAB;
+
+#if 0
+   void backup()
+   {
+      Radians minusRhoMinusDelta = upOverupPvp * (beta + gamma - Pi/2) - beta - gamma;
+      Radians x, delta, rho = atan2(-cos(minusRhoMinusDelta), -(cosAB + sin(minusRhoMinusDelta)));
+
+      if(rho < 0) rho = 0;
+      else if(rho > beta) rho = beta;
+      delta = -rho -minusRhoMinusDelta;
+      if(delta < 0) delta = 0;
+      else if(delta > Pi) delta = Pi;
+
+      if(rho < 1E-9)
+         cosXpY = cosAB;
+      else
+      {
+         cosXpY = 1/(tan(rho) * tan(delta));
+         if(cosXpY > 1) cosXpY = 1;
+         else if(cosXpY < -1) cosXpY = -1;
+      }
+      x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
+      {
+         Vector3D D, P;
+         Radians BD = acos(cosXpY);
+         Radians AD = 2 * atan(tan((rho + delta - Pi/2) /2) / tan(AB/2));
+         if(fabs(rho - beta) < 1E-9)
+            AD = AC, BD = BC;
+
+         slerpAngle(D, A, C, AC, AD);
+         slerpAngle(P, B, D, BD, x);
+         cartesianToGeo(P, out);
+      }
+   }
+#else
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   static void resolvePointIn6thTriangle(const Pointd pi,
+   static void inversePointIn6thTriangle(const Pointd pi,
       const Pointd pai, const Pointd pbi, const Pointd pci,
       const Vector3D A, const Vector3D B, const Vector3D C,
       GeoPoint out)
@@ -57,20 +126,23 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       double uvp = sqrt(ac.x * ac.x + ac.y * ac.y);
       double upOverupPvp = up / uvp;
 
-      // if(upOverupPvp < -1E-9 || upOverupPvp > 1 + 1E-9) ;//Print("bug");
+      // if(upOverupPvp < -1E-9 || upOverupPvp > 1 + 1E-9) Print("bug");
       Pointd bp { pi.x - pbi.x, pi.y - pbi.y };
       Pointd pdp { pdi.x - pi.x, pdi.y - pi.y };
       double xp = sqrt(bp.x * bp.x + bp.y * bp.y);
       double yp = sqrt(pdp.x * pdp.x + pdp.y * pdp.y);
       double xpOverxpPlusyp = xp / (xp + yp);
       double cosXpY;
-      // if(xpOverxpPlusyp < 0 || xpOverxpPlusyp > 1) ;//Print("bug");
+      // if(xpOverxpPlusyp < 0 || xpOverxpPlusyp > 1) Print("bug");
       // Area of spherical triangle: sum of angles - Pi
-      // Area of ABC: beta + gamma + Pi/2 - Pi = beta + gamma - Pi/2
-      // Area of ABD (T-U): rho + delta + Pi/2 - Pi = rho + delta - Pi/2
-      // Area of DBC (U): beta + gamma - Pi/2 - (rho + delta - Pi/2) = beta + gamma - rho - delta
-      Radians minusRhoMinusDelta = upOverupPvp * (beta + gamma - Pi/2) - beta - gamma;
-      Radians x, delta, rho = atan2(-cos(minusRhoMinusDelta), -(cosAB + sin(minusRhoMinusDelta)));
+
+      // checkAreaDBC / checkAreaABC = upOverupPvp
+      Radians areaABC = beta + gamma + alpha - Pi;
+      Radians rhoPlusDelta = beta + gamma - upOverupPvp * (beta + gamma + alpha - Pi);
+      Radians areaABD = rhoPlusDelta + alpha - Pi;  // T-U = rho + delta + alpha - Pi
+      // Radians areaDBC = areaABC - areaABD; // U = beta + gamma + alpha - Pi - (rho + delta + alpha - Pi) = beta + gamma - rho - delta
+      Radians x, delta, rho;
+      Radians AD, BD;
 
       if(!a1 && !b1)
       {
@@ -78,30 +150,98 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          return;
       }
 
+      if(fabs(areaABD - 0) < 1E-9)
+         rho = 0;
+      else if(fabs(areaABD - areaABC) < 1E-9)
+         rho = beta;
+      else
+      {
+         #if 0
+         // These formulas likely simplifies further to the one below
+         Radians S = (areaABD + Pi) / 2;
+         double tanABO2 = tan(AB/2);
+         double cosS = cos(S), sinS = sin(S);
+         double cosY = cos(rhoPlusDelta), sinY = sin(rhoPlusDelta);
+         double K = tanABO2 * tanABO2 * cos(S - alpha) / -cosS;
+         rho = atan2(
+            -(K * cosS - (cosS * cosY + sinS * sinY)),
+             (K * sinS - (cosS * sinY - sinS * cosY))
+         );
+         #else
+         // From John Hall DT DGGS (page 39: https://ucalgary.scholaris.ca/items/1bd11f8c-5a71-48dc-a9a8-b4a8b9021008)
+         // originally from: S. Lee and D. Mortari, 2017
+         //    Quasi‐equal area subdivision algorithm for uniform points on a sphere with application to any geographical data distribution. 103:142–151.
+         rho = atan2(
+            -(cos(rhoPlusDelta) + cos(alpha)),
+            -(sin(alpha) * cos(AB) - sin(rhoPlusDelta))
+         );
+         #endif
+      }
       if(rho < 0) rho = 0;
-      else if(rho > beta) rho = beta;
-      delta = -rho -minusRhoMinusDelta;
+      else if(rho > beta + 1E-5)
+         rho = beta;
+
+      delta = rhoPlusDelta - rho;
+
       if(delta < 0) delta = 0;
-      else if(delta > Pi) delta = Pi;
+      else if(delta > Pi + 1E-5)
+         delta = alpha;
 
       /*
-      double test = ( beta + gamma - rho - delta) / (beta + gamma - Pi/2);
-      Radians abcArea = beta + gamma - Pi/2;
-      Radians abdArea = rho + delta - Pi/2;
-      Radians dbcArea = beta + gamma - rho - delta;
+      Radians checkAreaABD = alpha + rho + delta - Pi;
+      Radians checkAreaDBC = (beta - rho) + (Pi - delta) + gamma - Pi;
+      Radians checkAreaABC = checkAreaABD + checkAreaDBC;
+      double checkRatio = checkAreaDBC / checkAreaABC; // Should be equal to upOverupPvp
+      */
+
+      if(fabs(rho - beta) < 1E-9)
+         AD = AC;
+      else if(fabs(rho - 0) < 1E-9)
+         AD = 0;
+      else
+      {
+         Radians S = (areaABD + Pi) / 2;
+         AD = 2 * atan2(
+            sqrt(-cos(S)         * cos(S - rho)),
+            sqrt( cos(S - alpha) * cos(S - delta))
+         );
+      }
+
+      if(fabs(rho - 0) < 1E-9)
+         BD = AB;
+      else if(fabs(rho - beta) < 1E-9)
+         BD = BC;
+      else
+      {
+         Radians S = (areaABD + Pi) / 2;
+         BD = 2 * atan2(
+            sqrt(-cos(S)       * cos(S - alpha)),
+            sqrt( cos(S - rho) * cos(S - delta))
+         );
+      }
+      cosXpY = cos(BD);
+
+      /*
+      double test = (beta + gamma - rho - delta) / (beta + gamma + alpha - Pi); // Should be same as upOverupPvp
+      Radians abcArea = beta + gamma + alpha - Pi;
+      Radians abdArea = rho + delta + alpha - Pi;
+      Radians dbcArea = beta + gamma - rho - delta; // dbcArea + abdArea = abcArea
+      */
+
+      // Law of sines
+      /*
+      double ra = sin(alpha) / sin(BD);
+      double rb = sin(rho) / sin(AD);
+      double rc = sin(delta) / sin(AB);
       */
 
       //  (x' / (x' + y')) ^ 2 = ( 1 - cos x ) / (1 - cos (x + y))
-      if(rho < 1E-9)
-         cosXpY = cosAB;
-      else
-      {
-         cosXpY = 1/(tan(rho) * tan(delta));
-         if(cosXpY > 1) cosXpY = 1;
-         else if(cosXpY < -1) cosXpY = -1;
-      }
-
       x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
+      if(!x)
+      {
+         cartesianToGeo(B, out);
+         return;
+      }
 
       /* Cosine laws
       cos(a) = cos(b) cos(c) + sin(b) sin(c) cos(A)
@@ -114,17 +254,10 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          c = BD = acos(cosXpY)
          A = delta
          B = rho
-         C = 90
+         C = alpha
       */
       {
          Vector3D D, P;
-         Radians BD = acos(cosXpY);
-         Radians AD = 2 * atan(tan((rho + delta - Pi/2) /2) / tan(AB/2));
-         //Radians AD = acos(cosXpY * cosAB + sin(BD) * sin(AB) * cos(rho));
-         // double y = acos(cosXpY) - x; // x + y = BD
-         if(fabs(rho - beta) < 1E-9)
-            AD = AC, BD = BC;
-         // tan((rho + delta - Pi/2) /2 = tan(AB/2) * tan(AB/2)
 
          slerpAngle(D, A, C, AC, AD);
          slerpAngle(P, B, D, BD, x);
@@ -137,6 +270,7 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          */
       }
   }
+#endif
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
@@ -149,49 +283,57 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          (p1.x + p2.x + p3.x) / 3,
          (p1.y + p2.y + p3.y) / 3
       };
+      Pointd pMid;
       Vector3D vCenter {
          (v1.x + v2.x + v3.x) / 3,
          (v1.y + v2.y + v3.y) / 3,
          (v1.z + v2.z + v3.z) / 3
       };
+      Vector3D vMid;
+      const Pointd * p5x6[3] = { &pMid, null, &pCenter };
+      const Vector3D * v3D[3] = { &vMid, null, &vCenter };
 
       vCenter.Normalize(vCenter);
       cartesianToBary(b, v, p1, p2, p3);
 
       if(b[0] <= b[1] && b[0] <= b[2])
       {
-         Pointd p23 { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
-         Vector3D v23 { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
-         v23.Normalize(v23);
+         pMid = { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
+         vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
 
          if(b[1] < b[2])
-            resolvePointIn6thTriangle(v, p23, p3, pCenter, v23, v3, vCenter, out);
+            p5x6[1] = p3, v3D[1] = v3;
          else
-            resolvePointIn6thTriangle(v, p23, p2, pCenter, v23, v2, vCenter, out);
+            p5x6[1] = p2, v3D[1] = v2;
       }
       else if(b[1] <= b[0] && b[1] <= b[2])
       {
-         Pointd p31 { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
-         Vector3D v31 { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
-         v31.Normalize(v31);
+         pMid = { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
+         vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
 
          if(b[0] < b[2])
-            resolvePointIn6thTriangle(v, p31, p3, pCenter, v31, v3, vCenter, out);
+            p5x6[1] = p3, v3D[1] = v3;
          else
-            resolvePointIn6thTriangle(v, p31, p1, pCenter, v31, v1, vCenter, out);
+            p5x6[1] = p1, v3D[1] = v1;
       }
       else // if(b[2] <= b[0] && b[2] <= b[1])
       {
-         Pointd p12 { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
-         Vector3D v12 { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
-         v12.Normalize(v12);
+         pMid = { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
+         vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
 
          if(b[0] < b[1])
-            resolvePointIn6thTriangle(v, p12, p2, pCenter, v12, v2, vCenter, out);
+            p5x6[1] = p2, v3D[1] = v2;
          else
-            resolvePointIn6thTriangle(v, p12, p1, pCenter, v12, v1, vCenter, out);
+            p5x6[1] = p1, v3D[1] = v1;
       }
+      vMid.Normalize(vMid);
 
+      switch(radialVertex)
+      {
+         case ivea: inversePointIn6thTriangle(v, p5x6[0], p5x6[1], p5x6[2], v3D[0], v3D[1], v3D[2], out); break;
+         case isea: inversePointIn6thTriangle(v, p5x6[0], p5x6[2], p5x6[1], v3D[0], v3D[2], v3D[1], out); break;
+         case rtea: inversePointIn6thTriangle(v, p5x6[1], p5x6[0], p5x6[2], v3D[1], v3D[0], v3D[2], out); break;
+      }
       revertOrientation(out, out);
       out.lat = latAuthalicToGeodetic(out.lat);
       out.lon = wrapLon(out.lon);
@@ -276,4 +418,9 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
             forwardPointIn6thTriangle(v, v12, v1, vCenter, p12, p1, pCenter, out);
       }
    }
+}
+
+class RTEAProjection : VertexGreatCircleIcosahedralProjection
+{
+   radialVertex = rtea;
 }
