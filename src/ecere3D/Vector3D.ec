@@ -1,6 +1,7 @@
 public import IMPORT_STATIC "ecere"
 
 import "Vector3D"
+import "Quaternion"
 
 public struct DGGVector3D
 {
@@ -39,4 +40,20 @@ public struct DGGVector3D
    }
 
    property double length { get { return (double)sqrt(x * x + y * y + z * z); } };
+
+   void MultQuaternion(const DGGVector3D s, const DGGQuaternion quat)
+   {
+      DGGVector3D v { quat.x, quat.y, quat.z };
+      double w = quat.w, a = w*w - (v.x*v.x+v.y*v.y+v.z*v.z) /*DotProduct(v)*/, dotVS = v.x*s.x+v.y*s.y+v.z*s.z /*v.DotProduct(s)*/;
+      DGGVector3D cross
+      {
+         s.y * v.z - s.z * v.y,
+         s.z * v.x - s.x * v.z,
+         s.x * v.y - s.y * v.x
+      };
+      //cross.CrossProduct(s, v);
+      x = (float)(2 * dotVS * v.x + a * s.x + 2 * w * cross.x);
+      y = (float)(2 * dotVS * v.y + a * s.y + 2 * w * cross.y);
+      z = (float)(2 * dotVS * v.z + a * s.z + 2 * w * cross.z);
+   }
 };

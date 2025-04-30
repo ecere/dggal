@@ -118,7 +118,8 @@
                "Folder" : "ecere3D",
                "Files" : [
                   "Plane.ec",
-                  "Vector3D.ec"
+                  "Vector3D.ec",
+                  "Quaternion.ec"
                ],
                "Options" : {
                   "ExcludeFromBuild" : true

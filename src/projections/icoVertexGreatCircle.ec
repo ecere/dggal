@@ -95,7 +95,7 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
    static void inversePointIn6thTriangle(const Pointd pi,
       const Pointd pai, const Pointd pbi, const Pointd pci,
       const Vector3D A, const Vector3D B, const Vector3D C,
-      GeoPoint out)
+      Vector3D P)
   {
       // Compute D' by finding interesection between line extending from B' through P' with A'C'
       // A = y1-y2, B = x2-x1, C = Ax1 + By1
@@ -144,15 +144,15 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       Radians x, delta, rho;
       Radians AD, BD;
 
-      if(!a1 && !b1)
+      if(fabs(div) < 1E-10) //12)
       {
-         cartesianToGeo(B, out);
+         P = B;
          return;
       }
 
-      if(fabs(areaABD - 0) < 1E-9)
+      if(fabs(areaABD - 0) < 1E-11)
          rho = 0;
-      else if(fabs(areaABD - areaABC) < 1E-9)
+      else if(fabs(areaABD - areaABC) < 1E-11)
          rho = beta;
       else
       {
@@ -178,14 +178,14 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          #endif
       }
       if(rho < 0) rho = 0;
-      else if(rho > beta + 1E-5)
+      else if(rho > beta)
          rho = beta;
 
       delta = rhoPlusDelta - rho;
 
       if(delta < 0) delta = 0;
-      else if(delta > Pi + 1E-5)
-         delta = alpha;
+      else if(delta > Pi)
+         delta = Pi;
 
       /*
       Radians checkAreaABD = alpha + rho + delta - Pi;
@@ -194,22 +194,29 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
       double checkRatio = checkAreaDBC / checkAreaABC; // Should be equal to upOverupPvp
       */
 
-      if(fabs(rho - beta) < 1E-9)
+      if(fabs(rho - beta) < 1E-5) //11)
          AD = AC;
-      else if(fabs(rho - 0) < 1E-9)
+      else if(fabs(rho - 0) < 1E-5) //11)
          AD = 0;
       else
       {
          Radians S = (areaABD + Pi) / 2;
+
+         /* 90 degree angle solution:
+         AD = 2 * atan2(
+            tan((rhoPlusDelta - Pi/2) /2),
+            tan(AB/2));
+         */
+
          AD = 2 * atan2(
             sqrt(-cos(S)         * cos(S - rho)),
             sqrt( cos(S - alpha) * cos(S - delta))
          );
       }
 
-      if(fabs(rho - 0) < 1E-9)
+      if(fabs(rho - 0) < 1E-5) //11)
          BD = AB;
-      else if(fabs(rho - beta) < 1E-9)
+      else if(fabs(rho - beta) < 1E-5) //11)
          BD = BC;
       else
       {
@@ -237,11 +244,6 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
 
       //  (x' / (x' + y')) ^ 2 = ( 1 - cos x ) / (1 - cos (x + y))
       x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
-      if(!x)
-      {
-         cartesianToGeo(B, out);
-         return;
-      }
 
       /* Cosine laws
       cos(a) = cos(b) cos(c) + sin(b) sin(c) cos(A)
@@ -257,11 +259,35 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          C = alpha
       */
       {
-         Vector3D D, P;
+         Vector3D D;
 
-         slerpAngle(D, A, C, AC, AD);
-         slerpAngle(P, B, D, BD, x);
-         cartesianToGeo(P, out);
+         if(fabs(AD - 0) < 1E-9)
+            D = A;
+         else if(fabs(AD - AC) < 1E-9)
+            D = C;
+         else
+            slerpAngle(D, A, C, AC, AD);
+
+         //D.Normalize(D);
+
+         if(fabs(x - 0) < 1E-9)
+            P = A;
+         else if(fabs(x - BD) < 1E-9)
+            P = D;
+         else
+         {
+            #if 0
+            Radians aBD = angleBetweenUnitVectors(B, D);
+
+            //Print("rho: ", rho, ", delta: ", delta, ", ");
+            if(fabs(aBD - BD) > 1E-5)
+            {
+               // REVIEW: Why is BD greater than the angle between B and D?
+               BD = aBD;
+            }
+            #endif
+            slerpAngle(P, B, D, BD, x);
+         }
 
          /*
          Pointd test;
@@ -272,12 +298,60 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
   }
 #endif
 
+   // This function corrects indeterminate and unstable coordinates near the poles when inverse-projecting to the globe
+   void fixPoles(const Pointd v, GeoPoint result)
+   {
+      #define epsilon5x6 1E-5
+      Degrees lon1 = -180 - orientation.lon;
+      bool northPole = false, southPole = false, add180 = false;
+      bool atLon1 = fabs(result.lon - lon1) < 0.1;
+      bool atLon1P180 = fabs(result.lon - (lon1 + 180)) < 0.1;
+      bool at0 = fabs(result.lon - 0) < 0.1;
+      bool at180 = fabs(result.lon - 180) < 0.1;
+      bool oddGrid = atLon1 || atLon1P180 || at0 || at180;
+      Degrees qOffset;
+
+      if(oddGrid && radialVertex == ivea && (atLon1P180 || at180 || atLon1))
+      {
+         // Somehow we end up with different longitude values with IVEA vs. ISEA and RTEA
+         if(atLon1P180)
+            oddGrid =
+               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y < 3.5) ||
+               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6 && v.x > 1.5) ||
+               // REVIEW: This different 1E-7 precision is needed here to differentiate odd and even grids for IVEA
+               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < 1E-7 && v.x > 0.5) ||
+               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y < 4.5);
+         else if(atLon1)
+            oddGrid =
+               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6 && v.x < 0.5) ||
+               // REVIEW:
+               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < 1E-7 /*epsilon5x6*/ && v.x < 1.5) ||
+               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y > 0.5) ||
+               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y > 4.5);
+         else
+            oddGrid = false;
+      }
+      qOffset = oddGrid ? 0 : 90;
+
+      if(fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6)
+         add180 = v.x > 1.5, southPole = true;
+      else if(fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6)
+         add180 = (v.y > 3.5) ^ oddGrid, southPole = true;
+      else if(fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6)
+         add180 = v.y < 4.5, northPole = true;
+      else if(fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6)
+         add180 = (v.x < 0.5) ^ oddGrid, northPole = true;
+      if(northPole || southPole)
+         result = { northPole ? 90 : -90, qOffset + lon1 + (add180 * 180) };
+   }
+
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
-      GeoPoint out)
+      GeoPoint result)
    {
+      Vector3D out;
       double b[3];
       Pointd pCenter {
          (p1.x + p2.x + p3.x) / 3,
@@ -334,9 +408,14 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          case isea: inversePointIn6thTriangle(v, p5x6[0], p5x6[2], p5x6[1], v3D[0], v3D[2], v3D[1], out); break;
          case rtea: inversePointIn6thTriangle(v, p5x6[1], p5x6[0], p5x6[2], v3D[1], v3D[0], v3D[2], out); break;
       }
-      revertOrientation(out, out);
-      out.lat = latAuthalicToGeodetic(out.lat);
-      out.lon = wrapLon(out.lon);
+
+      cartesianToGeo(out, result);
+
+      fixPoles(v, result);
+      result.lon += vertex2Azimuth;
+
+      result.lat = latAuthalicToGeodetic(result.lat);
+      result.lon = wrapLon(result.lon);
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))

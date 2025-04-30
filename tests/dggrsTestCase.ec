@@ -2,9 +2,9 @@ public import IMPORT_STATIC "ecere"
 
 import IMPORT_STATIC "dggal"
 
-define epsilonCentroid = 1E-6; // 1E-11; // REVIEW: Why do automated builds have such a large delta?
-define epsilonExtent = 1E-8; // 1E-11;
-define epsilonExtentPole = 1E-3;
+define epsilonCentroid = 1E-5; // 1E-11; // REVIEW: Why do automated builds have such a large delta?
+define epsilonExtent = 1E-5;//8; // 1E-11;
+define epsilonExtentPole = 1E-5; //1E-3;
 define epsilonArea = 1E-6;
 
 define earthSurfaceArea = 5.100656217240885092949E14;

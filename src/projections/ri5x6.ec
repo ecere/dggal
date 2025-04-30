@@ -12,6 +12,7 @@ import "authalic"
 import "Plane"
 
 #define Vector3D DGGVector3D
+#define Quaternion DGGQuaternion
 #define Plane DGGPlane
 #endif
 
@@ -92,8 +93,9 @@ public class RI5x6Projection
 
    RI5x6Projection()
    {
-      getVertices(icoVertices);
+      vertex2Azimuth = 0;
       orientation = { /*(E + F) / 2 /* 90 - 58.2825255885389 = */31.7174744114611, -11.20 };
+      getVertices(icoVertices);
       sinOrientationLat = sin(orientation.lat); cosOrientationLat = cos(orientation.lat);
       authalicSetup(wgs84Major, wgs84Minor, cp);
    }
@@ -138,27 +140,21 @@ public class RI5x6Projection
       out = { sin(c.lon) * cosLat, -sinLat, -cos(c.lon) * cosLat };
    }
 
+   // This assumes a perfect sphere
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void ::cartesianToGeo(const Vector3D c, GeoPoint out)
    {
       double p = sqrt(c.x*c.x + c.z*c.z);
-      bool firstIteration = true;
 
       out = { (Radians)atan2(-c.y, p), (Radians)atan2(c.x, -c.z) };
-      while(true)
-      {
-         Degrees lat2 = (Radians)atan2(-c.y, p);
-         if(!firstIteration && fabs(lat2 - out.lat) < 0.000000001)
-            break;
-         out.lat = lat2;
-         firstIteration = false;
-      }
    }
 
    private /*static inline */void ::slerpAngle(
       Vector3D out, const Vector3D p0, const Vector3D p1,
       Radians distance, Radians movement)
    {
-      double oOAng0Sin = 1/sin(distance), l0 = sin(distance - movement), l1 = sin(movement);
+      double sDistance = sin(distance);
+      double oOAng0Sin = 1/sDistance, l0 = sin(distance - movement), l1 = sin(movement);
       out =
       {
          (l0*p0.x + l1*p1.x) * oOAng0Sin,
@@ -253,7 +249,7 @@ public class RI5x6Projection
       return applyCoefficients(cp[0], phi);
    }
 
-   static void ::getVertices(Vector3D * vertices /* [12] */)
+   static void /*::*/getVertices(Vector3D * vertices /* [12] */)
    {
       // double a = edgeSize;
       Radians t = atan(0.5);
@@ -262,9 +258,12 @@ public class RI5x6Projection
       double r = 1; //a * sqrt(phi * phi + 1) / 2;
       Radians s = 2*Pi/5;
       int i;
+      Quaternion q;
 
       vertices[ 0] = { 0, -r, 0 }; // North pole
       vertices[11] = { 0,  r, 0 }; // South pole
+
+      q.YawPitch(-orientation.lon, -orientation.lat);
 
       for(i = 0; i < 5; i++)
       {
@@ -275,6 +274,13 @@ public class RI5x6Projection
          vertices[1 + i] = { cos(ta) * r * tc, ty * r, sin(ta) * r * tc };
          // South hemisphere vertices
          vertices[6 + i] = { cos(ba) * r * bc, by * r, sin(ba) * r * bc };
+      }
+
+      for(i = 0; i < 12; i++)
+      {
+         Vector3D t;
+         t.MultQuaternion(vertices[i], q);
+         vertices[i] = t;
       }
    }
 
@@ -357,12 +363,10 @@ public class RI5x6Projection
    public virtual bool forward(const GeoPoint p, Pointd v)
    {
       bool result = false;
-      GeoPoint point { latGeodeticToAuthalic(p.lat), p.lon };
+      GeoPoint point { latGeodeticToAuthalic(p.lat), p.lon - vertex2Azimuth };
       double sinLat, cosLat;
       Vector3D v3D;
       int face;
-
-      applyOrientation(point, point);
 
       sinLat = sin(point.lat), cosLat = cos(point.lat);
       v3D = { sin(point.lon) * cosLat, -sinLat, -cos(point.lon) * cosLat };
@@ -436,6 +440,7 @@ public class RI5x6Projection
             p);
          return true;
       }
+      p = { };
       return false;
    }
 
@@ -510,7 +515,6 @@ public class RI5x6Projection
       }
    }
 }
-
 
 /*static */Array<Pointd> refine5x6(int count, const Pointd * src, int nDivisions, bool wrap)
 {
@@ -756,26 +760,58 @@ public class RI5x6Projection
          int startPoint = points.count - 1, startK = 0;
          // dx *= r, dy *= r;
 
+         double stepBack = 1E-5;
+
+         double x = points[startPoint].x, y = points[startPoint].y;
+         if((fabs(x - 0.5) < 1E-9 && fabs(y - 0/*.5*/) < 1E-9) ||
+            (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
+            (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
+            (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9))
+            points.Add({ x - dx * stepBack, y - dy * stepBack });
+
          for(k = 1; k <= nDivisions - 1; k++)
          {
+            bool skipPole = false;
             // int count = points.count;
             double lastX = points[startPoint].x, lastY = points[startPoint].y;
             double x = lastX + dx * (k - startK) / nDivisions, y = lastY + dy * (k - startK) / nDivisions;
             int px = (int)floor(x+1E-11), py = (int)floor(y+1E-11);
 
-            // TODO: Use extra point at 0.001 dx & dy before and after north/south pole at half of polar edges
+            // Add extra point in the middle of polar edges
+            if((fabs(x - 0.5) < 1E-9 && fabs(y - 0 /*.5*/) < 1E-9) ||
+               (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
+               (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
+               (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9)
+               )
+            {
+               points.Add({ x - dx * stepBack, y - dy * stepBack });
+               skipPole = true;
+            }
 
             if(x < 0 || x > 5 || y < 0 || y > 6 || py < px || py - px > 1)
             {
                // Crossing interruption or wrapping: add points on each side
                if(interrupted || wrapped)
                {
-                  points.Add(pi1);
-                  points.Add(pi2);
+                  if((fabs(pi1.x - 0.5) < 1E-9 && fabs(pi1.y - 0) < 1E-9) ||
+                     (fabs(pi1.x - 5) < 1E-9 && fabs(pi1.y - 4.5) < 1E-9) ||
+                     (fabs(pi1.x - 2) < 1E-9 && fabs(pi1.y - 3.5) < 1E-9) ||
+                     (fabs(pi1.x - 1.5) < 1E-9 && fabs(pi1.y - 3) < 1E-9))
+                     points.Add({ pi1.x - dx * stepBack, pi1.y - dy * stepBack });
+                  else
+                     points.Add(pi1);
+                  if((fabs(pi2.x - 0.5) < 1E-9 && fabs(pi2.y - 0) < 1E-9) ||
+                     (fabs(pi2.x - 5) < 1E-9 && fabs(pi2.y - 4.5) < 1E-9) ||
+                     (fabs(pi2.x - 2) < 1E-9 && fabs(pi2.y - 3.5) < 1E-9) ||
+                     (fabs(pi2.x - 1.5) < 1E-9 && fabs(pi2.y - 3) < 1E-9))
+                     points.Add({ pi2.x + dx * stepBack, pi2.y + dy * stepBack });
+                  else
+                     points.Add(pi2);
+
                   startPoint = points.count-1;
                   startK = k;
                }
-               else
+               else if(!skipPole)
                   points.Add({ x, y }); // This currently happens when walking along x = 6 edge
                if(interrupted)
                {
@@ -785,8 +821,14 @@ public class RI5x6Projection
                   dx = dy, dy = t;
                }
             }
-            else
+            else if(!skipPole)
                points.Add({ x, y });
+
+            if((fabs(x - 0.5) < 1E-9 && fabs(y - 0/*.5*/) < 1E-9) ||
+               (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
+               (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
+               (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9))
+               points.Add({ x + dx * stepBack, y + dy * stepBack });
          }
       }
       else if(interrupted)

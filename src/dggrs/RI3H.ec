@@ -459,7 +459,15 @@ public class RhombicIcosahedral3H : DGGRS
                   if(pj.inverse(r[i], point))
                   {
                      if(wrap)
-                        point.lon = wrapLonAt(lonQuad, point.lon, 0);
+                     {
+                        if(centroid.lon < - Pi - 1E-9)
+                           centroid.lon += 2*Pi;
+
+                        if(centroid.lon > Pi + 1E-9)
+                           centroid.lon -= 2*Pi;
+
+                        point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
+                     }
                      ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
                         crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
                   }
@@ -1451,7 +1459,7 @@ private:
                vertices[i++] = { v.x - 1, v.y - 1 };
                vertices[i++] = { v.x - 2, v.y - 2 };
                vertices[i++] = { v.x - 3, v.y - 3 };
-               vertices[i++] = { v.x - 4, v.y - 4 };
+               vertices[i++] = { v.x + 1, v.y + 1 };
             }
             break;
          case 3:  // Odd level -- type D

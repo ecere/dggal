@@ -221,14 +221,14 @@ public class DGGSUnitTest : eTest
             fail("IsCentroidChild", testCase, "of wrong isCentroidChild property");
          else if(fabs(area - c.area) / c.area > epsilonArea)
          {
-            PrintLn("area: ", area, " but expected ", c.area, "(", c.area - area, " delta)");
+            PrintLn("area: ", area, " but expected ", c.area, " (", c.area - area, " delta)");
             fail("Zone area", testCase, "of mismatched zone area");
          }
          else if(fabs((double)centroid.lat - (double)c.centroid.lat) > epsilonCentroid ||
                  fabs((double)centroid.lon - (double)c.centroid.lon) > epsilonCentroid)
          {
             PrintLn("centroid: ", centroid, " but expected ", c.centroid,
-               "(", (double)c.centroid.lat - (double)centroid.lat, ", ", (double)c.centroid.lon - (double)centroid.lon, " delta)");
+               " (", (double)c.centroid.lat - (double)centroid.lat, ", ", (double)c.centroid.lon - (double)centroid.lon, " delta)");
             fail("Centroid", testCase, "of mismatched centroid");
          }
          else if(mismatchedExtent)

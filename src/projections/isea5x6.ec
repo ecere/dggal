@@ -22,7 +22,6 @@ class ISEAProjection : VertexGreatCircleIcosahedralProjection
 {
    radialVertex = isea;
 
-#if 0
    bool forward(const GeoPoint p, Pointd v)
    {
       Vector3D v3D;
@@ -38,6 +37,7 @@ class ISEAProjection : VertexGreatCircleIcosahedralProjection
       }
    }
 
+#if 0 // This overrides the Slice and Dice with John Snyder's approach
    bool inverse(const Pointd vertex, GeoPoint geo)
    {
       Pointd v = vertex;

@@ -75,6 +75,7 @@ _ECSOURCES = \
 	$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec \
 	src/ecere3D/Plane.ec \
 	src/ecere3D/Vector3D.ec \
+	src/ecere3D/Quaternion.ec \
 	src/GeoExtent.ec \
 	src/dggrs.ec
 
@@ -247,6 +248,9 @@ $(OBJ)Plane.sym: src/ecere3D/Plane.ec
 $(OBJ)Vector3D.sym: src/ecere3D/Vector3D.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Vector3D.ec) -o $(call quote_path,$@)
 
+$(OBJ)Quaternion.sym: src/ecere3D/Quaternion.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Quaternion.ec) -o $(call quote_path,$@)
+
 $(OBJ)GeoExtent.sym: src/GeoExtent.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@)
 
@@ -324,6 +328,9 @@ $(OBJ)Plane.c: src/ecere3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
 $(OBJ)Vector3D.c: src/ecere3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Vector3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)Quaternion.c: src/ecere3D/Quaternion.ec $(OBJ)Quaternion.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Quaternion.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)GeoExtent.c: src/GeoExtent.ec $(OBJ)GeoExtent.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -400,6 +407,9 @@ $(OBJ)Plane$(O): $(OBJ)Plane.c
 
 $(OBJ)Vector3D$(O): $(OBJ)Vector3D.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Vector3D.c) -o $(call quote_path,$@)
+
+$(OBJ)Quaternion$(O): $(OBJ)Quaternion.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Quaternion.c) -o $(call quote_path,$@)
 
 $(OBJ)GeoExtent$(O): $(OBJ)GeoExtent.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GeoExtent.c) -o $(call quote_path,$@)
