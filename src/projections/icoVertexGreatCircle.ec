@@ -1,5 +1,12 @@
-// This implements the Slice & Dice Vertex-oriented great circle projection for an icosahedron
+// This implements the Slice & Dice Vertex great circle equal area projection for an icosahedron.
 // https://doi.org/10.1559/152304006779500687
+// The 120 spherical triangles used correspond to those of a spherical disdyakis triacontahedron
+// (the fundamental domain of the icosahedral spherical symmetry Ih).
+// There are three options for the vertex from which great circles are mapped to straight lines:
+// - IVEA is the vertex-oriented projection as described in the paper
+// - ISEA (swapping vertices B and C) is equivalent to Snyder's 1992 projection on the icosahedron
+// - RTEA (swapping vertices A and B) corresponds to extending Snyder's 1992 projection to the rhombic triacontahedron
+//   (the vertex in the center of the 30 rhombic faces is used as radial vertex B)
 public import IMPORT_STATIC "ecere"
 private:
 
@@ -14,7 +21,7 @@ import "Vector3D"
 
 public enum VGCRadialVertex { isea, ivea, rtea };
 
-public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
+public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 {
    VGCRadialVertex radialVertex; property::radialVertex = ivea;
 
@@ -461,45 +468,55 @@ public class VertexGreatCircleIcosahedralProjection : RI5x6Projection
          (v1.y + v2.y + v3.y) / 3,
          (v1.z + v2.z + v3.z) / 3
       };
+      Pointd pMid;
+      Vector3D vMid;
+      const Pointd * p5x6[3] = { &pMid, null, &pCenter };
+      const Vector3D * v3D[3] = { &vMid, null, &vCenter };
+
       vCenter.Normalize(vCenter);
 
       if(vertexWithinSphericalTri(v, vCenter, v2, v3))
       {
-         Pointd p23 { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
-         Vector3D v23 { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
-         v23.Normalize(v23);
+         pMid = { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
+         vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
 
-         if(vertexWithinSphericalTri(v, vCenter, v23, v3))
-            forwardPointIn6thTriangle(v, v23, v3, vCenter, p23, p3, pCenter, out);
+         if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
+            v3D[1] = v3, p5x6[1] = p3;
          else
-            forwardPointIn6thTriangle(v, v23, v2, vCenter, p23, p2, pCenter, out);
+            v3D[1] = v2, p5x6[1] = p2;
       }
       else if(vertexWithinSphericalTri(v, vCenter, v3, v1))
       {
-         Pointd p31 { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
-         Vector3D v31 { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
-         v31.Normalize(v31);
+         pMid = { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
+         vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
 
-         if(vertexWithinSphericalTri(v, vCenter, v31, v3))
-            forwardPointIn6thTriangle(v, v31, v3, vCenter, p31, p3, pCenter, out);
+         if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
+            v3D[1] = v3, p5x6[1] = p3;
          else
-            forwardPointIn6thTriangle(v, v31, v1, vCenter, p31, p1, pCenter, out);
+            v3D[1] = v1, p5x6[1] = p1;
       }
       else // if(vertexWithinSphericalTri(v, vCenter, v1, v2))
       {
-         Pointd p12 { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
-         Vector3D v12 { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
-         v12.Normalize(v12);
+         pMid = { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
+         vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
 
-         if(vertexWithinSphericalTri(v, vCenter, v12, v2))
-            forwardPointIn6thTriangle(v, v12, v2, vCenter, p12, p2, pCenter, out);
+         if(vertexWithinSphericalTri(v, vCenter, vMid, v2))
+            v3D[1] = v2, p5x6[1] = p2;
          else
-            forwardPointIn6thTriangle(v, v12, v1, vCenter, p12, p1, pCenter, out);
+            v3D[1] = v1, p5x6[1] = p1;
+      }
+      vMid.Normalize(vMid);
+
+      switch(radialVertex)
+      {
+         case ivea: forwardPointIn6thTriangle(v, v3D[0], v3D[1], v3D[2], p5x6[0], p5x6[1], p5x6[2], out); break;
+         case isea: forwardPointIn6thTriangle(v, v3D[0], v3D[2], v3D[1], p5x6[0], p5x6[2], p5x6[1], out); break;
+         case rtea: forwardPointIn6thTriangle(v, v3D[1], v3D[0], v3D[2], p5x6[1], p5x6[0], p5x6[2], out); break;
       }
    }
 }
 
-class RTEAProjection : VertexGreatCircleIcosahedralProjection
+public class RTEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
 {
    radialVertex = rtea;
 }

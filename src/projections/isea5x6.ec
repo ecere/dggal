@@ -18,7 +18,7 @@ import "icoVertexGreatCircle"
    made up of 2 faces of the icosahedron joined at their base
 */
 
-class ISEAProjection : VertexGreatCircleIcosahedralProjection
+public class ISEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
 {
    radialVertex = isea;
 
@@ -67,7 +67,7 @@ class ISEAProjection : VertexGreatCircleIcosahedralProjection
 
 
 // TODO: We'll probably want to replace the ISEA5x6Projection and ISEAPlanarProjection classes completely
-//       by the Slice & Dice approach in VertexGreatCircleIcosahedralProjection
+//       by the Slice & Dice approach in SliceAndDiceGreatCircleIcosahedralProjection
 
 ISEA5x6Projection isea5x6PJ { };
 

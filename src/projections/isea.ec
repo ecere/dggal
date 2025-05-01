@@ -5,7 +5,7 @@ private:
 import "ri5x6"
 
 // TODO: We'll probably want to replace the ISEA5x6Projection and ISEAPlanarProjection classes completely
-//       by the Slice & Dice approach in VertexGreatCircleIcosahedralProjection
+//       by the Slice & Dice approach in SliceAndDiceGreatCircleIcosahedralProjection
 
 
 /*
