@@ -441,14 +441,33 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          // Cosine formula does not work here -- rho = acos(cos(PA) - cos(AB) * cos(x)) / sin(AB) * sin(x)
          // Half-angle formula:
          double s = (x + PA + AB) / 2;
-         Radians rho = fabs(PA) < 1E-9 ? 0 : 2*asin(sqrt(sin(s - x) * sin(s - AB) / (sin(x) * sin(AB))));
-         Radians delta = acos(sin(rho) * cosAB);
-         double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma - Pi/2); // This should be between 0 and 1
-         double cosXpY = rho < 1E-9 ? cosAB : 1/(tan(rho) * tan(delta));
-         // double y = acos(cosXpY) - x;
-         double xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY)); // This should be between 0 and 1
-         Pointd pdi { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
+         double square = sin(s - x) * sin(s - AB) / (sin(x) * sin(AB));
+         Radians rho = fabs(PA) < 1E-9 ? 0 : 2*asin(sqrt(Max(0.0, Min(1.0, square))));
+         // Radians delta = acos(sin(rho) * cosAB);   // for alpha = 90 degrees
+         Radians delta = acos(sin(alpha) * sin(rho) * cosAB - cos(alpha) * cos(rho));
+         double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma + alpha - Pi); // This should be between 0 and 1
+         double cosXpY; // = rho < 1E-9 ? cosAB : 1/(tan(rho) * tan(delta)); // for alpha = 90 degrees
+         Radians BD;
+         double xpOverxpPlusyp;
+         Pointd pdi;
 
+         if(fabs(rho - 0) < 1E-5) //11)
+            BD = AB;
+         else if(fabs(rho - beta) < 1E-5) //11)
+            BD = BC;
+         else
+         {
+            Radians areaABD = rho + delta + alpha - Pi;
+            Radians S = (areaABD + Pi) / 2;
+            BD = 2 * atan2(
+               sqrt(-cos(S)       * cos(S - alpha)),
+               sqrt( cos(S - rho) * cos(S - delta))
+            );
+         }
+         cosXpY = cos(BD);
+
+         xpOverxpPlusyp = sqrt((1 - cos(x)) / (1 - cosXpY)); // This should be between 0 and 1
+         pdi = { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
          out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
       }
   }
