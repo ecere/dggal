@@ -79,79 +79,14 @@ public:
       Vector3D v;
       bool r = ISEAPlanarProjection::geoToCartesian(position, v);
       if(r)
-         r = fromISEAPlanar(v, result);
-      return r;
-   }
-
-   bool ::fromISEAPlanar(const Vector3D v, Vector3D result)
-   {
-      result =
-      {
-         x = (v.x + v.y * invSqrt3) * invTriWidth,
-         y = (v.x - v.y * invSqrt3) * invTriWidth,
-         z = v.z // Faced stored in z for now
-      };
-      return true;
-   }
-
-   bool ::toISEAPlanar(const Vector3D position, Vector3D result)
-   {
-      bool r = false;
-      static const double epsilon = 1E-11; //1E-9; // 1E-11 fixes /dggs/ISEA3H/zones/Q0-0-D
-      double x = position.x, y = position.y;
-           if(x < 0 || (y > x && x < 5 - epsilon)) x += epsilon;
-      else if(x > 5 || (y < x && x > 0 + epsilon)) x -= epsilon;
-           if(y < 0 || (x > y && y < 6 - epsilon)) y += epsilon;
-      else if(y > 6 || (x < y && y > 0 + epsilon)) y -= epsilon;
-
-      if(x >= 0 && x <= 5 && y >= 0 && y <= 6)
-         r = true;
-      {
-         int ix = Max(0, Min(4, (int)floor(x)));
-         int iy = Max(0, Min(5, (int)floor(y)));
-         if(!(iy == ix || iy == ix + 1))
-            r = false;
-         {
-            int rhombus = ix + iy;
-            bool top = x - ix > y - iy;
-            int face = -1;
-
-            switch(rhombus)
-            {
-               case 0: face = top ? 0 : 5; break;
-               case 2: face = top ? 1 : 6; break;
-               case 4: face = top ? 2 : 7; break;
-               case 6: face = top ? 3 : 8; break;
-               case 8: face = top ? 4 : 9; break;
-
-               case 1: face = top ? 10 : 15; break;
-               case 3: face = top ? 11 : 16; break;
-               case 5: face = top ? 12 : 17; break;
-               case 7: face = top ? 13 : 18; break;
-               case 9: face = top ? 14 : 19; break;
-            }
-
-            // if(face != -1)
-            {
-               result =
-               {
-                  triWidthOver2 *         (x + y),
-                  triWidthOver2 * sqrt3 * (x - y),
-                  face + 1
-               };
-               //r = true;
-               if(face == -1)
-                  r = false;
-            }
-         }
-      }
+         r = RI5x6Projection::fromIcosahedronNet(v, result);
       return r;
    }
 
    bool cartesianToGeo(const Vector3D position, GeoPoint result)
    {
       Vector3D v;
-      bool r = toISEAPlanar(position, v);
+      bool r = RI5x6Projection::toIcosahedronNet(position, v);
       if(r)
          r = ISEAPlanarProjection::cartesianToGeo(v, result);
       return r;

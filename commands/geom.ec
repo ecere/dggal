@@ -1,6 +1,23 @@
 public import IMPORT_STATIC "ecere"
 import IMPORT_STATIC "dggal"
 
+CRS resolveCRSString(const String crsOption)
+{
+   CRS crs = 0;
+   if(crsOption)
+   {
+      // NOTE: Currently re-using the same CRS identifiers regardless of actual projection for 5x6 and icosahedron net space
+           if(!strcmpi(crsOption, "5x6" )) crs = { ogc, 153456 };
+      else if(!strcmpi(crsOption, "ico") ||
+             !strcmpi(crsOption, "isea") ||
+             !strcmpi(crsOption, "ivea") ||
+             !strcmpi(crsOption, "rtea")) crs = { ogc, 1534 };
+      else if(!strcmpi(crsOption, "OGC:CRS84")) crs = { ogc, 84 };
+      else if(!strcmpi(crsOption, "EPSG:4326")) crs = { epsg, 4326 };
+   }
+   return crs;
+}
+
 void generateZoneFeature(DGGRS dggrs, DGGRSZone zone, CRS crs, int64 id, bool centroids, bool fc, Map<String, FieldValue> properties)
 {
    char zoneID[256];
@@ -110,13 +127,7 @@ int generateGeometry(DGGRS dggrs, DGGRSZone zone, Map<String, const String> opti
    {
       bool centroids = options && options["centroids"] != null;
       const String crsOption = options ? options["crs"] : null;
-      CRS crs = 0;
-
-      if(crsOption)
-      {
-              if(!strcmpi(crsOption, "5x6" )) crs = { ogc, 153456 };
-         else if(!strcmpi(crsOption, "isea")) crs = { ogc, 1534 };
-      }
+      CRS crs = resolveCRSString(crsOption);
 
       generateZoneFeature(dggrs, zone, crs, 0, centroids, false, null);
       PrintLn("");

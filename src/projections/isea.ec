@@ -90,10 +90,6 @@ static const GeoPoint facesCenterDodecahedronVertices[numIcosahedronFaces] =
 static define precision = Degrees { 1e-11 };
 static define precisionPerDefinition = Degrees { 1e-5 };
 
-/*static */define invSqrt3 = 0.57735026918962576450914878050195745564760175127;
-/*static */define invTriWidth = 0.000000130302362294123870772483295681045794621239; // 1 / triWidth
-/*static*/ define sqrt3 = 1.73205080756887729352744634150587236694280525381038; //sqrt(3);
-
 /*static */define Rprime2X = 2 * Rprime;
 /*static */define AzMax = Degrees { 120 };
 /*static */define sdc2vos = F + 2 * Degrees { 58.282525588538994675786 }/*(Degrees)atan(phi)*/ - Degrees { 90 }; // g -- sphericalDistanceFromCenterToVerticesOnSphere
@@ -102,7 +98,6 @@ static define precisionPerDefinition = Degrees { 1e-5 };
 /*static */define RprimeTang = Rprime * tang; // twice the center-to-base distance
 /*static */define centerToBase = RprimeTang / 2;
 /*static */define triWidth = RprimeTang * sqrt3;
-/*static */define triWidthOver2 = 3837228.974186817588708390593582550750582603355645708023;
 static define Rprime2Tan2g = RprimeTang * RprimeTang;
 static define cosG = cos(Degrees { 36 });
 static define sinGcosSDC2VoS = sin(Degrees { 36 }) * cos(sdc2vos); // sin G cos g

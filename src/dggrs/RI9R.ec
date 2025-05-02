@@ -282,7 +282,13 @@ public class RhombicIcosahedral9R : DGGRS
       {
          switch(crs)
          {
-            case 0: return I9RZone::fromCRSExtent(centroid, centroid, level);
+            case 0: case CRS { ogc, 153456 }: return I9RZone::fromCRSExtent(centroid, centroid, level);
+            case CRS { ogc, 1534 }:
+            {
+               Pointd c5x6;
+               RI5x6Projection::fromIcosahedronNet(centroid, c5x6);
+               return I9RZone::fromCRSExtent(c5x6, c5x6, level);
+            }
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
                return (I9RZone)getZoneFromWGS84Centroid(level,
@@ -298,7 +304,13 @@ public class RhombicIcosahedral9R : DGGRS
    {
       switch(crs)
       {
-         case 0: centroid = zone.centroid; break;
+         case CRS { ogc, 1534 }:
+         {
+            Pointd c5x6 = zone.centroid;
+            RI5x6Projection::toIcosahedronNet(c5x6, centroid);
+            break;
+         }
+         case 0: case CRS { ogc, 153456 }: centroid = zone.centroid; break;
          case CRS { epsg, 4326 }:
          case CRS { ogc, 84 }:
          {
@@ -327,10 +339,26 @@ public class RhombicIcosahedral9R : DGGRS
 
       switch(crs)
       {
-         case 0:
+         case CRS { ogc, 153456 }: case 0:
             count = 4;
             memcpy(vertices, v, sizeof(Pointd) * 4);
             break;
+         case CRS { ogc, 1534 }:
+         {
+            uint count = 4, i;
+            CRSExtent extent = zone.ri5x6Extent;
+            Pointd v[4] =
+            {
+               extent.tl,
+               { extent.tl.x, extent.br.y },
+               extent.br,
+               { extent.br.x, extent.tl.y }
+            };
+
+            for(i = 0; i < count; i++)
+               RI5x6Projection::toIcosahedronNet(v[i], vertices[i]);
+            return count;
+         }
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
             count = 4;
@@ -348,20 +376,29 @@ public class RhombicIcosahedral9R : DGGRS
    // No refinement needed in ISEA CRSs
    Array<Pointd> getZoneRefinedCRSVertices(I9RZone zone, CRS crs, int edgeRefinement)
    {
-      if(!crs)
+      switch(crs)
       {
-         Array<Pointd> vertices { size = 4 };
-         getZoneCRSVertices(zone, crs, vertices.array);
-         return vertices;
-      }
-      else if(crs == { ogc, 84 } || crs == { epsg, 4326 })
-      {
-         GeoPoint v[I9R_MAX_VERTICES];
-         int count = getI9RRefinedWGS84Vertices(this, zone, v), i;
-         Array<Pointd> vertices { size = count };
-         for(i = 0; i < count; i++)
-            vertices[i] = crs == { ogc, 84 } ? { v[i].lat, v[i].lon } : { v[i].lon, v[i].lat };
-         return vertices;
+         case CRS { ogc, 1534 }:
+         {
+            Array<Pointd> vertices { size = 4 };
+            getZoneCRSVertices(zone, crs, vertices.array);
+            return vertices;
+         }
+         case 0: case CRS { ogc, 153456 }:
+         {
+            Array<Pointd> vertices { size = 4 };
+            getZoneCRSVertices(zone, crs, vertices.array);
+            return vertices;
+         }
+         case CRS { ogc, 84 }: case CRS { epsg, 4326 }:
+         {
+            GeoPoint v[I9R_MAX_VERTICES];
+            int count = getI9RRefinedWGS84Vertices(this, zone, v), i;
+            Array<Pointd> vertices { size = count };
+            for(i = 0; i < count; i++)
+               vertices[i] = crs == { ogc, 84 } ? { v[i].lat, v[i].lon } : { v[i].lon, v[i].lat };
+            return vertices;
+         }
       }
       return null;
    }
@@ -370,7 +407,10 @@ public class RhombicIcosahedral9R : DGGRS
    {
       switch(crs)
       {
-         case 0: extent = zone.ri5x6Extent; break;
+         case 0: case CRS { ogc, 153456 }: extent = zone.ri5x6Extent; break;
+         case CRS { ogc, 1534 }:
+            getIcoNetExtentFromVertices(/*this, */zone, extent);
+            break;
          case CRS { epsg, 4326 }:
          case CRS { ogc, 84 }:
          {
@@ -397,21 +437,23 @@ public class RhombicIcosahedral9R : DGGRS
       Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
       if(centroids)
       {
-         uint count = centroids.count;
+         uint count = centroids.count, i;
          switch(crs)
          {
-            case 0: break;
+            case CRS { ogc, 1534 }:
+               for(i = 0; i < count; i++)
+                  RI5x6Projection::toIcosahedronNet(centroids[i], centroids[i]);
+               break;
+            case CRS { ogc, 153456 }: case 0: break;
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
-            {
-               int i;
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
                   pj.inverse(centroids[i], geo);
                   centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
                }
-            }
+               break;
             default: delete centroids;
          }
       }
@@ -805,3 +847,43 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
 
    return count;
 }
+
+static void getIcoNetExtentFromVertices(I9RZone zone, CRSExtent value)
+{
+   CRSExtent k = zone.ri5x6Extent;
+   Pointd p[4];
+
+   RI5x6Projection::toIcosahedronNet({k.tl.x, k.tl.y }, p[0]);
+   RI5x6Projection::toIcosahedronNet({k.tl.x, k.br.y }, p[1]);
+   RI5x6Projection::toIcosahedronNet({k.br.x, k.br.y }, p[2]);
+   RI5x6Projection::toIcosahedronNet({k.br.x, k.tl.y }, p[3]);
+   value.crs = { ogc, 1534 };
+   value.tl.x = Min(Min(p[0].x, p[1].x), Min(p[2].x, p[3].x));
+   value.tl.y = Max(Max(p[0].y, p[1].y), Max(p[2].y, p[3].y));
+   value.br.x = Max(Max(p[0].x, p[1].x), Max(p[2].x, p[3].x));
+   value.br.y = Min(Min(p[0].y, p[1].y), Min(p[2].y, p[3].y));
+}
+
+/*
+static void getIcoNetExtentFromVertices(I9RZone zone, CRS crs, CRSExtent value)
+{
+   int i;
+   Array<Pointd> vertices = dggrs.getZoneRefinedCRSVertices(zone, crs, 0); //, false);
+   int nVertices = vertices ? vertices.count : 0;
+
+   value.crs = crs;
+   value.tl.x = MAXDOUBLE, value.tl.y = -MAXDOUBLE;
+   value.br.x = -MAXDOUBLE, value.br.y = MAXDOUBLE;
+   for(i = 0; i < nVertices; i++)
+   {
+      const Pointd * v = &vertices[i];
+      double x = v->x, y = v->y;
+
+      if(y < value.br.y) value.br.y = y;
+      if(y > value.tl.y) value.tl.y = y;
+      if(x > value.br.x) value.br.x = x;
+      if(x < value.tl.x) value.tl.x = x;
+   }
+   delete vertices;
+}
+*/

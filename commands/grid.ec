@@ -12,13 +12,8 @@ int generateGrid(DGGRS dggrs, int level, Map<String, const String> options)
    GeoExtent bbox = wholeWorld;
    int64 id = 1;
    const String crsOption = options ? options["crs"] : null;
-   CRS crs = 0;
+   CRS crs = resolveCRSString(crsOption);
 
-   if(crsOption)
-   {
-           if(!strcmpi(crsOption, "5x6" )) crs = { ogc, 153456 };
-      else if(!strcmpi(crsOption, "isea")) crs = { ogc, 1534 };
-   }
    if(!parseBBox(options, bbox))
       exitCode = 1;
    if(compact && centroids)

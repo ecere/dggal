@@ -95,7 +95,14 @@ public class RhombicIcosahedral3H : DGGRS
       {
          switch(crs)
          {
-            case 0: return I3HZone::fromCentroid(level, centroid);
+            case 0: case CRS { ogc, 153456 }:
+               return I3HZone::fromCentroid(level, centroid);
+            case CRS { ogc, 1534 }:
+            {
+               Pointd c5x6;
+               RI5x6Projection::fromIcosahedronNet({ centroid.x, centroid.y }, c5x6);
+               return I3HZone::fromCentroid(level, { c5x6.x, c5x6.y });
+            }
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
                return (I3HZone)getZoneFromWGS84Centroid(level,
@@ -232,7 +239,15 @@ public class RhombicIcosahedral3H : DGGRS
    {
       switch(crs)
       {
-         case 0: centroid = zone.centroid; break;
+         case 0: case CRS { ogc, 153456 }:
+            centroid = zone.centroid;
+            break;
+         case CRS { ogc, 1534 }:
+         {
+            Pointd c5x6 = zone.centroid;
+            RI5x6Projection::toIcosahedronNet({c5x6.x, c5x6.y }, centroid);
+            break;
+         }
          case CRS { epsg, 4326 }:
          case CRS { ogc, 84 }:
          {
@@ -255,7 +270,12 @@ public class RhombicIcosahedral3H : DGGRS
    {
       switch(crs)
       {
-         case 0: extent = zone.ri5x6Extent; break;
+         case 0: case CRS { ogc, 153456 }:
+            extent = zone.ri5x6Extent;
+            break;
+         case CRS { ogc, 1534 }:
+            getIcoNetExtentFromVertices(zone, extent);
+            break;
          case CRS { epsg, 4326 }:
          case CRS { ogc, 84 }:
          {
@@ -314,16 +334,20 @@ public class RhombicIcosahedral3H : DGGRS
 
    int getZoneCRSVertices(I3HZone zone, CRS crs, Pointd * vertices)
    {
-      uint count = 0, i;
+      uint count = zone.getVertices(vertices), i;
 
       switch(crs)
       {
-         case 0:
-            count = zone.getVertices(vertices);
+         case 0: case CRS { ogc, 153456 }:
             break;
+         case CRS { ogc, 1534 }:
+         {
+            for(i = 0; i < count; i++)
+               RI5x6Projection::toIcosahedronNet({ vertices[i].x, vertices[i].y }, vertices[i]);
+            break;
+         }
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
-            count = zone.getVertices(vertices);
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
@@ -331,6 +355,8 @@ public class RhombicIcosahedral3H : DGGRS
                vertices[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
             }
             break;
+         default:
+            count = 0;
       }
       return count;
    }
@@ -346,7 +372,10 @@ public class RhombicIcosahedral3H : DGGRS
 
    Array<Pointd> getZoneRefinedCRSVertices(I3HZone zone, CRS crs, int edgeRefinement)
    {
-      return getRefinedVertices(zone, crs, edgeRefinement, false);
+      if(crs == CRS { ogc, 1534 })
+         return getIcoNetRefinedVertices(zone, edgeRefinement);
+      else
+         return getRefinedVertices(zone, crs, edgeRefinement, false);
    }
 
    Array<GeoPoint> getZoneRefinedWGS84Vertices(I3HZone zone, int edgeRefinement)
@@ -414,7 +443,7 @@ public class RhombicIcosahedral3H : DGGRS
          Array<Pointd> ap;
          bool geodesic = false; //true;
          int level = zone.level;
-         bool refine = true; //zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we reifine here?
+         bool refine = crs84 || zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
          int i;
 
          ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
@@ -501,21 +530,23 @@ public class RhombicIcosahedral3H : DGGRS
       Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
       if(centroids)
       {
-         uint count = centroids.count;
+         uint count = centroids.count, i;
          switch(crs)
          {
-            case 0: break;
+            case 0: case CRS { ogc, 153456 }: break;
+            case CRS { ogc, 1534 }:
+               for(i = 0; i < count; i++)
+                  RI5x6Projection::toIcosahedronNet({ centroids[i].x, centroids[i].y }, centroids[i]);
+               break;
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
-            {
-               int i;
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
                   pj.inverse(centroids[i], geo);
                   centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
                }
-            }
+               break;
             default: delete centroids;
          }
       }
@@ -2110,4 +2141,55 @@ static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
       return false;
    return true;
    // return *zone != I3HZone::fromCentroid(zone->level, centroid);
+}
+
+static void getIcoNetExtentFromVertices(I3HZone zone, CRSExtent value)
+{
+   int i;
+   Array<Pointd> vertices = getIcoNetRefinedVertices(zone, 0);
+   int nVertices = vertices ? vertices.count : 0;
+
+   value.tl.x = MAXDOUBLE, value.tl.y = -MAXDOUBLE;
+   value.br.x = -MAXDOUBLE, value.br.y = MAXDOUBLE;
+   for(i = 0; i < nVertices; i++)
+   {
+      const Pointd * v = &vertices[i];
+      double x = v->x, y = v->y;
+
+      if(y < value.br.y) value.br.y = y;
+      if(y > value.tl.y) value.tl.y = y;
+      if(x > value.br.x) value.br.x = x;
+      if(x < value.tl.x) value.tl.x = x;
+   }
+   delete vertices;
+}
+
+static Array<Pointd> getIcoNetRefinedVertices(I3HZone zone, int edgeRefinement)   // 0 for 1-20 based on level
+{
+   Array<Pointd> rVertices = null;
+   Pointd vertices[9];
+   int numPoints = zone.getBaseRefinedVertices(false, vertices);
+   if(numPoints)
+   {
+      Array<Pointd> ap = null;
+      bool refine = zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: Why and when do we want to refine?
+      int i;
+
+      if(refine)
+      {
+         Array<Pointd> r = refine5x6(numPoints, vertices, 1, false);
+         ap = { size = r.count };
+         for(i = 0; i < r.count; i++)
+            RI5x6Projection::toIcosahedronNet({ r[i].x, r[i].y }, ap[i]);
+         delete r;
+      }
+      else
+      {
+         ap = { size = numPoints };
+         for(i = 0; i < numPoints; i++)
+            RI5x6Projection::toIcosahedronNet({ vertices[i].x, vertices[i].y }, ap[i]);
+      }
+      rVertices = ap;
+   }
+   return rVertices;
 }

@@ -52,13 +52,7 @@ int convertToGeoJSON(const String inputFile, Map<String, const String> options)
                      Array<DGGRSZone> subZones = dggrs.getSubZones(zone, depth);
                      bool centroids = options && options["centroids"] != null;
                      const String crsOption = options ? options["crs"] : null;
-                     CRS crs = 0;
-
-                     if(crsOption)
-                     {
-                             if(!strcmpi(crsOption, "5x6" )) crs = { ogc, 153456 };
-                        else if(!strcmpi(crsOption, "isea")) crs = { ogc, 1534 };
-                     }
+                     CRS crs = resolveCRSString(crsOption);
 
                      if(subZones)
                      {

@@ -83,6 +83,11 @@ static Pointd vertices5x6[20][3] =
 /*static */define phi = (1 + sqrt(5)) / 2;
 static define precisionPerDefinition = Degrees { 1e-5 };
 
+/*static */define invSqrt3 = 0.57735026918962576450914878050195745564760175127;
+/*static */define invTriWidth = 0.000000130302362294123870772483295681045794621239; // 1 / triWidth
+/*static */define triWidthOver2 = 3837228.974186817588708390593582550750582603355645708023;
+/*static*/ define sqrt3 = 1.73205080756887729352744634150587236694280525381038; //sqrt(3);
+
 public class RI5x6Projection
 {
    Vector3D icoVertices[12];
@@ -514,6 +519,26 @@ public class RI5x6Projection
             }
          }
       }
+   }
+
+   bool ::fromIcosahedronNet(const Pointd v, Pointd result)
+   {
+      result =
+      {
+         x = (v.x + v.y * invSqrt3) * invTriWidth,
+         y = (v.x - v.y * invSqrt3) * invTriWidth
+      };
+      return true;
+   }
+
+   bool ::toIcosahedronNet(const Pointd v, Pointd result)
+   {
+      result =
+      {
+         triWidthOver2 *         (v.x + v.y),
+         triWidthOver2 * sqrt3 * (v.x - v.y)
+      };
+      return true;
    }
 }
 
