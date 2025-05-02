@@ -731,10 +731,11 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
    for(i = 0; i < 4; i++)
    {
       const Pointd * p = &dp[i], * np = &dp[i == 3 ? 0 : i+1];
-      bool northPole = (p->y == 0 && np->y == 0) || (p->x == 5 && np->x == 5 && (p->y < 5 || np->y < 5));
+      bool northPole = (fabs(p->y - 0) < 1E-11 && fabs(np->y - 0) < 1E-11) ||
+         (fabs(p->x - 5) < 1E-11 && fabs(np->x - 5) < 1E-11 && (p->y + 1E-11 < 5 || np->y + 1E-11 < 5));
       bool southPole = !northPole &&
-                        ((p->y == 3 && np->y == 3 && (p->x < 2 || np->x < 2)) ||
-                         (p->x == 2 && np->x == 2 && (p->y > 3 || np->y > 3)));
+                        ((fabs(p->y - 3) < 1E-11 && fabs(np->y - 3) < 1E-11 && (p->x + 1E-11 < 2 || np->x + 1E-11 < 2)) ||
+                         (fabs(p->x - 2) < 1E-11 && fabs(np->x - 2) < 1E-11 && (p->y - 1E-11 > 3 || np->y - 1E-11 > 3)));
       int numAnchors = NUM_ISEA9R_ANCHORS;
       int j;
       double dx = np->x - p->x, dy = np->y - p->y;
@@ -762,7 +763,8 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
                outVertices[count++] = out;
             }
          }
-         if(pj.inverse(in, out))
+         // Don't include point on pole itself
+         if(!crossingPole && pj.inverse(in, out))
          {
             Radians dLon = out.lon - centroid.lon;
             if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
