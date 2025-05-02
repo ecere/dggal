@@ -115,6 +115,21 @@ public class RI5x6Projection
       }
    }
 
+   void ::geoToCartesian(const GeoPoint c, Vector3D out)
+   {
+      double sinLat = sin(c.lat), cosLat = cos(c.lat);
+      out = { sin(c.lon) * cosLat, -sinLat, -cos(c.lon) * cosLat };
+   }
+
+   // This assumes a perfect sphere
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
+   void ::cartesianToGeo(const Vector3D c, GeoPoint out)
+   {
+      double p = sqrt(c.x*c.x + c.z*c.z);
+
+      out = { (Radians)atan2(-c.y, p), (Radians)atan2(c.x, -c.z) };
+   }
+
 #if 0
    static void ::slerp(Vector3D out, const Vector3D p0, const Vector3D p1, double t)
    {
@@ -134,21 +149,7 @@ public class RI5x6Projection
    }
 #endif
 
-   void ::geoToCartesian(const GeoPoint c, Vector3D out)
-   {
-      double sinLat = sin(c.lat), cosLat = cos(c.lat);
-      out = { sin(c.lon) * cosLat, -sinLat, -cos(c.lon) * cosLat };
-   }
-
-   // This assumes a perfect sphere
-   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   void ::cartesianToGeo(const Vector3D c, GeoPoint out)
-   {
-      double p = sqrt(c.x*c.x + c.z*c.z);
-
-      out = { (Radians)atan2(-c.y, p), (Radians)atan2(c.x, -c.z) };
-   }
-
+   // This spherical linear interpolation function assumes the distance between p0 and p1 is already known
    private /*static inline */void ::slerpAngle(
       Vector3D out, const Vector3D p0, const Vector3D p1,
       Radians distance, Radians movement)

@@ -305,7 +305,7 @@ public class DGGSUnitTest : eTest
                   }
                   else
                   {
-                     AVLTree<DGGRSZone> avl { };
+                     HashTable<DGGRSZone> table { initSize = subZones.count };
                      int i;
                      for(i = 0; i < subZones.count; i++)
                      {
@@ -319,7 +319,7 @@ public class DGGSUnitTest : eTest
                            success = false;
                            break;
                         }
-                        else if(!avl.Add(subZones[i]))
+                        else if(!table.Add(subZones[i]))
                         {
                            PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone ", zoneID, ": duplicate sub-zone at index ", i);
                            fail("DGGS sub-zones", thisTest, "of duplicate sub-zone");
@@ -360,7 +360,7 @@ public class DGGSUnitTest : eTest
 
                            for(j = 0; j < n; j++)
                            {
-                              if(!avl.Find(nb[j]))
+                              if(!table.Find(nb[j]))
                               {
                                  if(dggrs.zoneHasSubZone(zone, nb[j]))
                                  {
@@ -377,7 +377,7 @@ public class DGGSUnitTest : eTest
                            }
                         }
                      }
-                     delete avl;
+                     delete table;
                   }
 
                   delete subZones;
