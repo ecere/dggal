@@ -26,10 +26,9 @@ class BarycentricSphericalTriAreaProjection : RI5x6Projection
    void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
-      GeoPoint out)
+      Vector3D out)
    {
       double b[3];
-      Vector3D c;
       double u1, u2, u3;
 
       cartesianToBary(b, v, p1, p2, p3);
@@ -59,15 +58,10 @@ class BarycentricSphericalTriAreaProjection : RI5x6Projection
          u2 = vj * od;
          u3 = vk * od;
       }
-      c = {
+      out = {
          u1 * v1.x + u2 * v2.x + u3 * v3.x,
          u1 * v1.y + u2 * v2.y + u3 * v3.y,
          u1 * v1.z + u2 * v2.z + u3 * v3.z
       };
-
-      cartesianToGeo(c, out);
-
-      revertOrientation(out, out);
-      out.lat = latAuthalicToGeodetic(out.lat);
    }
 }

@@ -96,6 +96,7 @@ public class RI5x6Projection
    double sinOrientationLat, cosOrientationLat;
    Degrees vertex2Azimuth;
    Plane icoFacePlanes[20][3];
+   bool poleFixIVEA;
 
    RI5x6Projection()
    {
@@ -219,43 +220,6 @@ public class RI5x6Projection
       b[0] = (d23.x * d3p.y - d23.y * d3p.x) * oDet;
       b[1] = (d31.x * d3p.y - d31.y * d3p.x) * oDet;
       b[2] = 1 - b[0] - b[1];
-   }
-
-   /*static inline*/ void applyOrientation(const GeoPoint c, GeoPoint r)
-   {
-      if(orientation.lat || orientation.lon)
-      {
-         Degrees lon = c.lon + orientation.lon;
-         double sinLat = sin(c.lat), cosLat = cos(c.lat);
-         double sinLon = sin(lon),  cosLon = cos(lon);
-         double cosLoncosLat = cosLon * cosLat;
-         r = {
-            lat = asin(sinLat * cosOrientationLat + cosLoncosLat * sinOrientationLat),
-            lon = atan2(sinLon * cosLat, cosLoncosLat * cosOrientationLat - sinLat * sinOrientationLat)
-         };
-      }
-      else
-         r = c;
-      r.lon += vertex2Azimuth;
-   }
-
-   /*static inline */void revertOrientation(const GeoPoint c, GeoPoint r)
-   {
-      Degrees lon = c.lon - vertex2Azimuth;
-
-      if(c.lat < Degrees { -90 } + precisionPerDefinition || c.lat > Degrees { 90 } - precisionPerDefinition) lon = 0;
-      if(orientation.lat || orientation.lon)
-      {
-         double sinLat = sin(c.lat), cosLat = cos(c.lat);
-         double sinLon = sin(lon), cosLon  = cos(lon);
-         double cosLonCosLat = cosLon * cosLat;
-         r = {
-            asin(sinLat * cosOrientationLat - cosLonCosLat * sinOrientationLat),
-            atan2(sinLon * cosLat, cosLonCosLat * cosOrientationLat + sinLat * sinOrientationLat) - orientation.lon
-         };
-      }
-      else
-         r = { c.lat, lon };
    }
 
    /*static inline */Radians latAuthalicToGeodetic(Radians phi)
@@ -396,7 +360,7 @@ public class RI5x6Projection
    virtual void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
-      GeoPoint out);
+      Vector3D out);
    virtual void forwardIcoFace(const Vector3D v,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       const Pointd p1, const Pointd p2, const Pointd p3,
@@ -469,20 +433,76 @@ public class RI5x6Projection
       return result;
    }
 
-   public virtual bool inverse(const Pointd v, GeoPoint p)
+   void fixPoles(const Pointd v, GeoPoint result)
+   {
+      #define epsilon5x6 1E-5
+      Degrees lon1 = -180 - orientation.lon;
+      bool northPole = false, southPole = false, add180 = false;
+      bool atLon1 = fabs(result.lon - lon1) < 0.1;
+      bool atLon1P180 = fabs(result.lon - (lon1 + 180)) < 0.1;
+      bool at0 = fabs(result.lon - 0) < 0.1;
+      bool at180 = fabs(result.lon - 180) < 0.1;
+      bool oddGrid = atLon1 || atLon1P180 || at0 || at180;
+      Degrees qOffset;
+
+      if(oddGrid && poleFixIVEA && (atLon1P180 || at180 || atLon1))
+      {
+         // Somehow we end up with different longitude values with IVEA vs. ISEA and RTEA
+         if(atLon1P180)
+            oddGrid =
+               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y < 3.5) ||
+               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6 && v.x > 1.5) ||
+               // REVIEW: This different 1E-7 precision is needed here to differentiate odd and even grids for IVEA
+               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < 1E-7 && v.x > 0.5) ||
+               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y < 4.5);
+         else if(atLon1)
+            oddGrid =
+               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6 && v.x < 0.5) ||
+               // REVIEW:
+               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < 1E-7 /*epsilon5x6*/ && v.x < 1.5) ||
+               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y > 0.5) ||
+               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y > 4.5);
+         else
+            oddGrid = false;
+      }
+      qOffset = oddGrid ? 0 : 90;
+
+      if(fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6)
+         add180 = v.x > 1.5, southPole = true;
+      else if(fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6)
+         add180 = (v.y > 3.5) ^ oddGrid, southPole = true;
+      else if(fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6)
+         add180 = v.y < 4.5, northPole = true;
+      else if(fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6)
+         add180 = (v.x < 0.5) ^ oddGrid, northPole = true;
+      if(northPole || southPole)
+         result = { northPole ? 90 : -90, qOffset + lon1 + (add180 * 180) };
+   }
+
+   public virtual bool inverse(const Pointd v, GeoPoint result)
    {
       int face = getFace(v);
       if(face != -1)
       {
          uint16 * indices = icoIndices[face];
+         Vector3D p;
 
          inverseIcoFace(v,
             vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
             icoVertices[indices[0]], icoVertices[indices[1]], icoVertices[indices[2]],
             p);
+
+         cartesianToGeo(p, result);
+
+         fixPoles(v, result);
+         result.lon += vertex2Azimuth;
+
+         result.lat = latAuthalicToGeodetic(result.lat);
+         result.lon = wrapLon(result.lon);
+
          return true;
       }
-      p = { };
+      result = { };
       return false;
    }
 

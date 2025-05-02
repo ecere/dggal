@@ -155,6 +155,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                sinAlpha = sin(alpha), cosAlpha = cos(alpha);
                break;
          }
+         poleFixIVEA = value == ivea;
          cosAB = cos(AB), sinAB = sin(AB);
          tanHAB = tan(AB/2);
       }
@@ -317,59 +318,12 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
    // This function corrects indeterminate and unstable coordinates near the poles when inverse-projecting to the globe
    // so as to generate correct plate carrée grids
-   void fixPoles(const Pointd v, GeoPoint result)
-   {
-      #define epsilon5x6 1E-5
-      Degrees lon1 = -180 - orientation.lon;
-      bool northPole = false, southPole = false, add180 = false;
-      bool atLon1 = fabs(result.lon - lon1) < 0.1;
-      bool atLon1P180 = fabs(result.lon - (lon1 + 180)) < 0.1;
-      bool at0 = fabs(result.lon - 0) < 0.1;
-      bool at180 = fabs(result.lon - 180) < 0.1;
-      bool oddGrid = atLon1 || atLon1P180 || at0 || at180;
-      Degrees qOffset;
-
-      if(oddGrid && radialVertex == ivea && (atLon1P180 || at180 || atLon1))
-      {
-         // Somehow we end up with different longitude values with IVEA vs. ISEA and RTEA
-         if(atLon1P180)
-            oddGrid =
-               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y < 3.5) ||
-               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6 && v.x > 1.5) ||
-               // REVIEW: This different 1E-7 precision is needed here to differentiate odd and even grids for IVEA
-               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < 1E-7 && v.x > 0.5) ||
-               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y < 4.5);
-         else if(atLon1)
-            oddGrid =
-               (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6 && v.x < 0.5) ||
-               // REVIEW:
-               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < 1E-7 /*epsilon5x6*/ && v.x < 1.5) ||
-               (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y > 0.5) ||
-               (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y > 4.5);
-         else
-            oddGrid = false;
-      }
-      qOffset = oddGrid ? 0 : 90;
-
-      if(fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6)
-         add180 = v.x > 1.5, southPole = true;
-      else if(fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6)
-         add180 = (v.y > 3.5) ^ oddGrid, southPole = true;
-      else if(fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6)
-         add180 = v.y < 4.5, northPole = true;
-      else if(fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6)
-         add180 = (v.x < 0.5) ^ oddGrid, northPole = true;
-      if(northPole || southPole)
-         result = { northPole ? 90 : -90, qOffset + lon1 + (add180 * 180) };
-   }
-
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
-      GeoPoint result)
+      Vector3D out)
    {
-      Vector3D out;
       double b[3];
       Pointd pCenter {
          (p1.x + p2.x + p3.x) / 3,
@@ -421,14 +375,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       vMid.Normalize(vMid);
 
       inversePointInSDTTriangle(v, p5x6[va], p5x6[vb], p5x6[vc], v3D[va], v3D[vb], v3D[vc], out);
-
-      cartesianToGeo(out, result);
-
-      fixPoles(v, result);
-      result.lon += vertex2Azimuth;
-
-      result.lat = latAuthalicToGeodetic(result.lat);
-      result.lon = wrapLon(result.lon);
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
