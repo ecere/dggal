@@ -98,8 +98,6 @@
             {
                "Folder" : "projections",
                "Files" : [
-                  "isea5x6.ec",
-                  "isea.ec",
                   "ri5x6.ec",
                   "authalic.ec",
                   "barycentric5x6.ec",

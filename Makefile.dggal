@@ -64,8 +64,6 @@ _ECSOURCES = \
 	src/dggrs/BCTA3H.ec \
 	src/dggrs/RTEA3H.ec \
 	src/dggrs/RTEA9R.ec \
-	src/projections/isea5x6.ec \
-	src/projections/isea.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -234,12 +232,6 @@ $(OBJ)RTEA3H.sym: src/dggrs/RTEA3H.ec
 $(OBJ)RTEA9R.sym: src/dggrs/RTEA9R.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA9R.ec) -o $(call quote_path,$@)
 
-$(OBJ)isea5x6.sym: src/projections/isea5x6.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/isea5x6.ec) -o $(call quote_path,$@)
-
-$(OBJ)isea.sym: src/projections/isea.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/isea.ec) -o $(call quote_path,$@)
-
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -305,12 +297,6 @@ $(OBJ)RTEA3H.c: src/dggrs/RTEA3H.ec $(OBJ)RTEA3H.sym | $(SYMBOLS)
 $(OBJ)RTEA9R.c: src/dggrs/RTEA9R.ec $(OBJ)RTEA9R.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)isea5x6.c: src/projections/isea5x6.ec $(OBJ)isea5x6.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/isea5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
-$(OBJ)isea.c: src/projections/isea.ec $(OBJ)isea.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/isea.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -375,12 +361,6 @@ $(OBJ)RTEA3H$(O): $(OBJ)RTEA3H.c
 
 $(OBJ)RTEA9R$(O): $(OBJ)RTEA9R.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA9R.c) -o $(call quote_path,$@)
-
-$(OBJ)isea5x6$(O): $(OBJ)isea5x6.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)isea5x6.c) -o $(call quote_path,$@)
-
-$(OBJ)isea$(O): $(OBJ)isea.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)isea.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)

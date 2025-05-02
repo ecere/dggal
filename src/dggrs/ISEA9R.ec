@@ -1,9 +1,8 @@
 public import IMPORT_STATIC "ecere"
 private:
 
-import "isea5x6"
-import "dggrs"
 import "RI9R"
+import "icoVertexGreatCircle"
 
 #include <stdio.h>
 

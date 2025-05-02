@@ -2,7 +2,7 @@ public import IMPORT_STATIC "ecere"
 private:
 
 import "RI3H"
-import "isea5x6"
+import "icoVertexGreatCircle"
 
 public class RTEA3H : RhombicIcosahedral3H
 {

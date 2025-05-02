@@ -99,6 +99,20 @@ import "Vector3D"
 
 public enum VGCRadialVertex { isea, ivea, rtea };
 
+public class IVEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
+{
+}
+
+public class ISEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
+{
+   radialVertex = isea;
+}
+
+public class RTEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
+{
+   radialVertex = rtea;
+}
+
 public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 {
    VGCRadialVertex radialVertex; property::radialVertex = ivea;
@@ -515,9 +529,4 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       vMid.Normalize(vMid);
       forwardPointInSDTTriangle(v, v3D[va], v3D[vb], v3D[vc], p5x6[va], p5x6[vb], p5x6[vc], out);
    }
-}
-
-public class RTEAProjection : SliceAndDiceGreatCircleIcosahedralProjection
-{
-   radialVertex = rtea;
 }
