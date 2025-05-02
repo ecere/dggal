@@ -95,14 +95,27 @@ public class RI5x6Projection
    GeoPoint orientation;
    double sinOrientationLat, cosOrientationLat;
    Degrees vertex2Azimuth;
+   Plane icoFacePlanes[20][3];
 
    RI5x6Projection()
    {
+      int i;
+
       vertex2Azimuth = 0;
       orientation = { /*(E + F) / 2 /* 90 - 58.2825255885389 = */31.7174744114611, -11.20 };
       getVertices(icoVertices);
       sinOrientationLat = sin(orientation.lat); cosOrientationLat = cos(orientation.lat);
       authalicSetup(wgs84Major, wgs84Minor, cp);
+
+      for(i = 0; i < 20; i++)
+      {
+         const Vector3D * v1 = &icoVertices[icoIndices[i][0]];
+         const Vector3D * v2 = &icoVertices[icoIndices[i][1]];
+         const Vector3D * v3 = &icoVertices[icoIndices[i][2]];
+         icoFacePlanes[i][0].FromPoints({ 0, 0, 0 }, v1, v2);
+         icoFacePlanes[i][1].FromPoints({ 0, 0, 0 }, v2, v3);
+         icoFacePlanes[i][2].FromPoints({ 0, 0, 0 }, v3, v1);
+      }
    }
 
    /*static */Degrees ::angleBetweenUnitVectors(const Vector3D u, const Vector3D v)
@@ -357,6 +370,29 @@ public class RI5x6Projection
       return true;
    }
 
+   bool ::vertexWithinSphericalTriPlanes(const Vector3D v3D, const Plane * planes, const Vector3D v1)
+   {
+      int i;
+      int sgn = 0;
+
+      // This function assumes spherical triangle with edges smaller than 90 degrees
+      if((Radians)angleBetweenUnitVectors(v3D, v1) > Pi/2)
+         return false;
+
+      for(i = 0; i < 3; i++)
+      {
+         double d = planes[i].a * v3D.x + planes[i].b * v3D.y + planes[i].c * v3D.z;
+         if(fabs(d) > 1E-9)
+         {
+            int s = Sgn(d);
+            if(sgn && s != sgn)
+               return false;
+            sgn = s;
+         }
+      }
+      return true;
+   }
+
    virtual void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
@@ -382,13 +418,13 @@ public class RI5x6Projection
       // TODO: Directly determine face
       for(face = 0; face < 20; face++)
       {
-         if(vertexWithinSphericalTri(v3D,
-            icoVertices[icoIndices[face][0]], icoVertices[icoIndices[face][1]], icoVertices[icoIndices[face][2]]))
+         const Vector3D * v1 = &icoVertices[icoIndices[face][0]];
+         if(vertexWithinSphericalTriPlanes(v3D, icoFacePlanes[face], v1))
          {
-            forwardIcoFace(
-               v3D, icoVertices[icoIndices[face][0]], icoVertices[icoIndices[face][1]], icoVertices[icoIndices[face][2]],
-               vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
-               v);
+            const Vector3D * v2 = &icoVertices[icoIndices[face][1]];
+            const Vector3D * v3 = &icoVertices[icoIndices[face][2]];
+
+            forwardIcoFace(v3D, v1, v2, v3, vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2], v);
 
 #if 0 //def _DEBUG
             /*

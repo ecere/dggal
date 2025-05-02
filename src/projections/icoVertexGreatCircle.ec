@@ -495,6 +495,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       const Pointd * p5x6[3] = { &pMid, null, &pCenter };
       const Vector3D * v3D[3] = { &vMid, null, &vCenter };
 
+      // TODO: Pre-compute these planes as well
       if(vertexWithinSphericalTri(v, vCenter, v2, v3))
       {
          pMid = { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
