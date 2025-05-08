@@ -205,22 +205,27 @@ public class RI5x6Projection
    }
 
    private /*static inline */void ::cartesianToBary(double b[3],
-      const Pointd p, const Pointd p1, const Pointd p2, const Pointd p3)
+      const Pointd p, const Pointd p1, const Pointd p2, const Pointd p3, double knownOneOverDet)
    {
       Pointd d31 { p1.x - p3.x, p1.y - p3.y };
       Pointd d23 { p3.x - p2.x, p3.y - p2.y };
       Pointd d3p {  p.x - p3.x,  p.y - p3.y };
-      double oDet = -1;
-#if 0 //def _DEBUG
-      // REVIEW: always -1 for 5x6 space?
-      oDet = 1 / (d23.x * d31.y - d23.y * d31.x);
-      //if(oDet != -1)
-         //PrintLn("oDet: ", oDet);
-#endif
+      double oDet = knownOneOverDet ? knownOneOverDet : 1 / (d23.x * d31.y - d23.y * d31.x);
+
       b[0] = (d23.x * d3p.y - d23.y * d3p.x) * oDet;
       b[1] = (d31.x * d3p.y - d31.y * d3p.x) * oDet;
       b[2] = 1 - b[0] - b[1];
    }
+
+   private /*static inline */void ::baryToCartesian(const double b[3],
+      Pointd p, const Pointd p1, const Pointd p2, const Pointd p3)
+   {
+      p = {
+         b[0] * p1.x + b[1] * p2.x + b[2] * p3.x,
+         b[0] * p1.y + b[1] * p2.y + b[2] * p3.y
+      };
+   }
+
 
    /*static inline */Radians latAuthalicToGeodetic(Radians phi)
    {

@@ -31,7 +31,7 @@ class BarycentricSphericalTriAreaProjection : RI5x6Projection
       double b[3];
       double u1, u2, u3;
 
-      cartesianToBary(b, v, p1, p2, p3);
+      cartesianToBary(b, v, p1, p2, p3, 0);
       if(b[0] < 0) b[0] = 0;
       if(b[1] < 0) b[1] = 0;
       if(b[2] < 0) b[2] = 0;

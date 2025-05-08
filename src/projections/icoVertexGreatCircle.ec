@@ -9,8 +9,8 @@
    - RTEA (swapping vertices A and B) corresponds to extending Snyder's 1992 projection to the rhombic triacontahedron
      (the vertex in the center of the 30 rhombic faces is used as radial vertex B)
 
-   Most of the equations are based on basic spherical trigonometry, solving the spherical triangles
-   for unknown sides and angles.
+   For the trigonometric approach, most of the equations are based on basic spherical trigonometry,
+   solving the spherical triangles for unknown sides and angles.
 
    Spherical excess:
       E = A + B + C - Pi
@@ -90,6 +90,11 @@ private:
 
 import "ri5x6"
 
+// Define this to use the vectorial approach based on Brenton R S Recht's blog entry at
+// https://brsr.github.io/2021/08/31/snyder-equal-area.html
+// with further replacement of trigonometry by vector operation for the inverse as well
+ #define USE_VECTORS
+
 #ifdef ECERE_STATIC
 // 3D Math is excluded from libecere's static config
 import "Vector3D"
@@ -126,6 +131,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          {
             case isea:
                va = 0, vb = 2, vc = 1;
+#ifndef USE_VECTORS
                alpha = Degrees { 90 };
                beta = Degrees { 60 };
                gamma = Degrees { 36 };
@@ -133,9 +139,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = atan(1/phi);
                BC = atan(2/(phi*phi));
                sinAlpha = 1, cosAlpha = 0;
+#endif
                break;
             case ivea:
                va = 0, vb = 1, vc = 2;
+#ifndef USE_VECTORS
                alpha = Degrees { 90 };
                beta = Degrees { 36 };
                gamma = Degrees { 60 };
@@ -143,9 +151,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = acos(sqrt((phi + 1)/3));
                BC = atan(2/(phi*phi));
                sinAlpha = 1, cosAlpha = 0;
+#endif
                break;
             case rtea:
                va = 1, vb = 0, vc = 2;
+#ifndef USE_VECTORS
                alpha = Degrees { 36 };
                beta = Degrees { 90 };
                gamma = Degrees { 60 };
@@ -153,20 +163,82 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = atan(2/(phi*phi));
                BC = acos(sqrt((phi + 1)/3));
                sinAlpha = sin(alpha), cosAlpha = cos(alpha);
+#endif
                break;
          }
          poleFixIVEA = value == ivea;
+#ifndef USE_VECTORS
          cosAB = cos(AB), sinAB = sin(AB);
          tanHAB = tan(AB/2);
+#endif
       }
    }
 
+#ifndef USE_VECTORS
    Radians beta, gamma, alpha;
    Radians AB, AC, BC;
    double cosAB, sinAB, tanHAB;
    double sinAlpha, cosAlpha;
+#endif
    int va, vb, vc;
 
+#ifdef USE_VECTORS
+   static void inverseVector(const Pointd pi,
+      const Pointd pai, const Pointd pbi, const Pointd pci,
+      const Vector3D A, const Vector3D B, const Vector3D C,
+      Vector3D P)
+   {
+      static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
+      double b[3];
+      Vector3D c1;
+
+      cartesianToBary(b, pi, pai, pbi, pci, -6);
+
+           if(b[0] > 1 - 1E-11) { P = A; return; }
+      else if(b[1] > 1 - 1E-11) { P = B; return; }
+      else if(b[2] > 1 - 1E-11) { P = C; return; }
+
+      c1.CrossProduct(B, C);
+
+      {
+         double h = 1 - b[0];
+         double S = sin((b[2]/h * areaABC));
+         double c01 = A.DotProduct(B);
+         double c12 = B.DotProduct(C);
+         double c20 = C.DotProduct(A);
+         double s12 = sqrt(1 - c12*c12);
+         double V = A.DotProduct(c1);
+         double CC = 1 - sqrt(1 - S * S);
+         double f = S * V + CC * (c01 * c12 - c20);
+         double g = CC * s12 * (1 + c01);
+         double f2 = f * f, g2 = g * g, gf = g * f;
+         double oos12tf2pg2 = fabs(f2 + g2) > 1E-11 && fabs(s12) > 1E-11 ? 1.0 / (s12 * (f2 + g2)) : 0;
+         double ap = oos12tf2pg2 ? (s12 * (f2 - g2) - 2 * gf * c12) * oos12tf2pg2 : 1;
+         double bp = oos12tf2pg2 ? 2 * gf * oos12tf2pg2 : 0;
+
+         if(ap < 1E-05) ap = 0, bp = 1;
+
+         {
+            Vector3D p
+            {
+               ap * B.x + bp * C.x,
+               ap * B.y + bp * C.y,
+               ap * B.z + bp * C.z
+            };
+            double av = A.DotProduct(p), av2 = av * av;
+            double bv = 1 + h*h * (av - 1), bv2 = bv * bv;
+            double bvp = sqrt((1 - bv2) / (1 - av2));
+            double avp = bv - av * bvp;
+            P =
+            {
+               avp * A.x + bvp * p.x,
+               avp * A.y + bvp * p.y,
+               avp * A.z + bvp * p.z
+            };
+         }
+      }
+   }
+#else
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void inversePointInSDTTriangle(const Pointd pi,
       const Pointd pai, const Pointd pbi, const Pointd pci,
@@ -315,6 +387,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          */
       }
   }
+#endif
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
@@ -336,8 +409,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       Vector3D vMid;
       const Pointd * p5x6[3] = { &pMid, null, &pCenter };
       const Vector3D * v3D[3] = { &vMid, null, &vCenter };
+#ifdef USE_VECTORS
+      int subTri;
+#endif
 
-      cartesianToBary(b, v, p1, p2, p3);
+      cartesianToBary(b, v, p1, p2, p3, -1);
 
       if(b[0] <= b[1] && b[0] <= b[2])
       {
@@ -345,9 +421,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
 
          if(b[1] < b[2])
-            p5x6[1] = p3, v3D[1] = v3;
+            p5x6[1] = p3, v3D[1] = v3
+#ifdef USE_VECTORS
+            , subTri = 0
+#endif
+            ;
          else
-            p5x6[1] = p2, v3D[1] = v2;
+            p5x6[1] = p2, v3D[1] = v2
+#ifdef USE_VECTORS
+            , subTri = 1
+#endif
+            ;
       }
       else if(b[1] <= b[0] && b[1] <= b[2])
       {
@@ -355,9 +439,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
 
          if(b[0] < b[2])
-            p5x6[1] = p3, v3D[1] = v3;
+            p5x6[1] = p3, v3D[1] = v3
+#ifdef USE_VECTORS
+            , subTri = 2
+#endif
+            ;
          else
-            p5x6[1] = p1, v3D[1] = v1;
+            p5x6[1] = p1, v3D[1] = v1
+#ifdef USE_VECTORS
+            , subTri = 3
+#endif
+            ;
       }
       else // if(b[2] <= b[0] && b[2] <= b[1])
       {
@@ -365,16 +457,71 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
 
          if(b[0] < b[1])
-            p5x6[1] = p2, v3D[1] = v2;
+            p5x6[1] = p2, v3D[1] = v2
+#ifdef USE_VECTORS
+            , subTri = 4
+#endif
+            ;
          else
-            p5x6[1] = p1, v3D[1] = v1;
+            p5x6[1] = p1, v3D[1] = v1
+#ifdef USE_VECTORS
+            , subTri = 5
+#endif
+            ;
       }
       vCenter.Normalize(vCenter);
       vMid.Normalize(vMid);
 
+#ifdef USE_VECTORS
+      {
+         int a = vb, b, c;
+         if((radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4))
+            b = va, c = vc;
+         else
+            b = vc, c = va;
+         inverseVector(v, p5x6[a], p5x6[b], p5x6[c], v3D[a], v3D[b], v3D[c], out);
+      }
+#else
       inversePointInSDTTriangle(v, p5x6[va], p5x6[vb], p5x6[vc], v3D[va], v3D[vb], v3D[vc], out);
+#endif
    }
 
+#ifdef USE_VECTORS
+  Radians sphericalTriArea(const Vector3D A, const Vector3D B, const Vector3D C)
+  {
+     // From https://arxiv.org/abs/1307.2567 as summarized in
+     // https://brsr.github.io/2021/05/01/vector-spherical-geometry.html
+     Vector3D midAB, midBC, midCA, cross;
+
+     midAB.Normalize({ (A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2 });
+     midBC.Normalize({ (B.x + C.x) / 2, (B.y + C.y) / 2, (B.z + C.z) / 2 });
+     midCA.Normalize({ (C.x + A.x) / 2, (C.y + A.y) / 2, (C.z + A.z) / 2 });
+     cross.CrossProduct(midBC, midCA);
+     return asin(Max(-1.0, Min(1.0, midAB.DotProduct(cross)))) * 2;
+  }
+
+   static void forwardVector(const Vector3D v,
+      const Vector3D A, const Vector3D B, const Vector3D C,
+      const Pointd pai, const Pointd pbi, const Pointd pci,
+      Pointd out)
+   {
+      Vector3D c1, c2, p;
+      double h, b[3];
+       // The SDT triangle area is always 6 degrees
+      static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
+
+      c1.CrossProduct(A, v);
+      c2.CrossProduct(B, C);
+      p.CrossProduct(c1, c2);
+      p.Normalize(p);
+
+      h = sqrt((1 - A.DotProduct(v)) / (1 - A.DotProduct(p)));
+      b[0] = 1 - h;
+      b[2] = h * sphericalTriArea(A, B, p) / areaABC;
+      b[1] = h - b[2];
+      baryToCartesian(b, out, pai, pbi, pci);
+   }
+#else
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void forwardPointInSDTTriangle(const Vector3D P,
       const Vector3D A, const Vector3D B, const Vector3D C,
@@ -418,6 +565,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
       }
   }
+#endif
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void forwardIcoFace(const Vector3D v,
@@ -438,6 +586,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       Vector3D vMid;
       const Pointd * p5x6[3] = { &pMid, null, &pCenter };
       const Vector3D * v3D[3] = { &vMid, null, &vCenter };
+#ifdef USE_VECTORS
+      int subTri;
+#endif
 
       // TODO: Pre-compute these planes as well
       if(vertexWithinSphericalTri(v, vCenter, v2, v3))
@@ -446,9 +597,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
 
          if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
-            v3D[1] = v3, p5x6[1] = p3;
+            v3D[1] = v3, p5x6[1] = p3
+#ifdef USE_VECTORS
+            , subTri = 0
+#endif
+            ;
          else
-            v3D[1] = v2, p5x6[1] = p2;
+            v3D[1] = v2, p5x6[1] = p2
+#ifdef USE_VECTORS
+            , subTri = 1
+#endif
+            ;
       }
       else if(vertexWithinSphericalTri(v, vCenter, v3, v1))
       {
@@ -456,9 +615,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
 
          if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
-            v3D[1] = v3, p5x6[1] = p3;
+            v3D[1] = v3, p5x6[1] = p3
+#ifdef USE_VECTORS
+            , subTri = 2
+#endif
+            ;
          else
-            v3D[1] = v1, p5x6[1] = p1;
+            v3D[1] = v1, p5x6[1] = p1
+#ifdef USE_VECTORS
+            , subTri = 3
+#endif
+            ;
       }
       else // if(vertexWithinSphericalTri(v, vCenter, v1, v2))
       {
@@ -466,12 +633,32 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
 
          if(vertexWithinSphericalTri(v, vCenter, vMid, v2))
-            v3D[1] = v2, p5x6[1] = p2;
+            v3D[1] = v2, p5x6[1] = p2
+#ifdef USE_VECTORS
+            , subTri = 4
+#endif
+            ;
          else
-            v3D[1] = v1, p5x6[1] = p1;
+            v3D[1] = v1, p5x6[1] = p1
+#ifdef USE_VECTORS
+            , subTri = 5
+#endif
+            ;
       }
+
       vCenter.Normalize(vCenter);
       vMid.Normalize(vMid);
+#ifdef USE_VECTORS
+      {
+         int a = vb, b, c;
+         if((radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4))
+            b = va, c = vc;
+         else
+            b = vc, c = va;
+         forwardVector(v, v3D[a], v3D[b], v3D[c], p5x6[a], p5x6[b], p5x6[c], out);
+      }
+#else
       forwardPointInSDTTriangle(v, v3D[va], v3D[vb], v3D[vc], p5x6[va], p5x6[vb], p5x6[vc], out);
+#endif
    }
 }
