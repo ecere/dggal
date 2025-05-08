@@ -589,8 +589,9 @@ public class RhombicIcosahedral3H : DGGRS
       double z = 1.0 / power;
       int hexSubLevel = zoneLevel & 1;
       Pointd tl, br;
-      double x, y;
+      //double x, y;
       bool extentCheck = true;
+      int64 yCount, xCount, yi, xi;
 
       if(bbox != null && bbox.OnCompare(wholeWorld))
       {
@@ -600,12 +601,20 @@ public class RhombicIcosahedral3H : DGGRS
       else
          extentCheck = false, pj.extent5x6FromWGS84(wholeWorld, tl, br);
 
-      for(y = tl.y; y < br.y + 2*z; y += z)
+      yCount = (int64)((br.y - tl.y + 1E-11) / z) + 2;
+      xCount = (int64)((br.x - tl.x + 1E-11) / z) + 2;
+
+      // These loops adding z were problematic at high level losing precision with the z additions
+      //for(y = tl.y; y < br.y + 2*z; y += z)
+      for(yi = 0; yi < yCount; yi++)
       {
+         double y = tl.y + yi * z;
          int rootY = (int)(y + 1E-11);
          int row = (int)(y / z + 1E-11);
-         for(x = tl.x; x < br.x + 2*z; x += z)
+         //for(x = tl.x; x < br.x + 2*z; x += z)
+         for(xi = 0; xi < xCount; xi++)
          {
+            double x = tl.x + xi * z;
             int rootX = (int)(x + 1E-11);
             int col = (int)(x / z + 1E-11);
             int d = rootY - rootX;
