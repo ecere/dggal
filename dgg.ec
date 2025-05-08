@@ -114,7 +114,7 @@ class DGGAL : Application
       for(a = 1; !syntaxError && a < argc; a++)
       {
          const char * arg = argv[a];
-         if(arg[0] == '-')
+         if(arg[0] == '-' && !strchr(arg, ',')) // Avoid confusion with negative coordinates
          {
             if(!options) options = {};
             currentOption = arg + 1;
