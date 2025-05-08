@@ -252,7 +252,7 @@ public class RhombicIcosahedral3H : DGGRS
          case CRS { ogc, 84 }:
          {
             GeoPoint geo;
-            pj.inverse(zone.centroid, geo);
+            pj.inverse(zone.centroid, geo, false);
             centroid = crs == { ogc, 84 } ?
                { geo.lon, geo.lat } :
                { geo.lat, geo.lon };
@@ -263,7 +263,7 @@ public class RhombicIcosahedral3H : DGGRS
 
    void getZoneWGS84Centroid(I3HZone zone, GeoPoint centroid)
    {
-      pj.inverse(zone.centroid, centroid);
+      pj.inverse(zone.centroid, centroid, zone.subHex > 2);
    }
 
    void getZoneCRSExtent(I3HZone zone, CRS crs, CRSExtent extent)
@@ -348,13 +348,16 @@ public class RhombicIcosahedral3H : DGGRS
          }
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
+         {
+            bool oddGrid = zone.subHex > 2;
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
-               pj.inverse(vertices[i], geo);
+               pj.inverse(vertices[i], geo, oddGrid);
                vertices[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
             }
             break;
+         }
          default:
             count = 0;
       }
@@ -365,8 +368,9 @@ public class RhombicIcosahedral3H : DGGRS
    {
       Pointd v5x6[6];
       uint count = zone.getVertices(v5x6), i;
+      bool oddGrid = zone.subHex > 2;
       for(i = 0; i < count; i++)
-         pj.inverse(v5x6[i], vertices[i]);
+         pj.inverse(v5x6[i], vertices[i], oddGrid);
       return count;
    }
 
@@ -391,6 +395,7 @@ public class RhombicIcosahedral3H : DGGRS
       Radians minDLon = 99999, maxDLon = -99999;
       Pointd vertices[7];  // REVIEW: Should this be 6? can't ever be 7?
       int nVertices = zone.getVertices(vertices);
+      bool oddGrid = zone.subHex > 2;
 
       getZoneWGS84Centroid(zone, centroid);
 
@@ -399,7 +404,7 @@ public class RhombicIcosahedral3H : DGGRS
       {
          Pointd * cv = &vertices[i];
          GeoPoint p;
-         if(pj.inverse(cv, p))
+         if(pj.inverse(cv, p, oddGrid))
          {
             Radians dLon = p.lon - centroid.lon;
 
@@ -454,6 +459,7 @@ public class RhombicIcosahedral3H : DGGRS
             //Radians dLon;
             bool wrap = true;
             int lonQuad;
+            bool oddGrid = zone.subHex > 2;
 
             //getApproxWGS84Extent(zone, e);
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
@@ -468,7 +474,7 @@ public class RhombicIcosahedral3H : DGGRS
                for(i = 0; i < numPoints; i++)
                {
                   GeoPoint point;
-                  pj.inverse(vertices[i], point);
+                  pj.inverse(vertices[i], point, oddGrid);
                   if(wrap)
                      point.lon = wrapLonAt(lonQuad, point.lon, 0);
                   ap[i] = useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
@@ -485,7 +491,7 @@ public class RhombicIcosahedral3H : DGGRS
                {
                   GeoPoint point;
                   // Imprecisions causes some failures... http://localhost:8080/ogcapi/collections/gebco/dggs/ISEA3H/zones/L0-2B3FA-G
-                  if(pj.inverse(r[i], point))
+                  if(pj.inverse(r[i], point, oddGrid))
                   {
                      if(wrap)
                      {
@@ -540,13 +546,16 @@ public class RhombicIcosahedral3H : DGGRS
                break;
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
+            {
+               bool oddGrid = parent.subHex > 2;
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
-                  pj.inverse(centroids[i], geo);
+                  pj.inverse(centroids[i], geo, oddGrid);
                   centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
                }
                break;
+            }
             default: delete centroids;
          }
       }
@@ -561,10 +570,11 @@ public class RhombicIcosahedral3H : DGGRS
       {
          uint count = centroids.count;
          int i;
+         bool oddGrid = parent.subHex > 2;
 
          geo = { size = count };
          for(i = 0; i < count; i++)
-            pj.inverse(centroids[i], geo[i]);
+            pj.inverse(centroids[i], geo[i], oddGrid);
          delete centroids;
       }
       return geo;

@@ -91,7 +91,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    void getZoneWGS84Centroid(I9RZone zone, GeoPoint centroid)
    {
-      pj.inverse(zone.centroid, centroid);
+      pj.inverse(zone.centroid, centroid, false);
    }
 
    // Text ZIRS
@@ -211,7 +211,7 @@ public class RhombicIcosahedral9R : DGGRS
 
          geo = { size = count };
          for(i = 0; i < count; i++)
-            pj.inverse(centroids[i], geo[i]);
+            pj.inverse(centroids[i], geo[i], false);
          delete centroids;
       }
       return geo;
@@ -239,7 +239,7 @@ public class RhombicIcosahedral9R : DGGRS
       };
       uint count = 4, i;
       for(i = 0; i < count; i++)
-         pj.inverse(v5x6[i], vertices[i]);
+         pj.inverse(v5x6[i], vertices[i], false);
       return count;
    }
 
@@ -365,7 +365,7 @@ public class RhombicIcosahedral9R : DGGRS
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
-               pj.inverse(v[i], geo);
+               pj.inverse(v[i], geo, false);
                vertices[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
             }
             break;
@@ -450,7 +450,7 @@ public class RhombicIcosahedral9R : DGGRS
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
-                  pj.inverse(centroids[i], geo);
+                  pj.inverse(centroids[i], geo, false);
                   centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
                }
                break;
@@ -792,7 +792,7 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
          {
             // Extra point for crossing the pole
             Pointd in1 { in.x - dx * CROSSING_POLE_DELTA, in.y - dy * CROSSING_POLE_DELTA };
-            if(pj.inverse(in1, out))
+            if(pj.inverse(in1, out, false))
             {
                Radians dLon = out.lon - centroid.lon;
                if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
@@ -806,7 +806,7 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
             }
          }
          // Don't include point on pole itself
-         if(!crossingPole && pj.inverse(in, out))
+         if(!crossingPole && pj.inverse(in, out, false))
          {
             Radians dLon = out.lon - centroid.lon;
             if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
@@ -823,7 +823,7 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
          {
             // Extra point for crossing the pole
             Pointd in2 { in.x + dx * CROSSING_POLE_DELTA, in.y + dy * CROSSING_POLE_DELTA };
-            if(pj.inverse(in2, out))
+            if(pj.inverse(in2, out, false))
             {
                Radians dLon = out.lon - centroid.lon;
                if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;

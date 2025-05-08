@@ -166,7 +166,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 #endif
                break;
          }
-         poleFixIVEA = value == ivea;
+         // poleFixIVEA = value == ivea;
 #ifndef USE_VECTORS
          cosAB = cos(AB), sinAB = sin(AB);
          tanHAB = tan(AB/2);

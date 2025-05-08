@@ -96,7 +96,7 @@ public class RI5x6Projection
    double sinOrientationLat, cosOrientationLat;
    Degrees vertex2Azimuth;
    Plane icoFacePlanes[20][3];
-   bool poleFixIVEA;
+   // bool poleFixIVEA;
 
    RI5x6Projection()
    {
@@ -440,17 +440,18 @@ public class RI5x6Projection
 
    // This function corrects indeterminate and unstable coordinates near the poles when inverse-projecting to the globe
    // so as to generate correct plate carrée grids
-   void fixPoles(const Pointd v, GeoPoint result)
+   void fixPoles(const Pointd v, GeoPoint result, bool oddGrid)
    {
       #define epsilon5x6 1E-5
       Degrees lon1 = -180 - orientation.lon;
       bool northPole = false, southPole = false, add180 = false;
+      /*
       bool atLon1 = fabs(result.lon - lon1) < 0.1;
       bool atLon1P180 = fabs(result.lon - (lon1 + 180)) < 0.1;
+      bool atLon1P90 = fabs(result.lon - (lon1 + 90)) < 0.1; // Added this condition for vectorial version
       bool at0 = fabs(result.lon - 0) < 0.1;
       bool at180 = fabs(result.lon - 180) < 0.1;
-      bool oddGrid = atLon1 || atLon1P180 || at0 || at180;
-      Degrees qOffset;
+      bool oddGrid = atLon1 || atLon1P180 || at0 || at180 || atLon1P90;
 
       if(oddGrid && poleFixIVEA && (atLon1P180 || at180 || atLon1))
       {
@@ -466,13 +467,14 @@ public class RI5x6Projection
             oddGrid =
                (fabs(v.x - 0.5) < epsilon5x6 && fabs(v.y - 0) < epsilon5x6 && v.x < 0.5) ||
                // REVIEW:
-               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < 1E-7 /*epsilon5x6*/ && v.x < 1.5) ||
+               (fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < 1E-7 && v.x < 1.5) ||   // epsilon5x6
                (fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6 && v.y > 0.5) ||
                (fabs(v.x - 5) < epsilon5x6 && fabs(v.y - 4.5) < epsilon5x6 && v.y > 4.5);
          else
             oddGrid = false;
       }
-      qOffset = oddGrid ? 0 : 90;
+      */
+      Degrees qOffset = oddGrid ? 0 : 90;
 
       if(fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6)
          add180 = v.x > 1.5, southPole = true;
@@ -486,7 +488,7 @@ public class RI5x6Projection
          result = { northPole ? 90 : -90, qOffset + lon1 + (add180 * 180) };
    }
 
-   public virtual bool inverse(const Pointd v, GeoPoint result)
+   public virtual bool inverse(const Pointd v, GeoPoint result, bool oddGrid)
    {
       int face = getFace(v);
       if(face != -1)
@@ -501,7 +503,7 @@ public class RI5x6Projection
 
          cartesianToGeo(p, result);
 
-         fixPoles(v, result);
+         fixPoles(v, result, oddGrid);
          result.lon += vertex2Azimuth;
 
          result.lat = latAuthalicToGeodetic(result.lat);
