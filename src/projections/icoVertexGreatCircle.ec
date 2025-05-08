@@ -316,8 +316,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       }
   }
 
-   // This function corrects indeterminate and unstable coordinates near the poles when inverse-projecting to the globe
-   // so as to generate correct plate carrée grids
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,

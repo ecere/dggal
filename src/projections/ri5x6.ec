@@ -433,6 +433,8 @@ public class RI5x6Projection
       return result;
    }
 
+   // This function corrects indeterminate and unstable coordinates near the poles when inverse-projecting to the globe
+   // so as to generate correct plate carrée grids
    void fixPoles(const Pointd v, GeoPoint result)
    {
       #define epsilon5x6 1E-5
