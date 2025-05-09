@@ -217,6 +217,19 @@ public class RI5x6Projection
       b[2] = 1 - b[0] - b[1];
    }
 
+   Radians ::sphericalTriArea(const Vector3D A, const Vector3D B, const Vector3D C)
+   {
+      // From https://arxiv.org/abs/1307.2567 as summarized in
+      // https://brsr.github.io/2021/05/01/vector-spherical-geometry.html
+      Vector3D midAB, midBC, midCA, cross;
+
+      midAB.Normalize({ (A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2 });
+      midBC.Normalize({ (B.x + C.x) / 2, (B.y + C.y) / 2, (B.z + C.z) / 2 });
+      midCA.Normalize({ (C.x + A.x) / 2, (C.y + A.y) / 2, (C.z + A.z) / 2 });
+      cross.CrossProduct(midBC, midCA);
+      return asin(Max(-1.0, Min(1.0, midAB.DotProduct(cross)))) * 2;
+   }
+
    private /*static inline */void ::baryToCartesian(const double b[3],
       Pointd p, const Pointd p1, const Pointd p2, const Pointd p3)
    {
