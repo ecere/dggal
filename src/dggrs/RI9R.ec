@@ -155,7 +155,19 @@ public class RhombicIcosahedral9R : DGGRS
       bool extentCheck = true;
 
       if(bbox != null && bbox.OnCompare(wholeWorld))
+      {
+         // Avoid the possibility of including extra zones for single point boxes
+         if(fabs((Radians)bbox.ur.lat - (Radians)bbox.ll.lat) < 1E-11 &&
+            fabs((Radians)bbox.ur.lon - (Radians)bbox.ll.lon) < 1E-11)
+         {
+            DGGRSZone zone = getZoneFromWGS84Centroid(level, bbox.ll);
+            if(zone != nullZone)
+               zones = { [ (I9RZone)zone ] };
+            return (Array<DGGRSZone>)zones;
+         }
+
          pj.extent5x6FromWGS84(bbox, tl, br);
+      }
       else
          extentCheck = false, pj.extent5x6FromWGS84(wholeWorld, tl, br);
       x1 = Min(Max(0, (int64)(tl.x * p)), numCols-1);

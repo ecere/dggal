@@ -595,6 +595,16 @@ public class RhombicIcosahedral3H : DGGRS
 
       if(bbox != null && bbox.OnCompare(wholeWorld))
       {
+         // Avoid the possibility of including extra zones for single point boxes
+         if(fabs((Radians)bbox.ur.lat - (Radians)bbox.ll.lat) < 1E-11 &&
+            fabs((Radians)bbox.ur.lon - (Radians)bbox.ll.lon) < 1E-11)
+         {
+            DGGRSZone zone = getZoneFromWGS84Centroid(zoneLevel, bbox.ll);
+            if(zone != nullZone)
+               zones = { [ zone ] };
+            return zones;
+         }
+
          // fputs("WARNING: accurate bounding box not yet supported\n", stderr);
          pj.extent5x6FromWGS84(bbox, tl, br);
       }
@@ -657,6 +667,7 @@ public class RhombicIcosahedral3H : DGGRS
                //         Are we missing large numbers of hexagons first eliminating those outside the approximate extent?
                GeoExtent e;
 
+               // REVIEW: Should we check 5x6 extent as well or instead of this approximate extent?
                getApproxWGS84Extent(zone, e);
                if(!e.intersects(bbox))
                   continue;
