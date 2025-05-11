@@ -3,105 +3,108 @@ import os
 import platform
 from distutils.util import get_platform;
 from os import path
+from cffi import FFI
+from distutils.sysconfig import get_config_var
+import pkg_resources
 
-dggalDir = path.join(os.getcwd(), '../../')
-esdkDir = path.join(dggalDir, '../eC/')
+owd = os.getcwd()
 
-if dggalDir.find('pip-req-build-') == -1 or dggalDir.find('pip-install-of') == -1:
-   inPipInstallBuild = False #True
+if path.isfile('cffi-dggal.h'):
+   bindings_py_dir = '.'
 else:
-   inPipInstallBuild = False
-
-# print(' -- before dggal extension build -- ')
-pver = platform.python_version()
-# print('arg zero: ', sys.argv[0])
-# print('count: ', len(sys.argv))
-# print('args: ', str(sys.argv))
-if inPipInstallBuild == True:
-   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])
-else:
-   blddir = 'bindings/py'
+   bindings_py_dir = path.join('bindings', 'py')
+   if not path.isfile(bindings_py_dir):
+      bindings_py_dir = path.join(owd, 'dggal', 'bindings', 'py')
 
 dnf = path.dirname(__file__)
 dir = path.abspath(path.dirname(__file__))
-owd = os.getcwd()
-cpath = path.join('..', 'c')
-if os.path.isdir(cpath) != True:
-   cpath = path.join(dggalDir, 'bindings', 'c')
-   if os.path.isdir(cpath) != True:
-      print('error: unable to find path to C bindings!')
-rel = '' if os.path.isfile(os.path.join(owd, 'build_dggal.py')) == True else path.join('bindings', 'py')
+
+cpath = os.path.normpath(path.join(dnf, '..', 'c'))
+
+incdir = cpath
+
+if path.isdir(cpath) != True:
+   print('error: unable to find path to C bindings!')
+if path.isfile(path.join(bindings_py_dir, 'cffi-dggal.h')) != True:
+   print('Cannot find cffi-dggal.h in', bindings_py_dir)
+
 sysdir = 'win32' if sys.platform == 'win32' else 'linux'
 syslibdir = 'bin' if sys.platform == 'win32' else 'lib'
-incdir = path.join(dggalDir, 'bindings', 'c')
-if rel == '':
-   libdir = path.join('..', '..', 'obj', sysdir, syslibdir)
-else:
-   libdir = path.join('obj', sysdir, syslibdir)
-
-if os.path.isfile(path.join(rel, 'cffi-dggal.h')) != True:
-   print('problem! -- owd:', owd, ' rel:', rel)
+libdir = path.join(bindings_py_dir, '..', '..', 'obj', sysdir, syslibdir)
 
 if dnf != '':
    os.chdir(dir)
 
-_CF_DIR = str(os.getenv('_CF_DIR'))
-_cf_dir = False if _CF_DIR == '' else True
-if _cf_dir == True:
-   _c_bindings_path, _ = os.path.split(dir)
-   _c_bindings_path, _ = os.path.split(_c_bindings_path)
-   sys.path.append(path.realpath(path.join(dir, '../../', _CF_DIR, 'bindings/py')))
-if rel != '':
-   sys.path.append(dir)
-
-def cdefpath(filename):
-   fullpath = path.realpath(path.join(owd, rel, filename))
-   if path.isfile(fullpath):
-      return fullpath
-   if _cf_dir == True:
-      fullpath = path.join(dir, _CF_DIR, 'bindings/py', filename)
-      fullpath = path.realpath(fullpath)
-      if path.isfile(fullpath):
-         return fullpath
-   return 'badpath'
-
-from build_ecrt import FFI, ffi_ecrt
-from distutils.sysconfig import get_config_var
+sys.path.append(bindings_py_dir)
 
 ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUFFIX')
 
+ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+# ecrt_location = os.path.join(pkg_resources.get_distribution("ecrt").location, 'ecrt', '.lib')
+ecrt_location = os.path.join(ecdev_location, syslibdir)
+
+incdir_ecrt = path.join(ecdev_location, 'include')
+
+ffi_ecrt = FFI()
+ffi_ecrt.cdef(open(path.join(ecdev_location, 'include', 'cffi-ecrt.h')).read())
+
+extra_link_args = ["-Wl,-rpath,$ORIGIN/lib:$ORIGIN/ecrt/lib"]
+if sys.platform == 'win32':
+   extra_link_args.append('-Wl,--export-all-symbols')
+else:
+   extra_link_args.append('-Wl,--export-dynamic')
+
+ffi_ecrt.set_source('_pyecrt',
+               '#include "ecrt.h"',
+               sources=[],
+               define_macros=[('BINDINGS_SHARED', None), ('ECRT_EXPORT', None)],
+               extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
+               include_dirs=[incdir_ecrt],
+               libraries=[],
+               # _py* CFFI packages are currently being packaged outside of the main extension directory
+               extra_link_args=extra_link_args,
+               library_dirs=[libdir],
+               py_limited_api=False)
+
 ffi_dggal = FFI()
 ffi_dggal.include(ffi_ecrt)
-ffi_dggal.cdef(open(cdefpath('cffi-dggal.h')).read())
+ffi_dggal.cdef(open(path.join(bindings_py_dir, 'cffi-dggal.h')).read())
 PY_BINDINGS_EMBEDDED_C_DISABLE = os.getenv('PY_BINDINGS_EMBEDDED_C_DISABLE')
 _embedded_c = True # False if PY_BINDINGS_EMBEDDED_C_DISABLE == '' else True
 
 srcs = []
 if _embedded_c == True:
-   #srcs.append(path.join(cpath, 'ecrt.c'))
    srcs.append(path.join(cpath, 'dggal.c'))
 
 libs = []
 
 libs.append('ecrt')
-#libs.append('dggal')
+#libs.append('dggal') # Adding dggal here doesn't seem to work with -Wl,--no-as-needed to force dependency ensuring dlopen() will find DGGAL using RPATH
 if _embedded_c == False:
-   #libs.append('ecrt_c')
    libs.append('dggal_c')
+
+# _py* CFFI packages are currently being packaged outside of the main extension directory
+extra_link_args = ['-Wl,--no-as-needed','-ldggal',"-Wl,-rpath,$ORIGIN/lib:$ORIGIN/../../ecrt/lib:$ORIGIN/dggal/lib:$ORIGIN/ecrt/lib", '-DMS_WIN64', '-O2']
+if sys.platform == 'win32':
+   extra_link_args.append('-Wl,--export-all-symbols')
+else:
+   extra_link_args.append('-Wl,--export-dynamic')
+
 ffi_dggal.set_source('_pydggal',
                '#include "dggal.h"',
                sources=srcs,
                define_macros=[('BINDINGS_SHARED', None), ('DGGAL_EXPORT', None)],
-               extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
-               include_dirs=[path.join(owd, rel), incdir],
+               extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-O2'], #--export-dynamic' ]
+               include_dirs=[bindings_py_dir, incdir, incdir_ecrt],
                libraries=libs,
-               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/eCSDK/lib",path.join(dggalDir, blddir, '_pyecrt' + ext), '-DMS_WIN64', '-O2'],
-               library_dirs=[path.join(owd, libdir), path.join(esdkDir, 'obj', sysdir, syslibdir), path.join(dggalDir, 'obj', 'release.' + sysdir)],
+               extra_link_args=extra_link_args,
+               library_dirs=[libdir, ecrt_location],
                py_limited_api=False)
 if __name__ == '__main__':
    V = os.getenv('V')
    v = True if V == '1' or V == 'y' else False
-   ffi_dggal.compile(verbose=v,tmpdir='.',debug=True)
+
+   ffi_dggal.compile(verbose=v,tmpdir='.',debug=False) # True)
 
 if dnf != '':
    os.chdir(owd)
