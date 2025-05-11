@@ -52,12 +52,13 @@ OBJ = obj/$(BINDING_NAME).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
 
 RES =
 
+TARGET = $(OBJ)$(LP)$(MODULE)$(SO)
+SONAME =
+ifndef SKIP_SONAME
 ifdef LINUX_TARGET
 TARGET = $(OBJ)$(LP)$(MODULE)$(SO).0.0.1
 SONAME = -Wl,-soname,$(LP)$(MODULE)$(SO).0
-else
-TARGET = $(OBJ)$(LP)$(MODULE)$(SO)
-SONAME =
+endif
 endif
 
 _OBJECTS = $(_DEP_OBJECTS) \
@@ -104,16 +105,20 @@ ifndef NOSTRIP
 endif
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
+ifndef SKIP_SONAME
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 endif
 endif
+endif
 	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
 	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+ifndef SKIP_SONAME
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+endif
 endif
 endif
 
@@ -127,8 +132,10 @@ cleantarget:
 	$(call rm,$(TARGET))
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
+ifndef SKIP_SONAME
 	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
 	$(call rm,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
 endif
 endif
 

@@ -137,6 +137,9 @@ LIBS += \
 else
 OFLAGS += \
 	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),)
+
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN/../../ecrt/lib',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 ifdef LINUX_TARGET
@@ -177,10 +180,12 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 	$(STRIP) $(STRIPOPT) $(TARGET)
+ifndef SKIP_SONAME
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
 	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
+endif
 endif
 endif
 	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))

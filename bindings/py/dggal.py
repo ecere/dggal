@@ -1,4 +1,4 @@
-from eCSDK.ecrt import *
+from ecrt import *
 from _pydggal import *
 
 class GeoPoint(Struct):
