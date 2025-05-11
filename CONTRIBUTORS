@@ -1,0 +1,20 @@
+The Discrete Global Grid Abstraction Library was developed and is being maintained by Jérôme Jacovella-St-Louis at Ecere Corporation.
+
+Significant progress was achieved as part of a number of initiatives including:
+
+- the Open Geospatial Consortium (OGC) Federated Marine Spatial Data Infrastructure - Phase 3 (FMSDI-3) pilot project ( https://docs.ogc.org/per/23-010.html ),
+- the Ecere GeoConnections 2020-2021 project entitled "Flexible real-time data processing and visualization workflows emerging from OGC API modules" ("Modular OGC API Workflows" a.k.a "MOAW"), and
+- the Ecere GeoConnections 2025-2027 project entitled "Advancing and Implementing OGC Standards for GeoDataCubes, DGGSs, Data Stores for Digital Twins and Cartographic Symbology").
+
+Special thanks to Perry Peterson, Matthew Purss, Robert Gibb, Idan Shatz, Marta Padilla Ruiz, Brenton R S Recht, Kevin Sahr,
+Alexander Kmoch, Luís Moreira de Sousa, and Daniel Strebe for several insights making DGGAL possible.
+
+Acknowledgements
+
+Financial support provided by GeoConnections, a national collaborative initiative led by Natural Resources Canada.
+GeoConnections supports the modernization of the Canadian Geospatial Data Infrastructure (CGDI).
+The CGDI is the collection of geospatial data, standards, policies, applications, and governance that facilitate its access, use, integration, and preservation.
+
+Soutien financier fourni par GéoConnexions, une initiative de collaboration nationale dirigée par Ressources naturelles Canada.
+GéoConnexions appuie la modernisation de l'Infrastructure canadienne de données géospatiales (ICDG).
+L'ICDG est l'ensemble de données géospatiales, de normes, de politiques, d'applications et de la gouvernance qui en facilitent l'accès, l'utilisation, l'intégration et la préservation.

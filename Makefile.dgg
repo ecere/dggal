@@ -109,7 +109,11 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
-	$(call _L,ecrt)
+	$(call _L,ecrt) $(call _L,dggal)
+
+OFLAGS += -L$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN/../lib:$$ORIGIN/../../ecrt/lib',)
+OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
 
 PRJ_CFLAGS += \

@@ -15,11 +15,16 @@ all: dgg
 
 dggal:
 	+$(_MAKE) -f Makefile.dggal
+# NOTE: Still building the library itself which will not need the .a libraries
+#ifndef DISABLED_STATIC_BUILDS
 	+$(_MAKE) -f Makefile.dggal.static
+#endif
 
 dgg: dggal
 	+$(_MAKE) -f Makefile.dgg
+ifndef DISABLED_STATIC_BUILDS
 	+$(_MAKE) -f Makefile.dgg.static
+endif
 
 test: all
 	+cd tests && $(_MAKE) test
