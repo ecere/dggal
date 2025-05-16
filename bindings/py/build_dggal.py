@@ -39,14 +39,17 @@ sys.path.append(bindings_py_dir)
 
 ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUFFIX')
 
-ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+try:
+   ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+   incdir_ecrt = os.path.join(ecdev_location, 'include')
+   ecrt_location = os.path.join(ecdev_location, syslibdir)
+except:
+   incdir_ecrt = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'py')
+   ecrt_location = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'obj', sysdir, syslibdir)
 # ecrt_location = os.path.join(pkg_resources.get_distribution("ecrt").location, 'ecrt', '.lib')
-ecrt_location = os.path.join(ecdev_location, syslibdir)
-
-incdir_ecrt = path.join(ecdev_location, 'include')
 
 ffi_ecrt = FFI()
-ffi_ecrt.cdef(open(path.join(ecdev_location, 'include', 'cffi-ecrt.h')).read())
+ffi_ecrt.cdef(open(path.join(incdir_ecrt, 'cffi-ecrt.h')).read())
 
 extra_link_args = ["-Wl,-rpath,$ORIGIN/lib:$ORIGIN/ecrt/lib"]
 if sys.platform == 'win32':

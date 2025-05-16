@@ -92,8 +92,6 @@ echo "********** DGGAL for Python **********"
 echo "**************************************"
 echo "Building DGGAL for Python..."
 cd bindings/py
-mkdir eCSDK
-ln -s ../ecrt.py eCSDK/
 python3 build_ecrt.py
 python3 build_dggal.py
 echo "Execution test for DGGAL sample Python application:"
