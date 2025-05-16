@@ -92,8 +92,6 @@ echo ********** DGGAL for Python **********
 echo **************************************
 echo Building DGGAL for Python...
 cd bindings\py
-mkdir eCSDK
-copy ecrt.py eCSDK\
 python build_ecrt.py
 python build_dggal.py
 echo Execution test for DGGAL sample Python application:

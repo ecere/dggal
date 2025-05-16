@@ -78,8 +78,6 @@ cd ../..
 
 ```
 cd bindings/py
-mkdir eCSDK
-ln -s ../ecrt.py eCSDK/
 python3 build_ecrt.py
 python3 build_dggal.py
 export PYTHONPATH=$(pwd)

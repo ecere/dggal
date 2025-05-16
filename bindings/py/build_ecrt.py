@@ -87,13 +87,13 @@ ffi_ecrt.set_source('_pyecrt',
                extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
                include_dirs=[path.join(owd, rel), incdir],
                libraries=libs,
-               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/eCSDK/lib",],
+               extra_link_args=["-Wl,-rpath,$ORIGIN/lib,-rpath,$ORIGIN/ecrt/lib",],
                library_dirs=[path.join(owd, libdir), path.join(esdkDir, 'obj', sysdir, syslibdir)],
                py_limited_api=False)
 if __name__ == '__main__':
    V = os.getenv('V')
    v = True if V == '1' or V == 'y' else False
-   ffi_ecrt.compile(verbose=v,tmpdir='.',debug=True)
+   ffi_ecrt.compile(verbose=v,tmpdir='.',debug=False)
 
 if dnf != '':
    os.chdir(owd)
