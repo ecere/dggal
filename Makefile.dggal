@@ -64,10 +64,12 @@ _ECSOURCES = \
 	src/dggrs/BCTA3H.ec \
 	src/dggrs/RTEA3H.ec \
 	src/dggrs/RTEA9R.ec \
+	src/dggrs/rHEALPixGrid.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
 	src/projections/icoVertexGreatCircle.ec \
+	src/projections/rHEALPix.ec \
 	src/dggsJSON/dggsJSON.ec \
 	src/dggsJSON/JSONSchema.ec \
 	$(ECERE_SDK_SRC)/eda/libeda/src/fieldValue.ec \
@@ -232,6 +234,9 @@ $(OBJ)RTEA3H.sym: src/dggrs/RTEA3H.ec
 $(OBJ)RTEA9R.sym: src/dggrs/RTEA9R.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA9R.ec) -o $(call quote_path,$@)
 
+$(OBJ)rHEALPixGrid.sym: src/dggrs/rHEALPixGrid.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/rHEALPixGrid.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -243,6 +248,9 @@ $(OBJ)barycentric5x6.sym: src/projections/barycentric5x6.ec
 
 $(OBJ)icoVertexGreatCircle.sym: src/projections/icoVertexGreatCircle.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/icoVertexGreatCircle.ec) -o $(call quote_path,$@)
+
+$(OBJ)rHEALPix.sym: src/projections/rHEALPix.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/rHEALPix.ec) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON.sym: src/dggsJSON/dggsJSON.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@)
@@ -297,6 +305,9 @@ $(OBJ)RTEA3H.c: src/dggrs/RTEA3H.ec $(OBJ)RTEA3H.sym | $(SYMBOLS)
 $(OBJ)RTEA9R.c: src/dggrs/RTEA9R.ec $(OBJ)RTEA9R.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA9R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)rHEALPixGrid.c: src/dggrs/rHEALPixGrid.ec $(OBJ)rHEALPixGrid.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/rHEALPixGrid.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -308,6 +319,9 @@ $(OBJ)barycentric5x6.c: src/projections/barycentric5x6.ec $(OBJ)barycentric5x6.s
 
 $(OBJ)icoVertexGreatCircle.c: src/projections/icoVertexGreatCircle.ec $(OBJ)icoVertexGreatCircle.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/icoVertexGreatCircle.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)rHEALPix.c: src/projections/rHEALPix.ec $(OBJ)rHEALPix.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/rHEALPix.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)dggsJSON.c: src/dggsJSON/dggsJSON.ec $(OBJ)dggsJSON.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -362,6 +376,9 @@ $(OBJ)RTEA3H$(O): $(OBJ)RTEA3H.c
 $(OBJ)RTEA9R$(O): $(OBJ)RTEA9R.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA9R.c) -o $(call quote_path,$@)
 
+$(OBJ)rHEALPixGrid$(O): $(OBJ)rHEALPixGrid.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)rHEALPixGrid.c) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)
 
@@ -373,6 +390,9 @@ $(OBJ)barycentric5x6$(O): $(OBJ)barycentric5x6.c
 
 $(OBJ)icoVertexGreatCircle$(O): $(OBJ)icoVertexGreatCircle.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)icoVertexGreatCircle.c) -o $(call quote_path,$@)
+
+$(OBJ)rHEALPix$(O): $(OBJ)rHEALPix.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)rHEALPix.c) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON$(O): $(OBJ)dggsJSON.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dggsJSON.c) -o $(call quote_path,$@)

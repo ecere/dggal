@@ -14,6 +14,7 @@ CRS resolveCRSString(const String crsOption)
              !strcmpi(crsOption, "rtea")) crs = { ogc, 1534 };
       else if(!strcmpi(crsOption, "OGC:CRS84")) crs = { ogc, 84 };
       else if(!strcmpi(crsOption, "EPSG:4326")) crs = { epsg, 4326 };
+      else if(!strcmpi(crsOption, "rhp")) crs = { ogc, 99999 };
    }
    return crs;
 }

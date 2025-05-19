@@ -92,7 +92,8 @@
                   "IVEA9R.ec",
                   "BCTA3H.ec",
                   "RTEA3H.ec",
-                  "RTEA9R.ec"
+                  "RTEA9R.ec",
+                  "rHEALPixGrid.ec"
                ]
             },
             {
@@ -101,7 +102,8 @@
                   "ri5x6.ec",
                   "authalic.ec",
                   "barycentric5x6.ec",
-                  "icoVertexGreatCircle.ec"
+                  "icoVertexGreatCircle.ec",
+                  "rHEALPix.ec"
                ]
             },
             {

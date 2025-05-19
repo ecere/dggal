@@ -97,6 +97,8 @@ public struct GeoExtent
 {
    GeoPoint ll, ur;
 
+   property bool nonNull { get { return ur.lat >= ll.lat && ur.lon >= ll.lon; } }
+
    void clear()
    {
       ll = { MAXDOUBLE, MAXDOUBLE };
@@ -144,5 +146,100 @@ public struct GeoExtent
              (Radians)b.ll.lat < (Radians)ur.lat - radEpsilon &&
              (Radians)ll.lon < (Radians)b.ur.lon - radEpsilon &&
              (Radians)b.ll.lon < (Radians)ur.lon - radEpsilon;
+   }
+
+   bool clip(const GeoExtent e, const GeoExtent clipExtent)
+   {
+      if(e.intersects(clipExtent))
+      {
+         this = e;
+         if (ll.lat < clipExtent.ll.lat) ll.lat = clipExtent.ll.lat;
+         if (ll.lon < clipExtent.ll.lon) ll.lon = clipExtent.ll.lon;
+         if (ur.lat > clipExtent.ur.lat) ur.lat = clipExtent.ur.lat;
+         if (ur.lon > clipExtent.ur.lon) ur.lon = clipExtent.ur.lon;
+         return true;
+      }
+      else
+         clear();
+      return false;
+   }
+
+   void doUnionDL(const GeoExtent e)
+   {
+      if(ll.lon > 10000)
+         this = e;
+      else if(e.ll.lon < 10000)
+      {
+         if(e.ll.lat < ll.lat) ll.lat = e.ll.lat;
+         if(e.ur.lat > ur.lat) ur.lat = e.ur.lat;
+
+         {
+            bool empty = fabs(e.ur.lon - e.ll.lon) <= radEpsilon;
+            Radians dLLon = fabs((Radians)e.ur.lon - (Radians)ll.lon);
+            Radians dRLon = fabs((Radians)e.ll.lon - (Radians)ur.lon);
+            Radians curDLon = ur.lon - ll.lon + (ll.lon > ur.lon ? 2 * Pi : 0);
+            if(dLLon > Pi) dLLon = fabs(dLLon - 2*Pi);
+            if(dRLon > Pi) dRLon = fabs(dRLon - 2*Pi);
+
+            if(dRLon < dLLon)
+            {
+               if(e.ur.lon > ur.lon || (e.ur.lon <= ll.lon && ur.lon > ll.lon))
+                  ur.lon = e.ur.lon;
+               if(ur.lon > ll.lon && e.ll.lon < ll.lon)
+                  ll.lon = e.ll.lon;
+            }
+            else
+            {
+               if(e.ll.lon < ll.lon || (e.ll.lon >= ur.lon && ll.lon < ur.lon))
+                  ll.lon = e.ll.lon;
+               if(ur.lon > ll.lon && e.ur.lon > ur.lon)
+                  ur.lon = e.ur.lon;
+            }
+            if(!empty && (Radians)ur.lon - (Radians)ll.lon + (((Radians)ll.lon < (Radians)ur.lon) ? 2 * Pi : 0) < curDLon)
+            {
+               ll.lon = -180, ur.lon = 180;
+               if(ll.lat < 0) ll.lat = -90;
+               if(ur.lat > 0) ur.lat =  90;
+            }
+         }
+      }
+   }
+
+   bool clipHandlingDateline(const GeoExtent e, const GeoExtent clipExtent)
+   {
+      if(e.intersects(clipExtent))
+      {
+         if(e.ll.lon < MAXDOUBLE && e.ll.lon > e.ur.lon)
+         {
+            GeoExtent a { { e.ll.lat, e.ll.lon }, { e.ur.lat, 180 } };
+            GeoExtent c { { e.ll.lat, -180 }, { e.ur.lat, e.ur.lon } };
+            GeoExtent tmp;
+            tmp.clipHandlingDateline(a, clipExtent);
+            clipHandlingDateline(c, clipExtent);
+            doUnionDL(tmp);
+         }
+         else if(clipExtent.ll.lon < MAXDOUBLE && clipExtent.ll.lon > clipExtent.ur.lon)
+         {
+            GeoExtent a { { clipExtent.ll.lat, clipExtent.ll.lon }, { clipExtent.ur.lat, 180 } };
+            GeoExtent c { { clipExtent.ll.lat, -180 }, { clipExtent.ur.lat, clipExtent.ur.lon } };
+            GeoExtent r1, r2;
+            r1.clip(a, e);
+            r2.clip(c, e);
+            this = r1;
+            doUnionDL(r2);
+         }
+         else
+         {
+            this = e;
+            if (ll.lat < clipExtent.ll.lat) ll.lat = clipExtent.ll.lat;
+            if (ll.lon < clipExtent.ll.lon) ll.lon = clipExtent.ll.lon;
+            if (ur.lat > clipExtent.ur.lat) ur.lat = clipExtent.ur.lat;
+            if (ur.lon > clipExtent.ur.lon) ur.lon = clipExtent.ur.lon;
+            return true;
+         }
+      }
+      else
+         clear();
+      return false;
    }
 };

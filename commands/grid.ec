@@ -28,21 +28,24 @@ int generateGrid(DGGRS dggrs, int level, Map<String, const String> options)
    if(!exitCode)
    {
       Array<DGGRSZone> zones = dggrs.listZones(level, bbox);
-      if(compact)
-         dggrs.compactZones(zones);
-
-      PrintLn("{");
-      PrintLn("   \"type\": \"FeatureCollection\",");
-      Print  ("   \"features\": [ ");
-      for(z : zones)
+      if(zones)
       {
-         Print(id > 1 ? ", " : "   ");
-         generateZoneFeature(dggrs, z, crs, id++, centroids, true, null);
-      }
-      PrintLn(" ]");
-      PrintLn("}");
+         if(compact)
+            dggrs.compactZones(zones);
 
-      delete zones;
+         PrintLn("{");
+         PrintLn("   \"type\": \"FeatureCollection\",");
+         Print  ("   \"features\": [ ");
+         for(z : zones)
+         {
+            Print(id > 1 ? ", " : "   ");
+            generateZoneFeature(dggrs, z, crs, id++, centroids, true, null);
+         }
+         PrintLn(" ]");
+         PrintLn("}");
+
+         delete zones;
+      }
    }
    return 0;
 }

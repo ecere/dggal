@@ -23,7 +23,7 @@ static void showSyntax()
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
       "Supported DGGRSs:\n"
-      "   GNOSIS (Global Grid), ISEA3H, ISEA9R, IVEA3H, IVEA9R, RTEA3H, RTEA9R\n"
+      "   GNOSIS (Global Grid), ISEA3H, ISEA9R, IVEA3H, IVEA9R, RTEA3H, RTEA9R, rHEALPix (A9)\n"
       "\n"
       "Commands:\n"
       "   info       [zone]\n"
@@ -56,11 +56,11 @@ static void showSyntax()
       "     Output to file instead of standard output\n"
       "   -crs <crs>\n"
       "     Select an output coordinate reference system, one of:\n"
-      "        EPSG:4326, OGC:CRS84, 5x6, ico (icosahedron net)\n"
+      "        EPSG:4326, OGC:CRS84, 5x6, ico (icosahedron net), rhp (rHEALPix)\n"
       "   -depth <relative depth>\n"
       "      For sub, specify relative depth\n"
       "      Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels\n"
-      "        default: depth corresponding to ~64K sub-zones (IS/VEA9R: 5, IS/VEA3H: 10, GNOSIS: 8)\n"
+      "        default: depth corresponding to ~64K sub-zones (IS/VEA9R: 5, IS/VEA3H: 10, GNOSIS: 8, rHEALPix: 5)\n"
       "   -bbox <llLat,llLon,urLat,urLon>\n"
       "      Specify extent for which to list zones, generate grid, or reference extent for -pixels\n"
       "      example: -bbox 60,-120,62,-118 -- specified in EPSG:4326 (lat,lon)\n"
@@ -110,6 +110,7 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
+      else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPIx")) dggrsClass = class(rHEALPix), cmdArg = 1;
 
       for(a = 1; !syntaxError && a < argc; a++)
       {
@@ -144,6 +145,7 @@ class DGGAL : Application
                   else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
                   else if(!strcmpi(arg, "RTEA3H"))   dggrsClass = class(RTEA3H);
                   else if(!strcmpi(arg, "RTEA9R"))   dggrsClass = class(RTEA9R);
+                  else if(!strcmpi(arg, "rHEALPIx")) dggrsClass = class(rHEALPix);
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
                   else

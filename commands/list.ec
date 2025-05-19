@@ -16,7 +16,7 @@ bool parseBBox(Map<String, const String> options, GeoExtent bbox)
          b.OnGetDataFromString(tokens[1]) &&
          c.OnGetDataFromString(tokens[2]) &&
          d.OnGetDataFromString(tokens[3]) &&
-         a < 90 && a > -90)
+         a < 90 && a >= -90 && c <= 90 && c > -90)
          bbox = { { a, b }, { c, d } };
       else
       {

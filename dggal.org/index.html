@@ -19,6 +19,12 @@ the <a href='https://docs.ogc.org/DRAFTS/21-038r1.html'>OGC API - DGGS Standard<
 
 <h3><a href='https://github.com/ecere/dggal/blob/main/LICENSE'>License: BSD-3</a></h3>
 
+<h2>Installation from PyPI</h2>
+
+Both a source distribution and built distribution for Linux and Windows, including the <code>dgg</code> utility and Python bindings are available <a href='https://pypi.org/project/dggal/'>from PyPI</a> and can be installed with:
+<br/><br/>
+<code>pip install dggal</code>
+
 <h2>Supported Discrete Global Grid Reference Systems</h2>
 
 DGGAL currently supports all three DGGRS described in <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def'>OGC API - DGGS Annex B</a>, as well as additional DGGRSs:
@@ -28,50 +34,27 @@ DGGAL currently supports all three DGGRS described in <a href='https://docs.ogc.
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs'>ISEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 <li> <b>IVEA3H</b>: An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Vertex-oriented Great Circle Equal Area (tentatively called IVEA) projection based on <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slice & Dice (2006)</a>, using the same global indexing and sub-zone ordering as for ISEA3H
 <li> <b>IVEA9R</b>: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+<li> <b>RTEA3H</b>: An equal area hexagonal grid with a refinement ratio of 3 defined in the Rhombic Triacontahedron Equal Area (RTEA) projection, a configuration of the Slice & Dice great circle projection equivalent to applying Snyder's projection to the RT, using the same global indexing and sub-zone ordering as for ISEA3H
+<li> <b>RTEA9R</b>: An equal area rhombic grid with a refinement ratio of 9 defined in the RTEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+<li> <a href='https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012'>rHEALPix</a>: An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection (using same parameters as default <a href='https://proj.org/en/stable/operations/projections/rhealpix.html'>PROJ implementation</a>) with the original hierarchical indexing and scanline-based sub-zone ordering
 </ul>
 
 <h2>libDGGAL <a href='docs/html/dggal/Classes/DGGRS.html'>API documentation</a></h2>
+
+The API documentation can be <a href='https://dggal.org/docs/html/dggal/Classes/DGGRS.html'>found here</a>.
+<br/><br/>
 
 The <code>DGGRS</code> class provides most of the functionality of the library, allowing to resolve DGGRS zones by textual ID to a unique 64-bit zone integer identifier (<code>DGGRSZone</code>).
 The geometry and sub-zones of a particular zone can also be queried.
 The concept of <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#term-sub-zone'>sub-zones</a> is key to encoding both vector and raster geospatial data quantized to a DGGRS.
 The DGGAL library also allows to resolve a sub-zone index at a particular depth from a parent zone, allowing to read DGGS-optimized data such as
 <a href='http://dggs-json.org'>DGGS-JSON</a> and <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg'>DGGS-JSON-FG</a>.
-<br/><br/>
-A very early draft of the API documentation can be <a href='https://dggal.org/docs/html/dggal/Classes/DGGRS.html'>found here</a>.
-<br/><br/>
+
+<h2>Language bindings</h2>
+
 While the library is written in the <a href='https://ec-lang.org'>eC programming language</a>, object-oriented bindings for C, C++ and Python generated using the
 Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Partial bindings for rust are available as well.
 Support for additional languages may be added in the future.
-
-<h3>Pre-built binaries</h3>
-
-The pre-built binaries for Linux and Windows include the <code>dgg</code> utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
-<br/><br/>
-The <a href='https://ecere.org'>Ecere SDK</a> should be installed to use the dynamically linked version.
-
-<h4>Version 0.0.1 - build #42</h4>
-
-<ul>
-<li><a href='binaries/dggal-v0.0.1-b42-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
-<li><a href='binaries/dggal-v0.0.1-b42-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
-</ul>
-
-<h4>Ecere SDK binaries (build 275)</h4>
-
-The following recent pre-built binaries from the <a href='https://ecere.org'>Ecere SDK</a> can be installed to use the dynamically linked version:
-
-<ul>
-<li><a href='binaries/ecere-sdk-b275-binaries-linux-x86_64.tar.gz'>Linux 64-bit</a></li>
-<li><a href='binaries/ecere-sdk-b275-binaries-windows-x86_64.tar.gz'>Windows 64-bit</a></li>
-</ul>
-
-The dynamic libraries are needed to build eC applications making use of the library, re-generate the bindings, generate the documentation, or to use the binaries or bindings built with a dependency on them.<br/><br/>
-
-<a href='https://curl.se/download.html'>cURL</a> and/or OpenSSL (<a href='https://slproweb.com/products/Win32OpenSSL.html'>for Windows</a>) dynamic libraries may also be required to be installed,
-as these are currently dependencies of <em>libecere</em> which includes HTTPS support.<br/><br/>
-
-A future version of the Ecere SDK will be better modularized so as to avoid these dependencies from the dynamic DGGAL library.
 
 <h3>C Bindings</h3>
 
@@ -112,6 +95,9 @@ A rust example using the DGGAL rust bindings is <a href='https://github.com/ecer
 <li> <code>isea9r</code>
 <li> <code>ivea3h</code>
 <li> <code>ivea9r</code>
+<li> <code>rtea3h</code>
+<li> <code>rtea9r</code>
+<li> <code>rhealpix</code> (aperture 9)
 </ul>
 
 <h3>Commands</h3>

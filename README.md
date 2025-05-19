@@ -5,6 +5,12 @@
 DGGAL provides a common interface to perform various operations on Discrete Global Grid Reference Systems (DGGRS), facilitating the implementation of Discrete Global Grid Systems (DGGS),
 including implementing Web APIs based on the [OGC API - DGGS Standard](https://docs.ogc.org/DRAFTS/21-038r1.html).
 
+## Installation from PyPI
+
+Both a source distribution and built distribution for Linux and Windows, including the `dgg` utility and Python bindings are available [from PyPI](https://pypi.org/project/dggal/) and can be installed with:
+
+`pip install dggal`
+
 ## Supported Discrete Global Grid Reference Systems
 
 DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
@@ -14,8 +20,13 @@ DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](h
 * [ISEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 * **IVEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Vertex-oriented Great Circle Equal Area (tentatively called IVEA) projection based on [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), using the same global indexing and sub-zone ordering as for ISEA3H
 * **IVEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+* **RTEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Rhombic Triacontahedron Equal Area (RTEA) projection, a configuration of the Slice & Dice great circle projection equivalent to applying Snyder's projection to the RT, using the same global indexing and sub-zone ordering as for ISEA3H
+* **RTEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the RTEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+* [rHEALPix](https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection (using same parameters as default [PROJ implementation](https://proj.org/en/stable/operations/projections/rhealpix.html)) with the original hierarchical indexing and scanline-based sub-zone ordering
 
 ## libDGGAL API Documentation
+
+The API documentation can be [found here](https://dggal.org/docs/html/dggal/Classes/DGGRS.html).
 
 The `DGGRS` class provides most of the functionality of the library, allowing to resolve DGGRS zones by textual ID to a unique 64-bit zone integer identifier (`DGGRSZone`).
 The geometry and sub-zones of a particular zone can also be queried.
@@ -23,36 +34,11 @@ The concept of [sub-zones](https://docs.ogc.org/DRAFTS/21-038r1.html#term-sub-zo
 The DGGAL library also allows to resolve a sub-zone index at a particular depth from a parent zone, allowing to read DGGS-optimized data such as
 [DGGS-JSON](http://dggs-json.org) and [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg).
 
-A very early draft of the API documentation can be [found here](https://dggal.org/docs/html/dggal/Classes/DGGRS.html).
+## Language Bindings
 
 While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
 Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Partial bindings for rust are available as well.
 Support for additional languages may be added in the future.
-
-## Pre-built binaries
-
-The pre-built binaries for Linux and Windows include the `dgg` utility (as both statically and dynamically linked binaries) as well as the DGGAL library (also as both a static and dynamic library).
-
-The [Ecere SDK](https://ecere.org) should be installed to use the dynamically linked version.
-
-### Version 0.0.1 - build #42
-
-* [Linux 64-bit](https://dggal.org/binaries/dggal-v0.0.1-b42-linux-x86_64.tar.gz)
-* [Windows 64-bit](https://dggal.org/binaries/dggal-v0.0.1-b42-windows-x86_64.tar.gz)
-
-### Ecere SDK binaries (build 275)
-
-The following recent pre-built binaries from the [Ecere SDK](https://ecere.org) can be installed to use the dynamically linked version:
-
-* [Linux 64-bit](https://dggal.org/binaries/ecere-sdk-b275-binaries-linux-x86_64.tar.gz)
-* [Windows 64-bit](https://dggal.org/binaries/ecere-sdk-b275-binaries-windows-x86_64.tar.gz)
-
-The dynamic libraries are needed to build eC applications making use of the library, re-generate the bindings, generate the documentation, or to use the binaries or bindings built with a dependency on them.
-
-[cURL](https://curl.se/download.html) and/or OpenSSL ([for Windows](https://slproweb.com/products/Win32OpenSSL.html)) dynamic libraries may also be required to be installed,
-as these are currently dependencies of <em>libecere</em> which includes HTTPS support.
-
-A future version of the Ecere SDK will be better modularized so as to avoid these dependencies from the dynamic DGGAL library.
 
 ### C Bindings
 
@@ -91,6 +77,9 @@ A rust example using the DGGAL rust bindings is [available here](https://github.
 * `isea9r`
 * `ivea3h`
 * `ivea9r`
+* `rtea3h`
+* `rtea9r`
+* `rhealpix` (aperture 9)
 
 ### Commands
 
