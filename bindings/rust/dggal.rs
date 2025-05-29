@@ -10,8 +10,33 @@ use std::ffi::CStr;
 use std::ffi::c_void;
 use std::slice;
 use std::mem;
+use std::f64::consts::PI;
 
-// *** This code should be moved to / generated inside the DGGAL rust bindings
+///// This will eventually move to the ecrt crate
+pub fn tokenizeWith<const MAX_TOKENS: usize>(string: &str, tokenizers: &str, escapeBackSlashes: bool) -> Vec<String>
+{
+   let mut tokens : Vec<String>;
+   unsafe
+   {
+      let mut buffer = Vec::from(string.as_bytes());
+      buffer.push(0);
+      let cString: *mut i8 = buffer.as_mut_ptr() as *mut i8;
+      let cTokenizers = CString::new(tokenizers).unwrap();
+      let mut tokensArray: [*mut i8; MAX_TOKENS] = [nullPtr as *mut i8; MAX_TOKENS]; // REVIEW: Any way to avoid this initialization?
+
+      let nTokens: i32 = ecrt_sys::tokenizeWith.unwrap()(cString, MAX_TOKENS as i32, tokensArray.as_mut_ptr(), cTokenizers.as_ptr(), escapeBackSlashes as u32);
+
+      tokens = Vec::new();
+      tokens.reserve(nTokens as usize);
+      tokens.set_len(nTokens as usize);
+      for i in 0..nTokens {
+         tokens[i as usize] = CStr::from_ptr(tokensArray[i as usize]).to_str().unwrap().to_string();
+      }
+   }
+   tokens
+}
+/////
+
 pub const nullZone : dggal_sys::DGGRSZone = 0xFFFFFFFFFFFFFFFFu64;
 pub const nullInst : ecrt_sys::Instance = 0 as ecrt_sys::Instance;
 pub const nullVTbl : *mut *mut c_void = 0 as *mut *mut c_void;
@@ -20,6 +45,11 @@ pub const nullPtr : *mut c_void = 0 as *mut c_void;
 pub type GeoPoint = dggal_sys::GeoPoint;
 pub type GeoExtent = dggal_sys::GeoExtent;
 pub type DGGRSZone = dggal_sys::DGGRSZone;
+
+pub const wholeWorld: GeoExtent = GeoExtent {
+   ll: GeoPoint { lat: -90.0 * PI / 180.0, lon : -180.0 * PI / 180.0 },
+   ur: GeoPoint { lat:  90.0 * PI / 180.0, lon :  180.0 * PI / 180.0 }
+};
 
 pub struct DGGRS {
    imp: dggal_sys::DGGRS,
@@ -67,7 +97,7 @@ impl DGGAL {
          let c = ecrt_sys::__eCNameSpace__eC__types__eSystem_FindClass(self.mDGGAL, dggrsName.as_ptr());
 
          if c != nullVTbl as * mut ecrt_sys::Class {
-            Some(DGGRS { imp: ecrt_sys::__eCNameSpace__eC__types__eInstance_New(c) as dggal_sys::DGGRS, mDGGAL: self as *const _ as *mut _ })
+            Some(DGGRS { imp: ecrt_sys::__eCNameSpace__eC__types__eInstance_New(c) as dggal_sys::DGGRS, mDGGAL: self.mDGGAL })
          }
          else {
             None
@@ -733,7 +763,7 @@ impl DGGRS {
       extent
    }
 
-   pub fn compactZones(&self, mut zones: Vec<dggal_sys::DGGRSZone>)
+   pub fn compactZones(&self, zones: &mut Vec<dggal_sys::DGGRSZone>)
    {
       unsafe
       {
@@ -758,6 +788,7 @@ impl DGGRS {
                n = (*am).count as usize;
                a = (*am).array;
 
+               zones.reserve(n);
                zones.set_len(n);
                ecrt_sys::memcpy(zones.as_ptr() as *mut c_void, a as *const c_void, (mem::size_of::<dggal_sys::DGGRSZone>() * n) as std::os::raw::c_ulong);
 
