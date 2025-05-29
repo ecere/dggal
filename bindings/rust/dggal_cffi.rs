@@ -199,7 +199,7 @@ const _: () = {
         /*unsafe*/ extern "C" fn(
             __this: DGGRS,
             extent: *const GeoExtent,
-            pixels: *mut Point,
+            pixels: *const Point,
             relativeDepth: ::std::os::raw::c_int,
         ) -> ::std::os::raw::c_int,
     >;

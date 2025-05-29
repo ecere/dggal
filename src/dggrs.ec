@@ -306,7 +306,7 @@ public:
       return sqrt(getRefZoneArea(parentLevel + relativeDepth));
    }
 
-   int getLevelFromPixelsAndExtent(const GeoExtent extent, Point pixels, int relativeDepth)
+   int getLevelFromPixelsAndExtent(const GeoExtent extent, const Point pixels, int relativeDepth)
    {
       // REVIEW: Fix support for extent crossing dateline
       double diffLat = (double)(Degrees)(extent.ur.lat - extent.ll.lat);

@@ -90,7 +90,7 @@
          returnValue = "True if the two zones overlap"
       }},
       {"doesZoneContain", {
-         description = "Check whether a zone contains another zone ",
+         description = "Check whether a zone contains another zone",
          remarks = "A zone contains another if the contained zone is a sub-zone of the containing zone, and not a sub-zone of any neighbor of the containing zone.",
          parameters = [
             {"hayStack", {
@@ -227,7 +227,7 @@
       }},
       {"getRefZoneArea", {
          description = "Return the reference area specified in meters squared for a particular refinement level",
-         remarks = "The reference zone area is the ellipsoid surface area divided by the number of zones at a paritcular refinement level.",
+         remarks = "The reference zone area is the ellipsoid surface area divided by the number of zones at a particular refinement level.",
          parameters = [
             {"level", {
                description = "The refinement level",
