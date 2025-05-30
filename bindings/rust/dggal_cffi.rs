@@ -2,7 +2,22 @@
 
 extern crate ecrt_sys;
 
-use ecrt_sys::*;
+// use ecrt_sys::*;
+use ecrt_sys::uint64;
+use ecrt_sys::bool_;
+use ecrt_sys::Instance;
+use ecrt_sys::Class;
+use ecrt_sys::Method;
+use ecrt_sys::Property;
+use ecrt_sys::Module;
+use ecrt_sys::Angle;
+use ecrt_sys::Point;
+use ecrt_sys::Pointd;
+use ecrt_sys::String;
+use ecrt_sys::Array;
+use ecrt_sys::Map;
+use ecrt_sys::FieldValue;
+use ecrt_sys::File;
 
 pub const DGGAL_MODULE_NAME: &[u8; 6] = b"dggal\0";
 pub const nullZone: i32 = -1;

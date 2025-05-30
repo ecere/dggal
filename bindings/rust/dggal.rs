@@ -11,8 +11,61 @@ use std::ffi::c_void;
 use std::slice;
 use std::mem;
 use std::f64::consts::PI;
+use std::ops::Deref;
 
 ///// This will eventually move to the ecrt crate
+#[macro_export] macro_rules! define_bitclass {
+   (
+      $name:ident, $base_type:ty,
+      $(
+         $field:ident => {
+            set: $set:ident,
+            is_bool: $bool_token:tt,
+            type: $field_type:ty,
+            prim_type: $prim_type:ty,
+            mask: $mask:expr,
+            shift: $shift:expr
+         }
+      ),* $(,)?
+    ) => {
+      #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+      pub struct $name(pub $base_type);
+      impl PartialEq<$base_type> for $name {
+          fn eq(&self, other: &$base_type) -> bool {
+              self.0 == *other
+          }
+      }
+      impl From<$name> for $base_type {
+         fn from(t: $name) -> Self { t.0 }
+      }
+      impl Deref for $name {
+          type Target = $base_type;
+
+          fn deref(&self) -> &Self::Target {
+              &self.0
+          }
+      }
+
+      impl $name {
+         $(
+            pub fn $set(&mut self, value: $field_type) {
+               self.0 = (self.0 & !($mask as $base_type)) | ((value as $base_type) << $shift) & ($mask as $base_type);
+            }
+            pub fn $field(&self) -> $field_type {
+               let prim: $prim_type = ((self.0 & ($mask as $base_type)) >> $shift) as $prim_type;
+               define_bitclass!(@get $bool_token, prim, $field_type, $prim_type)
+            }
+         )*
+      }
+   };
+   (@get true, $value:expr, $field_type:ty, $prim_type:ty) => {
+      $value != 0
+   };
+   (@get false, $value:expr, $field_type:ty, $prim_type:ty) => {
+      unsafe { std::mem::transmute::<$prim_type, $field_type>($value) }
+   };
+}
+
 pub fn tokenizeWith<const MAX_TOKENS: usize>(string: &str, tokenizers: &str, escapeBackSlashes: bool) -> Vec<String>
 {
    let mut tokens : Vec<String>;
@@ -35,6 +88,39 @@ pub fn tokenizeWith<const MAX_TOKENS: usize>(string: &str, tokenizers: &str, esc
    }
    tokens
 }
+
+#[repr(i32)]
+pub enum FieldType {
+   Integer = ecrt_sys::FieldType_FieldType_integer,
+   Real = ecrt_sys::FieldType_FieldType_real,
+   Text = ecrt_sys::FieldType_FieldType_text,
+   Blob = ecrt_sys::FieldType_FieldType_blob,
+   Nil = ecrt_sys::FieldType_FieldType_nil,
+   Array = ecrt_sys::FieldType_FieldType_array,
+   Map = ecrt_sys::FieldType_FieldType_map
+}
+
+#[repr(i32)]
+pub enum FieldValueFormat {
+   // Decimal = ecrt_sys::FieldValueFormat_FieldValueFormat_decimal, // Same as Unset
+   Unset = ecrt_sys::FieldValueFormat_FieldValueFormat_unset,
+   Hex = ecrt_sys::FieldValueFormat_FieldValueFormat_hex,
+   Octal = ecrt_sys::FieldValueFormat_FieldValueFormat_octal,
+   Binary = ecrt_sys::FieldValueFormat_FieldValueFormat_binary,
+   Exponential = ecrt_sys::FieldValueFormat_FieldValueFormat_exponential,
+   Boolean = ecrt_sys::FieldValueFormat_FieldValueFormat_boolean,
+   TextObj = ecrt_sys::FieldValueFormat_FieldValueFormat_textObj,
+   Color = ecrt_sys::FieldValueFormat_FieldValueFormat_color,
+}
+
+define_bitclass! { FieldTypeEx, ecrt_sys::FieldTypeEx,
+   type_ =>      { set: set_type,        is_bool: false,  type: FieldType,        prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_type_MASK,       shift: ecrt_sys::FIELDTYPEEX_type_SHIFT },
+   mustFree =>   { set: set_mustFree,    is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_mustFree_MASK,   shift: ecrt_sys::FIELDTYPEEX_mustFree_SHIFT },
+   format =>     { set: set_format,      is_bool: false,  type: FieldValueFormat, prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_format_MASK,     shift: ecrt_sys::FIELDTYPEEX_format_SHIFT },
+   isUnsigned => { set: set_isUnsigned,  is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_isUnsigned_MASK, shift: ecrt_sys::FIELDTYPEEX_isUnsigned_SHIFT },
+   isDateTime => { set: set_isDateTime,  is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_isDateTime_MASK, shift: ecrt_sys::FIELDTYPEEX_isDateTime_SHIFT },
+}
+
 /////
 
 pub const nullZone : dggal_sys::DGGRSZone = 0xFFFFFFFFFFFFFFFFu64;
@@ -50,6 +136,27 @@ pub const wholeWorld: GeoExtent = GeoExtent {
    ll: GeoPoint { lat: -90.0 * PI / 180.0, lon : -180.0 * PI / 180.0 },
    ur: GeoPoint { lat:  90.0 * PI / 180.0, lon :  180.0 * PI / 180.0 }
 };
+
+define_bitclass! { CRS, dggal_sys::CRS,
+    registry => { set: set_registry, is_bool: false, type: dggal_sys::CRSRegistry, prim_type: u32, mask: dggal_sys::CRS_registry_MASK, shift: dggal_sys::CRS_registry_SHIFT },
+    crsID =>    { set: set_crsID,    is_bool: false, type: u32,                    prim_type: u32, mask: dggal_sys::CRS_crsID_MASK,    shift: dggal_sys::CRS_crsID_SHIFT },
+    h =>        { set: set_h,        is_bool: true,  type: bool,                   prim_type: u32, mask: dggal_sys::CRS_h_MASK,        shift: dggal_sys::CRS_h_SHIFT }
+}
+
+#[macro_export] macro_rules! CRS {
+   ($registry:expr, $crsID:expr $(, $h:expr)?) => {
+      {
+         let mut instance = CRS(0);
+         instance.set_registry($registry);
+         instance.set_crsID($crsID);
+         $(instance.set_h($h);)?
+         instance
+      }
+   };
+}
+
+pub const epsg : dggal_sys::CRSRegistry = dggal_sys::CRSRegistry_CRSRegistry_epsg;
+pub const ogc  : dggal_sys::CRSRegistry = dggal_sys::CRSRegistry_CRSRegistry_ogc;
 
 pub struct DGGRS {
    imp: dggal_sys::DGGRS,
@@ -490,7 +597,7 @@ impl DGGRS {
       zone
    }
 
-   pub fn getZoneFromCRSCentroid(&self, level: i32, crs: dggal_sys::CRS, centroid: &ecrt_sys::Pointd) -> dggal_sys::DGGRSZone
+   pub fn getZoneFromCRSCentroid(&self, level: i32, crs: CRS, centroid: &ecrt_sys::Pointd) -> dggal_sys::DGGRSZone
    {
       let mut zone = nullZone;
       unsafe
@@ -500,7 +607,7 @@ impl DGGRS {
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getZoneFromCRSCentroid_vTblID as usize));
          if cMethod != 0usize {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, level: i32, crs: dggal_sys::CRS, centroid: * const ecrt_sys::Pointd) -> dggal_sys::DGGRSZone = std::mem::transmute(cMethod);
-            zone = method(self.imp, level, crs, centroid);
+            zone = method(self.imp, level, *crs, centroid);
          }
       }
       zone
@@ -634,7 +741,7 @@ impl DGGRS {
       index
    }
 
-   pub fn getSubZoneCRSCentroids(&self, parent: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, relativeDepth: i32) -> Vec<ecrt_sys::Pointd>
+   pub fn getSubZoneCRSCentroids(&self, parent: dggal_sys::DGGRSZone, crs: CRS, relativeDepth: i32) -> Vec<ecrt_sys::Pointd>
    {
       let centroids: Vec<ecrt_sys::Pointd>;
       unsafe
@@ -647,7 +754,7 @@ impl DGGRS {
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getSubZoneCRSCentroids_vTblID as usize));
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, parent: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, relativeDepth: i32) -> dggal_sys::template_Array_Pointd = std::mem::transmute(cMethod);
-            let ap: dggal_sys::template_Array_Pointd = method(self.imp, parent, crs, relativeDepth);
+            let ap: dggal_sys::template_Array_Pointd = method(self.imp, parent, *crs, relativeDepth);
             if ap != nullInst {
                let am: *const ecrt_sys::class_members_Array = ((ap as *const i8).wrapping_add((*ecrt_sys::class_Array).offset as usize)) as *const ecrt_sys::class_members_Array;
                n = (*am).count as usize;
@@ -684,7 +791,7 @@ impl DGGRS {
       centroids
    }
 
-   pub fn getZoneCRSVertices(&self, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS) -> Vec<ecrt_sys::Pointd>
+   pub fn getZoneCRSVertices(&self, zone: dggal_sys::DGGRSZone, crs: CRS) -> Vec<ecrt_sys::Pointd>
    {
       let vertices: Vec<ecrt_sys::Pointd>;
       unsafe
@@ -696,14 +803,14 @@ impl DGGRS {
          let mut n: i32 = 0;
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, vertices: *mut ecrt_sys::Pointd) -> i32 = std::mem::transmute(cMethod);
-            n = method(self.imp, zone, crs, std::ptr::from_mut(&mut v[0]));
+            n = method(self.imp, zone, *crs, std::ptr::from_mut(&mut v[0]));
          }
          vertices = slice::from_raw_parts(&v[0], n as usize).to_vec();
       }
       vertices
    }
 
-   pub fn getZoneRefinedCRSVertices(&self, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, refinement: i32) -> Vec<ecrt_sys::Pointd>
+   pub fn getZoneRefinedCRSVertices(&self, zone: dggal_sys::DGGRSZone, crs: CRS, refinement: i32) -> Vec<ecrt_sys::Pointd>
    {
       let vertices: Vec<ecrt_sys::Pointd>;
       unsafe
@@ -716,7 +823,7 @@ impl DGGRS {
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getZoneRefinedCRSVertices_vTblID as usize));
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, refinement: i32) -> dggal_sys::template_Array_GeoPoint = std::mem::transmute(cMethod);
-            let ap: dggal_sys::template_Array_GeoPoint = method(self.imp, zone, crs, refinement);
+            let ap: dggal_sys::template_Array_GeoPoint = method(self.imp, zone, *crs, refinement);
             if ap != nullInst {
                let am: *const ecrt_sys::class_members_Array = ((ap as *const i8).wrapping_add((*ecrt_sys::class_Array).offset as usize)) as *const ecrt_sys::class_members_Array;
                n = (*am).count as usize;
@@ -728,7 +835,7 @@ impl DGGRS {
       vertices
    }
 
-   pub fn getZoneCRSCentroid(&self, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS) -> ecrt_sys::Pointd
+   pub fn getZoneCRSCentroid(&self, zone: dggal_sys::DGGRSZone, crs: CRS) -> ecrt_sys::Pointd
    {
       let mut centroid = ecrt_sys::Pointd { x: 0.0, y: 0.0 };
       unsafe
@@ -738,13 +845,13 @@ impl DGGRS {
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getZoneCRSCentroid_vTblID as usize));
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, centroid: *mut ecrt_sys::Pointd) = std::mem::transmute(cMethod);
-            method(self.imp, zone, crs, std::ptr::from_mut(&mut centroid));
+            method(self.imp, zone, *crs, std::ptr::from_mut(&mut centroid));
          }
       }
       centroid
    }
 
-   pub fn getZoneCRSExtent(&self, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS) -> dggal_sys::CRSExtent
+   pub fn getZoneCRSExtent(&self, zone: dggal_sys::DGGRSZone, crs: CRS) -> dggal_sys::CRSExtent
    {
       let mut extent: dggal_sys::CRSExtent = dggal_sys::CRSExtent {    // REVIEW: Any way to avoid this initialization?
          tl: ecrt_sys::Pointd { x: 0.0, y: 0.0 },
@@ -757,7 +864,7 @@ impl DGGRS {
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getZoneCRSExtent_vTblID as usize));
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, zone: dggal_sys::DGGRSZone, crs: dggal_sys::CRS, extent: *mut dggal_sys::CRSExtent) = std::mem::transmute(cMethod);
-            method(self.imp, zone, crs, std::ptr::from_mut(&mut extent));
+            method(self.imp, zone, *crs, std::ptr::from_mut(&mut extent));
          }
       }
       extent

@@ -45,7 +45,7 @@ def generateZoneGeometry(dggrs, zone, crs, id, centroids: bool, fc: bool):
 
    if not crs or crs == CRS(ogc, 84) or crs == CRS(epsg, 4326):
       if centroids:
-         centroid = dggrs.getZoneWGS84Centroid(zone, centroid)
+         centroid = dggrs.getZoneWGS84Centroid(zone)
          printx(" ", centroid.lon, ", ", centroid.lat)
       else:
          vertices = dggrs.getZoneRefinedWGS84Vertices(zone, 0)
@@ -56,12 +56,12 @@ def generateZoneGeometry(dggrs, zone, crs, id, centroids: bool, fc: bool):
             printx(t, "         [ ")
             for i in range(count):
                printx(", " if i else "", "[", vertices[i].lon, ", ", vertices[i].lat, "]")
-            printx(", " if i else "", "[", vertices[0].lon, ", ", vertices[0].lat, "]")
+            printx(", " if count else "", "[", vertices[0].lon, ", ", vertices[0].lat, "]")
             printLn(" ]")
          printx(t, "     ")
    else:
       if centroids:
-         centroid = dggrs.getZoneCRSCentroid(zone, crs, centroid)
+         centroid = dggrs.getZoneCRSCentroid(zone, crs)
          printx(" ", centroid.x, ", ", centroid.y);
       else:
          vertices = dggrs.getZoneRefinedCRSVertices(zone, crs, 0)
@@ -73,7 +73,7 @@ def generateZoneGeometry(dggrs, zone, crs, id, centroids: bool, fc: bool):
 
             for i in range(count):
                printx(", " if i else "", "[", vertices[i].x, ", ", vertices[i].y, "]")
-            printx(", " if i else "", "[", vertices[0].x, ", ", vertices[0].y, "]")
+            printx(", " if count else "", "[", vertices[0].x, ", ", vertices[0].y, "]")
             printLn(" ]")
          printx(t, "     ")
    printLn(" ]")
