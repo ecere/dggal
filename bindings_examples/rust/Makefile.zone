@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-MODULE := info
+MODULE := zone
 
 # CORE VARIABLES
 
@@ -32,7 +32,7 @@ OBJ = obj/$(PLATFORM)$(COMPILER_SUFFIX)
 
 TARGET = $(OBJ)/$(MODULE)
 
-SOURCES = info.rs
+SOURCES = zone.rs # info.rs -- dependency
 
 OFLAGS =
 
@@ -55,7 +55,7 @@ objdir:
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(OBJECTS) | objdir
-	rustc --edition 2021 --cfg 'feature="info_cmd"' $(OFLAGS) $(SOURCES) $(LIBS) -o $(TARGET)
+	rustc --edition 2021 --cfg 'feature="zone_cmd"' $(OFLAGS) $(SOURCES) $(LIBS) -o $(TARGET)
 
 .PHONY: cleantarget
 cleantarget:

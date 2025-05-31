@@ -1,7 +1,17 @@
 extern crate dggal;
 
+#[cfg(feature = "info_cmd")]
 use dggal::Application;
+
+#[cfg(feature = "info_cmd")]
 use dggal::DGGAL;
+
+#[cfg(feature = "info_cmd")]
+use std::env;
+
+#[cfg(feature = "info_cmd")]
+use std::process::exit;
+
 use dggal::DGGRS;
 use dggal::DGGRSZone;
 use dggal::GeoExtent;
@@ -9,11 +19,9 @@ use dggal::GeoPoint;
 use dggal::nullZone;
 
 use std::collections::HashMap;
-use std::env;
 use std::f64::consts::PI;
-use std::process::exit;
 
-fn zone_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> i32
+pub fn zone_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> i32
 {
    let level = dggrs.getZoneLevel(zone);
    let n_edges = dggrs.countZoneEdges(zone);
@@ -115,7 +123,7 @@ fn zone_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> i32
    0 // No error
 }
 
-fn dggrs_info(dggrs: DGGRS, _options: HashMap<&str, &str>) -> i32
+pub fn dggrs_info(dggrs: DGGRS, _options: HashMap<&str, &str>) -> i32
 {
    let depth64k = dggrs.get64KDepth();
    let ratio = dggrs.getRefinementRatio();
@@ -127,7 +135,7 @@ fn dggrs_info(dggrs: DGGRS, _options: HashMap<&str, &str>) -> i32
    0 // No error
 }
 
-fn display_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> i32
+pub fn display_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> i32
 {
    if zone != nullZone {
       zone_info(dggrs, zone, options)
@@ -136,6 +144,7 @@ fn display_info(dggrs: DGGRS, zone: DGGRSZone, options: HashMap<&str, &str>) -> 
    }
 }
 
+#[cfg(feature = "info_cmd")]
 fn main()
 {
    let args: Vec<String> = env::args().collect();
