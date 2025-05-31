@@ -42,13 +42,13 @@ or running [fetchAndBuild.sh](fetchAndBuild.sh) / [fetchAndBuild.bat](fetchAndBu
 This method will use this `eC-core` branch meant to be used with the [stand-alone eC development kit and eC runtime library](https://github.com/ecere/eC),
 avoiding unnecessary dependencies on other components of the Ecere SDK runtime library.
 
-The script will clone both the eC and DGGAL repositories and build everything, including the C, C++, rust and Python bindings
+The script will clone both the eC and DGGAL repositories and build everything, including the C, C++, Rust and Python bindings
 if the required development tools are properly installed and configured.
 
 ## Language bindings
 
 While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Partial bindings for rust are available as well.
+Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Bindings for Rust are available as well.
 Support for additional languages may be added in the future.
 
 ### C Bindings
@@ -69,11 +69,11 @@ Python bindings (depending on the C bindings) are [available here](https://githu
 
 A Python example using the DGGAL Python bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/py/info.py).
 
-### rust Bindings
+### Rust Bindings
 
-rust bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/rust).
+Rust bindings (depending on the C bindings) are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings/rust).
 
-A rust example using the DGGAL rust bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/rust/info.rs).
+A Rust example using the DGGAL Rust bindings is [available here](https://github.com/ecere/dggal/blob/eC-core/bindings_examples/rust/info.rs).
 
 ## `dgg` tool
 
