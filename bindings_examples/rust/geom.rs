@@ -1,27 +1,38 @@
-extern crate dggal;
-extern crate ecrt_sys;
+#[cfg(feature = "geom_cmd")]
+use std::env;
 
-use dggal::Application;
+#[cfg(feature = "geom_cmd")]
+use std::process::exit;
+
+use std::collections::HashMap;
+use std::f64::consts::PI;
+use std::ffi::CStr;
+
+extern crate ecrt;
+
+#[cfg(feature = "geom_cmd")]
+use ecrt::Application;
+
+use ecrt::FieldValue;
+use ecrt::FieldTypeEx;
+use ecrt::FieldType;
+
+extern crate dggal;
+
+#[cfg(feature = "geom_cmd")]
 use dggal::DGGAL;
+
+#[cfg(feature = "geom_cmd")]
+use dggal::nullZone;
+
 use dggal::DGGRS;
 use dggal::DGGRSZone;
-use dggal::nullZone;
-//use dggal::GeoExtent;
-//use dggal::GeoPoint;
-//use dggal::wholeWorld;
+
 use dggal::CRS;
 use dggal::ogc;
 use dggal::epsg;
-use std::collections::HashMap;
-use std::env;
-use std::process::exit;
-use std::f64::consts::PI;
-use ecrt_sys::FieldValue;
-use dggal::FieldTypeEx;
-use dggal::FieldType;
-use std::ffi::CStr;
 
-fn resolve_crs_string(crs_option: Option<&&str>) -> CRS
+pub fn resolve_crs_string(crs_option: Option<&&str>) -> CRS
 {
    let mut crs = CRS(0);
    if crs_option.is_some() {
@@ -39,7 +50,7 @@ fn resolve_crs_string(crs_option: Option<&&str>) -> CRS
    return crs;
 }
 
-fn generate_zone_feature(dggrs: &DGGRS, zone : DGGRSZone, crs: CRS, id: u64, centroids: bool, fc: bool, properties: Option<&HashMap<&str, FieldValue>>)
+pub fn generate_zone_feature(dggrs: &DGGRS, zone : DGGRSZone, crs: CRS, id: u64, centroids: bool, fc: bool, properties: Option<&HashMap<String, FieldValue>>)
 {
    let t = if fc { "   " } else { "" };
    let zone_id = dggrs.getZoneTextID(zone);
@@ -83,7 +94,7 @@ fn generate_zone_feature(dggrs: &DGGRS, zone : DGGRSZone, crs: CRS, id: u64, cen
    print!("{t}}}");
 }
 
-fn generate_zone_geometry(dggrs: &DGGRS, zone: DGGRSZone, crs: CRS, centroids: bool, fc: bool)
+pub fn generate_zone_geometry(dggrs: &DGGRS, zone: DGGRSZone, crs: CRS, centroids: bool, fc: bool)
 {
    let t = if fc { "   " } else { "" };
 
@@ -137,7 +148,8 @@ fn generate_zone_geometry(dggrs: &DGGRS, zone: DGGRSZone, crs: CRS, centroids: b
    print!("{t}   }}");
 }
 
-fn generate_geometry(dggrs: &DGGRS, zone: DGGRSZone, options: &HashMap::<&str, &str>) -> i32
+#[cfg(feature = "geom_cmd")]
+pub fn generate_geometry(dggrs: &DGGRS, zone: DGGRSZone, options: &HashMap::<&str, &str>) -> i32
 {
    if zone != nullZone {
       let centroids = options.get("centroids");
@@ -152,6 +164,7 @@ fn generate_geometry(dggrs: &DGGRS, zone: DGGRSZone, options: &HashMap::<&str, &
    return 1;
 }
 
+#[cfg(feature = "geom_cmd")]
 fn main()
 {
    let args: Vec<String> = env::args().collect();
@@ -221,7 +234,7 @@ fn main()
    }
 
    if dggrs_name != "" && exit_code == 0 {
-      let dggrs: DGGRS = dggal.newDGGRS(dggrs_name).expect("Unknown DGGRS");
+      let dggrs: DGGRS = DGGRS::new(&dggal, dggrs_name).expect("Unknown DGGRS");
 
       // println!("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/{dggrs_name}");
 

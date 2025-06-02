@@ -1,7 +1,9 @@
-extern crate dggal;
+extern crate ecrt;
 
 #[cfg(feature = "info_cmd")]
-use dggal::Application;
+use ecrt::Application;
+
+extern crate dggal;
 
 #[cfg(feature = "info_cmd")]
 use dggal::DGGAL;
@@ -205,7 +207,7 @@ fn main()
 
    if dggrs_name != "" && exit_code == 0
    {
-      let dggrs: DGGRS = dggal.newDGGRS(dggrs_name).expect("Unknown DGGRS");
+      let dggrs: DGGRS = DGGRS::new(&dggal, dggrs_name).expect("Unknown DGGRS");
       let mut zone = nullZone;
 
       println!("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/{dggrs_name}");

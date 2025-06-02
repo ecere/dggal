@@ -15,7 +15,7 @@ ifndef COMPILER
 COMPILER := default
 endif
 
-C_BINDINGS_SYMBOLS_PREFIX_ENABLE := y
+# C_BINDINGS_SYMBOLS_PREFIX_ENABLE := y
 
 TARGET_TYPE = sharedlib
 
@@ -50,7 +50,7 @@ OFLAGS =
 OFLAGS += \
 	-L obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
 	-Lnative=obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
-	-Lnative=$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+	-Lnative=$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 
 PRJ_CFLAGS += $(if $(DEBUG), -g, -O2 -ffast-math) -w -I$(DGGAL_ABSPATH)bindings/c -DEC_STATIC
 
@@ -95,7 +95,7 @@ cleantarget:
 
 clean: cleantarget
 	$(call rm,_OBJECTS)
-	$(call rm,$(OBJ)/$(BINDING_NAME)_cStatic.a)
+	$(call rm,$(OBJ)/lib$(BINDING_NAME)_cStatic.a)
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

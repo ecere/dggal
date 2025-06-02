@@ -949,7 +949,7 @@ const _: () = {
         ::std::option::Option</*unsafe*/ extern "C" fn(v: *const Vector3D) -> f64>;
 }
 /*unsafe*/ extern "C" {
-    pub static mut readDGGSJSON: ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> DGGSJSON>;
+    pub static mut fnptr_readDGGSJSON: ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> DGGSJSON>;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_BCTA3H: *mut Class;

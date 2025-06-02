@@ -1,7 +1,10 @@
-extern crate dggal;
-extern crate ecrt_sys;
+extern crate ecrt;
 
-use dggal::Application;
+use ecrt::Application;
+use ecrt::tokenizeWith;
+
+extern crate dggal;
+
 use dggal::DGGAL;
 use dggal::DGGRS;
 // use dggal::DGGRSZone;
@@ -9,6 +12,7 @@ use dggal::DGGRS;
 use dggal::GeoExtent;
 use dggal::GeoPoint;
 use dggal::wholeWorld;
+
 use std::collections::HashMap;
 use std::env;
 use std::process::exit;
@@ -21,7 +25,7 @@ fn parse_bbox(options: &HashMap<&str, &str>, bbox: &mut GeoExtent) -> bool
    if bbox_option != None {
       let s = bbox_option.unwrap();
       // NOTE: tokenizeWith() will eventually be moved to ecrt crate
-      let tokens: Vec<String> = dggal::tokenizeWith::<4>(s, ",", false);
+      let tokens: Vec<String> = tokenizeWith::<4>(s, ",", false);
       result = false;
       if tokens.len() == 4 {
          let a = tokens[0].parse::<f64>();
@@ -167,7 +171,7 @@ fn main()
    }
 
    if dggrs_name != "" && exit_code == 0 {
-      let dggrs: DGGRS = dggal.newDGGRS(dggrs_name).expect("Unknown DGGRS");
+      let dggrs: DGGRS = DGGRS::new(&dggal, dggrs_name).expect("Unknown DGGRS");
 
       println!("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/{dggrs_name}");
 

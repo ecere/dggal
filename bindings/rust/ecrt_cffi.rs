@@ -3726,6 +3726,23 @@ pub struct FieldValue {
     pub type_: FieldTypeEx,
     pub __bindgen_anon_1: FieldValue__bindgen_ty_1,
 }
+
+impl std::fmt::Debug for FieldValue {
+   fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+      unsafe {
+         write!(f, "FieldValue {{ type: {}, i: {}, r: {} }}",
+            self.type_, self.__bindgen_anon_1.i, self.__bindgen_anon_1.r)
+      }
+   }
+}
+
+impl Default for FieldValue
+{
+   fn default() -> Self {
+      FieldValue { type_: 0, __bindgen_anon_1: FieldValue__bindgen_ty_1 { i: 0 } }
+   }
+}
+
 #[repr(C)]
 #[derive(Copy, Clone)]
 pub union FieldValue__bindgen_ty_1 {

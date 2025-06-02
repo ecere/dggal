@@ -1,20 +1,23 @@
+use std::collections::HashMap;
+use std::env;
+use std::process::exit;
+
+extern crate ecrt;
+
+use ecrt::Application;
+use ecrt::Pointd;
+use ecrt::tokenizeWith;
+
 extern crate dggal;
-extern crate ecrt_sys;
 
-mod info;
-
-use dggal::Application;
 use dggal::DGGAL;
 use dggal::DGGRS;
 use dggal::DGGRSZone;
 use dggal::nullZone;
-use ecrt_sys::Pointd;
 use dggal::CRS;
 use dggal::epsg;
-use std::collections::HashMap;
-use std::env;
-use std::process::exit;
-use dggal::tokenizeWith; // Will move to ecrt
+
+mod info;
 
 use info::display_info;
 
@@ -130,7 +133,7 @@ fn main()
    }
 
    if dggrs_name != "" && exit_code == 0 {
-      let dggrs: DGGRS = dggal.newDGGRS(dggrs_name).expect("Unknown DGGRS");
+      let dggrs: DGGRS = DGGRS::new(&dggal, dggrs_name).expect("Unknown DGGRS");
 
       println!("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/{dggrs_name}");
 

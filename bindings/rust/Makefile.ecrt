@@ -1,8 +1,10 @@
+.PHONY: all objdir cleantarget clean realclean distclean
+
 ifneq ($(V),1)
 .SILENT:
 endif
 
-MODULE := geom
+MODULE := ecrt
 
 # CORE VARIABLES
 
@@ -12,7 +14,7 @@ ifndef COMPILER
 COMPILER := default
 endif
 
-TARGET_TYPE = executable
+TARGET_TYPE = sharedlib
 
 # INCLUDES
 
@@ -30,44 +32,53 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(PLATFORM)$(COMPILER_SUFFIX)
 
-TARGET = $(OBJ)/$(MODULE)
+TARGET = $(OBJ)/lib$(MODULE).rlib
 
-SOURCES = geom.rs
+SOURCES = $(MODULE).rs
+
+LIBS +=
 
 OFLAGS =
 
 OFLAGS += \
-	-L$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
-	-L$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
-	-L$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	-L$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	-L$(DGGAL_ABSPATH)obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
+	-L obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
+
+PRJ_CFLAGS += $(if $(DEBUG), -g, -O2 -ffast-math) -w
+
+RUSTFLAGS =
+
+ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
+PRJ_CFLAGS += -DECPRFX=eC_
+endif
+
+SOURCES = $(_DEP_SOURCES) $(MODULE).rs
+
+all: objdir $(TARGET);
+
+# OBJECT RULES
+
 
 # TARGETS
 
-.PHONY: all
-all: objdir $(TARGET);
-
-.PHONY: objdir
 objdir:
 	$(call mkdir,$(OBJ))
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
-$(TARGET): $(SOURCES) $(OBJECTS) | objdir
-	rustc --edition 2021 --cfg 'feature="geom_cmd"' $(OFLAGS) $(SOURCES) $(LIBS) -o $(TARGET)
 
-.PHONY: cleantarget
+$(TARGET): $(SOURCES) $(OBJECTS) | objdir
+	rustc --crate-type lib $(RUSTFLAGS) $(MODULE).rs $(OFLAGS) $(LIBS) -o $(TARGET)
+	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+
 cleantarget:
 	$(call rm,$(TARGET))
 
-.PHONY: clean
 clean: cleantarget
+	$(call rm,_OBJECTS)
 
-.PHONY: realclean
 realclean: cleantarget
 	$(call rmr,$(OBJ))
 
-.PHONY: distclean
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

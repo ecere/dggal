@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-MODULE := geom
+MODULE := togeo
 
 # CORE VARIABLES
 
@@ -32,9 +32,9 @@ OBJ = obj/$(PLATFORM)$(COMPILER_SUFFIX)
 
 TARGET = $(OBJ)/$(MODULE)
 
-SOURCES = geom.rs
+SOURCES = togeo.rs
 
-OFLAGS =
+OFLAGS = -g
 
 OFLAGS += \
 	-L$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
@@ -55,7 +55,7 @@ objdir:
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 $(TARGET): $(SOURCES) $(OBJECTS) | objdir
-	rustc --edition 2021 --cfg 'feature="geom_cmd"' $(OFLAGS) $(SOURCES) $(LIBS) -o $(TARGET)
+	rustc --edition 2021 --cfg 'feature="togeo_cmd"'  $(OFLAGS) $(SOURCES) $(LIBS) -o $(TARGET)
 
 .PHONY: cleantarget
 cleantarget:

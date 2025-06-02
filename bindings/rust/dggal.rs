@@ -3,6 +3,23 @@
 //#![allow(unused_variables)]
 
 extern crate ecrt_sys;
+
+extern crate ecrt;
+
+use ecrt::define_bitclass;
+use ecrt::Application;
+use ecrt::File;
+use ecrt::nullVTbl;
+use ecrt::nullInst;
+use ecrt::nullPtr;
+use ecrt::Array;
+use ecrt::Map;
+use ecrt::FieldValue;
+use ecrt::ConstString;
+use ecrt::Instance;
+use ecrt::TTAU64;
+use ecrt::delegate_ttau64_and_default;
+
 extern crate dggal_sys;
 
 use std::ffi::CString;
@@ -12,125 +29,13 @@ use std::slice;
 use std::mem;
 use std::f64::consts::PI;
 use std::ops::Deref;
-
-///// This will eventually move to the ecrt crate
-#[macro_export] macro_rules! define_bitclass {
-   (
-      $name:ident, $base_type:ty,
-      $(
-         $field:ident => {
-            set: $set:ident,
-            is_bool: $bool_token:tt,
-            type: $field_type:ty,
-            prim_type: $prim_type:ty,
-            mask: $mask:expr,
-            shift: $shift:expr
-         }
-      ),* $(,)?
-    ) => {
-      #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
-      pub struct $name(pub $base_type);
-      impl PartialEq<$base_type> for $name {
-          fn eq(&self, other: &$base_type) -> bool {
-              self.0 == *other
-          }
-      }
-      impl From<$name> for $base_type {
-         fn from(t: $name) -> Self { t.0 }
-      }
-      impl Deref for $name {
-          type Target = $base_type;
-
-          fn deref(&self) -> &Self::Target {
-              &self.0
-          }
-      }
-
-      impl $name {
-         $(
-            pub fn $set(&mut self, value: $field_type) {
-               self.0 = (self.0 & !($mask as $base_type)) | ((value as $base_type) << $shift) & ($mask as $base_type);
-            }
-            pub fn $field(&self) -> $field_type {
-               let prim: $prim_type = ((self.0 & ($mask as $base_type)) >> $shift) as $prim_type;
-               define_bitclass!(@get $bool_token, prim, $field_type, $prim_type)
-            }
-         )*
-      }
-   };
-   (@get true, $value:expr, $field_type:ty, $prim_type:ty) => {
-      $value != 0
-   };
-   (@get false, $value:expr, $field_type:ty, $prim_type:ty) => {
-      unsafe { std::mem::transmute::<$prim_type, $field_type>($value) }
-   };
-}
-
-pub fn tokenizeWith<const MAX_TOKENS: usize>(string: &str, tokenizers: &str, escapeBackSlashes: bool) -> Vec<String>
-{
-   let mut tokens : Vec<String>;
-   unsafe
-   {
-      let mut buffer = Vec::from(string.as_bytes());
-      buffer.push(0);
-      let cString: *mut i8 = buffer.as_mut_ptr() as *mut i8;
-      let cTokenizers = CString::new(tokenizers).unwrap();
-      let mut tokensArray: [*mut i8; MAX_TOKENS] = [nullPtr as *mut i8; MAX_TOKENS]; // REVIEW: Any way to avoid this initialization?
-
-      let nTokens: i32 = ecrt_sys::tokenizeWith.unwrap()(cString, MAX_TOKENS as i32, tokensArray.as_mut_ptr(), cTokenizers.as_ptr(), escapeBackSlashes as u32);
-
-      tokens = Vec::new();
-      tokens.reserve(nTokens as usize);
-      tokens.set_len(nTokens as usize);
-      for i in 0..nTokens {
-         tokens[i as usize] = CStr::from_ptr(tokensArray[i as usize]).to_str().unwrap().to_string();
-      }
-   }
-   tokens
-}
-
-#[repr(i32)]
-pub enum FieldType {
-   Integer = ecrt_sys::FieldType_FieldType_integer,
-   Real = ecrt_sys::FieldType_FieldType_real,
-   Text = ecrt_sys::FieldType_FieldType_text,
-   Blob = ecrt_sys::FieldType_FieldType_blob,
-   Nil = ecrt_sys::FieldType_FieldType_nil,
-   Array = ecrt_sys::FieldType_FieldType_array,
-   Map = ecrt_sys::FieldType_FieldType_map
-}
-
-#[repr(i32)]
-pub enum FieldValueFormat {
-   // Decimal = ecrt_sys::FieldValueFormat_FieldValueFormat_decimal, // Same as Unset
-   Unset = ecrt_sys::FieldValueFormat_FieldValueFormat_unset,
-   Hex = ecrt_sys::FieldValueFormat_FieldValueFormat_hex,
-   Octal = ecrt_sys::FieldValueFormat_FieldValueFormat_octal,
-   Binary = ecrt_sys::FieldValueFormat_FieldValueFormat_binary,
-   Exponential = ecrt_sys::FieldValueFormat_FieldValueFormat_exponential,
-   Boolean = ecrt_sys::FieldValueFormat_FieldValueFormat_boolean,
-   TextObj = ecrt_sys::FieldValueFormat_FieldValueFormat_textObj,
-   Color = ecrt_sys::FieldValueFormat_FieldValueFormat_color,
-}
-
-define_bitclass! { FieldTypeEx, ecrt_sys::FieldTypeEx,
-   type_ =>      { set: set_type,        is_bool: false,  type: FieldType,        prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_type_MASK,       shift: ecrt_sys::FIELDTYPEEX_type_SHIFT },
-   mustFree =>   { set: set_mustFree,    is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_mustFree_MASK,   shift: ecrt_sys::FIELDTYPEEX_mustFree_SHIFT },
-   format =>     { set: set_format,      is_bool: false,  type: FieldValueFormat, prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_format_MASK,     shift: ecrt_sys::FIELDTYPEEX_format_SHIFT },
-   isUnsigned => { set: set_isUnsigned,  is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_isUnsigned_MASK, shift: ecrt_sys::FIELDTYPEEX_isUnsigned_SHIFT },
-   isDateTime => { set: set_isDateTime,  is_bool: true,   type: bool,             prim_type: u32, mask: ecrt_sys::FIELDTYPEEX_isDateTime_MASK, shift: ecrt_sys::FIELDTYPEEX_isDateTime_SHIFT },
-}
-
 /////
-
-pub const nullZone : dggal_sys::DGGRSZone = 0xFFFFFFFFFFFFFFFFu64;
-pub const nullInst : ecrt_sys::Instance = 0 as ecrt_sys::Instance;
-pub const nullVTbl : *mut *mut c_void = 0 as *mut *mut c_void;
-pub const nullPtr : *mut c_void = 0 as *mut c_void;
 
 pub type GeoPoint = dggal_sys::GeoPoint;
 pub type GeoExtent = dggal_sys::GeoExtent;
 pub type DGGRSZone = dggal_sys::DGGRSZone;
+
+pub const nullZone : DGGRSZone = 0xFFFFFFFFFFFFFFFFu64;
 
 pub const wholeWorld: GeoExtent = GeoExtent {
    ll: GeoPoint { lat: -90.0 * PI / 180.0, lon : -180.0 * PI / 180.0 },
@@ -163,28 +68,6 @@ pub struct DGGRS {
    mDGGAL: ecrt_sys::Module
 }
 
-pub struct Application {
-   app: ecrt_sys::Application
-}
-impl Drop for Application {
-   fn drop(&mut self) {
-      unsafe {
-         ecrt_sys::__eCNameSpace__eC__types__eInstance_DecRef(self.app);
-      }
-   }
-}
-
-impl Application {
-   pub fn new(_args: &Vec<String>) -> Application
-   {
-      unsafe {
-         let app = ecrt_sys::ecrt_init(nullInst, true as u32, false as u32, 0,
-               0 /*ptr::null_mut::<* mut * mut i8>()*/ as * mut * mut i8); // TODO: argc, args);
-         Application { app: app }
-      }
-   }
-}
-
 pub struct DGGAL {
    mDGGAL: ecrt_sys::Module
 }
@@ -196,27 +79,26 @@ impl DGGAL {
          DGGAL { mDGGAL: dggal_sys::dggal_init(app.app) }
       }
    }
+}
 
-   pub fn newDGGRS(&self, name: &str) -> Option<DGGRS>
+impl DGGRS {
+   pub fn new(dggal: &DGGAL, name: &str) -> Result<Self, String>
    {
       let dggrsName = CString::new(name).unwrap();
       unsafe {
-         let c = ecrt_sys::__eCNameSpace__eC__types__eSystem_FindClass(self.mDGGAL, dggrsName.as_ptr());
-
+         let c = ecrt_sys::__eCNameSpace__eC__types__eSystem_FindClass(dggal.mDGGAL, dggrsName.as_ptr());
          if c != nullVTbl as * mut ecrt_sys::Class {
-            Some(DGGRS { imp: ecrt_sys::__eCNameSpace__eC__types__eInstance_New(c) as dggal_sys::DGGRS, mDGGAL: self.mDGGAL })
+            Ok(DGGRS { imp: ecrt_sys::__eCNameSpace__eC__types__eInstance_New(c) as dggal_sys::DGGRS, mDGGAL: dggal.mDGGAL })
          }
          else {
-            None
+            Err(format!("Failure to instantiate DGGRS {name}"))
          }
       }
    }
 
-}
-
-impl DGGRS {
    // TODO: Could we use rust function-generating macros?
 
+   // These are the virtual methods:
    pub fn getZoneFromTextID(&self, zoneID: &str) -> dggal_sys::DGGRSZone
    {
       let mut zone = nullZone;
@@ -1143,17 +1025,90 @@ impl Drop for DGGRS {
    }
 }
 
-// NOTE: We may eventually change the File argument to a proper Rust struct/impl when added to ecrt
-// For now ecrt_sys::fileOpen() can be used to obtain a File from a file name
-pub fn readDGGSJSON(f: ecrt_sys::File) -> Option<dggal_sys::DGGSJSON>
+#[repr(transparent)]
+pub struct DGGSJSONDepth(pub Instance);
+delegate_ttau64_and_default!(DGGSJSONDepth);
+
+impl DGGSJSONDepth
 {
-   let mut result: Option<dggal_sys::DGGSJSON> = None;
+   pub fn data(&self) -> Array<FieldValue>
+   {
+      let mut data = Array::<FieldValue>::new(nullInst);
+      if self.0.0 != nullInst {
+         unsafe {
+            let members: *const dggal_sys::class_members_DGGSJSONDepth = ((self.0.0 as *const i8).wrapping_add((*dggal_sys::class_DGGSJSONDepth).offset as usize)) as *const dggal_sys::class_members_DGGSJSONDepth;
+            data.array = (*members).data;
+         }
+      }
+      data
+   }
+}
+
+#[repr(transparent)]
+pub struct DGGSJSON(pub Instance);
+delegate_ttau64_and_default!(DGGSJSON);
+
+impl DGGSJSON {
+   pub fn dggrs(&self) -> ConstString
+   {
+      let mut dggrs: ConstString = Default::default();
+      if self.0.0 != nullInst {
+         unsafe {
+            let members: *const dggal_sys::class_members_DGGSJSON = ((self.0.0 as *const i8).wrapping_add((*dggal_sys::class_DGGSJSON).offset as usize)) as *const dggal_sys::class_members_DGGSJSON;
+            dggrs = ConstString((*members).dggrs);
+         }
+      }
+      dggrs
+   }
+
+   pub fn zoneId(&self) -> ConstString
+   {
+      let mut zoneId: ConstString = Default::default();
+      if self.0.0 != nullInst {
+         unsafe {
+            let members: *const dggal_sys::class_members_DGGSJSON = ((self.0.0 as *const i8).wrapping_add((*dggal_sys::class_DGGSJSON).offset as usize)) as *const dggal_sys::class_members_DGGSJSON;
+            zoneId = ConstString((*members).zoneId);
+         }
+      }
+      zoneId
+   }
+
+   pub fn depths(&self) -> Array<i32>
+   {
+      let mut depths = Array::<i32>::new(nullInst);
+      if self.0.0 != nullInst {
+         unsafe {
+            let members: *const dggal_sys::class_members_DGGSJSON = ((self.0.0 as *const i8).wrapping_add((*dggal_sys::class_DGGSJSON).offset as usize)) as *const dggal_sys::class_members_DGGSJSON;
+            depths.array = (*members).depths;
+         }
+      }
+      depths
+   }
+
+   pub fn values(&self) -> Map<ecrt::String, ArrayOfDGGSJSONDepth>
+   {
+      let mut values = Map::<ecrt::String, ArrayOfDGGSJSONDepth>::new(nullInst);
+      if self.0.0 != nullInst {
+         unsafe {
+            let members: *const dggal_sys::class_members_DGGSJSON = ((self.0.0 as *const i8).wrapping_add((*dggal_sys::class_DGGSJSON).offset as usize)) as *const dggal_sys::class_members_DGGSJSON;
+            values.map = (*members).values;
+         }
+      }
+      values
+   }
+}
+
+pub type ArrayOfDGGSJSONDepth = Instance;
+
+pub fn readDGGSJSON(f: &File) -> Result<DGGSJSON, &str>
+{
+   let mut result: Result<DGGSJSON, &str> = Err("Failure to load DGGS-JSON");
    unsafe
    {
-      if f != nullInst {
-         let r: dggal_sys::DGGSJSON = dggal_sys::readDGGSJSON.unwrap()(f);
+      if f.file != nullInst {
+         let r: dggal_sys::DGGSJSON = dggal_sys::fnptr_readDGGSJSON.unwrap()(f.file);
          if r != nullInst {
-            result = Some(r)
+            result = Ok(DGGSJSON(Instance(r)))
          }
       }
    }
