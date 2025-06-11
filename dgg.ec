@@ -110,7 +110,7 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
-      else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPIx")) dggrsClass = class(rHEALPix), cmdArg = 1;
+      else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsClass = class(rHEALPix), cmdArg = 1;
 
       for(a = 1; !syntaxError && a < argc; a++)
       {
@@ -145,7 +145,7 @@ class DGGAL : Application
                   else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
                   else if(!strcmpi(arg, "RTEA3H"))   dggrsClass = class(RTEA3H);
                   else if(!strcmpi(arg, "RTEA9R"))   dggrsClass = class(RTEA9R);
-                  else if(!strcmpi(arg, "rHEALPIx")) dggrsClass = class(rHEALPix);
+                  else if(!strcmpi(arg, "rHEALPix")) dggrsClass = class(rHEALPix);
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
                   else

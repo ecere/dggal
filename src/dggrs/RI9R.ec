@@ -175,6 +175,9 @@ public class RhombicIcosahedral9R : DGGRS
       x2 = Min(Max(0, (int64)(br.x * p)), numCols-1);
       y2 = Min(Max(0, (int64)(br.y * p)), numRows-1);
 
+      if(!p)
+         y2 = y1-1; // Avoid divisions by 0, returning null for negative levels
+
       for(row = y1; row <= y2; row++)
       {
          for(col = x1; col <= x2; col++)

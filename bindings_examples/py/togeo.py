@@ -20,6 +20,9 @@ def convertToGeoJSON(inputFile, options):
          elif not strnicmp(dggrsID, "ISEA9R", 6): dggrsClass = ISEA9R
          elif not strnicmp(dggrsID, "IVEA3H", 6): dggrsClass = IVEA3H
          elif not strnicmp(dggrsID, "IVEA9R", 6): dggrsClass = IVEA9R
+         elif not strnicmp(dggrsID, "RTEA3H", 6): dggrsClass = RTEA3H
+         elif not strnicmp(dggrsID, "RTEA9R", 6): dggrsClass = RTEA9R
+         elif not strnicmp(dggrsID, "rHEALPix", 8): dggrsClass = rHEALPix
 
          if dggrsClass:
             zoneID = dggsJSON.zoneId

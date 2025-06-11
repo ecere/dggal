@@ -134,7 +134,7 @@ fn main()
       else if arg1.eq_ignore_ascii_case("ivea9r") { dggrs_name = &"IVEA9R"; }
       else if arg1.eq_ignore_ascii_case("rtea3h") { dggrs_name = &"RTEA3H"; }
       else if arg1.eq_ignore_ascii_case("rtea9r") { dggrs_name = &"RTVEA9R"; }
-      else if arg1.eq_ignore_ascii_case("rHEALPIx") { dggrs_name = &"rHEALPix"; }
+      else if arg1.eq_ignore_ascii_case("rHEALPix") { dggrs_name = &"rHEALPix"; }
       else if arg1.eq_ignore_ascii_case("gnosis") { dggrs_name = &"GNOSISGlobalGrid"; }
       a += 1;
    }
