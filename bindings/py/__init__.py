@@ -10,6 +10,10 @@ if sys.platform.startswith('win'):
    dggalLibPath = os.path.join(script_dir, 'bin')
    new_path = dggalLibPath + os.pathsep + ecrtLibPath + os.pathsep + original_path
    os.environ['PATH'] = new_path
+   if hasattr(os, 'add_dll_directory'):
+      os.add_dll_directory(ecrtLibPath)
+      os.add_dll_directory(dggalLibPath)
+
 # The EC_LIB_PATH is not needed if _pydggal is linked with -Wl,--no-as-needed -ldggal
 #else:
 #   os.environ['EC_LIB_PATH'] = os.path.join(script_dir, 'lib', 'lib') # Including lib prefix
