@@ -1,9 +1,9 @@
 public import IMPORT_STATIC "ecrt"
+public import IMPORT_STATIC "GeoExtents"
+
 private:
 
 static define POW_EPSILON = 0.1;
-
-import "GeoExtent"
 
 import "dggrs"
 import "RI3H"

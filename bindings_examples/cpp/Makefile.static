@@ -38,6 +38,10 @@ ifndef EC_SDK_SRC
 EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
+ifndef GEOEXTENTS_SRC
+GEOEXTENTS_SRC := $(DGGAL_ABSPATH)../CartoSym
+endif
+
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
@@ -112,7 +116,8 @@ LIBS += \
 	$(call _L,winmm) \
 	$(call _L,mpr) \
 	$(call _L,z) \
-	$(call _L,dggalStatic)
+	$(call _L,dggalStatic) \
+	$(call _L,GeoExtentsStatic)
 endif
 
 else
@@ -120,6 +125,7 @@ ifdef LINUX_TARGET
 
 LIBS += \
 	$(call _L,dggalStatic) \
+	$(call _L,GeoExtentsStatic) \
 	$(call _L,m) \
 	$(call _L,dl) \
 	$(call _L,pthread) \
@@ -134,7 +140,8 @@ OFLAGS += \
 	-L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)) \
 	-L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)) \
 	-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
-	-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/bin)
+	-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/bin) \
+	-L$(call quote_path,$(GEOEXTENTS_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
 
 CXXFLAGS += -std=c++17
 

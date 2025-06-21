@@ -1,4 +1,6 @@
 public import IMPORT_STATIC "ecrt"
+public import IMPORT_STATIC "GeoExtents"
+
 private:
 
 import "dggrs"

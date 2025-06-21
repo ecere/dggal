@@ -2,9 +2,10 @@
 // Cartesian 5x6 icosahedral / rhombic space, where a 1x1 square correspond to
 // a root rhombus combining two triangular faces of an icosahedron
 public import IMPORT_STATIC "ecrt"
+public import IMPORT_STATIC "GeoExtents"
+
 private:
 
-import "GeoExtent"
 import "authalic"
 
 // TODO: We should probably set up a separate 3D math lib

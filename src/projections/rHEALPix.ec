@@ -1,7 +1,8 @@
 public import IMPORT_STATIC "ecrt"
+public import IMPORT_STATIC "GeoExtents"
+
 private:
 
-import "GeoExtent"
 import "authalic"
 
 public class HEALPixProjection

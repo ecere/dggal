@@ -37,9 +37,23 @@ ifndef EC_SDK_SRC
 EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
+ifndef GEOEXTENTS_SRC
+GEOEXTENTS_SRC := $(DGGAL_ABSPATH)../CartoSym
+endif
+
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)$(COMPILER).cf
+
+ifndef WINDOWS_HOST
+ifdef OSX_HOST
+export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):$(GEOEXTENTS_SRC)/$(SODESTDIR)
+else
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(GEOEXTENTS_SRC)/$(SODESTDIR)
+endif
+else
+export PATH := $(PATH);$(GEOEXTENTS_SRC)/$(SODESTDIR)
+endif
 
 # POST-INCLUDES VARIABLES
 
@@ -84,7 +98,6 @@ _ECSOURCES = \
 	src/ecere3D/Plane.ec \
 	src/ecere3D/Vector3D.ec \
 	src/ecere3D/Quaternion.ec \
-	src/GeoExtent.ec \
 	src/dggrs.ec
 
 ECSOURCES = $(call shwspace,$(_ECSOURCES))
@@ -264,9 +277,6 @@ $(OBJ)Vector3D.sym: src/ecere3D/Vector3D.ec
 $(OBJ)Quaternion.sym: src/ecere3D/Quaternion.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Quaternion.ec) -o $(call quote_path,$@)
 
-$(OBJ)GeoExtent.sym: src/GeoExtent.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@)
-
 $(OBJ)dggrs.sym: src/dggrs.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs.ec) -o $(call quote_path,$@)
 
@@ -368,9 +378,6 @@ $(OBJ)Vector3D.c: src/ecere3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
 $(OBJ)Quaternion.c: src/ecere3D/Quaternion.ec $(OBJ)Quaternion.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Quaternion.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)GeoExtent.c: src/GeoExtent.ec $(OBJ)GeoExtent.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/GeoExtent.ec) -o $(call quote_path,$@) -symbols $(OBJ)
-
 $(OBJ)dggrs.c: src/dggrs.ec $(OBJ)dggrs.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -471,9 +478,6 @@ $(OBJ)Vector3D$(O): $(OBJ)Vector3D.c
 
 $(OBJ)Quaternion$(O): $(OBJ)Quaternion.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Quaternion.c) -o $(call quote_path,$@)
-
-$(OBJ)GeoExtent$(O): $(OBJ)GeoExtent.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GeoExtent.c) -o $(call quote_path,$@)
 
 $(OBJ)dggrs$(O): $(OBJ)dggrs.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dggrs.c) -o $(call quote_path,$@)

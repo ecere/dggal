@@ -3,10 +3,12 @@
    "ModuleName" : "dggal",
    "Options" : {
       "Warnings" : "All",
+      "DefaultNameSpace" : "dggal",
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "dggal",
       "Libraries" : [
-         "ecrt"
+         "ecrt",
+         "GeoExtents"
       ]
    },
    "Platforms" : [
@@ -123,7 +125,6 @@
                   }
                ]
             },
-            "GeoExtent.ec",
             "dggrs.ec"
          ]
       }

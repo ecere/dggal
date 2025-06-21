@@ -1,18 +1,12 @@
 public import IMPORT_STATIC "ecrt"
+public import IMPORT_STATIC "GeoExtents"
 
 private:
 
-import "GeoExtent"
-
 #include <stdio.h>
+#include <float.h>
 
 public define nullZone = 0xFFFFFFFFFFFFFFFFLL;
-
-public struct CRSExtent
-{
-   CRS crs;
-   Pointd tl, br;
-};
 
 public class DGGRSZone : uint64
 {
@@ -25,6 +19,8 @@ static double earthArea = 0; // 5.100656217240885092949E14;
 
 static define stdMetersPerPixel = Meters { 0.00028 };       // 0.28 mm/pixels -- following standard WMS 1.3.0 [OGC 06-042], SE and WMTS
 static define metersPerDegree = wgs84Major * (double)Pi/180;
+
+define radEpsilon = Radians { 10 * DBL_EPSILON };
 
 define wgs84Authalic = 6371007.180918473897976252;
 

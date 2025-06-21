@@ -37,17 +37,21 @@ ifndef EC_SDK_SRC
 EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
+ifndef GEOEXTENTS_SRC
+GEOEXTENTS_SRC := $(DGGAL_ABSPATH)../CartoSym
+endif
+
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 
 ifndef WINDOWS_HOST
 ifdef OSX_HOST
-export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/:$(GEOEXTENTS_SRC)/$(SODESTDIR)
 else
-export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/:$(GEOEXTENTS_SRC)/$(SODESTDIR)
 endif
 else
-export PATH := $(PATH);$(GNOSIS3_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+export PATH := $(PATH);$(GNOSIS3_ABSPATH)obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/;$(GEOEXTENTS_SRC)/$(SODESTDIR)
 endif
 
 include $(_CF_DIR)default.cf
@@ -118,11 +122,13 @@ ifndef STATIC_LIBRARY_TARGET
 ifdef OSX_TARGET
 LIBS += \
 	$(call _L,dggalStatic) \
+	$(call _L,GeoExtentsStatic) \
 	$(call _L,ecrtStatic)
 else
 LIBS += \
 	-Wl,-Bstatic \
 	$(call _L,dggalStatic) \
+	$(call _L,GeoExtentsStatic) \
 	$(call _L,ecrtStatic)
 endif
 endif
@@ -132,10 +138,12 @@ PRJ_CFLAGS += \
 			 -DIMPORT_STATIC=static
 
 ECFLAGS += -module $(MODULE)
-# PLATFORM-SPECIFIC OPTIONS
 
 OFLAGS += \
-	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),)
+	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),) \
+	$(if $(GEOEXTENTS_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib,-L$(call quote_path,$(GEOEXTENTS_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib),)
+
+# PLATFORM-SPECIFIC OPTIONS
 
 ifdef WINDOWS_TARGET
 OFLAGS += \
