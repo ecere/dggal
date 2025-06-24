@@ -39,12 +39,18 @@ endif
 
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)default.cf
+
 ifndef WINDOWS_HOST
+ifdef OSX_HOST
+export DYLD_LIBRARY_PATH := $(DYLD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+else
 export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+endif
 else
 export PATH := $(PATH);$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 endif
+
+include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
