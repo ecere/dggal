@@ -335,6 +335,10 @@ public class RhombicIcosahedral3H : DGGRS
    int getZoneCRSVertices(I3HZone zone, CRS crs, Pointd * vertices)
    {
       uint count = zone.getVertices(vertices), i;
+      int j;
+
+      for(j = 0; j < count; j++)
+         canonicalize5x6(vertices[j], vertices[j]);
 
       switch(crs)
       {
@@ -369,6 +373,11 @@ public class RhombicIcosahedral3H : DGGRS
       Pointd v5x6[6];
       uint count = zone.getVertices(v5x6), i;
       bool oddGrid = zone.subHex > 2;
+      int j;
+
+      for(j = 0; j < count; j++)
+         canonicalize5x6(v5x6[j], v5x6[j]);
+
       for(i = 0; i < count; i++)
          pj.inverse(v5x6[i], vertices[i], oddGrid);
       return count;
