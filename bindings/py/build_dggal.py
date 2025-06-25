@@ -111,6 +111,37 @@ ffi_dggal.set_source('_pydggal',
                extra_link_args=extra_link_args,
                library_dirs=[libdir, ecrt_location],
                py_limited_api=False)
+
+import subprocess
+import glob
+import atexit
+
+def _check_linked_so():
+    try:
+       dggalLib = os.path.join(libdir, 'libdggal.dylib')
+       print(f"\n[DEBUG] otool -D {dggalLib} output:")
+       result = subprocess.run(["otool", "-D", dggalLib], check=True, capture_output=True, text=True)
+       print(result.stdout)
+    except Exception as e:
+        print(f"[DEBUG] Failed to run otool: {e}")
+
+    try:
+        so_files = glob.glob("build/**/*.so", recursive=True)
+        print('so files are: ', so_files)
+        for so in so_files:
+            print(f"\n[DEBUG] otool -l {so} output:")
+            result = subprocess.run(["otool", "-l", so], check=True, capture_output=True, text=True)
+            print(result.stdout)
+
+            print(f"\n[DEBUG] otool -L {so} output:")
+            result = subprocess.run(["otool", "-L", so], check=True, capture_output=True, text=True)
+            print(result.stdout)
+    except Exception as e:
+        print(f"[DEBUG] Failed to run otool: {e}")
+
+atexit.register(_check_linked_so)
+
+
 if __name__ == '__main__':
    V = os.getenv('V')
    v = True if V == '1' or V == 'y' else False
