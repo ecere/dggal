@@ -94,7 +94,7 @@ if _embedded_c == False:
 
 # _py* CFFI packages are currently being packaged outside of the main extension directory
 if sys.platform == 'darwin':
-   extra_link_args = ['-ldggal',"-Wl,-rpath,@loader_path/dggal/lib:@loader_path/ecrt/lib", '-O2']
+   extra_link_args = ['-ldggal',"-Wl,-rpath,@loader_path/dggal/lib","-Wl,-rpath,@loader_path/ecrt/lib", '-O2']
 else:
    extra_link_args = ['-Wl,--no-as-needed','-ldggal',"-Wl,-rpath,$ORIGIN/lib:$ORIGIN/../../ecrt/lib:$ORIGIN/dggal/lib:$ORIGIN/ecrt/lib", '-DMS_WIN64', '-O2']
 

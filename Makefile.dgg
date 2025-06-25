@@ -119,7 +119,7 @@ LIBS += \
 
 OFLAGS += -L$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 ifdef OSX_TARGET
-OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath$(comma)'@executable_path/../lib:@executable_path/../../ecrt/lib',)
+OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath$(comma)'@executable_path/../lib' -Wl$(comma)-rpath$(comma)'@executable_path/../../ecrt/lib',)
 else
 OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN/../lib:$$ORIGIN/../../ecrt/lib',)
 endif
