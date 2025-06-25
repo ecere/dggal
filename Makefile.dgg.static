@@ -114,10 +114,17 @@ endif
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
+
+ifdef OSX_TARGET
+LIBS += \
+	$(call _L,dggalStatic) \
+	$(call _L,ecrtStatic)
+else
 LIBS += \
 	-Wl,-Bstatic \
 	$(call _L,dggalStatic) \
 	$(call _L,ecrtStatic)
+endif
 endif
 
 PRJ_CFLAGS += \
@@ -152,6 +159,10 @@ LIBS += -Wl,-Bdynamic \
 	$(call _L,dl) \
 	$(call _L,pthread)
 
+endif
+
+ifdef OSX_TARGET
+LIBS += $(call _L,z)
 endif
 
 CECFLAGS += -cpp $(_CPP)
