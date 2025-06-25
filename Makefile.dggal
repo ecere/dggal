@@ -183,7 +183,13 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
+ifdef OSX_TARGET
+	install_name_tool -id @rpath/lib$(MODULE).dylib $(TARGET)
+endif
+ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
+
 ifndef SKIP_SONAME
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
