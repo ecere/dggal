@@ -49,31 +49,20 @@ OFLAGS =
 
 OFLAGS += \
 	-L obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
-	-Lnative=obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
-	-Lnative=$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
-
-PRJ_CFLAGS += $(if $(DEBUG), -g, -O2 -ffast-math) -w -I$(DGGAL_ABSPATH)bindings/c -DEC_STATIC
+	-L $(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
+	-L $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 
 RUSTFLAGS = --edition 2021 -Anon_snake_case -Anon_upper_case_globals -Anon_camel_case_types -Aimproper_ctypes
-
-ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
-PRJ_CFLAGS += -DECPRFX=eC_
-endif
 
 _OBJECTS = $(_DEP_OBJECTS) $(OBJ)/$(BINDING_NAME)$(O)
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(_DEP_SOURCES) ../c/$(BINDING_NAME).c $(BINDING_NAME)_cffi.rs
+SOURCES = $(_DEP_SOURCES) $(BINDING_NAME)_cffi.rs
 
-CBINDING_STATIC_LIB = $(OBJ)/lib$(BINDING_NAME)_cStatic.a
+CBINDING_STATIC_LIB = $(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/libdggal_cStatic.a
 
 all: objdir $(TARGET);
-
-# OBJECT RULES
-
-$(OBJ)/$(BINDING_NAME)$(O): ../c/$(BINDING_NAME).c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 # TARGETS
 
@@ -83,19 +72,16 @@ objdir:
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
 
-$(TARGET): $(SOURCES) $(OBJECTS) | objdir
-	$(AR) rcs $(CBINDING_STATIC_LIB) $(_OBJECTS)
+$(TARGET): $(SOURCES) $(OBJECTS) $(CBINDING_STATIC_LIB) | objdir
 	rustc --crate-type lib --crate-name dggal_sys $(RUSTFLAGS) $(BINDING_NAME)_cffi.rs $(OFLAGS) $(LIBS) -o $(TARGET)
 	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
 	$(call cp,$(TARGET),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
-	$(call cp,$(CBINDING_STATIC_LIB),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
 
 cleantarget:
 	$(call rm,$(TARGET))
 
 clean: cleantarget
 	$(call rm,_OBJECTS)
-	$(call rm,$(OBJ)/lib$(BINDING_NAME)_cStatic.a)
 
 realclean: cleantarget
 	$(call rmr,$(OBJ))

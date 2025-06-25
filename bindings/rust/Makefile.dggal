@@ -41,7 +41,9 @@ LIBS +=
 OFLAGS =
 
 OFLAGS += \
-	-L obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
+	-L obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
+	-L $(EC_SDK_SRC)/bindings/rust \
+	-L $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 
 PRJ_CFLAGS += $(if $(DEBUG), -g, -O2 -ffast-math) -w
 

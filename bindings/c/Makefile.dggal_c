@@ -74,7 +74,7 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 LIBS += $(call _L,ecrt) # $(call _L,$(BINDING_MODULE))
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -I$(DGGAL_ABSPATH)bindings/c
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -I$(EC_SDK_SRC)/bindings/c -I$(DGGAL_ABSPATH)bindings/c
 
 ifdef C_BINDINGS_SYMBOLS_PREFIX_ENABLE
 PRJ_CFLAGS += -DECPRFX=eC_

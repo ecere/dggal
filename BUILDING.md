@@ -40,7 +40,9 @@ obj/static.linux/dgg ISEA3H info A4-0-A
 ## C bindings
 
 ```
-cd bindings/c
+cd ../eC/bindings/c
+make
+cd ../../../dggal/bindings/c
 make
 cd ../../bindings_examples/c
 make
@@ -53,7 +55,9 @@ cd ../..
 ## C++ bindings (after building the C bindings)
 
 ```
-cd bindings/cpp
+cd ../eC/bindings/cpp
+make
+cd ../../../dggal/bindings/cpp
 make
 cd ../../bindings_examples/cpp
 make
@@ -66,7 +70,9 @@ cd ../..
 ## rust bindings (after building the C bindings)
 
 ```
-cd bindings/rust
+cd ../eC/bindings/rust
+make
+cd ../../../dggal/bindings/rust
 make
 cd ../../bindings_examples/rust
 make
@@ -77,8 +83,9 @@ cd ../..
 ## Python bindings (after building the C bindings)
 
 ```
-cd bindings/py
+cd ../eC/bindings/py
 python3 build_ecrt.py
+cd ../../../dggal/bindings/py
 python3 build_dggal.py
 export PYTHONPATH=$(pwd)
 cd ../../bindings_examples/py/

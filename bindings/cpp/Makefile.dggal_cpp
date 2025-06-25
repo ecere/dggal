@@ -90,7 +90,7 @@ PRJ_CFLAGS += \
 #(SPECIFIC_FLAGS)#
 
 PRJ_CFLAGS += \
-      -I../c \
+      -I../c -I$(EC_SDK_SRC)/bindings/c  -I$(EC_SDK_SRC)/bindings/cpp \
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \

@@ -64,7 +64,7 @@ _OBJECTS = \
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	../../bindings/c/ecrt.c \
+	$(EC_SDK_SRC)/bindings/c/ecrt.c \
 	../../bindings/c/dggal.c \
 	info.c
 
@@ -82,7 +82,7 @@ LIBS += $(call _L,ecrt)
 
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I../../bindings/c
+			 -I../../bindings/c -I$(EC_SDK_SRC)/bindings/c
 
 ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
@@ -124,8 +124,8 @@ endif
 
 # OBJECT RULES
 
-$(OBJ)ecrt$(O): ../../bindings/c/ecrt.c
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/ecrt.c) -o $(call quote_path,$@)
+$(OBJ)ecrt$(O): $(EC_SDK_SRC)/bindings/c/ecrt.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(EC_SDK_SRC)/bindings/c/ecrt.c) -o $(call quote_path,$@)
 
 $(OBJ)dggal$(O): ../../bindings/c/dggal.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../../bindings/c/dggal.c) -o $(call quote_path,$@)

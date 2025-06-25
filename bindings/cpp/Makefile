@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean ecrt_cpp dggal_cpp
+.PHONY: all clean realclean distclean dggal_cpp
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))../../
 
@@ -11,22 +11,16 @@ include $(_CF_DIR)crossplatform.mk
 
 # TARGETS
 
-all: ecrt_cpp dggal_cpp
-
-ecrt_cpp:
-	+$(_MAKE) -f Makefile.ecrt_cpp
+all: dggal_cpp
 
 dggal_cpp:
 	+$(_MAKE) -f Makefile.dggal_cpp
 
 clean:
-	+$(_MAKE) -f Makefile.ecrt_cpp clean
 	+$(_MAKE) -f Makefile.dggal_cpp clean
 	
 realclean:
-	+$(_MAKE) -f Makefile.ecrt_cpp realclean
 	+$(_MAKE) -f Makefile.dggal_cpp realclean
 
 distclean:
-	+$(_MAKE) -f Makefile.ecrt_cpp distclean
 	+$(_MAKE) -f Makefile.dggal_cpp distclean

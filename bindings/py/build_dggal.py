@@ -41,15 +41,17 @@ ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUF
 
 try:
    ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+   ecrt_bindings_py_dir = os.path.join(ecdev_location, 'include')
    incdir_ecrt = os.path.join(ecdev_location, 'include')
    ecrt_location = os.path.join(ecdev_location, syslibdir)
 except:
-   incdir_ecrt = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'py')
+   ecrt_bindings_py_dir = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'py')
    ecrt_location = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'obj', sysdir, syslibdir)
+   incdir_ecrt = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'c')
 # ecrt_location = os.path.join(pkg_resources.get_distribution("ecrt").location, 'ecrt', '.lib')
 
 ffi_ecrt = FFI()
-ffi_ecrt.cdef(open(path.join(incdir_ecrt, 'cffi-ecrt.h')).read())
+ffi_ecrt.cdef(open(path.join(ecrt_bindings_py_dir, 'cffi-ecrt.h')).read())
 
 if sys.platform == 'darwin':
    extra_link_args = ["-Wl,-rpath,@loader_path/ecrt/lib" ]
@@ -66,7 +68,7 @@ ffi_ecrt.set_source('_pyecrt',
                sources=[],
                define_macros=[('BINDINGS_SHARED', None), ('ECRT_EXPORT', None)],
                extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-Wl,--export-dynamic', '-O2'],
-               include_dirs=[incdir_ecrt],
+               include_dirs=[ecrt_bindings_py_dir],
                libraries=[],
                # _py* CFFI packages are currently being packaged outside of the main extension directory
                extra_link_args=extra_link_args,
@@ -106,7 +108,7 @@ ffi_dggal.set_source('_pydggal',
                sources=srcs,
                define_macros=[('BINDINGS_SHARED', None), ('DGGAL_EXPORT', None)],
                extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-O2'], #--export-dynamic' ]
-               include_dirs=[bindings_py_dir, incdir, incdir_ecrt],
+               include_dirs=[bindings_py_dir, incdir, incdir_ecrt, ecrt_bindings_py_dir],
                libraries=libs,
                extra_link_args=extra_link_args,
                library_dirs=[libdir, ecrt_location],

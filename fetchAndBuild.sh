@@ -4,7 +4,7 @@ echo "This script attempts to fetch and build DGGAL, DGG and its bindings and ex
 echo "Please make sure you have git installed to fetch the source code from the eC and DGGAL repositories."
 echo "Please make sure you have zlib (dev package) installed, as well as GCC or Clang, and GNU Make."
 echo "Please make sure you have GCC or Clang C++ support installed."
-echo "Please make sure you have the rust compiler (rustc) edition 2024+ installed."
+echo "Please make sure you have the rust compiler (rustc) edition 2021+ installed."
 echo "Please make sure you have cffi installed for Python (pip3 install cffi)."
 echo ""
 echo "Building in 'dgbuild' directory..."
@@ -41,7 +41,9 @@ echo "**************************************"
 echo "************ DGGAL for C *************"
 echo "**************************************"
 echo "Building DGGAL for C..."
-cd bindings/c
+cd ../eC/bindings/c
+make
+cd ../../../dggal/bindings/c
 make
 echo "Building DGGAL sample C application..."
 cd ../../bindings_examples/c
@@ -59,7 +61,9 @@ echo "**************************************"
 echo "************ DGGAL for C++ ***********"
 echo "**************************************"
 echo "Building DGGAL for C++..."
-cd bindings/cpp
+cd ../eC/bindings/cpp
+make
+cd ../../../dggal/bindings/cpp
 make
 echo "Building DGGAL sample C++ application..."
 cd ../../bindings_examples/cpp
@@ -77,7 +81,9 @@ echo "**************************************"
 echo "*********** DGGAL for rust ***********"
 echo "**************************************"
 echo "Building DGGAL for rust..."
-cd bindings/rust
+cd ../eC/bindings/rust
+make
+cd ../../../dggal/bindings/rust
 make
 echo "Building DGGAL sample rust application..."
 cd ../../bindings_examples/rust
@@ -91,11 +97,12 @@ echo "**************************************"
 echo "********** DGGAL for Python **********"
 echo "**************************************"
 echo "Building DGGAL for Python..."
-cd bindings/py
+cd ../eC/bindings/py
 python3 build_ecrt.py
+cd ../../../dggal/bindings/py
 python3 build_dggal.py
 echo "Execution test for DGGAL sample Python application:"
-export PYTHONPATH=$(pwd)
+export PYTHONPATH=$(pwd):$(pwd)/../../../eC/bindings/py
 cd ../../bindings_examples/py/
 python3 info.py
 cd ../..
