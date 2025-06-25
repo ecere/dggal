@@ -18,7 +18,7 @@ static void showSyntax()
 {
    PrintLn(
      $"DGGAL, the Discrete Global Grid Abstraction Library\n"
-      "Copyright (c) 2025 Ecere Corporation\n"
+      "Copyright (c) 2014-2025 Ecere Corporation\n"
       "Syntax:\n"
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
