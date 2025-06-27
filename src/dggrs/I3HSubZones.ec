@@ -1,6 +1,8 @@
 public import IMPORT_STATIC "ecrt"
 private:
 
+static define POW_EPSILON = 0.1;
+
 import "GeoExtent"
 
 import "dggrs"
@@ -95,7 +97,7 @@ import "RI3H"
      All scanlines are defined in a clockwise manner when looking at the zones on the globe.
 */
 
-#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
 
 void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
 {

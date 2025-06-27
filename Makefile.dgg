@@ -175,6 +175,14 @@ $(TARGET): $(SOURCES) $(RESOURCES_EAR) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
+ifdef OSX_TARGET
+	@echo Invoking otool -l:
+	otool -l $(TARGET)
+	@echo Invoking otool -L:
+	otool -L $(TARGET)
+	@echo Invoking dgg IVEA3H info C0-8-A
+	$(TARGET) IVEA3H info C0-8-A
+endif
 
 # SYMBOL RULES
 
