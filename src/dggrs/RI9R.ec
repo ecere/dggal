@@ -8,6 +8,8 @@ import "ri5x6"
 
 #include <stdio.h>
 
+static define POW_EPSILON = 0.1;
+
 define I9R_MAX_VERTICES = 200; // * 1024;
 
 public class RhombicIcosahedral9R : DGGRS
@@ -17,7 +19,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    uint64 countZones(int level)
    {
-      return (uint64)(10 * pow(9, level));
+      return (uint64)(10 * (pow(9, level)) + POW_EPSILON);
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
@@ -46,7 +48,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    uint64 countSubZones(I9RZone zone, int depth)
    {
-      return (uint64)pow(9, depth);
+      return (uint64)(pow(9, depth) + POW_EPSILON);
    }
 
    int getZoneLevel(I9RZone zone)
@@ -146,7 +148,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
       uint64 numCols = 5*p, numRows = 6*p;
       AVLTree<I9RZone> zonesTree { };
       Array<I9RZone> zones { };
@@ -494,7 +496,7 @@ private:
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
-      uint64 s = (int64)pow(3, rDepth), nSubZones = s * s;
+      uint64 s = (int64)(pow(3, rDepth) + POW_EPSILON), nSubZones = s * s;
       if(nSubZones < 1LL<<31)
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
@@ -543,7 +545,7 @@ private:
    {
       int level = this.level;
       uint row = this.row, col = this.col;
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int root = rowOP + colOP;
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
@@ -555,7 +557,7 @@ private:
 
    I9RZone ::fromCRSExtent(const Pointd topLeft, const Pointd bottomRight, int level)
    {
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
       int64 numRows = 6 * p, numCols = 5 * p;
       Pointd mid
       {
@@ -617,7 +619,7 @@ private:
    {
       uint l = level;
       int row = this.row, col = this.col;
-      int p = (int)pow(3, l);
+      int p = (int)(pow(3, l) + POW_EPSILON);
       uint numRows = 6 * p, numCols = 5 * p;
       int colOP = col / p, rowOP = row / p;
       int topDelta = (row - 1) / p - colOP;
@@ -698,15 +700,17 @@ private:
 int iLRCFromLRtI(char levelChar, int root, uint64 ix, int * row, int * col)
 {
    int level = levelChar - 'A';
+
    if(level >= 0 && level <= 16 && root >= 0 && root <= 9)
    {
-      uint64 p = (uint64)pow(3, level);
+      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
       if(ix >= 0 && ix < p * p)
       {
          int rowOP = (root + 1) >> 1, colOP = root >> 1;
          int ixOP = (int)(ix / p);
          *row = (int)(rowOP * p + ixOP);
          *col = (int)((colOP - ixOP) * p + ix); // distributivity on: ix - (ixOP * p) for (ix % p)
+
          return level;
       }
    }

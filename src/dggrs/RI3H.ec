@@ -10,6 +10,8 @@ import "RI9R"
 
 #include <stdio.h>
 
+static define POW_EPSILON = 0.1;
+
 // These DGGRSs have the topology of Goldberg polyhedra class I and II with m = 3^n
 
 // Goldberg polyhedra: https://en.wikipedia.org/wiki/Goldberg_polyhedron
@@ -24,7 +26,7 @@ level GP notation Name                             Class       Conway           
    5: GP(9,9)                                      2     dktktkD tktktI        dkdkdkdkdkdI     dkdkdkdkdkD      tdtdtdtdtdD    243                 2432
 */
 
-#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)pow(3, x))
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
 
 public class RhombicIcosahedral3H : DGGRS
 {

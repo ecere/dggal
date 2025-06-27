@@ -196,7 +196,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
       {
          double h = 1 - b[0];
-         double S = sin((b[2]/h * areaABC));
+         double S = sin(b[2]/h * areaABC);
          double c01 = A.DotProduct(B);
          double c12 = B.DotProduct(C);
          double c20 = C.DotProduct(A);

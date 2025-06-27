@@ -6,6 +6,8 @@ import "rHEALPix"
 
 #include <stdio.h>
 
+static define POW_EPSILON = 0.1;
+
 define RHP_MAX_VERTICES = 200; // * 1024;
 
 class RHPZone : DGGRSZone
@@ -28,7 +30,7 @@ public:
    {
       get
       {
-         int64 p = (int64)pow(3, level);
+         int64 p = (int64)(pow(3, level) + POW_EPSILON);
          value.x = -Pi    + (col + 0.5) * Pi/2 / p;
          value.y = 3*Pi/4 - (row + 0.5) * Pi/2 / p;
       }
@@ -38,7 +40,7 @@ public:
    {
       get
       {
-         int64 p = (int64)pow(3, level);
+         int64 p = (int64)(pow(3, level) + POW_EPSILON);
          value.tl.y = 3*Pi/4 - row * Pi/2 / p;
          value.tl.x = -Pi    + col * Pi/2 / p;
          value.br.x = value.tl.x + Pi/2 / p;
@@ -49,7 +51,7 @@ public:
    RHPZone ::fromPoint(const Pointd v, int level)
    {
       int row, col;
-      int p = (int)pow(3, level);
+      int p = (int)(pow(3, level) + POW_EPSILON);
 
       row = Max(0, Min(3 * p - 1, (int)((3*Pi/4 - v.y) * p / (Pi/2))));
       col = Max(0, Min(((row / p) == 1 ? 4 * p : p) - 1, (int)((v.x + Pi) * p / (Pi/2))));
@@ -58,7 +60,7 @@ public:
 
    Array<Pointd> getSubZoneCentroids(int depth)
    {
-      int p = (int)pow(3, depth);
+      int p = (int)(pow(3, depth) + POW_EPSILON);
       Array<Pointd> centroids { size = p * p };
       int r, c, i = 0;
       CRSExtent e = rhpExtent;
@@ -93,7 +95,7 @@ public class rHEALPix : DGGRS
 
    uint64 countZones(int level)
    {
-      return (uint64)(6 * pow(9, level));
+      return (uint64)(6 * (pow(9, level)) + POW_EPSILON);
    }
 
    double getZoneArea(RHPZone zoneID)
@@ -115,7 +117,7 @@ public class rHEALPix : DGGRS
 
    uint64 countSubZones(RHPZone zone, int depth)
    {
-      return (uint64)pow(9, depth);
+      return (uint64)(pow(9, depth) + POW_EPSILON);
    }
 
    int getZoneLevel(RHPZone zone)
@@ -141,7 +143,7 @@ public class rHEALPix : DGGRS
    int getZoneNeighbors(RHPZone zone, RHPZone * neighbors, int * nbType)
    {
       int level = zone.level, row = zone.row, col = zone.col;
-      int p = (int)pow(3, level);
+      int p = (int)(pow(3, level) + POW_EPSILON);
       int rr = row / p;
 
       // Left
@@ -221,7 +223,7 @@ public class rHEALPix : DGGRS
    void getZoneTextID(RHPZone zone, String zoneID)
    {
       int level = zone.level;
-      int64 p = (int64)pow(3, level);
+      int64 p = (int64)(pow(3, level) + POW_EPSILON);
       int row = zone.row, col = zone.col;
       int r = (int)(row / p), c = (int)(col / p);
       int i;
@@ -273,7 +275,7 @@ public class rHEALPix : DGGRS
       int level = parent.level + depth;
       if(level <= 16)
       {
-         int p = (int)pow(3, depth);
+         int p = (int)(pow(3, depth) + POW_EPSILON);
          return RHPZone { level, parent.row * p, parent.col * p };
       }
       return nullZone;
@@ -339,7 +341,7 @@ public class rHEALPix : DGGRS
 
       if(north.nonNull)
       {
-         int p = (int)pow(3, level);
+         int p = (int)(pow(3, level) + POW_EPSILON);
 
          for(r = 0; r < p; r++)
             for(c = 0; c < p; c++)
@@ -355,7 +357,7 @@ public class rHEALPix : DGGRS
       }
       if(south.nonNull)
       {
-         int p = (int)pow(3, level);
+         int p = (int)(pow(3, level) + POW_EPSILON);
 
          for(r = 0; r < p; r++)
             for(c = 0; c < p; c++)
@@ -491,7 +493,7 @@ public class rHEALPix : DGGRS
    {
       int level = parent.level + relativeDepth;
       int row = parent.row, col = parent.col;
-      int p = (int)pow(3, relativeDepth);
+      int p = (int)(pow(3, relativeDepth) + POW_EPSILON);
       Array<DGGRSZone> subZones { size = p * p };
       int r, c, i = 0;
 

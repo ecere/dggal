@@ -593,11 +593,11 @@ private:
             /*
             count = 3;
             while(--depth)
-               count += 2 * pow(4, depth);
+               count += 2 * (pow(4, depth)) + POW_EPSILON;
             */
             count = ((1LL << (2*depth + 1)) + 1)/3;
          else
-            // count = (int)pow(4, depth);
+            // count = (int)(pow(4, depth) + POW_EPSILON);
             count = 1LL << depth, count *= count;
       }
       else
