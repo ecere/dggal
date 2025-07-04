@@ -1025,6 +1025,10 @@ impl Drop for DGGRS {
    }
 }
 
+unsafe impl Sync for DGGRS {
+
+}
+
 #[repr(transparent)]
 pub struct DGGSJSONDepth(pub Instance);
 delegate_ttau64_and_default!(DGGSJSONDepth);
