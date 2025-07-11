@@ -1289,16 +1289,16 @@ void move5x6Vertex2(Pointd v, const Pointd srcC, double dx, double dy, bool cros
    int vx, vy;
 
    if(n.x < 0) n.x += 5; else if(n.x > 5) n.x -= 5;
-   if(n.y < 0) n.y += 5; else if(n.y > 5) n.y -= 5;
+   if(n.y < 0) n.y += 5; else if(n.y > 5 && c.y > 6 - e) n.y -= 5;
 
    nTopRightOfP = (n.x > c.x + e && n.x - c.x < 3) || c.x - n.x > 3;
    nTopLeftOfP = (n.x < c.x - e && c.x - n.x < 3) || n.x - c.x > 3;
    nBottomRightOfP = (n.y > c.y && n.y - c.y < 3) || c.y - n.y > 3;
    nBottomLeftOfP = (n.y < c.y - e && c.y - n.y < 3) || n.y - c.y > 3;
-   atTopDentCrossingRight    = cx2 != cx && c.x > c.y && nTopRightOfP;
-   atTopDentCrossingLeft     = cy2 != cy && c.x > c.y && nTopLeftOfP;
-   atBottomDentCrossingLeft  = cx2 != cx && c.y > c.x + 1 && nBottomLeftOfP;
-   atBottomDentCrossingRight = cy2 != cy && c.y > c.x + 1 && nBottomRightOfP;
+   atTopDentCrossingRight    = cx2 != cx && c.x > c.y + e && nTopRightOfP;
+   atTopDentCrossingLeft     = cy2 != cy && c.x > c.y + e && nTopLeftOfP;
+   atBottomDentCrossingLeft  = cx2 != cx && c.y > c.x + 1 + e && nBottomLeftOfP;
+   atBottomDentCrossingRight = cy2 != cy && c.y > c.x + 1 + e && nBottomRightOfP;
 
    // Cross already for cases where crossing does not happen mid-edge
    if(crossEarly)

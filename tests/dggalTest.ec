@@ -383,6 +383,48 @@ public class DGGSUnitTest : eTest
                   delete subZones;
                }
             }
+
+            PrintLn("Testing reciprocity of level ", pLevel, " zone neighbors");
+
+            for(z : allZones)
+            {
+               DGGRSZone zone = z;
+               DGGRSZone neighbors[6];
+               int nbTypes[6];
+               int nSides = dggrs.countZoneEdges(zone);
+               int n = dggrs.getZoneNeighbors(zone, neighbors, nbTypes), i, j;
+                                 // GGG zones can have 2 neighbors on one side
+               if(n != nSides && (n != nSides + 1 || dggrs._class != class(GNOSISGlobalGrid)))
+                  fail("DGGS neighbors", thisTest, "of mismatched neighbor count for zone");
+
+               for(i = 0; i < n; i++)
+               {
+                  for(j = 0; j < n; j++)
+                     if(i != j && neighbors[i] == neighbors[j])
+                        break;
+                  if(j < n)
+                     break;
+               }
+               if(i < n)
+                  fail("DGGS neighbors", thisTest, "of duplicate neighbors for zone");
+
+               for(i = 0; i < n; i++)
+               {
+                  DGGRSZone rNeighbors[6];
+                  int rNBTypes[6];
+                  int nr = dggrs.getZoneNeighbors(neighbors[i], rNeighbors, rNBTypes);
+
+                  for(j = 0; j < nr; j++)
+                     if(rNeighbors[j] == zone)
+                        break;
+                  if(j == nr)
+                     break;
+               }
+               if(i < n)
+                  fail("DGGS neighbors", thisTest, "of non-reciprocal neighbors for zone");
+
+            }
+
             delete allZones;
          }
          else

@@ -6,7 +6,7 @@
       "TargetType" : "Executable",
       "TargetFileName" : "dggalTest",
       "Libraries" : [
-         "ecere"
+         "ecrt"
       ],
       "Console" : true
    },
