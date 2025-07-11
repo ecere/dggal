@@ -418,11 +418,94 @@ public class DGGSUnitTest : eTest
                      if(rNeighbors[j] == zone)
                         break;
                   if(j == nr)
+                  {
+                     char zID[256], nID[256];
+                     dggrs.getZoneTextID(zone, zID);
+                     dggrs.getZoneTextID(neighbors[i], nID);
+                     PrintLn("Non reciprocal neighbors: ", zID, " and ", nID);
                      break;
+                  }
                }
                if(i < n)
                   fail("DGGS neighbors", thisTest, "of non-reciprocal neighbors for zone");
+            }
 
+            PrintLn("Testing reciprocity of level ", pLevel, " zone parents / children");
+
+            for(z : allZones)
+            {
+               DGGRSZone zone = z;
+               DGGRSZone children[9];
+               int n = dggrs.getZoneChildren(zone, children), i, j;
+
+               for(i = 0; i < n; i++)
+               {
+                  for(j = 0; j < n; j++)
+                     if(i != j && children[i] == children[j])
+                        break;
+                  if(j < n)
+                     break;
+               }
+               if(i < n)
+                  fail("DGGS children", thisTest, "of duplicate children for zone");
+
+               for(i = 0; i < n; i++)
+               {
+                  DGGRSZone parents[3];
+                  int np = dggrs.getZoneParents(children[i], parents);
+
+                  for(j = 0; j < np; j++)
+                     if(parents[j] == zone)
+                        break;
+                  if(j == np)
+                  {
+                     char zID[256], cID[256];
+                     dggrs.getZoneTextID(zone, zID);
+                     dggrs.getZoneTextID(children[i], cID);
+                     PrintLn("Non reciprocal parent / child: ", zID, " and ", cID);
+                     break;
+                  }
+               }
+               if(i < n)
+                  fail("DGGS children", thisTest, "of non-reciprocal parents / children for zone");
+            }
+
+            for(z : allZones)
+            {
+               DGGRSZone zone = z;
+               DGGRSZone parents[3];
+               int n = dggrs.getZoneParents(zone, parents), i, j;
+
+               for(i = 0; i < n; i++)
+               {
+                  for(j = 0; j < n; j++)
+                     if(i != j && parents[i] == parents[j])
+                        break;
+                  if(j < n)
+                     break;
+               }
+               if(i < n)
+                  fail("DGGS parents", thisTest, "of duplicate parents for zone");
+
+               for(i = 0; i < n; i++)
+               {
+                  DGGRSZone children[9];
+                  int np = dggrs.getZoneChildren(parents[i], children);
+
+                  for(j = 0; j < np; j++)
+                     if(children[j] == zone)
+                        break;
+                  if(j == np)
+                  {
+                     char zID[256], pID[256];
+                     dggrs.getZoneTextID(zone, zID);
+                     dggrs.getZoneTextID(parents[i], pID);
+                     PrintLn("Non reciprocal child / parent: ", zID, " and ", pID);
+                     break;
+                  }
+               }
+               if(i < n)
+                  fail("DGGS parents", thisTest, "of non-reciprocal parents / children for zone");
             }
 
             delete allZones;
@@ -447,5 +530,6 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA3H), 4, 8);
       testSubZones(class(ISEA9R), 2, 4);
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
+      testSubZones(class(rHEALPix), 3, 3);
    }
 }

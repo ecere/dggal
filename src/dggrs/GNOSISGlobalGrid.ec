@@ -226,7 +226,7 @@ public class GNOSISGlobalGrid : DGGRS
       if(l <= maxGGGZoomLevel)
       {
          int nChildren = 0;
-         uint numRow = 2 << l;
+         uint numRow = 1 << l;
          uint midRow = numRow >> 1;
          uint row1 = zone.row << 1, row2 = row1 | 1;
          uint c = 1 << GGGZone { l, zone.row >= midRow ? row1 : row2 }.getCoalesceShift();

@@ -1139,9 +1139,11 @@ private:
             {
                if(dy > 0)
                {
+                  bool onTopCrossingRightNegEpsilon = p0Centroid.x - p0Centroid.y - 1E-11 > 0 && p0Centroid.y - p0cy < 1E-11;
+
                   // Bottom-Right vertex child of p0
                   parents[1] = parent0.getNeighbor(bottomRight);
-                  parents[2] = parent0.getNeighbor(onBottomCrossingLeft ? bottomLeft : bottom);
+                  parents[2] = parent0.getNeighbor(onBottomCrossingLeft ? bottomLeft : onTopCrossingRightNegEpsilon ? right : bottom);
                }
                else
                {
@@ -1154,9 +1156,11 @@ private:
             {
                if(dx > 0)
                {
+                  bool onBottomCrossingLeftNegEpsilon = p0Centroid.y - p0Centroid.x - 1E-11 > 1 && p0Centroid.x - p0cx < 1E-11;
+
                   // Top-Right vertex child of p0
                   parents[1] = parent0.getNeighbor(topRight);
-                  parents[2] = parent0.getNeighbor(onTopCrossingRight ? topLeft : top);
+                  parents[2] = parent0.getNeighbor(onTopCrossingRight ? topLeft : onBottomCrossingLeftNegEpsilon ? right : top);
                }
                else
                {
