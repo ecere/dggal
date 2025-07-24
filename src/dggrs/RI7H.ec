@@ -1,34 +1,44 @@
-// This forms a basis for a number of aperture 3 hexagonal grids
+// This forms a basis for a number of aperture 7 hexagonal grids
 // using different projections based on the Rhombic Icosahedral 5x6 space
 public import IMPORT_STATIC "ecrt"
 private:
 
 import "dggrs"
 import "ri5x6"
-import "I3HSubZones"
-import "RI9R"
+// import "I7HSubZones"
 
 #include <stdio.h>
 
-static define POW_EPSILON = 0.1;
+// These DGGRSs have the topology of Goldberg polyhedra (https://en.wikipedia.org/wiki/Goldberg_polyhedron)
+//    class   I for even levels (m = 7^(level/2), n = 0)
+//    class III for odd levels  (m = 2n,          n = 7^((level-1)/2)))
 
-// These DGGRSs have the topology of Goldberg polyhedra class I and II with m = 3^k
+/*
+I7H
 
-// Goldberg polyhedra: https://en.wikipedia.org/wiki/Goldberg_polyhedron
-/*                                                              dk = td (for next step)
-I3H                                                             tk for two steps (= dkdk = tdtd); dktk = tkdk                (m + n)^2 − mn       10T + 2
-level GP notation Name                             Class       Conway                                                            T                 Count
-   0: GP(1,0)     dodecahedron                     1           D     dI                  dI               D                D     1                    12
-   1: GP(1,1)     truncated icosahedron            2         dkD     tI                dkdI             dkD              tdD     3                    32
-   2: GP(3,0)     truncated pentakis dodecahedron  1         tkD   dktI              dkdkdI           dkdkD            tdtdD     9                    92
-   3: GP(3,3)                                      2       tkdkD   tktI            dkdkdkdI         dkdkdkD          tdtdtdD     27                  272
-   4: GP(9,0)                                      1       tktkD dktktI          dkdkdkdkdI       dkdkdkdkD        tdtdtdtdD     81                  812
-   5: GP(9,9)                                      2     dktktkD tktktI        dkdkdkdkdkdI     dkdkdkdkdkD      tdtdtdtdtdD    243                 2432
+   T = (m+n)^2 - mn = m^2 + mn + n^2 = 7^level
+
+   (face count)
+     10T + 2        T   GP notation    Class  Name           Conway
+   -------------------------------------------------------------------------------
+   0:     12        1   GP(  1, 0)      1     dodecahedron        D
+   1:     72        7   GP(  2, 1)      3                        wD
+   2:    492       49   GP(  7, 0)      1                      wrwD
+   3:   3432      343   GP( 14, 7)      3                     wrwwD
+   4:  24012     2401   GP( 49, 0)      1                   wrwrwwD ?
+   5: 168072    16807   GP( 98,49)      3                  wrwrwwwD ?
 */
 
-#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
+static define POW_EPSILON = 0.1;
 
-public class RhombicIcosahedral3H : DGGRS
+extern uint64 powersOf3[34]; // in RI3H.ec
+
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
+#define POW6(x) ((1LL << (x)) * POW3(x))
+#define POW7(x) ((x) < sizeof(powersOf7) / sizeof(powersOf7[0]) ? (uint64)powersOf7[x] : (uint64)(pow(7, x) + POW_EPSILON))
+#define POW8(x) (1LL << (3*(x)))
+
+public class RhombicIcosahedral7H : DGGRS
 {
    RI5x6Projection pj;
    bool equalArea;
@@ -36,34 +46,34 @@ public class RhombicIcosahedral3H : DGGRS
    // DGGH
    uint64 countZones(int level)
    {
-      return (uint64)(10 * POW3(level) + 2);
+      return (uint64)(10 * POW7(level) + 2);
    }
 
-   int getMaxDGGRSZoneLevel() { return 33; }
-   int getRefinementRatio() { return 3; }
-   int getMaxParents() { return 3; }
+   int getMaxDGGRSZoneLevel() { return 21; }
+   int getRefinementRatio() { return 7; }
+   int getMaxParents() { return 2; }
    int getMaxNeighbors() { return 6; }
-   int getMaxChildren() { return 7; }
+   int getMaxChildren() { return 13; }
 
-   uint64 countSubZones(I3HZone zone, int depth)
+   uint64 countSubZones(I7HZone zone, int depth)
    {
       return zone.getSubZonesCount(depth);
    }
 
-   int getZoneLevel(I3HZone zone)
+   int getZoneLevel(I7HZone zone)
    {
       return zone.level;
    }
 
-   int countZoneEdges(I3HZone zone) { return zone.nPoints; }
+   int countZoneEdges(I7HZone zone) { return zone.nPoints; }
 
-   bool isZoneCentroidChild(I3HZone zone)
+   bool isZoneCentroidChild(I7HZone zone)
    {
       return zone.isCentroidChild;
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   double getZoneArea(I3HZone zone)
+   double getZoneArea(I7HZone zone)
    {
       double area;
       if(equalArea)
@@ -91,23 +101,23 @@ public class RhombicIcosahedral3H : DGGRS
       return area;
    }
 
-   I3HZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
+   I7HZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
    {
-      if(level <= 33)
+      if(level <= 21)
       {
          switch(crs)
          {
             case 0: case CRS { ogc, 153456 }:
-               return I3HZone::fromCentroid(level, centroid);
+               return I7HZone::fromCentroid(level, centroid);
             case CRS { ogc, 1534 }:
             {
                Pointd c5x6;
                RI5x6Projection::fromIcosahedronNet({ centroid.x, centroid.y }, c5x6);
-               return I3HZone::fromCentroid(level, { c5x6.x, c5x6.y });
+               return I7HZone::fromCentroid(level, { c5x6.x, c5x6.y });
             }
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
-               return (I3HZone)getZoneFromWGS84Centroid(level,
+               return (I7HZone)getZoneFromWGS84Centroid(level,
                   crs == { ogc, 84 } ?
                      { centroid.y, centroid.x } :
                      { centroid.x, centroid.y });
@@ -116,44 +126,44 @@ public class RhombicIcosahedral3H : DGGRS
       return nullZone;
    }
 
-   int getZoneNeighbors(I3HZone zone, I3HZone * neighbors, I3HNeighbor * nbType)
+   int getZoneNeighbors(I7HZone zone, I7HZone * neighbors, I7HNeighbor * nbType)
    {
       return zone.getNeighbors(neighbors, nbType);
    }
 
-   I3HZone getZoneCentroidParent(I3HZone zone)
+   I7HZone getZoneCentroidParent(I7HZone zone)
    {
-      return zone.centroidParent;
+      return nullZone; // REVIEW: zone.centroidParent;
    }
 
-   I3HZone getZoneCentroidChild(I3HZone zone)
+   I7HZone getZoneCentroidChild(I7HZone zone)
    {
       return zone.centroidChild;
    }
 
-   int getZoneParents(I3HZone zone, I3HZone * parents)
+   int getZoneParents(I7HZone zone, I7HZone * parents)
    {
       return zone.getParents(parents);
    }
 
-   int getZoneChildren(I3HZone zone, I3HZone * children)
+   int getZoneChildren(I7HZone zone, I7HZone * children)
    {
       return zone.getChildren(children);
    }
 
    // Text ZIRS
-   void getZoneTextID(I3HZone zone, String zoneID)
+   void getZoneTextID(I7HZone zone, String zoneID)
    {
       zone.getZoneID(zoneID);
    }
 
-   I3HZone getZoneFromTextID(const String zoneID)
+   I7HZone getZoneFromTextID(const String zoneID)
    {
-      return I3HZone::fromZoneID(zoneID);
+      return I7HZone::fromZoneID(zoneID);
    }
 
    // Sub-zone Order
-   I3HZone getFirstSubZone(I3HZone zone, int depth)
+   I7HZone getFirstSubZone(I7HZone zone, int depth)
    {
       return zone.getFirstSubZone(depth);
    }
@@ -161,11 +171,11 @@ public class RhombicIcosahedral3H : DGGRS
    void compactZones(Array<DGGRSZone> zones)
    {
       int maxLevel = 0, i, count = zones.count;
-      AVLTree<I3HZone> zonesTree { };
+      AVLTree<I7HZone> zonesTree { };
 
       for(i = 0; i < count; i++)
       {
-         I3HZone zone = (I3HZone)zones[i];
+         I7HZone zone = (I7HZone)zones[i];
          if(zone != nullZone)
          {
             int level = zone.level;
@@ -175,7 +185,7 @@ public class RhombicIcosahedral3H : DGGRS
          }
       }
 
-      compactI3HZones(zonesTree, maxLevel);
+      // TODO: compactI7HZones(zonesTree, maxLevel);
       zones.Free();
 
       count = zonesTree.count;
@@ -189,10 +199,10 @@ public class RhombicIcosahedral3H : DGGRS
 
    int getIndexMaxDepth()
    {
-      return 33;
+      return 21;
    }
 
-   int64 getSubZoneIndex(I3HZone parent, I3HZone subZone)
+   int64 getSubZoneIndex(I7HZone parent, I7HZone subZone)
    {
       int64 ix = -1;
       int level = getZoneLevel(parent), szLevel = getZoneLevel(subZone);
@@ -204,40 +214,41 @@ public class RhombicIcosahedral3H : DGGRS
          Pointd zCentroid;
 
          canonicalize5x6(subZone.centroid, zCentroid);
-         ix = iterateI3HSubZones(parent, szLevel - level, &zCentroid, findSubZone, -1);
+         ix = -1; // TODO: iterateI7HSubZones(parent, szLevel - level, &zCentroid, findSubZone, -1);
       }
       return ix;
    }
 
-   DGGRSZone getSubZoneAtIndex(I3HZone parent, int relativeDepth, int64 index)
+   DGGRSZone getSubZoneAtIndex(I7HZone parent, int relativeDepth, int64 index)
    {
-      I3HZone subZone = nullZone;
+      I7HZone subZone = nullZone;
       if(index >= 0 && index < countSubZones(parent, relativeDepth))
       {
          if(index == 0)
             return getFirstSubZone(parent, relativeDepth);
          else
          {
-            Pointd centroid;
-            iterateI3HSubZones(parent, relativeDepth, &centroid, findByIndex, index);
-            subZone = I3HZone::fromCentroid(parent.level + relativeDepth, centroid);
+            // TODO:
+            // Pointd centroid;
+            //iterateI7HSubZones(parent, relativeDepth, &centroid, findByIndex, index);
+            subZone = nullZone; //I7HZone::fromCentroid(parent.level + relativeDepth, centroid);
          }
       }
       return subZone;
    }
 
-   I3HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
+   I7HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      if(level <= 33)
+      if(level <= 21)
       {
          Pointd v;
          pj.forward(centroid, v);
-         return I3HZone::fromCentroid(level, v);
+         return I7HZone::fromCentroid(level, v);
       }
       return nullZone;
    }
 
-   void getZoneCRSCentroid(I3HZone zone, CRS crs, Pointd centroid)
+   void getZoneCRSCentroid(I7HZone zone, CRS crs, Pointd centroid)
    {
       switch(crs)
       {
@@ -263,12 +274,12 @@ public class RhombicIcosahedral3H : DGGRS
       }
    }
 
-   void getZoneWGS84Centroid(I3HZone zone, GeoPoint centroid)
+   void getZoneWGS84Centroid(I7HZone zone, GeoPoint centroid)
    {
-      pj.inverse(zone.centroid, centroid, zone.subHex > 2);
+      pj.inverse(zone.centroid, centroid, false); // REVIEW: zone.subHex > 2);
    }
 
-   void getZoneCRSExtent(I3HZone zone, CRS crs, CRSExtent extent)
+   void getZoneCRSExtent(I7HZone zone, CRS crs, CRSExtent extent)
    {
       switch(crs)
       {
@@ -299,7 +310,7 @@ public class RhombicIcosahedral3H : DGGRS
       }
    }
 
-   void getZoneWGS84Extent(I3HZone zone, GeoExtent extent)
+   void getZoneWGS84Extent(I7HZone zone, GeoExtent extent)
    {
       int i;
       GeoPoint centroid;
@@ -334,7 +345,7 @@ public class RhombicIcosahedral3H : DGGRS
       delete vertices;
    }
 
-   int getZoneCRSVertices(I3HZone zone, CRS crs, Pointd * vertices)
+   int getZoneCRSVertices(I7HZone zone, CRS crs, Pointd * vertices)
    {
       uint count = zone.getVertices(vertices), i;
       int j;
@@ -355,7 +366,7 @@ public class RhombicIcosahedral3H : DGGRS
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
          {
-            bool oddGrid = zone.subHex > 2;
+            bool oddGrid = false; // REVIEW:
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
@@ -370,11 +381,11 @@ public class RhombicIcosahedral3H : DGGRS
       return count;
    }
 
-   int getZoneWGS84Vertices(I3HZone zone, GeoPoint * vertices)
+   int getZoneWGS84Vertices(I7HZone zone, GeoPoint * vertices)
    {
       Pointd v5x6[6];
       uint count = zone.getVertices(v5x6), i;
-      bool oddGrid = zone.subHex > 2;
+      bool oddGrid = false; // REVIEW:
       int j;
 
       for(j = 0; j < count; j++)
@@ -385,7 +396,7 @@ public class RhombicIcosahedral3H : DGGRS
       return count;
    }
 
-   Array<Pointd> getZoneRefinedCRSVertices(I3HZone zone, CRS crs, int edgeRefinement)
+   Array<Pointd> getZoneRefinedCRSVertices(I7HZone zone, CRS crs, int edgeRefinement)
    {
       if(crs == CRS { ogc, 1534 })
          return getIcoNetRefinedVertices(zone, edgeRefinement);
@@ -393,13 +404,15 @@ public class RhombicIcosahedral3H : DGGRS
          return getRefinedVertices(zone, crs, edgeRefinement, false);
    }
 
-   Array<GeoPoint> getZoneRefinedWGS84Vertices(I3HZone zone, int edgeRefinement)
+   Array<GeoPoint> getZoneRefinedWGS84Vertices(I7HZone zone, int edgeRefinement)
    {
       return (Array<GeoPoint>)getRefinedVertices(zone, { epsg, 4326 }, edgeRefinement, true);
    }
 
-   void getApproxWGS84Extent(I3HZone zone, GeoExtent extent)
+   void getApproxWGS84Extent(I7HZone zone, GeoExtent extent)
    {
+      getZoneWGS84Extent(zone, extent);
+      /*
       int sh = zone.subHex;
       int i;
       GeoPoint centroid;
@@ -446,9 +459,10 @@ public class RhombicIcosahedral3H : DGGRS
          extent.ur.lon = Pi;
          extent.ll.lat = -Pi/2;
       }
+      */
    }
 
-   private static Array<Pointd> getRefinedVertices(I3HZone zone, CRS crs, int edgeRefinement, bool useGeoPoint) // 0 edgeRefinement for 1-20 based on level
+   private static Array<Pointd> getRefinedVertices(I7HZone zone, CRS crs, int edgeRefinement, bool useGeoPoint) // 0 edgeRefinement for 1-20 based on level
    {
       Array<Pointd> rVertices = null;
       bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
@@ -459,7 +473,7 @@ public class RhombicIcosahedral3H : DGGRS
          Array<Pointd> ap;
          bool geodesic = false; //true;
          int level = zone.level;
-         bool refine = crs84 || zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
+         bool refine = true; // REVIEW: crs84 || zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
          int i;
 
          ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
@@ -470,7 +484,7 @@ public class RhombicIcosahedral3H : DGGRS
             //Radians dLon;
             bool wrap = true;
             int lonQuad;
-            bool oddGrid = zone.subHex > 2;
+            bool oddGrid = false; // REVIEW:
 
             //getApproxWGS84Extent(zone, e);
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
@@ -542,7 +556,7 @@ public class RhombicIcosahedral3H : DGGRS
    }
 
    // Sub-zone Order
-   Array<Pointd> getSubZoneCRSCentroids(I3HZone parent, CRS crs, int depth)
+   Array<Pointd> getSubZoneCRSCentroids(I7HZone parent, CRS crs, int depth)
    {
       Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
       if(centroids)
@@ -558,7 +572,7 @@ public class RhombicIcosahedral3H : DGGRS
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
             {
-               bool oddGrid = parent.subHex > 2;
+               bool oddGrid = false; // REVIEW:
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
@@ -573,7 +587,7 @@ public class RhombicIcosahedral3H : DGGRS
       return centroids;
    }
 
-   Array<GeoPoint> getSubZoneWGS84Centroids(I3HZone parent, int depth)
+   Array<GeoPoint> getSubZoneWGS84Centroids(I7HZone parent, int depth)
    {
       Array<GeoPoint> geo = null;
       Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
@@ -581,7 +595,7 @@ public class RhombicIcosahedral3H : DGGRS
       {
          uint count = centroids.count;
          int i;
-         bool oddGrid = parent.subHex > 2;
+         bool oddGrid = false; // REVIEW:
 
          geo = { size = count };
          for(i = 0; i < count; i++)
@@ -593,15 +607,53 @@ public class RhombicIcosahedral3H : DGGRS
 
    static Array<DGGRSZone> listZones(int zoneLevel, const GeoExtent bbox)
    {
+      // TODO:
       Array<DGGRSZone> zones = null;
-      AVLTree<I3HZone> tsZones { };
+      AVLTree<I7HZone> tsZones { };
+      int level = 0;
+      int root;
+      bool extentCheck = false; // TODO:
+
+      for(root = 0; root < 12; root++)
+         tsZones.Add({ 0, root, 0 });
+
+      //tsZones.Add(I7HZone::fromZoneID("B3-0-G"));
+      //tsZones.Add(I7HZone::fromZoneID("B3-0-B"));
+      //tsZones.Add(I7HZone::fromZoneID("B4-0-B"));
+      //tsZones.Add(I7HZone::fromZoneID("B4-0-C"));
+      //tsZones.Add(I7HZone::fromZoneID("B6-0-C"));
+      //tsZones.Add(I7HZone::fromZoneID("BA-0-C"));
+      //tsZones.Add(I7HZone::fromZoneID("AA-0-A"));
+      //tsZones.Add(I7HZone::fromZoneID("BA-0-D"));
+      //tsZones.Add(I7HZone::fromZoneID("BA-0-E"));
+      //tsZones.Add(I7HZone::fromZoneID("BA-0-F"));
+      //tsZones.Add(I7HZone::fromZoneID("BB-0-E"));
+
+      for(level = 1; level <= zoneLevel; level++)
+      {
+         AVLTree<I7HZone> tmp { };
+
+         for(z : tsZones)
+         {
+            I7HZone z7 = z;
+            I7HZone children[7];
+            int i;
+            int n = z7.getPrimaryChildren(children);
+
+            for(i = 0; i < n; i++)
+               tmp.Add(children[i]);
+         }
+         delete tsZones;
+         tsZones = tmp;
+      }
+
+      #if 0
       int i9RLevel = zoneLevel / 2;
-      uint64 power = POW3(i9RLevel);
+      uint64 power = POW7(i9RLevel);
       double z = 1.0 / power;
       int hexSubLevel = zoneLevel & 1;
       Pointd tl, br;
       //double x, y;
-      bool extentCheck = true;
       int64 yCount, xCount, yi, xi;
 
       if(bbox != null && bbox.OnCompare(wholeWorld))
@@ -642,16 +694,16 @@ public class RhombicIcosahedral3H : DGGRS
             if(rootX < 5 && (d == 0 || d == 1))
             {
                int nHexes = 0, h;
-               I3HZone hexes[4];
+               I7HZone hexes[4];
 
-               hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'D' : 'A');
+               hexes[nHexes++] = I7HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'D' : 'A');
                if(hexes[nHexes-1] == nullZone)
                   continue; // This should no longer happen...
 
                if(hexSubLevel)
                {
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'E');
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'F');
+                  hexes[nHexes++] = I7HZone::fromI9R(i9RLevel, row, col, 'E');
+                  hexes[nHexes++] = I7HZone::fromI9R(i9RLevel, row, col, 'F');
                }
 
                for(h = 0; h < nHexes; h++)
@@ -659,19 +711,15 @@ public class RhombicIcosahedral3H : DGGRS
             }
          }
       }
-
-      // Always add the poles since they are touched at multiple points and will be checked for intersections below
-      // "North" pole
-      tsZones.Add(I3HZone::fromI9R(i9RLevel, 0, (uint)(power-1), hexSubLevel ? 'G' : 'B'));
-      // "South" pole
-      tsZones.Add(I3HZone::fromI9R(i9RLevel, (uint)(6*power-1), (uint)(4*power), hexSubLevel ? 'H' : 'C'));
+      #endif
 
       if(tsZones.count)
       {
          zones = { minAllocSize = tsZones.count };
          for(t : tsZones)
          {
-            I3HZone zone = t;
+            I7HZone zone = t;
+
             if(extentCheck)
             {
                // REVIEW: Computing the detailed wgs84Extent is slow as it uses refined vertices and involves a large amount of inverse projections.
@@ -691,22 +739,19 @@ public class RhombicIcosahedral3H : DGGRS
          }
          zones.Sort(true);
       }
+
       delete tsZones;
       return zones;
    }
 }
 
-/*static*/ uint64 powersOf3[] =
-{
-   1, 3, 9, 27, 81, 243, 729, 2187, 6561, 19683,
-   59049, 177147, 531441, 1594323, 4782969, 14348907, 43046721, 129140163, 387420489, 1162261467,
-   3486784401LL, 10460353203LL, 31381059609LL, 94143178827LL, 282429536481LL, 847288609443LL, 2541865828329LL, 7625597484987LL,
-      22876792454961LL, 68630377364883LL,
-   205891132094649LL, 617673396283947LL, 1853020188851841LL, 5559060566555523LL
+/*static*/ uint64 powersOf7[] = { 1, 7, 49, 343, 2401, 16807, 117649, 823543, 5764801, 40353607, 282475249, 1977326743,
+   13841287201LL, 96889010407LL, 678223072849LL, 4747561509943LL, 33232930569601LL,
+   232630513987207LL, 1628413597910449LL, 11398895185373143LL, 79792266297612001LL,
+   558545864083284007LL, 3909821048582988049LL, 8922003266371364727LL, 7113790643470898241LL
 };
 
-
-enum I3HNeighbor
+enum I7HNeighbor
 {
    // The names reflect the planar ISEA projection arrangement
    top,        // Odd level only, except when replacing topLeft/topRight in interruptions for even level
@@ -720,29 +765,38 @@ enum I3HNeighbor
 };
 
 // Public for use in tests...
-public class I3HZone : private DGGRSZone
+public class I7HZone : private DGGRSZone
 {
 public:
-   uint levelI9R:5:58;  // 0 .. 16
-   uint rootRhombus:4:54;  // 0 .. 9
-   uint64 rhombusIX:51:3; // (left to right, top to bottom)   0 .. 205,891,132,094,648 (3^16 * 3^16 - 1)
-   uint subHex:3:0;       // 0..2 for even level: (1 and 2 for special pole cases)
-                        // 3..5 for odd level:  (3,4,5 for normal cases, 6 and 7 for special pole cases)
+   uint levelI49R:4:60;   //  4 bits  0..10: A-U (use 7H level)   (level 0: 1x1, level 1: 7x7, level 2: 49x49..., level 10: 282,475,249 x 282,475,249 = 79,792,266,297,612,001 zones)
+   uint64 rhombusIX:57:3; // 57 bits  0: North Pole, 1: South Pole, 2..79,792,266,297,612,002
+   uint subHex:3:0;       //  3 bits  0: A     -- even level
+                          //             B     -- odd level centroid child, C..H: Centroid child
 
 private:
    property int level
    {
-      get { return levelI9R * 2 + (subHex > 2); }
+      get { return 2*levelI49R + (subHex > 0); }
    }
 
    property int nPoints
    {
       get
       {
-         int sh = subHex;
-         if(sh == 1 || sh == 2 || sh == 6 || sh == 7 || (rhombusIX == 0 && (sh == 0 || sh == 3)))
-            return 5; // Polar zones and 0 rhombus index 0 (A and D) are pentagons
-         return 6;
+         if(subHex > 1) // All vertex children are hexagons
+            return 6;
+         else
+         {
+            uint64 ix = rhombusIX;
+            if(ix == 0 || ix == 1) // North and South Poles
+               return 5;
+            else
+            {
+               // Top-left corner of root rhombuses are pentagons
+               uint64 p = POW7(levelI49R), rSize = p * p;
+               return ((ix - 2) % rSize) == 0 ? 5 : 6;
+            }
+         }
       }
    }
 
@@ -750,122 +804,67 @@ private:
    {
       get
       {
+         /* REVIEW:
          if(nPoints == 6)
          {
-            int divs = (int)POW3(levelI9R);
-            bool southRhombus = rootRhombus & 1;
-            return rhombusIX && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
+            return false;
          }
+         */
          return false;
       }
    }
 
-   I3HZone ::fromZoneID(const String zoneID)
+   I7HZone ::fromZoneID(const String zoneID)
    {
-      I3HZone result = nullZone;
-      char levelChar;
+      I7HZone result = nullZone;
+      char levelChar, subHex;
+      uint64 ix = 0;
       uint root;
-      uint64 ix;
-      char subHex;
-      int row, col, l9r = -1;
 
-      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%d-%I64X-%c" : "%c%d-%llX-%c",
-         &levelChar, &root, &ix, &subHex) == 4)
-         l9r = iLRCFromLRtI(levelChar, root, ix, &row, &col);
-      if(l9r != -1 && validate(l9r, row, col, subHex))
+      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
+         &levelChar, &root, &ix, &subHex) == 4 && root < 12 && levelChar >= 'A' && levelChar <= 'V' && subHex >= 'A' && subHex <= 'G')
       {
-         char id[256];
-
-         result = fromI9R(l9r, row, col, subHex);
-
-         result.getZoneID(id);
-         if(strcmp(id, zoneID))
-            result = nullZone;
+         int l49r = (levelChar - 'A') / 2;
+         uint64 p = POW7(l49r), rSize = p * p;
+         uint64 rix = root == 10 ? 0 : root == 11 ? 1 : 2 + root * rSize + ix;
+         result = { l49r, rix, subHex - 'A' };
       }
       return result;
    }
 
-   // This function generates the proposed ISEA3H DGGS Zone ID string
-   // in the form {ISEA9RLevelChar}{RootRhombus}-{HexIndexWithinRootRhombus}-{SubHex}
+   // This function generates the proposed I7H DGGRS Zone ID string
+   // in the form {LevelChar}{RootPentagon}-{HierarchicalIndexFromPentagon}
    void getZoneID(String zoneID)
    {
       if(this == nullZone)
          sprintf(zoneID, "(null)");
       else
       {
-         uint l9r = this.levelI9R;
-         uint root = this.rootRhombus;
-         uint64 ix = this.rhombusIX;
-         char subHex = (char)(this.subHex + 'A');
+         uint level = 2 * levelI49R + (subHex > 0);
+         uint64 p = POW7(levelI49R), rSize = p * p;
+         uint64 rix = rhombusIX;
+         uint root = rix == 0 ? 10 : rix == 1 ? 11 : (uint)((rix - 2) / rSize);
+         uint64 ix = rix >= 2 ? (rix - 2) % rSize : 0;
          sprintf(zoneID,
-            __runtimePlatform == win32 ? "%c%d-%I64X-%c" : "%c%d-%llX-%c",
-            'A' + l9r, root, ix, subHex);
+            __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
+            'A' + level, root, ix, 'A' + subHex);
       }
    }
 
-   I3HZone ::fromI9R(int level, uint row, uint col, char subHex)
-   {
-      uint64 p = POW3(level);
-      uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
-      int root = rowOP + colOP;
-      int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
-      uint64 ix = y * p + x;
-
-      // Avoid returning bad key
-      if(subHex < 'A' || subHex > 'H' || root > 9 || rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)
-         return nullZone;
-      else if(subHex != 'A' && subHex != 'D' && subHex != 'E' && subHex != 'F' &&
-              !((subHex == 'B' || subHex == 'G') && row == 0 && col == p-1) &&
-              !((subHex == 'C' || subHex == 'H') && col == 4*p && row == 6*p-1))
-         return nullZone;
-      return { level, root, ix, subHex - 'A'};
-   }
-
-   bool ::validate(uint levelI9R, uint row, uint col, char subHex)
-   {
-      uint64 p = POW3(levelI9R);
-      uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
-      int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
-      uint root = rowOP + colOP;
-      if(subHex < 'A' || subHex > 'H' || root > 9 || rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)
-         return false;
-      else if(subHex != 'A' && subHex != 'D' && subHex != 'E' && subHex != 'F' &&
-              !((subHex == 'B' || subHex == 'G') && row == 0 && col == p-1) &&
-              !((subHex == 'C' || subHex == 'H') && col == 4*p && row == 6*p-1))
-         return false;
-      return true;
-   }
-
-   property I3HZone parent0
+   property I7HZone parent0
    {
       get
       {
-         int sh = this.subHex;
-         if(!levelI9R && sh < 3)
-            return nullZone;
-         else
-         {
-            I3HZone key { };
-            if(sh >= 3)
-            {
-               key = this;
-               key.subHex = sh == 6 ? 1 : sh == 7 ? 2 : 0;
-            }
-            else
-            {
-               int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
-               uint64 p = POW3(level);
-               uint64 r = rhombusIX / p, c = rhombusIX % p;
-               uint rm3 = (uint)(r % 3), cm3 = (uint)(c % 3);
-               key = fromI9R(level - 1, row / 3, col / 3, (char)('A' + (sh == 1 ? 6 : sh == 2 ? 7 : (cm3 > 1 ? 4 : rm3 > 1 ? 5 : 3))));
-            }
-            return key;
-         }
+         // TODO:
+         I7HZone key = nullZone;
+         return key;
       }
    }
 
-   I3HZone getNeighbor(I3HNeighbor which)
+   I7HZone getNeighbor(I7HNeighbor which)
    {
+      // TODO:
+#if 0
       Pointd centroid = this.centroid;
       int cx = (int)floor(centroid.x + 1E-11);
       int cy = (int)floor(centroid.y + 1E-11);
@@ -1003,7 +1002,7 @@ private:
       }
       if(x || y)
       {
-         I3HZone result;
+         I7HZone result;
          // REVIEW: This is the only place we use moveISEAVertex2()
          move5x6Vertex2(v, centroid, x, y, crossEarly);
          result = fromCentroid(2*l9r + (sh >= 3), v);
@@ -1012,200 +1011,124 @@ private:
          return result;
       }
       else
+#endif
          return nullZone;
-      /*
-      TODO: more direct path?
-      int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
-      int sh = 0;
-      col += x, row += y;
-      return fromI9R(level, row, col, (char)('A' + sh));
-      */
    }
 
-   int getNeighbors(I3HZone neighbors[6], I3HNeighbor i3hNB[6])
+   int getNeighbors(I7HZone neighbors[6], I7HNeighbor i7hNB[6])
    {
       int numNeighbors = 0;
-      I3HNeighbor n;
-      I3HNeighbor localNB[6];
+      I7HNeighbor n;
+      I7HNeighbor localNB[6];
 
-      if(i3hNB == null) i3hNB = localNB;
+      if(i7hNB == null) i7hNB = localNB;
 
-      for(n = 0; n < I3HNeighbor::enumSize; n++)
+      for(n = 0; n < I7HNeighbor::enumSize; n++)
       {
-         I3HZone nb = getNeighbor(n);
+         I7HZone nb = getNeighbor(n);
          if(nb != nullZone)
          {
-            I3HNeighbor which = n;
+            I7HNeighbor which = n;
             if(numNeighbors)
             {
                // Handle special cases here so that getNeighbor()
                // can still return same neighbor for multiple directions
-               if(n == topRight && i3hNB[numNeighbors-1] == topLeft && neighbors[numNeighbors-1] == nb)
+               if(n == topRight && i7hNB[numNeighbors-1] == topLeft && neighbors[numNeighbors-1] == nb)
                {
-                  i3hNB[numNeighbors-1] = top;
+                  i7hNB[numNeighbors-1] = top;
                   continue;
                }
-               else if(n == bottomRight && i3hNB[numNeighbors-1] == bottomLeft && neighbors[numNeighbors-1] == nb)
+               else if(n == bottomRight && i7hNB[numNeighbors-1] == bottomLeft && neighbors[numNeighbors-1] == nb)
                {
-                  i3hNB[numNeighbors-1] = bottom;
+                  i7hNB[numNeighbors-1] = bottom;
                   continue;
                }
-               else if(n == topRight && i3hNB[numNeighbors-1] != topLeft)
+               else if(n == topRight && i7hNB[numNeighbors-1] != topLeft)
                   which = top;
-               else if(n == bottomRight && i3hNB[numNeighbors-1] != bottomLeft)
+               else if(n == bottomRight && i7hNB[numNeighbors-1] != bottomLeft)
                   which = bottom;
             }
-            i3hNB[numNeighbors] = which;
+            i7hNB[numNeighbors] = which;
             neighbors[numNeighbors++] = nb;
          }
       }
       return numNeighbors;
    }
 
-   property I3HZone centroidParent
+   int getContainingGrandParents(I7HZone cgParents[2])
    {
-      get
+      int n = 0;
+      int level = this.level;
+      if(level >= 2)
       {
-         I3HZone cParent = parent0;
-         if(cParent != nullZone && cParent.isCentroidChild)
-            return cParent; // At least one of vertex children's parent is a centroid child,
-                            // but few centroid child parent are themselves a centroid child
+         if(isCentroidChild)
+            // Scenario A: centroid child
+            cgParents[0] = parent0.parent0, n = 1;
          else
          {
-            // TODO: directly compute centroid parent?
-            I3HZone parents[3];
-            int n = getParents(parents), i;
+            I7HZone parents[2], gParentA, gParentB;
 
-            for(i = 1; i < n; i++)
-               if(parents[i].isCentroidChild)
-                  return parents[i];
-            return nullZone;
+            getParents(parents);
+            gParentA = parents[0].parent0;
+            gParentB = parents[1].parent0;
+
+            // Scenario B: both parents have same primary parent -- containing grandparent is that primary grandparent
+            if(gParentA == gParentB)
+               cgParents[0] = gParentA, n = 1;
+            else
+            {
+               // REVIEW:
+               // Parents have different primary parents
+               Pointd c = centroid, cA = gParentA.centroid, cB = gParentB.centroid;
+               I7HZone z1 = I7HZone::fromCentroid(level - 2, { c.x + 1E-9 * Sgn(cA.x - c.x), c.x + 1E-9 * Sgn(cA.y - c.y) });
+               I7HZone z2 = I7HZone::fromCentroid(level - 2, { c.x + 1E-9 * Sgn(cB.x - c.x), c.x + 1E-9 * Sgn(cB.y - c.y) });
+
+               // Scenario C: whole zone inside one of these (this sub-zone of only one grandparent): one containing grandparent
+               if(z1 == z2)
+                  cgParents[0] = z1, n = 1;
+
+               // Scenario D: zone on the edge of both of these (this sub-zone of both): two containing grandparents
+               else
+                  cgParents[0] = gParentA, cgParents[1] = gParentB, n = 2;
+            }
          }
       }
-   }
-
-   int getContainingGrandParents(I3HZone cgParents[3])
-   {
-      I3HZone cParent = centroidParent;
-      int n;
-
-      if(isCentroidChild)
-      {
-         if(cParent != nullZone)
-            cgParents[0] = cParent.parent0, n = 1;
-         else
-            n = parent0.getParents(cgParents);
-      }
-      else
-         n = cParent.getParents(cgParents);
-
-#ifdef _DEBUG
-      if(n != 3 && n != 1)
-         Print("WARNING: Wrong assumption");
-#endif
       return n;
    }
 
-   int getParents(I3HZone parents[3])
+   int getParents(I7HZone parents[2])
    {
-      I3HZone parent0 = this.parent0;
+      I7HZone parent0 = this.parent0;
 
       parents[0] = parent0;
       if(isCentroidChild)
          return parent0 == nullZone ? 0 : 1;
       else
       {
-         int sh = subHex;
 
-         if(sh >= 3)
-         {
-            // Odd level
-            parents[1] = parent0.getNeighbor(right);
-            parents[2] = parent0.getNeighbor(sh == 4 /* E */ ? topRight : bottomRight /* F */);
-         }
-         else
-         {
-            // Even level
-            Pointd centroid = this.centroid;
-            Pointd p0Centroid = parent0.centroid;
-            double dx = centroid.x - p0Centroid.x;
-            double dy = centroid.y - p0Centroid.y;
-            int p0cx = (int)floor(p0Centroid.x + 1E-11);
-            int p0cy = (int)floor(p0Centroid.y + 1E-11);
-            bool onBottomCrossingLeft = p0Centroid.y - p0Centroid.x + 1E-11 > 1 && p0Centroid.x - p0cx < 1E-11;
-            bool onTopCrossingRight = p0Centroid.x - p0Centroid.y + 1E-11 > 0 && p0Centroid.y - p0cy < 1E-11;
-
-            if(fabs(dx) < 1E-11)
-            {
-               if(dy > 0)
-               {
-                  bool onTopCrossingRightNegEpsilon = p0Centroid.x - p0Centroid.y - 1E-11 > 0 && p0Centroid.y - p0cy < 1E-11;
-
-                  // Bottom-Right vertex child of p0
-                  parents[1] = parent0.getNeighbor(bottomRight);
-                  parents[2] = parent0.getNeighbor(onBottomCrossingLeft ? bottomLeft : onTopCrossingRightNegEpsilon ? right : bottom);
-               }
-               else
-               {
-                  // Top-Left vertex child of p0
-                  parents[1] = parent0.getNeighbor(topLeft);
-                  parents[2] = parent0.getNeighbor(top);
-               }
-            }
-            else if(fabs(dy) < 1E-11)
-            {
-               if(dx > 0)
-               {
-                  bool onBottomCrossingLeftNegEpsilon = p0Centroid.y - p0Centroid.x - 1E-11 > 1 && p0Centroid.x - p0cx < 1E-11;
-
-                  // Top-Right vertex child of p0
-                  parents[1] = parent0.getNeighbor(topRight);
-                  parents[2] = parent0.getNeighbor(onTopCrossingRight ? topLeft : onBottomCrossingLeftNegEpsilon ? right : top);
-               }
-               else
-               {
-                  // Bottom-Left vertex child of p0
-                  parents[1] = parent0.getNeighbor(bottomLeft);
-                  parents[2] = parent0.getNeighbor(bottom);
-               }
-            }
-            else
-            {
-               if(dx > 0)
-               {
-                  // Right vertex child of p0
-                  parents[1] = parent0.getNeighbor(topRight);
-                  parents[2] = parent0.getNeighbor(bottomRight);
-               }
-               else
-               {
-                  // Left vertex child of p0
-                  parents[1] = parent0.getNeighbor(topLeft);
-                  parents[2] = parent0.getNeighbor(bottomLeft);
-               }
-            }
-         }
-         return 3;
+         // TODO:
+         return 0;
       }
    }
 
-   I3HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
+   I7HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
    {
+      // TODO: This is not yet implemented
+      return nullZone;
+
+      /*
       Pointd c = centroid;
-      uint l9r = level / 2;
-      uint64 p = POW3(l9r);
+      uint64 p = POW7(level);
       double d =  1.0 / p;
-      bool isNorthPole = false, isSouthPole = false;
+
+      // bool isNorthPole = false, isSouthPole = false;
       if(fabs(c.x - c.y - 1) < 1E-10)
-         isNorthPole = true;
+         ;//isNorthPole = true;
       else if(fabs(c.y - c.x - 2) < 1E-10)
-         isSouthPole = true;
+         ;//isSouthPole = true;
       else if(c.y < -1E-11 && c.x > -1E-11)
          c.x -= c.y, c.y = 0;
-      /*
-      else if(c.y > 5.0 + 1E-11 && c.x < 4.0 + 1E-11) // B7-7-A -> B9-3-A, B9-6-A, but what about B5-3-A ?
-         c.x += (c.y - 5.0), c.y = 5.0; // REVIEW: This may no longer be necessary?
-      */
+
       else if((int)floor(c.x + 1E-11) > (int)floor(c.y + 1E-11))
       {
          // Over top dent to the right
@@ -1220,386 +1143,84 @@ private:
       }
       else if(c.x < -1E-11 || c.y < -1E-11)
          move5x6Vertex(c, { 5, 5 }, c.x, c.y);
+
       if(c.x > 5 - 1E-11 && c.y > 5 - 1E-11 &&  // This handles bottom right wrap e.g., A9-0E and A9-0-F
          c.x + c.y > 5.0 + 5.0 - d - 1E-11)
          c.x -= 5, c.y -= 5;
       {
-         int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
-         uint root = cx + cy;
-         uint64 x = (uint64)((c.x - cx) * p + 1E-6 /*11*/); // Row and Column within root rhombus
-         uint64 y = (uint64)((c.y - cy) * p + 1E-6 /*11*/);
-         uint64 rix = y * p + x;  // Index within root rhombus
-         double xd = (c.x - cx) * p - x;
-         double yd = (c.y - cy) * p - y;
-         uint sh;
+         // int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
+         uint rootPentagon = 0;
+         uint64 div = 0;
 
-         if(isNorthPole)
-            sh = (level & 1) ? 6 : 1, root = 0, rix = p-1;
-         else if(isSouthPole)
-            sh = (level & 1) ? 7 : 2, root = 9, rix = p * (p-1);
-         else
-         {
-            bool rightSR = x == p-1, topSR = y == 0;
-            bool leftSR = x == 0, bottomSR = y == p-1;
-            bool npSubRhombus = rightSR  && topSR  && !(root & 1);
-            bool spSubRhombus = bottomSR && leftSR &&  (root & 1);
-
-            if(cy < cx || xd < -1 || yd < -1 || x >= p || y >= p || rix >= p*p)
-               return nullZone; // y cannot be smaller than x
-
-            // PrintLn("   rix: ", rix, ", x: ", x, ", y: ", y, ", xd: ", xd, ", yd: ", yd);
-            if(level & 1) // Odd level
-            {
-               bool leftThird = 3*xd < 1, topThird = 3*yd < 1;
-
-               if(leftThird && topThird)
-                  sh = 3; // D
-               else
-               {
-                  bool rightThird = 3*xd > 2, bottomThird = 3*yd > 2;
-                  if(rightThird && bottomThird)
-                  {
-                     if(bottomSR && rightSR)
-                     {
-                        // Non-polar pentagon
-                        root = (root + 2) % 10;
-                        rix = 0;
-                     }
-                     else if(bottomSR)
-                     {
-                        // Indexed to another root rhombus
-                        if(root & 1)
-                        {
-                           // Crossing South interruption to the right
-                           root = (root + 2) % 10;
-                           rix = (p-1-x) * p;
-                        }
-                        else
-                        {
-                           root++;
-                           rix = x + 1;
-                        }
-                     }
-                     else if(rightSR)
-                     {
-                        // Indexed to another root rhombus
-                        if(!(root & 1))
-                        {
-                           // Crossing North interruption to the right
-                           root = (root + 2) % 10;
-                           rix = p-1-y;
-                        }
-                        else
-                        {
-                           root = (root + 1) % 10;
-                           rix = p * (y + 1);
-                        }
-                     }
-                     else
-                        rix += p + 1;
-                     sh = 3; // D
-                  }
-                  else if(bottomThird)
-                  {
-                     if(3 * (yd - xd) > 2)
-                     {
-                        if(spSubRhombus)
-                           root = 9, sh = 7; // "South" pole H
-                        else
-                        {
-                           if(bottomSR)
-                           {
-                              // Indexed to another root rhombus
-                              if(root & 1)
-                              {
-                                 // Crossing South interruption to the right
-                                 root = (root + 2) % 10;
-                                 rix = (p-x) * p;
-                              }
-                              else
-                              {
-                                 rix = x;
-                                 root++;
-                              }
-                           }
-                           else
-                              rix += p;
-                           sh = 3; // D
-                        }
-                     }
-                     else
-                        sh = 5; // F
-                  }
-                  else if(rightThird)
-                  {
-                     if(3 * (xd - yd) > 2)
-                     {
-                        if(npSubRhombus)
-                           root = 0, sh = 6; // "North" pole G
-                        else
-                        {
-                           if(rightSR)
-                           {
-                              if(!(root & 1))
-                              {
-                                 // Crossing North interruption to the right
-                                 root = (root + 2) % 10;
-                                 rix = p-y;
-                              }
-                              else
-                              {
-                                 root = (root + 1) % 10;
-                                 rix = p * y;
-                              }
-                           }
-                           else
-                              rix++;
-                           sh = 3; // D
-                        }
-                     }
-                     else
-                        sh = 4; // E
-                  }
-                  else if(xd > yd)
-                     sh = 4; // E
-                  else
-                     sh = 5; // F
-               }
-            }
-            else          // Even level
-            {
-               bool topRight = false, bottomLeft = false, bottomRight = false;
-               if(xd - 1 > -yd) // Bottom-Right portion
-               {
-                  // Top-right hexagon
-                  if(xd > yd * 2)
-                     topRight = true;
-                  // Bottom-left hexagon
-                  else if(2 * xd < yd)
-                     bottomLeft = true;
-                  // Bottom-right hexagon
-                  else
-                     bottomRight = true;
-               }
-               else // Top-Left portion
-               {
-                  // Top-right hexagon
-                  if(2 * xd > yd + 1)
-                     topRight = true;
-                  // Bottom-left hexagon
-                  else if(xd + 1 < 2 * yd)
-                     bottomLeft = true;
-               }
-
-               sh = 0; // A
-               if(topRight)
-               {
-                  if(npSubRhombus)
-                     root = 0, sh = 1; // "North" pole B
-                  else
-                  {
-                     if(rightSR)
-                     {
-                        if(!(root & 1))
-                        {
-                           // Crossing North interruption to the right
-                           root = (root + 2) % 10;
-                           rix = p-y;
-                        }
-                        else
-                        {
-                           root = (root + 1) % 10;
-                           rix = p * y;
-                        }
-                     }
-                     else
-                        rix++;
-                  }
-               }
-               else if(bottomLeft)
-               {
-                  if(spSubRhombus)
-                     root = 9, sh = 2; // "South" pole C
-                  else
-                  {
-                     if(bottomSR)
-                     {
-                        // Indexed to another root rhombus
-                        if(root & 1)
-                        {
-                           // Crossing South interruption to the right
-                           root = (root + 2) % 10;
-                           rix = (p-x) * p;
-                        }
-                        else
-                        {
-                           rix = x;
-                           root++;
-                        }
-                     }
-                     else
-                        rix += p;
-                  }
-               }
-               else if(bottomRight)
-               {
-                  if(bottomSR && rightSR)
-                  {
-                     // Non-polar pentagon
-                     root = (root + 2) % 10;
-                     rix = 0;
-                  }
-                  else if(bottomSR)
-                  {
-                     // Indexed to another root rhombus
-                     if(root & 1)
-                     {
-                        // Crossing South interruption to the right
-                        root = (root + 2) % 10;
-                        rix = (p-1-x) * p;
-                     }
-                     else
-                     {
-                        root++;
-                        rix = x + 1;
-                     }
-                  }
-                  else if(rightSR)
-                  {
-                     // Indexed to another root rhombus
-                     if(!(root & 1))
-                     {
-                        // Crossing North interruption to the right
-                        root = (root + 2) % 10;
-                        rix = p-1-y;
-                     }
-                     else
-                     {
-                        root = (root + 1) % 10;
-                        rix = p * (y + 1);
-                     }
-                  }
-                  else
-                     rix += p + 1;
-               }
-            }
-         }
-         return { l9r, root, rix, sh };
+         return { rootPentagon, div };
       }
+      */
    }
 
    int getVertices(Pointd * vertices)
    {
-      int sh = subHex;
-      uint level = levelI9R, root = rootRhombus;
-      uint64 rix = rhombusIX;
-      uint64 p = POW3(level);
-      uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
-      uint64 ixOP = (uint64)(rix / p);
-      uint64 row = (uint64)(rowOP * p + ixOP);
-      uint64 col = (uint64)((colOP - ixOP) * p + rix); // distributivity on: rix - (ixOP * p) for (rix % p)
-      double d =  1.0 / p;
-      Pointd tl { col * d, row * d };
-      int i = 0;
-      bool south = root & 1;
-      Pointd v;
+      Pointd c = centroid;
+      uint l49R = levelI49R;
+      uint64 p = POW7(l49R), rSize = p * p;
+      uint64 ix = rhombusIX;
+      int rhombus = ix < 2 ? 0 : (int)((ix - 2) / rSize);
+      // uint64 rix = ix < 2 ? 0 : (ix - 2) % rSize;
+      uint count = 0;
+      int nPoints = this.nPoints;
+      double oonp = 1.0 / (7 * p);
+      bool south = ix == 1 || (rhombus & 1);
 
-      switch(sh)
+     if(c.y > 6 + 1E-9)
+        c.x -= 5, c.y -= 5;
+     if(c.x > 5 + 1E-9)
+        c.x -= 5, c.y -= 5;
+
+      if(subHex == 0)
       {
-         case 0:  // Even level -- regular
-            move5x6Vertex(vertices[i++], tl,  2*d/3,    d/3);
-            move5x6Vertex(vertices[i++], tl,    d/3,  2*d/3);
-            if(!south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, -  d/3,    d/3);
-            move5x6Vertex(vertices[i++], tl, -2*d/3, -  d/3);
-            if(south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, -  d/3, -2*d/3);
-            move5x6Vertex(vertices[i++], tl,    d/3, -  d/3);
-            break;
-         case 1:  // Even level -- "North" pole
-            if(sh == 1 && row == 0 && col == p-1)
-            {
-               move5x6Vertex(v, tl, d/3, -d/3);
-               vertices[i++] = { v.x + 1, v.y + 1 };
-               vertices[i++] = { v.x + 2, v.y + 2 };
-               vertices[i++] = { v.x + 3, v.y + 3 };
-               vertices[i++] = { v.x + 4, v.y + 4 };
-               vertices[i++] = { v.x + 5, v.y + 5 };
-            }
-            break;
-         case 2: // Even level -- "South" pole
-            if(col == 4*p && row == 6*p-1)
-            {
-               move5x6Vertex(v, tl, -d/3, d/3);
-               vertices[i++] = { v.x - 0, v.y - 0 };
-               vertices[i++] = { v.x - 1, v.y - 1 };
-               vertices[i++] = { v.x - 2, v.y - 2 };
-               vertices[i++] = { v.x - 3, v.y - 3 };
-               vertices[i++] = { v.x + 1, v.y + 1 };
-            }
-            break;
-         case 3:  // Odd level -- type D
-            if(south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, d/3,0);
-            move5x6Vertex(vertices[i++], tl, d/3, d/3);
-            move5x6Vertex(vertices[i++], tl,0, d/3);
-            if(!south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl,-d/3,    0);
-            move5x6Vertex(vertices[i++], tl,-d/3,-d/3);
-            move5x6Vertex(vertices[i++], tl,    0,-d/3);
-            break;
-         case 4:  // Odd level -- type E
-            move5x6Vertex(vertices[i++], tl,  d/3,0);
-            move5x6Vertex(vertices[i++], tl,2*d/3,0);
-            move5x6Vertex(vertices[i++], tl,    d,  d/3);
-            move5x6Vertex(vertices[i++], tl,    d,2*d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[i++], tl,  d/3,  d/3);
-            break;
-         case 5:  // Odd level -- type F
-            move5x6Vertex(vertices[i++], tl,0,   d/3);
-            move5x6Vertex(vertices[i++], tl, d/3,   d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,    d);
-            move5x6Vertex(vertices[i++], tl,  d/3,    d);
-            move5x6Vertex(vertices[i++], tl,0,2*d/3);
-            break;
-         case 6:  // Odd level -- "North" pole
-            if(row == 0 && col == p-1)
-            {
-               move5x6Vertex(v, tl, 2*d/3, 0);
-               // vertices[i++] = { v.x + 1 - d/3, v.y + 1 - d/3 };
-               vertices[i++] = { v.x + 1, v.y + 1 };
-               vertices[i++] = { v.x + 2, v.y + 2 };
-               vertices[i++] = { v.x + 3, v.y + 3 };
-               vertices[i++] = { v.x + 4, v.y + 4 };
-               vertices[i++] = { v.x + 5, v.y + 5 };
-            }
-            break;
-         case 7:  // Odd level -- "South" pole
-            if(col == 4*p && row == 6*p-1)
-            {
-               move5x6Vertex(v, tl, d/3, d);
-               vertices[i++] = { v.x - 0, v.y - 0 };
-               vertices[i++] = { v.x - 1, v.y - 1 };
-               vertices[i++] = { v.x - 2, v.y - 2 };
-               vertices[i++] = { v.x - 3, v.y - 3 };
-               vertices[i++] = { v.x - 4, v.y - 4 };
-               // vertices[i++] = { v.x - 4 - d/3, v.y - 4 - d/3 };
-            }
-            break;
+         double A =  7 / 3.0;
+         double B = 14 / 3.0;
+
+         // Even level
+         vertices[count++] = { c.x - oonp * A, c.y - oonp * B };
+         vertices[count++] = { c.x - oonp * B, c.y - oonp * A };
+         if(nPoints == 6 || !south)  // Skip for South hemisphere
+            vertices[count++] = { c.x - oonp * A, c.y + oonp * A };
+         vertices[count++] = { c.x + oonp * A, c.y + oonp * B };
+         vertices[count++] = { c.x + oonp * B, c.y + oonp * A };
+         if(nPoints == 6 || south)  // Skip for North hemisphere
+            vertices[count++] = { c.x + oonp * A, c.y - oonp * A };
       }
-      return i;
+      else
+      {
+         double A =  4 / 3.0;
+         double B =  5 / 3.0;
+         double C =  1 / 3.0;
+
+         // Odd level
+         vertices[count++] = { c.x - oonp * A, c.y - oonp * B };
+         vertices[count++] = { c.x - oonp * B, c.y - oonp * C };
+         if(nPoints == 6 || !south)
+            vertices[count++] = { c.x - oonp * C, c.y + oonp * A };
+         vertices[count++] = { c.x + oonp * A, c.y + oonp * B };
+         vertices[count++] = { c.x + oonp * B, c.y + oonp * C };
+         if(nPoints == 6 || south)
+            vertices[count++] = { c.x + oonp * C, c.y - oonp * A };
+      }
+
+      return count;
    }
 
    int getBaseRefinedVertices(bool crs84, Pointd * vertices)
    {
-      int numPoints = 0;
-      int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
-      int subHex = this.subHex;
+      // TODO: // No refinement yet
+      return getVertices(vertices);
+
+      #if 0
+
       bool result = true;
-      uint64 p = POW3(level);
-      double d =  1.0 / p;
+      int numPoints = 0;
+      int level = this.level;
+      uint64 p = POW7(level);
       Pointd v;
       Pointd tl = I9RZone { level, row, col }.ri5x6Extent.tl;
 
@@ -1785,9 +1406,10 @@ private:
             result = false;
       }
       return result ? numPoints : 0;
+      #endif
    }
 
-   property I3HZone centroidChild
+   property I7HZone centroidChild
    {
       get
       {
@@ -1795,82 +1417,205 @@ private:
             return nullZone;
          else
          {
-            I3HZone centroidChild;
-            uint l9r = levelI9R, sh = subHex;
-            uint root = rootRhombus;
-            uint64 rix = rhombusIX;
+            uint64 ix = rhombusIX;
 
-            if(sh == 0) // Centroid child for Even level
-               centroidChild = { l9r, root, rix, 3 };
-            else
+            if(!subHex) // Odd level from even level
+               return I7HZone { levelI49R, ix, 1 };
+            else // Even level from odd level
             {
-               uint64 p = POW3(l9r);
-               switch(sh)
+               uint64 p = POW7(levelI49R), rSize = p * p;
+               uint64 cp = p * 7, cRSize = cp * cp;
+               uint64 cix;
+               int64 row, col;
+               int cRhombus;
+
+               if(ix == 0)
                {
-                  case 1: centroidChild = { l9r, 0, p-1, 6 }; break; // Even level "North" Pole
-                  case 2: centroidChild = { l9r, 9, p*(p-1), 7 }; break; // Even level "South" Pole
-                  case 6: centroidChild = { l9r+1, 0, 3*p-1, 1 }; break; // Odd level "North" Pole
-                  case 7: centroidChild = { l9r+1, 9, 3*p*(3*p-1), 2 }; break; // Odd level "South" Pole
-                  default:
-                  {
-                     // Centroid child for Odd level
-                     int rowOP = (root + 1) >> 1, colOP = root >> 1, ixOP = (int)(rix / p);
-                     int row = (int)(rowOP * p + ixOP), col = (int)((colOP - ixOP) * p + rix); // distributivity on: ix - (ixOP * p) for (ix % p)
-                     int r = row * 3 + ((sh == 5) ? 2 : (sh == 4) ? 1 : 0);
-                     int c = col * 3 + ((sh == 4) ? 2 : (sh == 5) ? 1 : 0);
-                     centroidChild = I3HZone::fromI9R(l9r + 1, r, c, 'A');
-                     break;
-                  }
+                  // North pole
+                  if(subHex == 1)
+                     return I7HZone { levelI49R + 1, ix, 0 };
+
+                  row = 1, col = cp - 2;
+                  cRhombus = 2*(subHex - 2);
                }
+               else if(ix == 1)
+               {
+                  // South pole
+                  if(subHex == 1)
+                     return I7HZone { levelI49R + 1, ix, 0 };
+
+                  row = cp - 1, col = 2;
+                  cRhombus = 9 - 2*(subHex - 2);
+               }
+               else
+               {
+                  // Regular case
+                  uint sh = subHex;
+                  uint64 rix = (ix - 2) % rSize;
+                  bool south;
+                  cRhombus = (int)((ix - 2) / rSize);
+
+                  south = (cRhombus & 1);
+                  row = 7LL * (rix / p), col = 7LL * (rix % p);
+
+                  if(rix == 0 && south && sh >= 4)
+                     sh++;
+
+                  switch(sh)
+                  {
+                     case 2: row -= 3; col -= 1; break;
+                     case 3: row -= 2; col -= 3; break;
+                     case 4: row += 1; col -= 2; break;
+                     case 5: row += 3; col += 1; break;
+                     case 6: row += 2; col += 3; break;
+                     case 7: row -= 1; col += 2; break;
+                  }
+                  if(row < 0 && col < 0)
+                     row += cp, col += cp, cRhombus -= 2;
+                  else if(row < 0)
+                     row += cp, cRhombus -= 1;
+                  else if(col < 0)
+                     col += cp, cRhombus -= 1;
+                  else if(col >= cp && row >= cp)
+                     row -= cp, col -= cp, cRhombus += 2;
+                  else if(row >= cp)
+                     row -= cp, cRhombus += 1;
+                  else if(col >= cp)
+                     col -= cp, cRhombus += 1;
+               }
+               if(cRhombus < 0) cRhombus += 10;
+               else if(cRhombus > 9) cRhombus -= 10;
+               cix = 2 + cRhombus * cRSize + row * cp + col;
+
+               return I7HZone { levelI49R + 1, cix, 0 };
             }
-            return centroidChild;
          }
       }
    }
 
-   int getChildren(I3HZone children[7])
+   int getChildren(I7HZone children[13])
    {
-      uint l9r = levelI9R, sh = subHex;
-      int i = 0;
+      // TODO: Add 6 extra children
+      return getPrimaryChildren(children);
+   }
 
-      children[i++] = centroidChild;
+   int getPrimaryChildren(I7HZone children[7])
+   {
+      int count = 0;
+      uint l49r = levelI49R;
+      uint64 ix = this.rhombusIX;
+      uint64 p = POW7(l49r), rSize = p * p;
+      uint64 rix = ix >= 2 ? (ix - 2) % rSize : 0;
 
-      if(sh == 1 || sh == 2 || sh == 6 || sh == 7)
+      if(subHex == 0)
       {
-         // Special cases for the poles
-         uint64 p = POW3(l9r);
-         switch(sh)
-         {
-            case 1: // Even level "North" Pole
-               for(; i < 6; i++)
-                  children[i] = { l9r, (i-1)*2, p-1, 4 };
-               break;
-            case 2: // Even level "South" Pole
-               for(; i < 6; i++)
-                  children[i] = { l9r, (i-1)*2 + 1, p*(p-1), 5 };
-               break;
-            case 6: // Odd level "North" Pole
-               for(; i < 6; i++)
-                  children[i] = { l9r+1, (i-1)*2, 3*p-1, 0 };
-               break;
-            case 7: // Odd level "South" Pole
-               for(; i < 6; i++)
-                  children[i] = { l9r+1, (i-1)*2+1, 3*p*(3*p-1), 0 };
-               break;
-         }
+         // Odd levels from even level
+         children[count++] = { l49r, ix, 1 };
+         children[count++] = { l49r, ix, 2 };
+         children[count++] = { l49r, ix, 3 };
+         children[count++] = { l49r, ix, 4 };
+         children[count++] = { l49r, ix, 5 };
+         children[count++] = { l49r, ix, 6 };
+         if(rix)
+            children[count++] = { l49r, ix, 7 };
       }
       else
       {
-         Pointd vertices[6];
-         int nVertices = getVertices(vertices);
-         int nextLevel = 2*l9r+1 + (sh > 0);
+         // Even levels from odd level
+         I7HZone cChild = centroidChild;
+         uint64 ccix = cChild.rhombusIX;
+         uint64 cp = p * 7, cRSize = cp * cp;
 
-         for(; i < nVertices + 1; i++)
-            children[i] = fromCentroid(nextLevel, vertices[i-1]);
+         children[count++] = cChild;
+
+         if(ccix == 0)
+         {
+            // The new centroid child is the North pole
+            children[count++] = { l49r + 1, 2 + 0 * cRSize + 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 2 + 2 * cRSize + 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 2 + 4 * cRSize + 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 2 + 6 * cRSize + 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 2 + 8 * cRSize + 0 * cp + cp - 1 };
+         }
+         else if(ccix == 1)
+         {
+            // The new centroid child is the South pole
+            children[count++] = { l49r + 1, 2 + 9 * cRSize + (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 2 + 7 * cRSize + (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 2 + 5 * cRSize + (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 2 + 3 * cRSize + (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 2 + 1 * cRSize + (cp - 1) * cp + 0 };
+         }
+         else
+         {
+            int ccRhombus = (int)((ccix - 2) / cRSize);
+            uint64 crix = (ccix - 2) % cRSize;
+            int64 crow = crix / cp;
+            int64 ccol = crix % cp;
+            int i;
+            static const int cOffsets[6][2] = { // row, col offsets from centroid child
+               { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 }
+            };
+            int nPoints = (subHex > 1) ? 6 : (ix == 0 || ix == 1 || rix == 0) ? 5 : 6;
+            bool south = (ccRhombus & 1);
+
+            for(i = 0; i < 6; i++)
+            {
+               int64 row = crow + cOffsets[i][0], col = ccol + cOffsets[i][1];
+               int cRhombus = ccRhombus;
+               uint64 cix;
+
+               if(nPoints == 5)
+               {
+                  if(south && i == 2)
+                  {
+                     continue;
+                  }
+                  else if(!south && i == 0)
+                  {
+                     continue;
+                  }
+               }
+
+               // REVIEW: Handling crossing interruptions correctly here...
+               if(col == (int64)cp && row < (int64)cp && !south) // Cross at top-dent to the right
+               {
+                  col = cp-row;
+                  row = 0;
+                  cRhombus += 2;
+               }
+               else if(row == (int64)cp && col < (int64)cp && south) // Cross at bottom-dent to the right
+               {
+                  row = cp-col;
+                  col = 0;
+                  cRhombus += 2;
+               }
+               else
+               {
+                  // REVIEW: Wrapping without crossing interruption
+                  if(row < 0 && col < 0)
+                     row += cp, col += cp, cRhombus -= 2;
+                  else if(row < 0)
+                     row += cp, cRhombus -= 1;
+                  else if(col < 0)
+                     col += cp, cRhombus -= 1;
+                  else if(col >= (int64)cp && row >= (int64)cp)
+                     row -= cp, col -= cp, cRhombus += 2;
+                  else if(row >= (int64)cp)
+                     row -= cp, cRhombus += 1;
+                  else if(col >= (int64)cp)
+                     col -= cp, cRhombus += 1;
+                  if(cRhombus < 0) cRhombus += 10;
+                  else if(cRhombus > 9) cRhombus -= 10;
+               }
+
+               cix = 2 + cRhombus * cRSize + row * cp + col;
+               children[count++] = { l49r + 1, cix, 0 };
+            }
+         }
       }
-      return i;
+      return count;
    }
-
 
    property CRSExtent ri5x6Extent
    {
@@ -1926,30 +1671,68 @@ private:
    {
       get
       {
+         int l49r = levelI49R;
+         uint64 ix = this.rhombusIX;
+         uint64 p = POW7(l49r), rSize = p * p;
+         Pointd v;
+         double oop = 1.0 / p;
+
+         int rhombus = ix < 2 ? 0 : (int)((ix - 2) / rSize);
+         uint64 rix = ix >= 2 ? (ix - 2) % rSize : 0;
+         bool south = ix == 1 || (rhombus & 1);
          int sh = subHex;
-         if(sh == 1 || sh == 6)
-            value = { 1, 0 }; // "North" pole (Even level B and Odd level G)
-         else if(sh == 2 || sh == 7)
-            value = { 4, 6 }; // "South" pole (Even level C and Odd level H)
+
+         if(ix == 0) // North pole
+         {
+            v = { 1, 0 };
+
+            if(sh > 1)
+            {
+               v.x += sh - 2 - 2 * oop/7;
+               v.y += sh - 2 + 1 * oop/7;
+            }
+         }
+         else if(ix == 1) // South pole
+         {
+            v = { 4, 6 };
+
+            if(sh > 1)
+            {
+               v.x -= sh - 2 - 2 * oop/7;
+               v.y -= sh - 2 + 1 * oop/7;
+            }
+         }
          else
          {
-            uint level = levelI9R, root = rootRhombus;
-            uint64 rix = rhombusIX;
-            uint64 p = POW3(level);
-            uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
-            uint64 ixOP = (uint64)(rix / p);
-            uint64 row = (uint64)(rowOP * p + ixOP);
-            uint64 col = (uint64)((colOP - ixOP) * p + rix); // distributivity on: rix - (ixOP * p) for (rix % p)
-            double d =  1.0 / p;
-            Pointd tl { col * d, row * d };
+            int cx = (rhombus >> 1), cy = cx + (rhombus & 1);
+            int64 row = rix / p, col = rix % p;
 
-            if(sh == 0 || sh == 3)
-               value = { tl.x, tl.y }; // Even level A or Odd level D hex
-            else if(sh == 4) // Odd level E hex
-               value = { tl.x + 2*d/3, tl.y + d/3 };
-            else if(sh == 5) // Odd level F hex
-               value = { tl.x + d/3, tl.y + 2*d/3 };
+            v.x = cx + col * oop;
+            v.y = cy + row * oop;
          }
+
+         if(subHex && ix >= 2)
+         {
+            // Odd level
+            if(rix == 0 && south && sh >= 4)
+               sh++;
+
+            oop /= 7;
+
+            switch(sh)
+            {
+               case 1: value = v; break; // Centroid child
+               case 2: value = { v.x - 1 * oop, v.y - 3 * oop }; break;
+               case 3: value = { v.x - 3 * oop, v.y - 2 * oop }; break;
+               case 4: value = { v.x - 2 * oop, v.y + 1 * oop }; break;
+               case 5: value = { v.x + 1 * oop, v.y + 3 * oop }; break;
+               case 6: value = { v.x + 3 * oop, v.y + 2 * oop }; break;
+               case 7: value = { v.x + 2 * oop, v.y - 1 * oop }; break;
+            }
+         }
+         else  // Even level
+            value = v;
+
       }
    }
 
@@ -1957,36 +1740,27 @@ private:
    {
       get
       {
-         int sh = subHex;
-         if(this == nullZone)
-            return false;
-         else if(sh > 2)  // Odd level
-            return sh == 3 || sh == 6 || sh == 7; // D, G and H are centroid children
-         else if(sh == 1 || sh == 2) // B and C are centroid children
-            return true;
-         else
-         {
-            // Even level -- some A are centroid children
-            int level = this.levelI9R;
-            uint64 rix = this.rhombusIX;
-            uint64 p = POW3(level);
-            uint64 r = rix / p, c = rix % p;
-            if(!(r % 3) && !(c % 3))
-               return true; // Both row & column multiple of 3 are centroid children
-            else if(!((r + c) % 3))
-               return true; // (row + column) multiple of 3 are centroid children
-         }
-         return false;
+         return subHex < 2; // '-A' and '-B' are centroid children
       }
    }
 
    int64 getSubZonesCount(int rDepth)
    {
-      int64 nHexSubZones = rDepth > 0 ? POW3(rDepth) + POW3((rDepth + 1)/2) + 1 : 1;
-      return (nHexSubZones * nPoints + 5) / 6;
+      if(rDepth > 0)
+      {
+         int64 nHexSubZones = POW7(rDepth);
+
+         if(rDepth & 1)
+            nHexSubZones += POW6((rDepth + 1) / 2);
+         else
+            nHexSubZones += 6 * POW8((rDepth / 2) - 1);
+
+         return (nHexSubZones * nPoints + 5) / 6;
+      }
+      return 1;
    }
 
-   I3HZone getFirstSubZone(int rDepth)
+   I7HZone getFirstSubZone(int rDepth)
    {
       Pointd firstCentroid;
 
@@ -1996,15 +1770,15 @@ private:
 
    void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid)
    {
-      getI3HFirstSubZoneCentroid(this, rDepth, firstCentroid);
+      firstCentroid = { 0, 0 }; // TODO: getI3HFirstSubZoneCentroid(this, rDepth, firstCentroid);
    }
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
-      return getI3HSubZoneCentroids(this, rDepth);
+      return null; // TODO: getI7HSubZoneCentroids(this, rDepth);
    }
 
-   private /*static */bool orderZones(int zoneLevel, AVLTree<I3HZone> tsZones, Array<I3HZone> zones)
+   private /*static */bool orderZones(int zoneLevel, AVLTree<I7HZone> tsZones, Array<I7HZone> zones)
    {
       Array<Pointd> centroids = getSubZoneCentroids(zoneLevel - level);
       if(centroids)
@@ -2014,7 +1788,7 @@ private:
 
          for(i = 0; i < nSubZones; i++)
          {
-            I3HZone key = I3HZone::fromCentroid(zoneLevel, centroids[i]);
+            I7HZone key = I7HZone::fromCentroid(zoneLevel, centroids[i]);
             if(tsZones.Find(key))
                zones.Add(key);
             else
@@ -2032,10 +1806,11 @@ private:
    }
 }
 
-static void compactI3HZones(AVLTree<I3HZone> zones, int level)
+// TODO: Review / Test / Adapt this logic for 7H
+__attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int level)
 {
-   AVLTree<I3HZone> output { };
-   AVLTree<I3HZone> next { };
+   AVLTree<I7HZone> output { };
+   AVLTree<I7HZone> next { };
    int l;
 
    for(l = level - 2; l >= 0; l -= 2)
@@ -2043,22 +1818,22 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
       int i;
       for(z : zones)
       {
-         I3HZone zone = z, cgParents[3];
+         I7HZone zone = z, cgParents[2];
          int nCGParents = zone.getContainingGrandParents(cgParents);
          int p;
          for(p = 0; p < nCGParents; p++)
          {
-            I3HZone gParent = cgParents[p];
+            I7HZone gParent = cgParents[p];
             if(gParent != nullZone && !next.Find(gParent))
             {
-               I3HZone cZone = gParent.centroidChild.centroidChild;
-               I3HZone neighbors[6];
+               I7HZone cZone = gParent.centroidChild.centroidChild;
+               I7HZone neighbors[6];
                int nNeighbors = cZone.getNeighbors(neighbors, null);
                bool parentAllIn = true;
 
                for(i = 0; i < nNeighbors; i++)
                {
-                  I3HZone nb = neighbors[i];
+                  I7HZone nb = neighbors[i];
                   if(nb != nullZone && !zones.Find(nb))
                   {
                      parentAllIn = false;
@@ -2070,21 +1845,21 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
                {
                   // Grandparent vertex children's centroid children are partially within it
                   // and must be present to perform replacement
-                  I3HZone children[7];
+                  I7HZone children[13];
                   int nChildren = gParent.getChildren(children);
 
                   for(i = 1; i < nChildren; i++)
                   {
-                     I3HZone ch = children[i];
+                     I7HZone ch = children[i];
                      if(ch != nullZone)
                      {
-                        I3HZone cChild = ch.centroidChild;
+                        I7HZone cChild = ch.centroidChild;
 
                         if(!zones.Find(cChild))
                         {
                            Pointd cv = cChild.centroid;
-                           int cl = 2*cChild.levelI9R + (cChild.subHex >= 3);
-                           I3HZone sub = I3HZone::fromCentroid(cl + 2, cv);
+                           int cl = cChild.level;
+                           I7HZone sub = I7HZone::fromCentroid(cl + 2, cv);
                            if(!output.Find(sub))
                               parentAllIn = false;
                         }
@@ -2099,7 +1874,7 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
 
       for(z : zones)
       {
-         I3HZone zone = z, cgParents[3];
+         I7HZone zone = z, cgParents[2];
          int nCGParents = zone.getContainingGrandParents(cgParents), i;
          bool allIn = true;
 
@@ -2134,7 +1909,7 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
    delete output;
    delete next;
 
-   if(zones.count >= 32 && zones.firstIterator.data.level == 1)
+   if(zones.count >= 72 && zones.firstIterator.data.level == 1)
    {
       int nL1 = 0;
       /*
@@ -2148,7 +1923,7 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
       */
       for(z : zones)
       {
-         I3HZone zone = z;
+         I7HZone zone = z;
          int level = zone.level;
          if(level == 1)
             nL1++;
@@ -2157,19 +1932,18 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
       }
 
       // if(allL1)
-      if(nL1 == 32)
+      if(nL1 == 72)
       {
          // Simplifying full globe to level 0 zones
          int r;
          zones.Free();
-         for(r = 0; r < 10; r++)
-            zones.Add({ 0, r, 0, 0 });
-         zones.Add({ 0, 0, 0, 1 });
-         zones.Add({ 0, 9, 0, 2 });
+         for(r = 0; r < 12; r++)
+            zones.Add({ r, 0 });
       }
    }
 }
 
+/* TODO:
 static bool findByIndex(Pointd centroid, int64 index, const Pointd c)
 {
    centroid = c;
@@ -2185,10 +1959,11 @@ static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
       fabs(centroid.y - szCentroid.y) < 1E-11)
       return false;
    return true;
-   // return *zone != I3HZone::fromCentroid(zone->level, centroid);
+   // return *zone != I7HZone::fromCentroid(zone->level, centroid);
 }
+*/
 
-static void getIcoNetExtentFromVertices(I3HZone zone, CRSExtent value)
+static void getIcoNetExtentFromVertices(I7HZone zone, CRSExtent value)
 {
    int i;
    Array<Pointd> vertices = getIcoNetRefinedVertices(zone, 0);
@@ -2209,7 +1984,7 @@ static void getIcoNetExtentFromVertices(I3HZone zone, CRSExtent value)
    delete vertices;
 }
 
-static Array<Pointd> getIcoNetRefinedVertices(I3HZone zone, int edgeRefinement)   // 0 for 1-20 based on level
+static Array<Pointd> getIcoNetRefinedVertices(I7HZone zone, int edgeRefinement)   // 0 for 1-20 based on level
 {
    Array<Pointd> rVertices = null;
    Pointd vertices[9];
@@ -2217,7 +1992,7 @@ static Array<Pointd> getIcoNetRefinedVertices(I3HZone zone, int edgeRefinement) 
    if(numPoints)
    {
       Array<Pointd> ap = null;
-      bool refine = zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: Why and when do we want to refine?
+      bool refine = false; // REVIEW: Why and when do we want to refine?
       int i;
 
       if(refine)

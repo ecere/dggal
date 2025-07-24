@@ -65,6 +65,8 @@ _ECSOURCES = \
 	src/dggrs/RTEA3H.ec \
 	src/dggrs/RTEA9R.ec \
 	src/dggrs/rHEALPixGrid.ec \
+	src/dggrs/RI7H.ec \
+	src/dggrs/IVEA7H.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -242,6 +244,12 @@ $(OBJ)RTEA9R.sym: src/dggrs/RTEA9R.ec
 $(OBJ)rHEALPixGrid.sym: src/dggrs/rHEALPixGrid.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/rHEALPixGrid.ec) -o $(call quote_path,$@)
 
+$(OBJ)RI7H.sym: src/dggrs/RI7H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RI7H.ec) -o $(call quote_path,$@)
+
+$(OBJ)IVEA7H.sym: src/dggrs/IVEA7H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IVEA7H.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -319,6 +327,12 @@ $(OBJ)RTEA9R.c: src/dggrs/RTEA9R.ec $(OBJ)RTEA9R.sym | $(SYMBOLS)
 $(OBJ)rHEALPixGrid.c: src/dggrs/rHEALPixGrid.ec $(OBJ)rHEALPixGrid.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/rHEALPixGrid.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)RI7H.c: src/dggrs/RI7H.ec $(OBJ)RI7H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RI7H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)IVEA7H.c: src/dggrs/IVEA7H.ec $(OBJ)IVEA7H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IVEA7H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -395,6 +409,12 @@ $(OBJ)RTEA9R$(O): $(OBJ)RTEA9R.c
 
 $(OBJ)rHEALPixGrid$(O): $(OBJ)rHEALPixGrid.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)rHEALPixGrid.c) -o $(call quote_path,$@)
+
+$(OBJ)RI7H$(O): $(OBJ)RI7H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RI7H.c) -o $(call quote_path,$@)
+
+$(OBJ)IVEA7H$(O): $(OBJ)IVEA7H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IVEA7H.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)

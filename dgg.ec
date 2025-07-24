@@ -107,6 +107,7 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "gpp3h"))  dggrsClass = class(GPP3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "b3h") || !strcmpi(argv[0], "bcta3h")) dggrsClass = class(BCTA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsClass = class(IVEA3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "v7h") || !strcmpi(argv[0], "ivea7h")) dggrsClass = class(IVEA7H), cmdArg = 1;
       else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
@@ -143,6 +144,7 @@ class DGGAL : Application
                   else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
                   else if(!strcmpi(arg, "IVEA3H"))   dggrsClass = class(IVEA3H);
                   else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
+                  else if(!strcmpi(arg, "IVEA7H"))   dggrsClass = class(IVEA7H);
                   else if(!strcmpi(arg, "RTEA3H"))   dggrsClass = class(RTEA3H);
                   else if(!strcmpi(arg, "RTEA9R"))   dggrsClass = class(RTEA9R);
                   else if(!strcmpi(arg, "rHEALPix")) dggrsClass = class(rHEALPix);
