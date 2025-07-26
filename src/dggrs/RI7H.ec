@@ -466,7 +466,7 @@ public class RhombicIcosahedral7H : DGGRS
    {
       Array<Pointd> rVertices = null;
       bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
-      Pointd vertices[9];
+      Pointd vertices[18];
       int numPoints = zone.getBaseRefinedVertices(crs84, vertices);
       if(numPoints)
       {
@@ -1161,252 +1161,443 @@ private:
    {
       Pointd c = centroid;
       uint l49R = levelI49R;
-      uint64 p = POW7(l49R), rSize = p * p;
+      uint64 p = POW7(l49R);
       uint64 ix = rhombusIX;
-      int rhombus = ix < 2 ? 0 : (int)((ix - 2) / rSize);
-      // uint64 rix = ix < 2 ? 0 : (ix - 2) % rSize;
       uint count = 0;
-      int nPoints = this.nPoints;
       double oonp = 1.0 / (7 * p);
-      bool south = ix == 1 || (rhombus & 1);
 
-     if(c.y > 6 + 1E-9)
-        c.x -= 5, c.y -= 5;
-     if(c.x > 5 + 1E-9)
-        c.x -= 5, c.y -= 5;
+      if(c.y > 6 + 1E-9 || c.x > 5 + 1E-9)
+         c.x -= 5, c.y -= 5;
+      else if(c.x < 0)
+         c.x += 5, c.y += 5;
 
       if(subHex == 0)
       {
+         // Even level
          double A =  7 / 3.0;
          double B = 14 / 3.0;
 
-         // Even level
-         vertices[count++] = { c.x - oonp * A, c.y - oonp * B };
-         vertices[count++] = { c.x - oonp * B, c.y - oonp * A };
-         if(nPoints == 6 || !south)  // Skip for South hemisphere
-            vertices[count++] = { c.x - oonp * A, c.y + oonp * A };
-         vertices[count++] = { c.x + oonp * A, c.y + oonp * B };
-         vertices[count++] = { c.x + oonp * B, c.y + oonp * A };
-         if(nPoints == 6 || south)  // Skip for North hemisphere
-            vertices[count++] = { c.x + oonp * A, c.y - oonp * A };
+         if(ix == 0) // North Pole
+         {
+            Pointd b { 1 - oonp * A, 0 + oonp * A };
+            vertices[count++] = { b.x + 0, b.y + 0 };
+            vertices[count++] = { b.x + 1, b.y + 1 };
+            vertices[count++] = { b.x + 2, b.y + 2 };
+            vertices[count++] = { b.x + 3, b.y + 3 };
+            vertices[count++] = { b.x + 4, b.y + 4 };
+         }
+         else if(ix == 1) // South Pole
+         {
+            Pointd b { 4 + oonp * A, 6 - oonp * A };
+            vertices[count++] = { b.x - 0, b.y - 0 };
+            vertices[count++] = { b.x - 1, b.y - 1 };
+            vertices[count++] = { b.x - 2, b.y - 2 };
+            vertices[count++] = { b.x - 3, b.y - 3 };
+            vertices[count++] = { b.x - 4, b.y - 4 };
+         }
+         else
+         {
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * A };
+            v[2] = { - oonp * A, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * A };
+            v[5] = { + oonp * A, - oonp * A };
+
+            count = addNonPolarBaseRefinedVertices(c, v, vertices, false);
+         }
       }
       else
       {
+         // Odd level
          double A =  4 / 3.0;
          double B =  5 / 3.0;
          double C =  1 / 3.0;
 
-         // Odd level
-         vertices[count++] = { c.x - oonp * A, c.y - oonp * B };
-         vertices[count++] = { c.x - oonp * B, c.y - oonp * C };
-         if(nPoints == 6 || !south)
-            vertices[count++] = { c.x - oonp * C, c.y + oonp * A };
-         vertices[count++] = { c.x + oonp * A, c.y + oonp * B };
-         vertices[count++] = { c.x + oonp * B, c.y + oonp * C };
-         if(nPoints == 6 || south)
-            vertices[count++] = { c.x + oonp * C, c.y - oonp * A };
+         if(ix < 2 && subHex == 1) // Polar pentagons
+         {
+            if(ix == 0) // North pole
+            {
+               Pointd b { 1 - oonp * C, 0 + oonp * A };
+
+               vertices[count++] = { b.x + 0, b.y + 0 };
+               vertices[count++] = { b.x + 1, b.y + 1 };
+               vertices[count++] = { b.x + 2, b.y + 2 };
+               vertices[count++] = { b.x + 3, b.y + 3 };
+               vertices[count++] = { b.x + 4, b.y + 4 };
+            }
+            else if(ix == 1) // South pole
+            {
+               Pointd b { 4 + oonp * C, 6 - oonp * A };
+
+               vertices[count++] = { b.x - 0, b.y - 0 };
+               vertices[count++] = { b.x - 1, b.y - 1 };
+               vertices[count++] = { b.x - 2, b.y - 2 };
+               vertices[count++] = { b.x - 3, b.y - 3 };
+               vertices[count++] = { b.x - 4, b.y - 4 };
+            }
+         }
+         else
+         {
+            // Odd level
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * C };
+            v[2] = { - oonp * C, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * C };
+            v[5] = { + oonp * C, - oonp * A };
+
+            count = addNonPolarBaseRefinedVertices(c, v, vertices, false);
+         }
+      }
+      return count;
+   }
+
+   private static inline void rotate5x6Offset(Pointd r, double dx, double dy, bool clockwise)
+   {
+      if(clockwise)
+      {
+         // 60 degrees clockwise rotation
+         r.x = dx - dy;
+         r.y = dx;
+      }
+      else
+      {
+         // 60 degrees counter-clockwise rotation
+         r.x = dy;
+         r.y = dy - dx;
+      }
+   }
+
+   int addNonPolarBaseRefinedVertices(Pointd c, const Pointd * v, Pointd * vertices, bool includeInterruptions)
+   {
+      int start = 0, prev, i;
+      Pointd point, dir;
+      int nPoints = this.nPoints;
+      uint count = 0;
+
+      // Start with a point outside interruptions
+      for(i = 0; i < 6; i++)
+      {
+         Pointd t { c.x + v[i].x, c.y + v[i].y };
+         int tx = (int)floor(t.x + 1E-11);
+         if(!(t.y - tx > 2 || t.y < tx))
+         {
+            start = i;
+            break;
+         }
       }
 
+      point = { c.x + v[start].x, c.y + v[start].y };
+      prev = (start + 5) % 6;
+      dir = { point.x - (c.x + v[prev].x), point.y - (c.y + v[prev].y) };
+
+      vertices[count++] = point;
+
+      for(i = start + 1; i < start + nPoints + includeInterruptions; i++)
+      {
+         bool north;
+         Pointd i1, i2, n, p = point;
+
+         rotate5x6Offset(dir, dir.x, dir.y, false);
+         n = { point.x + dir.x, point.y + dir.y };
+
+         if(p.x > 5 && p.y > 5)
+            p.x -= 5, p.y -= 5;
+         if(p.x < 0 || p.y < 0)
+            p.x += 5, p.y += 5;
+
+         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         {
+            bool crossingLeft;
+            Pointd d;
+
+            if(point.x - p.x > 4)
+            {
+               i1.x += 5, i1.y += 5;
+               i2.x += 5, i2.y += 5;
+            }
+            if(p.x - point.x > 4)
+            {
+               i1.x -= 5, i1.y -= 5;
+               i2.x -= 5, i2.y -= 5;
+            }
+            if(i2.y - i1.y > 4)
+               i2.x -= 5, i2.y -= 5;
+            if(i1.y - i2.y > 4)
+               i2.x += 5, i2.y += 5;
+
+            crossingLeft = north ? i2.x < i1.x : i2.x > i1.x;
+
+            if(includeInterruptions)
+            {
+               vertices[count++] = i1;
+               vertices[count++] = i2;
+            }
+
+            rotate5x6Offset(d, dir.x - (i1.x - point.x), dir.y - (i1.y - point.y), !crossingLeft);
+            point = { i2.x + d.x, i2.y + d.y };
+            rotate5x6Offset(dir, dir.x, dir.y, !crossingLeft);
+         }
+         else
+            point = n;
+         if(i < start + nPoints)
+            vertices[count++] = point;
+      }
       return count;
    }
 
    int getBaseRefinedVertices(bool crs84, Pointd * vertices)
    {
-      // TODO: // No refinement yet
-      return getVertices(vertices);
+      Pointd c = centroid;
+      uint l49R = levelI49R;
+      uint64 p = POW7(l49R);
+      uint64 ix = rhombusIX;
+      uint count = 0;
+      double oonp = 1.0 / (7 * p);
 
-      #if 0
+      if(c.y > 6 + 1E-9 || c.x > 5 + 1E-9)
+         c.x -= 5, c.y -= 5;
+      else if(c.x < 0)
+         c.x += 5, c.y += 5;
 
-      bool result = true;
-      int numPoints = 0;
-      int level = this.level;
-      uint64 p = POW7(level);
-      Pointd v;
-      Pointd tl = I9RZone { level, row, col }.ri5x6Extent.tl;
-
-      //static const double sqrt3_2 = 0.8660254037844;  // a = √3/2 × s  (0.5 / tan(30°))
-      // double a = d, s = a / sqrt3_2;
-
-      switch(subHex)
+      if(subHex == 0)
       {
-         case 0:  // Even level -- regular A
-            move5x6Vertex(vertices[numPoints++], tl,  2*d/3,    d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    d/3,  2*d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -  d/3,    d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -2*d/3, -  d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -  d/3, -2*d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    d/3, -  d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            break;
-         case 1:  // Even level -- "North" pole B
-            if(row == 0 && col == p-1)
-            {
-               move5x6Vertex(v, tl, d/3, -d/3);
+         // Even level
+         double A =  7 / 3.0;
+         double B = 14 / 3.0;
 
-               // These are the pentagon's 5 vertices
-               vertices[numPoints++] = { v.x + 5, v.y + 5 };
+         if(ix == 0) // North Pole
+         {
+            Pointd a { 1 - oonp * B, 0 - oonp * A };
+            Pointd b { 1 - oonp * A, 0 + oonp * A };
+            Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
+            Pointd d;
 
-               if(!crs84)
-               {
-                  // Trapezoidal cap
-                  vertices[numPoints++] = { 5, v.y + 5 + 0.5 * d/3 };
-                  vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
-                  vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
-                  vertices[numPoints++] = { v.x + 1 - 0.5*d/3, 0 };
+            vertices[count++] = { b.x + 0, b.y + 0 };
 
-                  /*
-                  // Rectangular cap
-                  vertices[numPoints++] = { 5, 4 }; // "North" pole
-                  vertices[numPoints++] = { 0, -1 }; // Also "North" pole
-                  vertices[numPoints++] = { v.x, v.y }; // Extra vertex to fill polygon
-                  */
-               }
-               vertices[numPoints++] = { v.x + 1, v.y + 1 };
-               vertices[numPoints++] = { v.x + 2, v.y + 2 };
-               vertices[numPoints++] = { v.x + 3, v.y + 3 };
-               vertices[numPoints++] = { v.x + 4, v.y + 4 };
-            }
-            else
-               result = false;
-            break;
-         case 2:  // Even level -- "South" pole C
-            if(col == 4*p && row == 6*p-1)
-            {
-               move5x6Vertex(v, tl, -d/3, d/3);
-               vertices[numPoints++] = { v.x - 0, v.y - 0 };
-               vertices[numPoints++] = { v.x - 1, v.y - 1 };
-               vertices[numPoints++] = { v.x - 2, v.y - 2 };
-               vertices[numPoints++] = { v.x - 3, v.y - 3 };
-               if(!crs84)
-               {
-                  // Trapezoidal cap
-                  vertices[numPoints++] = { 0, v.y - 3 - 0.5 * d/3 };
-                  vertices[numPoints++] = { 0, 2 }; // "South" pole
-                  vertices[numPoints++] = { 4, 6 }; // Also "South" pole
-                  vertices[numPoints++] = { v.x + 1 + 0.5 *d/3, 6 };
+            rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
+            d.x += b.x, d.y += b.y;
 
-                  // Rectangular cap Extra vertices to fill polygon in ISEA CRSs
-                  /*
-                  vertices[numPoints++] = { v.x - 4, v.y - 4 };
-                  vertices[numPoints++] = { -1, 1 }; // "South" pole
-                  vertices[numPoints++] = { 4, 6 }; // Also "South" pole
-                  */
-               }
-               vertices[numPoints++] = { v.x + 1,  v.y + 1 };
-            }
-            else
-               result = false;
-            break;
-         case 3:  // Odd level -- type D
-            if(crs84)
+            if(!crs84)
             {
-               move5x6Vertex(vertices[numPoints++], tl, d/3,0);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               vertices[count++] = { d.x + 0, d.y + 0 };
+               vertices[count++] = { ab.x + 1, ab.y + 1 };
             }
-            else
+            vertices[count++] = { b.x + 1, b.y + 1 };
+
+            if(!crs84)
             {
-               move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
-               move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
+               vertices[count++] = { d.x + 1, d.y + 1 };
+               vertices[count++] = { ab.x + 2, ab.y + 2 };
             }
-            move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
-            if(crs84)
+            vertices[count++] = { b.x + 2, b.y + 2 };
+
+            if(!crs84)
             {
-               move5x6Vertex(vertices[numPoints++], tl, 0, d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               vertices[count++] = { d.x + 2, d.y + 2 };
+               vertices[count++] = { ab.x + 3, ab.y + 3 };
             }
-            else
+            vertices[count++] = { b.x + 3, b.y + 3 };
+
+            if(!crs84)
             {
-               move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
-               move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
+               vertices[count++] = { d.x + 3, d.y + 3 };
+               vertices[count++] = { ab.x + 4, ab.y + 4 };
             }
-            move5x6Vertex(vertices[numPoints++], tl,-d/3,    0);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,-d/3,-d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    0,-d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            break;
-         case 4:  // Odd level -- type E
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,2E-11);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2E-11);
-            move5x6Vertex(vertices[numPoints++], tl,    d,  d/3);
-            move5x6Vertex(vertices[numPoints++], tl,    d,2*d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,  d/3);
-            break;
-         case 5:  // Odd level -- type F
-            move5x6Vertex(vertices[numPoints++], tl,2E-11,   d/3);
-            move5x6Vertex(vertices[numPoints++], tl, d/3,   d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,    d);
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,    d);
-            move5x6Vertex(vertices[numPoints++], tl,2E-11,2*d/3);
-            break;
-         case 6:  // Odd level -- "North" pole G
-            if(row == 0 && col == p-1)
+            vertices[count++] = { b.x + 4, b.y + 4 };
+
+            if(!crs84)
             {
-               move5x6Vertex(v, tl, 2*d/3, 0);
-               // These are the pentagon's 5 vertices
-               // vertices[numPoints++] = { v.x + 1 - d/3, v.y + 1 - d/3 }; -- For version before fix that crossed the interruption
-               vertices[numPoints++] = { v.x + 0, v.y + 0 };
-               vertices[numPoints++] = { v.x + 1, v.y + 1 };
-               vertices[numPoints++] = { v.x + 2, v.y + 2 };
-               vertices[numPoints++] = { v.x + 3, v.y + 3 };
-               vertices[numPoints++] = { v.x + 4, v.y + 4 };
-               if(!crs84)
-               {
-                  // Extra vertices to fill polygon in ISEA CRSs
-                  vertices[numPoints++] = { 5, 4 + d/3 }; // This extends to right border of last triangle
-                  vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
-                  vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
-               }
+               vertices[count++] = { d.x + 4, d.y + 4 };
+               vertices[count++] = { 5, 4 }; // This is the "north" pole
+               vertices[count++] = { 1, 0 }; // This is also the "north" pole
+               vertices[count++] = ab;
             }
-            else
-               result = false;
-            break;
-         case 7:
-            if(col == 4*p && row == 6*p-1)
+         }
+         else if(ix == 1) // South Pole
+         {
+            Pointd a { 4 + oonp * B, 6 + oonp * A };
+            Pointd b { 4 + oonp * A, 6 - oonp * A };
+            Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
+            Pointd d;
+
+            vertices[count++] = { b.x - 0, b.y - 0 };
+
+            rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
+            d.x += b.x, d.y += b.y;
+
+            if(!crs84)
             {
-               // Odd level -- "South" pole H
-               move5x6Vertex(v, tl, d/3, d);
-               // These are the pentagon's 5 vertices
-               vertices[numPoints++] = { v.x - 0, v.y - 0 };
-               vertices[numPoints++] = { v.x - 1, v.y - 1 };
-               vertices[numPoints++] = { v.x - 2, v.y - 2 };
-               vertices[numPoints++] = { v.x - 3, v.y - 3 };
-               vertices[numPoints++] = { v.x - 4, v.y - 4 };
-               if(!crs84)
-               {
-                  // Extra vertices to fill polygon in ISEA CRSs
-                  vertices[numPoints++] = { 0, 2 - d/3 }; // This extends to the left wrapping point
-                  vertices[numPoints++] = { 0, 2 }; // This is the "south" pole
-                  vertices[numPoints++] = { 4, 6 }; // This is also the "south" pole
-               }
+               vertices[count++] = { d.x - 0, d.y - 0 };
+               vertices[count++] = { ab.x - 1, ab.y - 1 };
             }
-            else
-               result = false;
-            break;
-         default:
-            result = false;
+            vertices[count++] = { b.x - 1, b.y - 1 };
+
+            if(!crs84)
+            {
+               vertices[count++] = { d.x - 1, d.y - 1 };
+               vertices[count++] = { ab.x - 2, ab.y - 2 };
+            }
+            vertices[count++] = { b.x - 2, b.y - 2 };
+
+            if(!crs84)
+            {
+               vertices[count++] = { d.x - 2, d.y - 2 };
+               vertices[count++] = { ab.x - 3, ab.y - 3 };
+            }
+            vertices[count++] = { b.x - 3, b.y - 3 };
+
+            if(!crs84)
+            {
+               vertices[count++] = { d.x - 3, d.y - 3 };
+               vertices[count++] = { ab.x - 4, ab.y - 4 };
+            }
+            vertices[count++] = { b.x - 4, b.y - 4 };
+
+            if(!crs84)
+            {
+               vertices[count++] = { d.x - 4, d.y - 4 };
+               vertices[count++] = { 0, 2 }; // This is the "south" pole
+               vertices[count++] = { 4, 6 }; // This is also the "south" pole
+               vertices[count++] = ab;
+            }
+         }
+         else
+         {
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * A };
+            v[2] = { - oonp * A, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * A };
+            v[5] = { + oonp * A, - oonp * A };
+
+            count = addNonPolarBaseRefinedVertices(c, v, vertices, !crs84);
+         }
       }
-      return result ? numPoints : 0;
-      #endif
+      else
+      {
+         // Odd level
+         double A =  4 / 3.0;
+         double B =  5 / 3.0;
+         double C =  1 / 3.0;
+
+         if(ix < 2 && subHex == 1) // Polar pentagons
+         {
+            double r = 1 / 5.0;
+            if(ix == 0) // North pole
+            {
+               Pointd a { 1 - oonp * B, 0 - oonp * C };
+               Pointd b { 1 - oonp * C, 0 + oonp * A };
+               Pointd ab { a.x + (b.x - a.x) * r, a.y + (b.y - a.y) * r };
+               Pointd c { 1 + oonp * A, 0 + oonp * B };
+               Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x + 0, ab.y + 0 };
+               vertices[count++] = { b.x + 0, b.y + 0 };
+               if(!crs84)
+                  vertices[count++] = { d.x + 0, d.y + 0 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x + 1, ab.y + 1 };
+               vertices[count++] = { b.x + 1, b.y + 1 };
+               if(!crs84)
+                  vertices[count++] = { d.x + 1, d.y + 1 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x + 2, ab.y + 2 };
+               vertices[count++] = { b.x + 2, b.y + 2 };
+               if(!crs84)
+                  vertices[count++] = { d.x + 2, d.y + 2 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x + 3, ab.y + 3 };
+               vertices[count++] = { b.x + 3, b.y + 3 };
+               if(!crs84)
+                  vertices[count++] = { d.x + 3, d.y + 3 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x + 4, ab.y + 4 };
+               vertices[count++] = { b.x + 4, b.y + 4 };
+               if(!crs84)
+                  vertices[count++] = { d.x + 4, d.y + 4 };
+
+               if(!crs84)
+               {
+                  vertices[count++] = { 5, 4 + oonp/3 }; // This extends to right border of last triangle
+                  vertices[count++] = { 5, 4 }; // This is the "north" pole
+                  vertices[count++] = { 1, 0 }; // This is also the "north" pole
+               }
+            }
+            else if(ix == 1) // South pole
+            {
+               Pointd a { 4 + oonp * B, 6 + oonp * C };
+               Pointd b { 4 + oonp * C, 6 - oonp * A };
+               Pointd ab { a.x + (b.x - a.x) * r, a.y + (b.y - a.y) * r };
+               Pointd c { 4 - oonp * A, 6 - oonp * B };
+               Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x - 0, ab.y - 0 };
+               vertices[count++] = { b.x - 0, b.y - 0 };
+               if(!crs84)
+                  vertices[count++] = { d.x - 0, d.y - 0 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x - 1, ab.y - 1 };
+               vertices[count++] = { b.x - 1, b.y - 1 };
+               if(!crs84)
+                  vertices[count++] = { d.x - 1, d.y - 1 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x - 2, ab.y - 2 };
+               vertices[count++] = { b.x - 2, b.y - 2 };
+               if(!crs84)
+                  vertices[count++] = { d.x - 2, d.y - 2 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x - 3, ab.y - 3 };
+               vertices[count++] = { b.x - 3, b.y - 3 };
+               if(!crs84)
+                  vertices[count++] = { d.x - 3, d.y - 3 };
+
+               if(!crs84)
+                  vertices[count++] = { ab.x - 4, ab.y - 4 };
+               vertices[count++] = { b.x - 4, b.y - 4 };
+               if(!crs84)
+                  vertices[count++] = { d.x - 4, d.y - 4 };
+
+               if(!crs84)
+               {
+                  vertices[count++] = { 0, 2 - oonp/3 }; // This extends to the left wrapping point
+                  vertices[count++] = { 0, 2 }; // This is the "south" pole
+                  vertices[count++] = { 4, 6 }; // This is also the "south" pole
+               }
+            }
+         }
+         else
+         {
+            // Odd level
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * C };
+            v[2] = { - oonp * C, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * C };
+            v[5] = { + oonp * C, - oonp * A };
+
+            count = addNonPolarBaseRefinedVertices(c, v, vertices, !crs84);
+         }
+      }
+      return count;
    }
 
    property I7HZone centroidChild
@@ -1624,7 +1815,7 @@ private:
          int i;
          Array<Pointd> vertices = null;
          int nVertices;
-         Pointd kVertices[9];
+         Pointd kVertices[18];
          int numPoints = getBaseRefinedVertices(false, kVertices);
          if(numPoints)
          {
@@ -1722,12 +1913,12 @@ private:
             switch(sh)
             {
                case 1: value = v; break; // Centroid child
-               case 2: value = { v.x - 1 * oop, v.y - 3 * oop }; break;
-               case 3: value = { v.x - 3 * oop, v.y - 2 * oop }; break;
-               case 4: value = { v.x - 2 * oop, v.y + 1 * oop }; break;
-               case 5: value = { v.x + 1 * oop, v.y + 3 * oop }; break;
-               case 6: value = { v.x + 3 * oop, v.y + 2 * oop }; break;
-               case 7: value = { v.x + 2 * oop, v.y - 1 * oop }; break;
+               case 2: move5x6Vertex(value, v, - 1 * oop, - 3 * oop); break;
+               case 3: move5x6Vertex(value, v, - 3 * oop, - 2 * oop); break;
+               case 4: move5x6Vertex(value, v, - 2 * oop, + 1 * oop); break;
+               case 5: move5x6Vertex(value, v, + 1 * oop, + 3 * oop); break;
+               case 6: move5x6Vertex(value, v, + 3 * oop, + 2 * oop); break;
+               case 7: move5x6Vertex(value, v, + 2 * oop, - 1 * oop); break;
             }
          }
          else  // Even level
@@ -1987,7 +2178,7 @@ static void getIcoNetExtentFromVertices(I7HZone zone, CRSExtent value)
 static Array<Pointd> getIcoNetRefinedVertices(I7HZone zone, int edgeRefinement)   // 0 for 1-20 based on level
 {
    Array<Pointd> rVertices = null;
-   Pointd vertices[9];
+   Pointd vertices[18];
    int numPoints = zone.getBaseRefinedVertices(false, vertices);
    if(numPoints)
    {
