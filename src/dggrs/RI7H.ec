@@ -1796,9 +1796,9 @@ private:
                      row -= cp, cRhombus += 1;
                   else if(col >= (int64)cp)
                      col -= cp, cRhombus += 1;
-                  if(cRhombus < 0) cRhombus += 10;
-                  else if(cRhombus > 9) cRhombus -= 10;
                }
+               if(cRhombus < 0) cRhombus += 10;
+               else if(cRhombus > 9) cRhombus -= 10;
 
                cix = 2 + cRhombus * cRSize + row * cp + col;
                children[count++] = { l49r + 1, cix, 0 };
