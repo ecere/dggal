@@ -624,6 +624,7 @@ public class RI5x6Projection
    // double r = 1.0 / nDivisions;
    double e = 1E-11;
 
+   // REVIEW: This logic is likely not as correct as crosses5x6Interruption() and rotate5x6Offset()
    for(i = 0; i < count; i++)
    {
       Pointd p = src[i], next = src[i < count - 1 ? i + 1 : 0];
@@ -1163,7 +1164,7 @@ bool crosses5x6Interruption(const Pointd cIn, double dx, double dy, Pointd iSrc,
          {
             Pointd iCur;
             double d;
-
+            // NOTE: This will currently not detect intersections from edge to edge across the interruption
             if(intersects5x6Interruption(
                c, { c.x + dx, c.y + dy },
                interruptions[h][r][s][0], interruptions[h][r][s][1],

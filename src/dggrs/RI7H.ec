@@ -276,7 +276,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    void getZoneWGS84Centroid(I7HZone zone, GeoPoint centroid)
    {
-      pj.inverse(zone.centroid, centroid, false); // REVIEW: zone.subHex > 2);
+      pj.inverse(zone.centroid, centroid, zone.subHex > 0);
    }
 
    void getZoneCRSExtent(I7HZone zone, CRS crs, CRSExtent extent)
@@ -366,7 +366,7 @@ public class RhombicIcosahedral7H : DGGRS
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
          {
-            bool oddGrid = false; // REVIEW:
+            bool oddGrid = zone.level & 1; // REVIEW:
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
@@ -385,7 +385,7 @@ public class RhombicIcosahedral7H : DGGRS
    {
       Pointd v5x6[6];
       uint count = zone.getVertices(v5x6), i;
-      bool oddGrid = false; // REVIEW:
+      bool oddGrid = zone.level & 1; // REVIEW:
       int j;
 
       for(j = 0; j < count; j++)
@@ -398,8 +398,8 @@ public class RhombicIcosahedral7H : DGGRS
 
    Array<Pointd> getZoneRefinedCRSVertices(I7HZone zone, CRS crs, int edgeRefinement)
    {
-      if(crs == CRS { ogc, 1534 })
-         return getIcoNetRefinedVertices(zone, edgeRefinement);
+      if(crs == CRS { ogc, 1534 } || crs == CRS { ogc, 153456 })
+         return getIcoNetRefinedVertices(zone, edgeRefinement, crs == CRS { ogc, 1534 });
       else
          return getRefinedVertices(zone, crs, edgeRefinement, false);
    }
@@ -462,95 +462,90 @@ public class RhombicIcosahedral7H : DGGRS
       */
    }
 
+   // NOTE: getRefinedVertices() is currently only ever called with CRS84 or EPSG:4326
    private static Array<Pointd> getRefinedVertices(I7HZone zone, CRS crs, int edgeRefinement, bool useGeoPoint) // 0 edgeRefinement for 1-20 based on level
    {
       Array<Pointd> rVertices = null;
       bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
-      Pointd vertices[18];
-      int numPoints = zone.getBaseRefinedVertices(crs84, vertices);
-      if(numPoints)
+      int level = zone.level;
+      // * 1024 results in level 2 zones areas accurate to 0.01 km^2
+      int nDivisions = edgeRefinement ? edgeRefinement :
+         level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
+      Array<Pointd> r = zone.getBaseRefinedVertices(crs84, nDivisions);
+      if(r)
       {
-         Array<Pointd> ap;
-         bool geodesic = false; //true;
-         int level = zone.level;
-         bool refine = true; // REVIEW: crs84 || zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
          int i;
-
-         ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
          if(crs84)
          {
-            //GeoExtent e; // REVIEW: Currently only used to decide whether to wrap
             GeoPoint centroid;
-            //Radians dLon;
             bool wrap = true;
-            int lonQuad;
-            bool oddGrid = false; // REVIEW:
+            bool oddGrid = true; //(level & 1); // REVIEW: ALways setting this to true fixes flipped South pole in BA-0-C
+            Array<Pointd> ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
 
-            //getApproxWGS84Extent(zone, e);
-            //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
+            ap./*size*/minAllocSize = r.count;
 
             getZoneWGS84Centroid(zone, centroid);
-            // wrap = (dLon < 0 || e.ll.lon > centroid.lon || dLon > Pi || (Radians)centroid.lon + 4*dLon > Pi || (Radians)centroid.lon - 4*dLon < -Pi);
-            lonQuad = (int)(((Radians)centroid.lon + Pi) * (4 / (2*Pi)));
 
-            if(geodesic)
-            {
-               ap.size = numPoints;
-               for(i = 0; i < numPoints; i++)
-               {
-                  GeoPoint point;
-                  pj.inverse(vertices[i], point, oddGrid);
-                  if(wrap)
-                     point.lon = wrapLonAt(lonQuad, point.lon, 0);
-                  ap[i] = useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
-                     crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon };
-               }
-            }
-            else
-            {
-               int nDivisions = edgeRefinement ? edgeRefinement :
-                  level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
-               Array<Pointd> r = refine5x6(numPoints, vertices, /*1024 * */ nDivisions, true); // * 1024 results in level 2 zones areas accurate to 0.01 km^2
-               ap./*size*/minAllocSize = r.count;
-               for(i = 0; i < r.count; i++)
-               {
-                  GeoPoint point;
-                  // Imprecisions causes some failures... http://localhost:8080/ogcapi/collections/gebco/dggs/ISEA3H/zones/L0-2B3FA-G
-                  if(pj.inverse(r[i], point, oddGrid))
-                  {
-                     if(wrap)
-                     {
-                        if(centroid.lon < - Pi - 1E-9)
-                           centroid.lon += 2*Pi;
-
-                        if(centroid.lon > Pi + 1E-9)
-                           centroid.lon -= 2*Pi;
-
-                        point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
-                     }
-                     ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
-                        crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
-                  }
-               }
-               ap.minAllocSize = 0;
-               delete r;
-            }
-         }
-         else if(refine)
-         {
-            Array<Pointd> r = refine5x6(numPoints, vertices, 1, false);
-            ap.size = r.count;
             for(i = 0; i < r.count; i++)
-               ap[i] = { r[i].x, r[i].y };
+            {
+               GeoPoint point;
+               // Imprecisions causes some failures... http://localhost:8080/ogcapi/collections/gebco/dggs/ISEA3H/zones/L0-2B3FA-G
+
+               if(r[i].x > 5 + 1E-6 && r[i].y > 5 + 1E-6)
+                  r[i].x -= 5, r[i].y -= 5;
+
+               if(r[i].y < 0 && fabs(r[i].y - 0) < 1E-6)
+                  r[i].y = 0;
+               else if(r[i].x > 5 && fabs(r[i].x - 5) < 1E-6)
+                  r[i].x = 5;
+               if(r[i].x > 5 + 1E-6 || r[i].y > 6 + 1E-6)
+                  r[i].x -= 5, r[i].y -= 5;
+               if(r[i].x < 0 - 1E-6)
+                  r[i].x += 5, r[i].y += 5;
+
+               if(pj.inverse(r[i], point, oddGrid))
+               {
+                  if(wrap)
+                  {
+                     if(centroid.lon < - Pi - 1E-9)
+                        centroid.lon += 2*Pi;
+
+                     if(centroid.lon > Pi + 1E-9)
+                        centroid.lon -= 2*Pi;
+
+                     point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
+
+                     // REVIEW: Why isn't wrapLonAt() handling these cases?
+                     if(oddGrid)
+                     {
+                        if(((double)point.lon - (double)centroid.lon) < -120)
+                           point.lon += 180;
+                        else if(((double)point.lon - (double)centroid.lon) > 120)
+                           point.lon -= 180;
+                     }
+                  }
+
+                  ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
+                     crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
+                  if(ap.count >= 2 &&
+                     fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
+                     fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)
+                     ap.size--; // We rely on both interruptions during interpolation, but they map to the same CRS84 point
+               }
+#ifdef _DEBUG
+               else
+                  ; //PrintLn("WARNING: Failed to inverse project ", r[i]);
+#endif
+            }
             delete r;
+            ap.minAllocSize = 0;
+            rVertices = ap;
          }
          else
          {
-            ap.size = numPoints;
-            for(i = 0; i < numPoints; i++)
-               ap[i] = { vertices[i].x, vertices[i].y };
+            rVertices.minAllocSize = 0;
+            rVertices = r;
          }
-         rVertices = ap;
       }
       return rVertices;
    }
@@ -572,7 +567,7 @@ public class RhombicIcosahedral7H : DGGRS
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
             {
-               bool oddGrid = false; // REVIEW:
+               bool oddGrid = (parent.level + depth) & 1; // REVIEW:
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
@@ -595,7 +590,7 @@ public class RhombicIcosahedral7H : DGGRS
       {
          uint count = centroids.count;
          int i;
-         bool oddGrid = false; // REVIEW:
+         bool oddGrid = (parent.level + depth) & 1; // REVIEW:
 
          geo = { size = count };
          for(i = 0; i < count; i++)
@@ -1206,7 +1201,7 @@ private:
             v[4] = { + oonp * B, + oonp * A };
             v[5] = { + oonp * A, - oonp * A };
 
-            count = addNonPolarBaseRefinedVertices(c, v, vertices, false);
+            count = addNonPolarBaseVertices(c, v, vertices);
          }
       }
       else
@@ -1251,7 +1246,7 @@ private:
             v[4] = { + oonp * B, + oonp * C };
             v[5] = { + oonp * C, - oonp * A };
 
-            count = addNonPolarBaseRefinedVertices(c, v, vertices, false);
+            count = addNonPolarBaseVertices(c, v, vertices);
          }
       }
       return count;
@@ -1273,7 +1268,101 @@ private:
       }
    }
 
-   int addNonPolarBaseRefinedVertices(Pointd c, const Pointd * v, Pointd * vertices, bool includeInterruptions)
+   private static inline void addPointCheckingPole(bool crs84, Array<Pointd> points, const Pointd p)
+   {
+      /*
+      int c = points.count;
+      if(c)
+      {
+         const Pointd * l = &points[c-1];
+         double dx = fabs(p.x - l->x), dy = fabs(p.y - l->y);
+         bool addExtra = crs84 && (
+            (fabs(p.x - 0.5) < dx && fabs(p.y - 0) < dx) ||
+            (fabs(p.x - 5) < dx && fabs(p.y - 4.5) < dy) ||
+            (fabs(p.x - 2) < dx && fabs(p.y - 3.5) < dy) ||
+            (fabs(p.x - 1.5) < dx && fabs(p.y - 3) < dy) ||
+            (fabs(l->x - 0.5) < dx && fabs(l->y - 0) < dx) ||
+            (fabs(l->x - 5) < dx && fabs(l->y - 4.5) < dy) ||
+            (fabs(l->x - 2) < dx && fabs(l->y - 3.5) < dy) ||
+            (fabs(l->x - 1.5) < dx && fabs(l->y - 3) < dy));
+         if(addExtra)
+         {
+            #define EXTRA_POLAR_POINTS  10
+            int i;
+            double dx = p.x - points[c-1].x, dy = p.y - points[c-1].y;
+            for(i = 1; i <= EXTRA_POLAR_POINTS; i++)
+               points.Add({ l->x + i * dx/EXTRA_POLAR_POINTS, l->y + i * dy/EXTRA_POLAR_POINTS });
+         }
+         else
+            points.Add(p);
+      }
+      else*/
+         points.Add(p);
+   }
+
+   void addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
+   {
+      double dx = n.x - p.x, dy = n.y - p.y;
+      int j;
+      bool interruptionNearPole = crs84 && i1 != null && (
+         (fabs(i1.x - 0.5) < 1E-6 && fabs(i1.y - 0) < 1E-6) ||
+         (fabs(i1.x - 5) < 1E-6 && fabs(i1.y - 4.5) < 1E-6) ||
+         (fabs(i1.x - 2) < 1E-6 && fabs(i1.y - 3.5) < 1E-6) ||
+         (fabs(i1.x - 1.5) < 1E-6 && fabs(i1.y - 3) < 1E-6) ||
+         (fabs(i2.x - 0.5) < 1E-6 && fabs(i2.y - 0) < 1E-6) ||
+         (fabs(i2.x - 5) < 1E-6 && fabs(i2.y - 4.5) < 1E-6) ||
+         (fabs(i2.x - 2) < 1E-6 && fabs(i2.y - 3.5) < 1E-6) ||
+         (fabs(i2.x - 1.5) < 1E-6 && fabs(i2.y - 3) < 1E-6));
+
+      if(!nDivisions) nDivisions = 1;
+      if(interruptionNearPole)
+         nDivisions *= 20;
+
+      if(dx < -3)
+         dx += 5, dy += 5;
+
+      if(i1 != null)
+      {
+         Pointd pi1 { i1.x - p.x, i1.y - p.y };
+         Pointd i2n { n.x - i2.x, n.y - i2.y };
+         double l1 = sqrt(pi1.x * pi1.x + pi1.y * pi1.y);
+         double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
+         double length = l1 + l2;
+         double t = nDivisions * l1 / length;
+
+         points.Add(p);
+
+         if(nDivisions == 1)
+            if(!crs84)
+               points.Add(i1), points.Add(i2);
+
+         for(j = 1; j < nDivisions; j += (interruptionNearPole && fabs(j - t) >= 20 ? 20 : 1))
+         {
+            if(j < t)
+               addPointCheckingPole(crs84, points, {
+                  p.x + j * pi1.x / t,
+                  p.y + j * pi1.y / t
+               });
+
+            if((j == (int)t || (j == 1 && !(int)t)))
+            {
+               addPointCheckingPole(crs84, points, i1);
+               points.Add(i2);
+            }
+
+            if(j > t)
+               addPointCheckingPole(crs84, points, {
+                  i2.x + (j - t) * i2n.x / (nDivisions - t),
+                  i2.y + (j - t) * i2n.y / (nDivisions - t)
+               });
+         }
+      }
+      else
+         for(j = 0; j < nDivisions; j++)
+            addPointCheckingPole(crs84, points, { p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
+   }
+
+   uint addNonPolarBaseVertices(Pointd c, const Pointd * v, Pointd * vertices)
    {
       int start = 0, prev, i;
       Pointd point, dir;
@@ -1298,7 +1387,7 @@ private:
 
       vertices[count++] = point;
 
-      for(i = start + 1; i < start + nPoints + includeInterruptions; i++)
+      for(i = start + 1; i < start + nPoints; i++)
       {
          bool north;
          Pointd i1, i2, n, p = point;
@@ -1333,31 +1422,99 @@ private:
 
             crossingLeft = north ? i2.x < i1.x : i2.x > i1.x;
 
-            if(includeInterruptions)
-            {
-               vertices[count++] = i1;
-               vertices[count++] = i2;
-            }
-
             rotate5x6Offset(d, dir.x - (i1.x - point.x), dir.y - (i1.y - point.y), !crossingLeft);
-            point = { i2.x + d.x, i2.y + d.y };
+            n = { i2.x + d.x, i2.y + d.y };
             rotate5x6Offset(dir, dir.x, dir.y, !crossingLeft);
-         }
-         else
-            point = n;
-         if(i < start + nPoints)
+
             vertices[count++] = point;
+         }
+         else if(i < start + nPoints)
+            vertices[count++] = point;
+         point = n;
       }
       return count;
    }
 
-   int getBaseRefinedVertices(bool crs84, Pointd * vertices)
+   void addNonPolarVerticesRefined(Pointd c, const Pointd * v, Array<Pointd> vertices, bool crs84, int nDivisions)
    {
+      int start = 0, prev, i;
+      Pointd point, dir;
+      int nPoints = this.nPoints;
+
+      // Start with a point outside interruptions
+      for(i = 0; i < 6; i++)
+      {
+         Pointd t { c.x + v[i].x, c.y + v[i].y };
+         int tx = (int)floor(t.x + 1E-11);
+         if(!(t.y - tx > 2 || t.y < tx))
+         {
+            start = i;
+            break;
+         }
+      }
+
+      point = { c.x + v[start].x, c.y + v[start].y };
+      prev = (start + 5) % 6;
+      dir = { point.x - (c.x + v[prev].x), point.y - (c.y + v[prev].y) };
+
+      for(i = start + 1; i <= start + nPoints; i++)
+      {
+         bool north;
+         Pointd i1, i2, n, p = point;
+
+         rotate5x6Offset(dir, dir.x, dir.y, false);
+         n = { point.x + dir.x, point.y + dir.y };
+
+         if(p.x > 5 && p.y > 5)
+            p.x -= 5, p.y -= 5;
+         if(p.x < 0 || p.y < 0)
+            p.x += 5, p.y += 5;
+
+         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         {
+            bool crossingLeft;
+            Pointd d;
+
+            if(point.x - p.x > 4)
+            {
+               i1.x += 5, i1.y += 5;
+               i2.x += 5, i2.y += 5;
+            }
+            if(p.x - point.x > 4)
+            {
+               i1.x -= 5, i1.y -= 5;
+               i2.x -= 5, i2.y -= 5;
+            }
+            if(i2.y - i1.y > 4)
+               i2.x -= 5, i2.y -= 5;
+            if(i1.y - i2.y > 4)
+               i2.x += 5, i2.y += 5;
+
+            crossingLeft = north ? i2.x < i1.x : i2.x > i1.x;
+            rotate5x6Offset(d, dir.x - (i1.x - point.x), dir.y - (i1.y - point.y), !crossingLeft);
+            n = { i2.x + d.x, i2.y + d.y };
+            rotate5x6Offset(dir, dir.x, dir.y, !crossingLeft);
+
+            addIntermediatePoints(vertices, point, n, nDivisions, i1, i2, crs84);
+         }
+         else
+         {
+            if(!nDivisions)
+               vertices.Add(point);
+            else
+               addIntermediatePoints(vertices, point, n, nDivisions, null, null, crs84);
+         }
+         point = n;
+      }
+   }
+
+   Array<Pointd> getBaseRefinedVertices(bool crs84, int nDivisions)
+   {
+      Array<Pointd> vertices { minAllocSize = Max(1, nDivisions) * 6 };
       Pointd c = centroid;
       uint l49R = levelI49R;
       uint64 p = POW7(l49R);
       uint64 ix = rhombusIX;
-      uint count = 0;
       double oonp = 1.0 / (7 * p);
 
       if(c.y > 6 + 1E-9 || c.x > 5 + 1E-9)
@@ -1378,45 +1535,23 @@ private:
             Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
             Pointd d;
 
-            vertices[count++] = { b.x + 0, b.y + 0 };
-
             rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
             d.x += b.x, d.y += b.y;
 
-            if(!crs84)
+            addIntermediatePoints(vertices, { b.x + 0, b.y + 0 }, { b.x + 1, b.y + 1 }, nDivisions, { d.x + 0, d.y + 0 }, { ab.x + 1, ab.y + 1 }, crs84);
+            addIntermediatePoints(vertices, { b.x + 1, b.y + 1 }, { b.x + 2, b.y + 2 }, nDivisions, { d.x + 1, d.y + 1 }, { ab.x + 2, ab.y + 2 }, crs84);
+            addIntermediatePoints(vertices, { b.x + 2, b.y + 2 }, { b.x + 3, b.y + 3 }, nDivisions, { d.x + 2, d.y + 2 }, { ab.x + 3, ab.y + 3 }, crs84);
+            addIntermediatePoints(vertices, { b.x + 3, b.y + 3 }, { b.x + 4, b.y + 4 }, nDivisions, { d.x + 3, d.y + 3 }, { ab.x + 4, ab.y + 4 }, crs84);
+            if(crs84)
+               addIntermediatePoints(vertices, { b.x + 4, b.y + 4 }, { b.x + 0, b.y + 0 }, nDivisions, { d.x + 4, d.y + 4 }, { ab.x + 0, ab.y + 0 }, crs84);
+            else
             {
-               vertices[count++] = { d.x + 0, d.y + 0 };
-               vertices[count++] = { ab.x + 1, ab.y + 1 };
-            }
-            vertices[count++] = { b.x + 1, b.y + 1 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x + 1, d.y + 1 };
-               vertices[count++] = { ab.x + 2, ab.y + 2 };
-            }
-            vertices[count++] = { b.x + 2, b.y + 2 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x + 2, d.y + 2 };
-               vertices[count++] = { ab.x + 3, ab.y + 3 };
-            }
-            vertices[count++] = { b.x + 3, b.y + 3 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x + 3, d.y + 3 };
-               vertices[count++] = { ab.x + 4, ab.y + 4 };
-            }
-            vertices[count++] = { b.x + 4, b.y + 4 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x + 4, d.y + 4 };
-               vertices[count++] = { 5, 4 }; // This is the "north" pole
-               vertices[count++] = { 1, 0 }; // This is also the "north" pole
-               vertices[count++] = ab;
+               vertices.Add({ b.x + 4, b.y + 4 });
+               vertices.Add({ d.x + 4, d.y + 4 });
+               // These are the "North" pole
+               vertices.Add({ 5, 4 });
+               vertices.Add({ 1, 0 });
+               vertices.Add(ab);
             }
          }
          else if(ix == 1) // South Pole
@@ -1426,45 +1561,24 @@ private:
             Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
             Pointd d;
 
-            vertices[count++] = { b.x - 0, b.y - 0 };
-
             rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
             d.x += b.x, d.y += b.y;
 
-            if(!crs84)
-            {
-               vertices[count++] = { d.x - 0, d.y - 0 };
-               vertices[count++] = { ab.x - 1, ab.y - 1 };
-            }
-            vertices[count++] = { b.x - 1, b.y - 1 };
+            addIntermediatePoints(vertices, { b.x - 0, b.y - 0 }, { b.x - 1, b.y - 1 }, nDivisions, { d.x - 0, d.y - 0 }, { ab.x - 1, ab.y - 1 }, crs84);
+            addIntermediatePoints(vertices, { b.x - 1, b.y - 1 }, { b.x - 2, b.y - 2 }, nDivisions, { d.x - 1, d.y - 1 }, { ab.x - 2, ab.y - 2 }, crs84);
+            addIntermediatePoints(vertices, { b.x - 2, b.y - 2 }, { b.x - 3, b.y - 3 }, nDivisions, { d.x - 2, d.y - 2 }, { ab.x - 3, ab.y - 3 }, crs84);
+            addIntermediatePoints(vertices, { b.x - 3, b.y - 3 }, { b.x - 4, b.y - 4 }, nDivisions, { d.x - 3, d.y - 3 }, { ab.x - 4, ab.y - 4 }, crs84);
 
-            if(!crs84)
+            if(crs84)
+               addIntermediatePoints(vertices, { b.x - 4, b.y - 4 }, { b.x - 0, b.y - 0 }, nDivisions, { d.x - 4, d.y - 4 }, { ab.x - 0, ab.y - 0 }, crs84);
+            else
             {
-               vertices[count++] = { d.x - 1, d.y - 1 };
-               vertices[count++] = { ab.x - 2, ab.y - 2 };
-            }
-            vertices[count++] = { b.x - 2, b.y - 2 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x - 2, d.y - 2 };
-               vertices[count++] = { ab.x - 3, ab.y - 3 };
-            }
-            vertices[count++] = { b.x - 3, b.y - 3 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x - 3, d.y - 3 };
-               vertices[count++] = { ab.x - 4, ab.y - 4 };
-            }
-            vertices[count++] = { b.x - 4, b.y - 4 };
-
-            if(!crs84)
-            {
-               vertices[count++] = { d.x - 4, d.y - 4 };
-               vertices[count++] = { 0, 2 }; // This is the "south" pole
-               vertices[count++] = { 4, 6 }; // This is also the "south" pole
-               vertices[count++] = ab;
+               vertices.Add({ b.x - 4, b.y - 4 });
+               vertices.Add({ d.x - 4, d.y - 4 });
+               // These are the "South" pole
+               vertices.Add({ 0, 2 });
+               vertices.Add({ 4, 6 });
+               vertices.Add(ab);
             }
          }
          else
@@ -1478,7 +1592,7 @@ private:
             v[4] = { + oonp * B, + oonp * A };
             v[5] = { + oonp * A, - oonp * A };
 
-            count = addNonPolarBaseRefinedVertices(c, v, vertices, !crs84);
+            addNonPolarVerticesRefined(c, v, vertices, crs84, nDivisions);
          }
       }
       else
@@ -1499,41 +1613,21 @@ private:
                Pointd c { 1 + oonp * A, 0 + oonp * B };
                Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
 
-               if(!crs84)
-                  vertices[count++] = { ab.x + 0, ab.y + 0 };
-               vertices[count++] = { b.x + 0, b.y + 0 };
-               if(!crs84)
-                  vertices[count++] = { d.x + 0, d.y + 0 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x + 1, ab.y + 1 };
-               vertices[count++] = { b.x + 1, b.y + 1 };
-               if(!crs84)
-                  vertices[count++] = { d.x + 1, d.y + 1 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x + 2, ab.y + 2 };
-               vertices[count++] = { b.x + 2, b.y + 2 };
-               if(!crs84)
-                  vertices[count++] = { d.x + 2, d.y + 2 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x + 3, ab.y + 3 };
-               vertices[count++] = { b.x + 3, b.y + 3 };
-               if(!crs84)
-                  vertices[count++] = { d.x + 3, d.y + 3 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x + 4, ab.y + 4 };
-               vertices[count++] = { b.x + 4, b.y + 4 };
-               if(!crs84)
-                  vertices[count++] = { d.x + 4, d.y + 4 };
-
-               if(!crs84)
+               addIntermediatePoints(vertices, { b.x + 0, b.y + 0 }, { b.x + 1, b.y + 1 }, nDivisions, { d.x + 0, d.y + 0 }, { ab.x + 1, ab.y + 1 }, crs84);
+               addIntermediatePoints(vertices, { b.x + 1, b.y + 1 }, { b.x + 2, b.y + 2 }, nDivisions, { d.x + 1, d.y + 1 }, { ab.x + 2, ab.y + 2 }, crs84);
+               addIntermediatePoints(vertices, { b.x + 2, b.y + 2 }, { b.x + 3, b.y + 3 }, nDivisions, { d.x + 2, d.y + 2 }, { ab.x + 3, ab.y + 3 }, crs84);
+               addIntermediatePoints(vertices, { b.x + 3, b.y + 3 }, { b.x + 4, b.y + 4 }, nDivisions, { d.x + 3, d.y + 3 }, { ab.x + 4, ab.y + 4 }, crs84);
+               if(crs84)
+                  addIntermediatePoints(vertices, { b.x + 4, b.y + 4 }, { b.x + 0, b.y + 0 }, nDivisions, { d.x + 4, d.y + 4 }, { ab.x + 0, ab.y + 0 }, crs84);
+               else
                {
-                  vertices[count++] = { 5, 4 + oonp/3 }; // This extends to right border of last triangle
-                  vertices[count++] = { 5, 4 }; // This is the "north" pole
-                  vertices[count++] = { 1, 0 }; // This is also the "north" pole
+                  vertices.Add({ b.x + 4, b.y + 4 });
+                  // This extends to right border of last triangle
+                  vertices.Add({ d.x + 4, d.y + 4 });
+                  // These are the "North" pole
+                  vertices.Add({ 5, 4 });
+                  vertices.Add({ 1, 0 });
+                  vertices.Add(ab);
                }
             }
             else if(ix == 1) // South pole
@@ -1544,41 +1638,21 @@ private:
                Pointd c { 4 - oonp * A, 6 - oonp * B };
                Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
 
-               if(!crs84)
-                  vertices[count++] = { ab.x - 0, ab.y - 0 };
-               vertices[count++] = { b.x - 0, b.y - 0 };
-               if(!crs84)
-                  vertices[count++] = { d.x - 0, d.y - 0 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x - 1, ab.y - 1 };
-               vertices[count++] = { b.x - 1, b.y - 1 };
-               if(!crs84)
-                  vertices[count++] = { d.x - 1, d.y - 1 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x - 2, ab.y - 2 };
-               vertices[count++] = { b.x - 2, b.y - 2 };
-               if(!crs84)
-                  vertices[count++] = { d.x - 2, d.y - 2 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x - 3, ab.y - 3 };
-               vertices[count++] = { b.x - 3, b.y - 3 };
-               if(!crs84)
-                  vertices[count++] = { d.x - 3, d.y - 3 };
-
-               if(!crs84)
-                  vertices[count++] = { ab.x - 4, ab.y - 4 };
-               vertices[count++] = { b.x - 4, b.y - 4 };
-               if(!crs84)
-                  vertices[count++] = { d.x - 4, d.y - 4 };
-
-               if(!crs84)
+               addIntermediatePoints(vertices, { b.x - 0, b.y - 0 }, { b.x - 1, b.y - 1 }, nDivisions, { d.x - 0, d.y - 0 }, { ab.x - 1, ab.y - 1 }, crs84);
+               addIntermediatePoints(vertices, { b.x - 1, b.y - 1 }, { b.x - 2, b.y - 2 }, nDivisions, { d.x - 1, d.y - 1 }, { ab.x - 2, ab.y - 2 }, crs84);
+               addIntermediatePoints(vertices, { b.x - 2, b.y - 2 }, { b.x - 3, b.y - 3 }, nDivisions, { d.x - 2, d.y - 2 }, { ab.x - 3, ab.y - 3 }, crs84);
+               addIntermediatePoints(vertices, { b.x - 3, b.y - 3 }, { b.x - 4, b.y - 4 }, nDivisions, { d.x - 3, d.y - 3 }, { ab.x - 4, ab.y - 4 }, crs84);
+               if(crs84)
+                  addIntermediatePoints(vertices, { b.x - 4, b.y - 4 }, { b.x - 0, b.y - 0 }, nDivisions, { d.x - 4, d.y - 4 }, { ab.x - 0, ab.y - 0 }, crs84);
+               else
                {
-                  vertices[count++] = { 0, 2 - oonp/3 }; // This extends to the left wrapping point
-                  vertices[count++] = { 0, 2 }; // This is the "south" pole
-                  vertices[count++] = { 4, 6 }; // This is also the "south" pole
+                  vertices.Add({ b.x - 4, b.y - 4 });
+                  // This extends to left wrapping point
+                  vertices.Add({ d.x - 4, d.y - 4 });
+                  // These are the "South" pole
+                  vertices.Add({ 0, 2 });
+                  vertices.Add({ 4, 6 });
+                  vertices.Add(ab);
                }
             }
          }
@@ -1594,10 +1668,10 @@ private:
             v[4] = { + oonp * B, + oonp * C };
             v[5] = { + oonp * C, - oonp * A };
 
-            count = addNonPolarBaseRefinedVertices(c, v, vertices, !crs84);
+            addNonPolarVerticesRefined(c, v, vertices, crs84, nDivisions);
          }
       }
-      return count;
+      return vertices;
    }
 
    property I7HZone centroidChild
@@ -1812,35 +1886,8 @@ private:
    {
       get
       {
-         int i;
-         Array<Pointd> vertices = null;
-         int nVertices;
-         Pointd kVertices[18];
-         int numPoints = getBaseRefinedVertices(false, kVertices);
-         if(numPoints)
-         {
-            Array<Pointd> ap = null;
-            //bool geodesic = false; //true;
-            bool refine = true; //zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When and why do we need refinement here?
-            int i;
-
-            if(refine)
-            {
-               Array<Pointd> r = refine5x6(numPoints, kVertices, 1, false);
-               ap = { size = r.count };
-               for(i = 0; i < r.count; i++)
-                  ap[i] = { r[i].x, r[i].y };
-               delete r;
-            }
-            else
-            {
-               ap = { size = numPoints };
-               for(i = 0; i < numPoints; i++)
-                  ap[i] = { kVertices[i].x, kVertices[i].y };
-            }
-            vertices = ap;
-         }
-         nVertices = vertices ? vertices.count : 0;
+         Array<Pointd> vertices = getBaseRefinedVertices(false, 0);
+         int nVertices = vertices ? vertices.count : 0, i;
 
          value.tl.x = MAXDOUBLE, value.tl.y = MAXDOUBLE;
          value.br.x = -MAXDOUBLE, value.br.y = -MAXDOUBLE;
@@ -1924,6 +1971,14 @@ private:
          else  // Even level
             value = v;
 
+         if(fabs(value.y - 0) < 1E-6)
+            value.y = 0;
+         else if(fabs(value.x - 5) < 1E-6)
+            value.x = 5;
+         if(value.x > 5 - 1E-6 || value.y > 6 + 1E-6)
+            value.x -= 5, value.y -= 5;
+         if(value.x < 0 - 1E-6)
+            value.x += 5, value.y += 5;
       }
    }
 
@@ -2157,7 +2212,7 @@ static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
 static void getIcoNetExtentFromVertices(I7HZone zone, CRSExtent value)
 {
    int i;
-   Array<Pointd> vertices = getIcoNetRefinedVertices(zone, 0);
+   Array<Pointd> vertices = getIcoNetRefinedVertices(zone, 0, true);
    int nVertices = vertices ? vertices.count : 0;
 
    value.tl.x = MAXDOUBLE, value.tl.y = -MAXDOUBLE;
@@ -2175,32 +2230,18 @@ static void getIcoNetExtentFromVertices(I7HZone zone, CRSExtent value)
    delete vertices;
 }
 
-static Array<Pointd> getIcoNetRefinedVertices(I7HZone zone, int edgeRefinement)   // 0 for 1-20 based on level
+static Array<Pointd> getIcoNetRefinedVertices(I7HZone zone, int edgeRefinement, bool ico)   // 0 for 1-20 based on level
 {
-   Array<Pointd> rVertices = null;
-   Pointd vertices[18];
-   int numPoints = zone.getBaseRefinedVertices(false, vertices);
-   if(numPoints)
+   Array<Pointd> rVertices = zone.getBaseRefinedVertices(false, edgeRefinement);
+   if(rVertices && rVertices.count && ico)
    {
-      Array<Pointd> ap = null;
-      bool refine = false; // REVIEW: Why and when do we want to refine?
       int i;
-
-      if(refine)
+      for(i = 0; i < rVertices.count; i++)
       {
-         Array<Pointd> r = refine5x6(numPoints, vertices, 1, false);
-         ap = { size = r.count };
-         for(i = 0; i < r.count; i++)
-            RI5x6Projection::toIcosahedronNet({ r[i].x, r[i].y }, ap[i]);
-         delete r;
+         Pointd p;
+         RI5x6Projection::toIcosahedronNet(rVertices[i], p);
+         rVertices[i] = p;
       }
-      else
-      {
-         ap = { size = numPoints };
-         for(i = 0; i < numPoints; i++)
-            RI5x6Projection::toIcosahedronNet({ vertices[i].x, vertices[i].y }, ap[i]);
-      }
-      rVertices = ap;
    }
    return rVertices;
 }
