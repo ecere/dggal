@@ -105,8 +105,9 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
    __attribute__((unused)) int nv = zone.getVertices(vertices);
    int subHex = zone.subHex, levelI9R = zone.levelI9R;
    uint64 rhombusIX = zone.rhombusIX;
-   bool oddDepth = rDepth & 1, oddParent = subHex > 2;
-   bool southRhombus = zone.rootRhombus & 1;
+   bool oddDepth = rDepth & 1, oddParent = subHex > 0;
+   uint root = zone.rootRhombus;
+   bool southRhombus = root & 1;
 
    if(oddParent)
    {
@@ -128,10 +129,10 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
                tl = i;
          }
 // #else
-         if(subHex == 6)
+         if(root == 10 && subHex == 1)
             tl = 0;
          else if(nv == 5)
-            tl = southRhombus ? (subHex == 7 ? 1 : 4) : 3;
+            tl = southRhombus ? (root == 11 && subHex == 1 ? 1 : 4) : 3;
 #endif
          c = vertices[tl];
 
@@ -154,11 +155,11 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
                tl = i;
          }
 //#else
-         // int tl = subHex == 6 ? 4 : (nv == 5) ? 3 : 0;
-         if(subHex == 6)
+         // int tl = root == 10 && subHex == 1 ? 4 : (nv == 5) ? 3 : 0;
+         if(root == 10 && subHex == 1)
             tl = 4;
          else if(nv == 5)
-            tl = subHex == 7 ? 0 : 3;
+            tl = root == 11 && subHex == 1 ? 0 : 3;
 #endif
          c = vertices[tl];
       }
@@ -180,11 +181,11 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
             if(left == -1 || vertices[i].x < vertices[left].x) left = i;
 
 //#else
-         //int left = subHex == 1 ? 0 : (nv == 6 || !(rootRhombus & 1)) ? 3 : 2;
-         if(subHex == 1)
+         //int left = root == 10 && subHex == 0 ? 0 : (nv == 6 || !(root & 1)) ? 3 : 2;
+         if(root == 10 && subHex == 0)
             left = 0;
          else if(nv == 5 && southRhombus)
-            left = subHex == 2 ? 4 : 2;
+            left = root == 11 && subHex == 0 ? 4 : 2;
 #endif
          c = vertices[left];
       }
@@ -196,7 +197,7 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
 
          // (in ISEA Planar projection) Left-to-Right Scanlines; Bottom to Top Scanline order
          // Start from hexagon / pentagon vertex
-         if(nv == 5 && subHex != 1 && subHex != 2 && !southRhombus)
+         if(nv == 5 && (root < 10 || subHex != 0) && !southRhombus)
          {
             int top = 4;
             c = vertices[top];
@@ -227,7 +228,7 @@ void getI3HFirstSubZoneCentroid(I3HZone zone, int rDepth, Pointd c)
             else if(right == 0)              ix = nv-1;
             else if(top == 1 || right == 1)  ix = 0;
 #else
-            int ix = subHex == 1 ? 0 : (nv == 6) ? 5 : 4;
+            int ix = (root == 10 && subHex == 0) ? 0 : (nv == 6) ? 5 : 4;
             int divs = (int)POW3(levelI9R);
             bool edgeHex = nv == 6 && rhombusIX && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
             if(edgeHex && southRhombus)
@@ -1806,14 +1807,14 @@ Array<Pointd> getI3HSubZoneCentroids(I3HZone zone, int rDepth)
    int level = zone.level, levelI9R = zone.levelI9R;
    int nv = zone.nPoints, subHex = zone.subHex, rootRhombus = zone.rootRhombus;
    uint64 rhombusIX = zone.rhombusIX;
-   bool oddDepth = rDepth & 1, oddParent = subHex > 2;
+   bool oddDepth = rDepth & 1, oddParent = subHex > 0;
    int szLevel = level + rDepth;
    double u = 1.0 / POW3((szLevel / 2));
    bool southRhombus = rootRhombus & 1;
-   bool polarPentagon = subHex == 1 || subHex == 2 || subHex == 6 || subHex == 7;
+   bool polarPentagon = rootRhombus > 9;
    int divs = (int)POW3(levelI9R);
    // Edge Hexagons are either -A or -D
-   bool edgeHex = nv == 6 && rhombusIX && (subHex == 0 || subHex == 3) && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
+   bool edgeHex = nv == 6 && rhombusIX && (subHex == 0 || subHex == 1) && (southRhombus ? ((rhombusIX % divs) == 0) : ((rhombusIX / divs) == 0));
 
    zone.getFirstSubZoneCentroid(rDepth, firstCentroid);
 

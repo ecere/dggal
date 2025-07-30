@@ -265,7 +265,7 @@ public class RhombicIcosahedral3H : DGGRS
 
    void getZoneWGS84Centroid(I3HZone zone, GeoPoint centroid)
    {
-      pj.inverse(zone.centroid, centroid, zone.subHex > 2);
+      pj.inverse(zone.centroid, centroid, zone.subHex > 0);
    }
 
    void getZoneCRSExtent(I3HZone zone, CRS crs, CRSExtent extent)
@@ -355,7 +355,7 @@ public class RhombicIcosahedral3H : DGGRS
          case CRS { ogc, 84 }:
          case CRS { epsg, 4326 }:
          {
-            bool oddGrid = zone.subHex > 2;
+            bool oddGrid = zone.subHex > 0;
             for(i = 0; i < count; i++)
             {
                GeoPoint geo;
@@ -374,7 +374,7 @@ public class RhombicIcosahedral3H : DGGRS
    {
       Pointd v5x6[6];
       uint count = zone.getVertices(v5x6), i;
-      bool oddGrid = zone.subHex > 2;
+      bool oddGrid = zone.subHex > 0;
       int j;
 
       for(j = 0; j < count; j++)
@@ -400,13 +400,13 @@ public class RhombicIcosahedral3H : DGGRS
 
    void getApproxWGS84Extent(I3HZone zone, GeoExtent extent)
    {
-      int sh = zone.subHex;
+      uint root = zone.rootRhombus;
       int i;
       GeoPoint centroid;
       Radians minDLon = 99999, maxDLon = -99999;
       Pointd vertices[7];  // REVIEW: Should this be 6? can't ever be 7?
       int nVertices = zone.getVertices(vertices);
-      bool oddGrid = zone.subHex > 2;
+      bool oddGrid = zone.subHex > 0;
 
       getZoneWGS84Centroid(zone, centroid);
 
@@ -432,14 +432,14 @@ public class RhombicIcosahedral3H : DGGRS
          }
       }
 
-      if(sh == 1 || sh == 6)
+      if(root == 10)
       {
          // "North" pole
          extent.ll.lon = -Pi;
          extent.ur.lon = Pi;
          extent.ur.lat = Pi/2;
       }
-      else if(sh == 2 || sh == 7)
+      else if(root == 11)
       {
          // "South" pole
          extent.ll.lon = -Pi;
@@ -459,7 +459,7 @@ public class RhombicIcosahedral3H : DGGRS
          Array<Pointd> ap;
          bool geodesic = false; //true;
          int level = zone.level;
-         bool refine = crs84 || zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
+         bool refine = crs84 || zone.subHex < 1;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
          int i;
 
          ap = useGeoPoint ? (Array<Pointd>)Array<GeoPoint> { } : Array<Pointd> { };
@@ -470,7 +470,7 @@ public class RhombicIcosahedral3H : DGGRS
             //Radians dLon;
             bool wrap = true;
             int lonQuad;
-            bool oddGrid = zone.subHex > 2;
+            bool oddGrid = zone.subHex > 0;
 
             //getApproxWGS84Extent(zone, e);
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
@@ -558,7 +558,7 @@ public class RhombicIcosahedral3H : DGGRS
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
             {
-               bool oddGrid = parent.subHex > 2;
+               bool oddGrid = parent.subHex > 0;
                for(i = 0; i < count; i++)
                {
                   GeoPoint geo;
@@ -581,7 +581,7 @@ public class RhombicIcosahedral3H : DGGRS
       {
          uint count = centroids.count;
          int i;
-         bool oddGrid = parent.subHex > 2;
+         bool oddGrid = parent.subHex > 0;
 
          geo = { size = count };
          for(i = 0; i < count; i++)
@@ -644,14 +644,14 @@ public class RhombicIcosahedral3H : DGGRS
                int nHexes = 0, h;
                I3HZone hexes[4];
 
-               hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'D' : 'A');
+               hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, hexSubLevel ? 'B' : 'A', 0);
                if(hexes[nHexes-1] == nullZone)
                   continue; // This should no longer happen...
 
                if(hexSubLevel)
                {
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'E');
-                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'F');
+                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'C', 0);
+                  hexes[nHexes++] = I3HZone::fromI9R(i9RLevel, row, col, 'D', 0);
                }
 
                for(h = 0; h < nHexes; h++)
@@ -662,9 +662,9 @@ public class RhombicIcosahedral3H : DGGRS
 
       // Always add the poles since they are touched at multiple points and will be checked for intersections below
       // "North" pole
-      tsZones.Add(I3HZone::fromI9R(i9RLevel, 0, (uint)(power-1), hexSubLevel ? 'G' : 'B'));
+      tsZones.Add(I3HZone::fromI9R(i9RLevel, 0, 0, hexSubLevel ? 'B' : 'A', 10));
       // "South" pole
-      tsZones.Add(I3HZone::fromI9R(i9RLevel, (uint)(6*power-1), (uint)(4*power), hexSubLevel ? 'H' : 'C'));
+      tsZones.Add(I3HZone::fromI9R(i9RLevel, 0, 0, hexSubLevel ? 'B' : 'A', 11));
 
       if(tsZones.count)
       {
@@ -723,16 +723,15 @@ enum I3HNeighbor
 public class I3HZone : private DGGRSZone
 {
 public:
-   uint levelI9R:5:58;  // 0 .. 16
-   uint rootRhombus:4:54;  // 0 .. 9
-   uint64 rhombusIX:51:3; // (left to right, top to bottom)   0 .. 205,891,132,094,648 (3^16 * 3^16 - 1)
-   uint subHex:3:0;       // 0..2 for even level: (1 and 2 for special pole cases)
-                        // 3..5 for odd level:  (3,4,5 for normal cases, 6 and 7 for special pole cases)
+   uint levelI9R:5:57;    // 0 .. 16
+   uint rootRhombus:4:53; // 0 .. 9; 10 and 11 for North and South poles
+   uint64 rhombusIX:51:2; // (left to right, top to bottom)   0 .. 205,891,132,094,648 (3^16 * 3^16 - 1)
+   uint subHex:2:0;       // 0 for even level; 1..3 for odd level
 
 private:
    property int level
    {
-      get { return levelI9R * 2 + (subHex > 2); }
+      get { return levelI9R * 2 + (subHex > 0); }
    }
 
    property int nPoints
@@ -740,8 +739,8 @@ private:
       get
       {
          int sh = subHex;
-         if(sh == 1 || sh == 2 || sh == 6 || sh == 7 || (rhombusIX == 0 && (sh == 0 || sh == 3)))
-            return 5; // Polar zones and 0 rhombus index 0 (A and D) are pentagons
+         if(rhombusIX == 0 && sh <= 1)
+            return 5; // 0 rhombus index 0 (A and B) are pentagons (including polar pentagonal zones)
          return 6;
       }
    }
@@ -769,14 +768,14 @@ private:
       char subHex;
       int row, col, l9r = -1;
 
-      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%d-%I64X-%c" : "%c%d-%llX-%c",
+      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
          &levelChar, &root, &ix, &subHex) == 4)
-         l9r = iLRCFromLRtI(levelChar, root, ix, &row, &col);
-      if(l9r != -1 && validate(l9r, row, col, subHex))
+         l9r = root < 10 ? iLRCFromLRtI(levelChar, root, ix, &row, &col) : (root <= 12 && !ix && levelChar >= 'A' && levelChar <= 'Q' ? (levelChar - 'A') : -1);
+      if(l9r != -1 && (root <= 9 || !ix) && validate(l9r, root, row, col, subHex))
       {
          char id[256];
 
-         result = fromI9R(l9r, row, col, subHex);
+         result = fromI9R(l9r, row, col, subHex, root > 9 ? root : 0);
 
          result.getZoneID(id);
          if(strcmp(id, zoneID))
@@ -798,40 +797,33 @@ private:
          uint64 ix = this.rhombusIX;
          char subHex = (char)(this.subHex + 'A');
          sprintf(zoneID,
-            __runtimePlatform == win32 ? "%c%d-%I64X-%c" : "%c%d-%llX-%c",
+            __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
             'A' + l9r, root, ix, subHex);
       }
    }
 
-   I3HZone ::fromI9R(int level, uint row, uint col, char subHex)
+   I3HZone ::fromI9R(int level, uint row, uint col, char subHex, int pole)
    {
       uint64 p = POW3(level);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
-      int root = rowOP + colOP;
+      int root = pole ? pole : rowOP + colOP;
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
-      uint64 ix = y * p + x;
+      uint64 ix = pole ? 0 : y * p + x;
 
       // Avoid returning bad key
-      if(subHex < 'A' || subHex > 'H' || root > 9 || rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)
-         return nullZone;
-      else if(subHex != 'A' && subHex != 'D' && subHex != 'E' && subHex != 'F' &&
-              !((subHex == 'B' || subHex == 'G') && row == 0 && col == p-1) &&
-              !((subHex == 'C' || subHex == 'H') && col == 4*p && row == 6*p-1))
+      if(subHex < 'A' || subHex > 'D' || root > 11 || (root < 10 && (rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)))
          return nullZone;
       return { level, root, ix, subHex - 'A'};
    }
 
-   bool ::validate(uint levelI9R, uint row, uint col, char subHex)
+   bool ::validate(uint levelI9R, uint rootRhombus, uint row, uint col, char subHex)
    {
       uint64 p = POW3(levelI9R);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
       uint root = rowOP + colOP;
-      if(subHex < 'A' || subHex > 'H' || root > 9 || rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)
-         return false;
-      else if(subHex != 'A' && subHex != 'D' && subHex != 'E' && subHex != 'F' &&
-              !((subHex == 'B' || subHex == 'G') && row == 0 && col == p-1) &&
-              !((subHex == 'C' || subHex == 'H') && col == 4*p && row == 6*p-1))
+      if(subHex < 'A' || subHex > 'D' || rootRhombus > 11 ||
+         (rootRhombus <= 9 && (root != rootRhombus || rowOP < colOP || rowOP - colOP > 1 || y >= p || x >= p)))
          return false;
       return true;
    }
@@ -841,23 +833,23 @@ private:
       get
       {
          int sh = this.subHex;
-         if(!levelI9R && sh < 3)
+         if(!levelI9R && sh == 0)
             return nullZone;
          else
          {
             I3HZone key { };
-            if(sh >= 3)
+            if(sh > 0)
             {
                key = this;
-               key.subHex = sh == 6 ? 1 : sh == 7 ? 2 : 0;
+               key.subHex = 0;
             }
             else
             {
-               int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
+               int row, col, level = rootRhombus < 10 ? iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col) : (rootRhombus <= 12 && !rhombusIX ? levelI9R : -1);
                uint64 p = POW3(level);
                uint64 r = rhombusIX / p, c = rhombusIX % p;
                uint rm3 = (uint)(r % 3), cm3 = (uint)(c % 3);
-               key = fromI9R(level - 1, row / 3, col / 3, (char)('A' + (sh == 1 ? 6 : sh == 2 ? 7 : (cm3 > 1 ? 4 : rm3 > 1 ? 5 : 3))));
+               key = fromI9R(level - 1, row / 3, col / 3, (char)('A' + (rootRhombus > 9 ? 1 : (cm3 > 1 ? 2 : rm3 > 1 ? 3 : 1))), rootRhombus > 9 ? rootRhombus : 0);
             }
             return key;
          }
@@ -880,7 +872,7 @@ private:
       Pointd v;
       bool crossEarly = true;
 
-      if(sh < 3)
+      if(sh == 0)
       {
          // Even level
 
@@ -1006,7 +998,7 @@ private:
          I3HZone result;
          // REVIEW: This is the only place we use moveISEAVertex2()
          move5x6Vertex2(v, centroid, x, y, crossEarly);
-         result = fromCentroid(2*l9r + (sh >= 3), v);
+         result = fromCentroid(2*l9r + (sh > 0), v);
          if(result == this)
             return nullZone; // This should not happen
          return result;
@@ -1015,10 +1007,10 @@ private:
          return nullZone;
       /*
       TODO: more direct path?
-      int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
+      int row, col, level = root < 10 ? iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col) : (root <= 12 && !rhombusIX ? levelI9R : -1);
       int sh = 0;
       col += x, row += y;
-      return fromI9R(level, row, col, (char)('A' + sh));
+      return fromI9R(level, row, col, (char)('A' + sh), rootRhombus > 9 ? rootRhombus : 0);
       */
    }
 
@@ -1117,11 +1109,11 @@ private:
       {
          int sh = subHex;
 
-         if(sh >= 3)
+         if(sh > 0)
          {
             // Odd level
             parents[1] = parent0.getNeighbor(right);
-            parents[2] = parent0.getNeighbor(sh == 4 /* E */ ? topRight : bottomRight /* F */);
+            parents[2] = parent0.getNeighbor(sh == 2 /* C */ ? topRight : bottomRight /* D */);
          }
          else
          {
@@ -1234,9 +1226,9 @@ private:
          uint sh;
 
          if(isNorthPole)
-            sh = (level & 1) ? 6 : 1, root = 0, rix = p-1;
+            sh = (level & 1) ? 1 : 0, root = 10, rix = 0;
          else if(isSouthPole)
-            sh = (level & 1) ? 7 : 2, root = 9, rix = p * (p-1);
+            sh = (level & 1) ? 1 : 0, root = 11, rix = 0;
          else
          {
             bool rightSR = x == p-1, topSR = y == 0;
@@ -1253,7 +1245,7 @@ private:
                bool leftThird = 3*xd < 1, topThird = 3*yd < 1;
 
                if(leftThird && topThird)
-                  sh = 3; // D
+                  sh = 1; // B
                else
                {
                   bool rightThird = 3*xd > 2, bottomThird = 3*yd > 2;
@@ -1297,14 +1289,14 @@ private:
                      }
                      else
                         rix += p + 1;
-                     sh = 3; // D
+                     sh = 1; // B
                   }
                   else if(bottomThird)
                   {
                      if(3 * (yd - xd) > 2)
                      {
                         if(spSubRhombus)
-                           root = 9, sh = 7; // "South" pole H
+                           root = 11, rix = 0, sh = 1; // "South" pole B
                         else
                         {
                            if(bottomSR)
@@ -1324,18 +1316,18 @@ private:
                            }
                            else
                               rix += p;
-                           sh = 3; // D
+                           sh = 1; // B
                         }
                      }
                      else
-                        sh = 5; // F
+                        sh = 3; // D
                   }
                   else if(rightThird)
                   {
                      if(3 * (xd - yd) > 2)
                      {
                         if(npSubRhombus)
-                           root = 0, sh = 6; // "North" pole G
+                           root = 10, rix = 0, sh = 1; // "North" pole B
                         else
                         {
                            if(rightSR)
@@ -1354,16 +1346,16 @@ private:
                            }
                            else
                               rix++;
-                           sh = 3; // D
+                           sh = 1; // B
                         }
                      }
                      else
-                        sh = 4; // E
+                        sh = 2; // C
                   }
                   else if(xd > yd)
-                     sh = 4; // E
+                     sh = 2; // C
                   else
-                     sh = 5; // F
+                     sh = 3; // D
                }
             }
             else          // Even level
@@ -1395,7 +1387,7 @@ private:
                if(topRight)
                {
                   if(npSubRhombus)
-                     root = 0, sh = 1; // "North" pole B
+                     root = 10, rix = 0, sh = 0; // "North" pole A
                   else
                   {
                      if(rightSR)
@@ -1419,7 +1411,7 @@ private:
                else if(bottomLeft)
                {
                   if(spSubRhombus)
-                     root = 9, sh = 2; // "South" pole C
+                     root = 11, rix = 0, sh = 0; // "South" pole A
                   else
                   {
                      if(bottomSR)
@@ -1496,8 +1488,8 @@ private:
       uint64 p = POW3(level);
       uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
       uint64 ixOP = (uint64)(rix / p);
-      uint64 row = (uint64)(rowOP * p + ixOP);
-      uint64 col = (uint64)((colOP - ixOP) * p + rix); // distributivity on: rix - (ixOP * p) for (rix % p)
+      uint64 row = root == 10 ? 0 : root == 11 ? 6 * p - 1 : (uint64)(rowOP * p + ixOP);
+      uint64 col = root == 10 ? p - 1 : root == 11 ? 4 * p : (uint64)((colOP - ixOP) * p + rix); // distributivity on: rix - (ixOP * p) for (rix % p)
       double d =  1.0 / p;
       Pointd tl { col * d, row * d };
       int i = 0;
@@ -1506,19 +1498,13 @@ private:
 
       switch(sh)
       {
-         case 0:  // Even level -- regular
-            move5x6Vertex(vertices[i++], tl,  2*d/3,    d/3);
-            move5x6Vertex(vertices[i++], tl,    d/3,  2*d/3);
-            if(!south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, -  d/3,    d/3);
-            move5x6Vertex(vertices[i++], tl, -2*d/3, -  d/3);
-            if(south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, -  d/3, -2*d/3);
-            move5x6Vertex(vertices[i++], tl,    d/3, -  d/3);
-            break;
-         case 1:  // Even level -- "North" pole
-            if(sh == 1 && row == 0 && col == p-1)
+         case 0: // Even level
+            if(root == 10) // "North" pole
             {
+#ifdef _DEBUG
+               if(rix != 0)
+                  PrintLn("WARNING: Assertion Failed");
+#endif
                move5x6Vertex(v, tl, d/3, -d/3);
                vertices[i++] = { v.x + 1, v.y + 1 };
                vertices[i++] = { v.x + 2, v.y + 2 };
@@ -1526,10 +1512,12 @@ private:
                vertices[i++] = { v.x + 4, v.y + 4 };
                vertices[i++] = { v.x + 5, v.y + 5 };
             }
-            break;
-         case 2: // Even level -- "South" pole
-            if(col == 4*p && row == 6*p-1)
+            else if(root == 11) // "South" pole
             {
+#ifdef _DEBUG
+               if(rix != 0)
+                  PrintLn("WARNING: Assertion Failed");
+#endif
                move5x6Vertex(v, tl, -d/3, d/3);
                vertices[i++] = { v.x - 0, v.y - 0 };
                vertices[i++] = { v.x - 1, v.y - 1 };
@@ -1537,36 +1525,25 @@ private:
                vertices[i++] = { v.x - 3, v.y - 3 };
                vertices[i++] = { v.x + 1, v.y + 1 };
             }
-            break;
-         case 3:  // Odd level -- type D
-            if(south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl, d/3,0);
-            move5x6Vertex(vertices[i++], tl, d/3, d/3);
-            move5x6Vertex(vertices[i++], tl,0, d/3);
-            if(!south || rix) // 0 rhombusIndex are pentagons
-               move5x6Vertex(vertices[i++], tl,-d/3,    0);
-            move5x6Vertex(vertices[i++], tl,-d/3,-d/3);
-            move5x6Vertex(vertices[i++], tl,    0,-d/3);
-            break;
-         case 4:  // Odd level -- type E
-            move5x6Vertex(vertices[i++], tl,  d/3,0);
-            move5x6Vertex(vertices[i++], tl,2*d/3,0);
-            move5x6Vertex(vertices[i++], tl,    d,  d/3);
-            move5x6Vertex(vertices[i++], tl,    d,2*d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[i++], tl,  d/3,  d/3);
-            break;
-         case 5:  // Odd level -- type F
-            move5x6Vertex(vertices[i++], tl,0,   d/3);
-            move5x6Vertex(vertices[i++], tl, d/3,   d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[i++], tl,2*d/3,    d);
-            move5x6Vertex(vertices[i++], tl,  d/3,    d);
-            move5x6Vertex(vertices[i++], tl,0,2*d/3);
-            break;
-         case 6:  // Odd level -- "North" pole
-            if(row == 0 && col == p-1)
+            else // Regular case
             {
+               move5x6Vertex(vertices[i++], tl,  2*d/3,    d/3);
+               move5x6Vertex(vertices[i++], tl,    d/3,  2*d/3);
+               if(!south || rix) // 0 rhombusIndex are pentagons
+                  move5x6Vertex(vertices[i++], tl, -  d/3,    d/3);
+               move5x6Vertex(vertices[i++], tl, -2*d/3, -  d/3);
+               if(south || rix) // 0 rhombusIndex are pentagons
+                  move5x6Vertex(vertices[i++], tl, -  d/3, -2*d/3);
+               move5x6Vertex(vertices[i++], tl,    d/3, -  d/3);
+            }
+            break;
+         case 1: // Odd level -- type B
+            if(root == 10) // "North" pole
+            {
+#ifdef _DEBUG
+               if(rix != 0)
+                  PrintLn("WARNING: Assertion Failed");
+#endif
                move5x6Vertex(v, tl, 2*d/3, 0);
                // vertices[i++] = { v.x + 1 - d/3, v.y + 1 - d/3 };
                vertices[i++] = { v.x + 1, v.y + 1 };
@@ -1575,10 +1552,12 @@ private:
                vertices[i++] = { v.x + 4, v.y + 4 };
                vertices[i++] = { v.x + 5, v.y + 5 };
             }
-            break;
-         case 7:  // Odd level -- "South" pole
-            if(col == 4*p && row == 6*p-1)
+            else if(root == 11) // "South" pole
             {
+#ifdef _DEBUG
+               if(rix != 0)
+                  PrintLn("WARNING: Assertion Failed");
+#endif
                move5x6Vertex(v, tl, d/3, d);
                vertices[i++] = { v.x - 0, v.y - 0 };
                vertices[i++] = { v.x - 1, v.y - 1 };
@@ -1587,6 +1566,33 @@ private:
                vertices[i++] = { v.x - 4, v.y - 4 };
                // vertices[i++] = { v.x - 4 - d/3, v.y - 4 - d/3 };
             }
+            else
+            {
+               if(south || rix) // 0 rhombusIndex are pentagons
+                  move5x6Vertex(vertices[i++], tl, d/3,0);
+               move5x6Vertex(vertices[i++], tl, d/3, d/3);
+               move5x6Vertex(vertices[i++], tl,0, d/3);
+               if(!south || rix) // 0 rhombusIndex are pentagons
+                  move5x6Vertex(vertices[i++], tl,-d/3,    0);
+               move5x6Vertex(vertices[i++], tl,-d/3,-d/3);
+               move5x6Vertex(vertices[i++], tl,    0,-d/3);
+            }
+            break;
+         case 2:  // Odd level -- type C
+            move5x6Vertex(vertices[i++], tl,  d/3,0);
+            move5x6Vertex(vertices[i++], tl,2*d/3,0);
+            move5x6Vertex(vertices[i++], tl,    d,  d/3);
+            move5x6Vertex(vertices[i++], tl,    d,2*d/3);
+            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
+            move5x6Vertex(vertices[i++], tl,  d/3,  d/3);
+            break;
+         case 3:  // Odd level -- type D
+            move5x6Vertex(vertices[i++], tl,0,   d/3);
+            move5x6Vertex(vertices[i++], tl, d/3,   d/3);
+            move5x6Vertex(vertices[i++], tl,2*d/3,2*d/3);
+            move5x6Vertex(vertices[i++], tl,2*d/3,    d);
+            move5x6Vertex(vertices[i++], tl,  d/3,    d);
+            move5x6Vertex(vertices[i++], tl,0,2*d/3);
             break;
       }
       return i;
@@ -1595,133 +1601,194 @@ private:
    int getBaseRefinedVertices(bool crs84, Pointd * vertices)
    {
       int numPoints = 0;
-      int row, col, level = iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col);
+      uint root = rootRhombus;
+      int row, col, level = root < 10 ? iLRCFromLRtI((char)('A' + levelI9R), root, rhombusIX, &row, &col) : (root <= 12 && !rhombusIX ? levelI9R : -1);
       int subHex = this.subHex;
       bool result = true;
       uint64 p = POW3(level);
       double d =  1.0 / p;
       Pointd v;
-      Pointd tl = I9RZone { level, row, col }.ri5x6Extent.tl;
+      Pointd tl;
+
+           if(root == 10) row = 0,         col = (int)(p - 1);
+      else if(root == 11) row = (int)(6 * p - 1), col = (int)(4 * p);
+
+      tl = I9RZone { level, row, col }.ri5x6Extent.tl;
 
       //static const double sqrt3_2 = 0.8660254037844;  // a = √3/2 × s  (0.5 / tan(30°))
       // double a = d, s = a / sqrt3_2;
 
       switch(subHex)
       {
-         case 0:  // Even level -- regular A
-            move5x6Vertex(vertices[numPoints++], tl,  2*d/3,    d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    d/3,  2*d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -  d/3,    d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -2*d/3, -  d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl, -  d/3, -2*d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    d/3, -  d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            break;
-         case 1:  // Even level -- "North" pole B
-            if(row == 0 && col == p-1)
+         // Even level
+         case 0:
+            if(rootRhombus == 10) // "North" pole
             {
-               move5x6Vertex(v, tl, d/3, -d/3);
-
-               // These are the pentagon's 5 vertices
-               vertices[numPoints++] = { v.x + 5, v.y + 5 };
-
-               if(!crs84)
+               if(rhombusIX == 0)
                {
-                  // Trapezoidal cap
-                  vertices[numPoints++] = { 5, v.y + 5 + 0.5 * d/3 };
-                  vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
-                  vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
-                  vertices[numPoints++] = { v.x + 1 - 0.5*d/3, 0 };
+                  move5x6Vertex(v, tl, d/3, -d/3);
 
-                  /*
-                  // Rectangular cap
-                  vertices[numPoints++] = { 5, 4 }; // "North" pole
-                  vertices[numPoints++] = { 0, -1 }; // Also "North" pole
-                  vertices[numPoints++] = { v.x, v.y }; // Extra vertex to fill polygon
-                  */
+                  // These are the pentagon's 5 vertices
+                  vertices[numPoints++] = { v.x + 5, v.y + 5 };
+
+                  if(!crs84)
+                  {
+                     // Trapezoidal cap
+                     vertices[numPoints++] = { 5, v.y + 5 + 0.5 * d/3 };
+                     vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
+                     vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
+                     vertices[numPoints++] = { v.x + 1 - 0.5*d/3, 0 };
+
+                     /*
+                     // Rectangular cap
+                     vertices[numPoints++] = { 5, 4 }; // "North" pole
+                     vertices[numPoints++] = { 0, -1 }; // Also "North" pole
+                     vertices[numPoints++] = { v.x, v.y }; // Extra vertex to fill polygon
+                     */
+                  }
+                  vertices[numPoints++] = { v.x + 1, v.y + 1 };
+                  vertices[numPoints++] = { v.x + 2, v.y + 2 };
+                  vertices[numPoints++] = { v.x + 3, v.y + 3 };
+                  vertices[numPoints++] = { v.x + 4, v.y + 4 };
                }
-               vertices[numPoints++] = { v.x + 1, v.y + 1 };
-               vertices[numPoints++] = { v.x + 2, v.y + 2 };
-               vertices[numPoints++] = { v.x + 3, v.y + 3 };
-               vertices[numPoints++] = { v.x + 4, v.y + 4 };
+               else
+                  result = false;
             }
-            else
-               result = false;
-            break;
-         case 2:  // Even level -- "South" pole C
-            if(col == 4*p && row == 6*p-1)
+            else if(rootRhombus == 11) // "South" pole
             {
-               move5x6Vertex(v, tl, -d/3, d/3);
-               vertices[numPoints++] = { v.x - 0, v.y - 0 };
-               vertices[numPoints++] = { v.x - 1, v.y - 1 };
-               vertices[numPoints++] = { v.x - 2, v.y - 2 };
-               vertices[numPoints++] = { v.x - 3, v.y - 3 };
-               if(!crs84)
+               if(rhombusIX == 0)
                {
-                  // Trapezoidal cap
-                  vertices[numPoints++] = { 0, v.y - 3 - 0.5 * d/3 };
-                  vertices[numPoints++] = { 0, 2 }; // "South" pole
-                  vertices[numPoints++] = { 4, 6 }; // Also "South" pole
-                  vertices[numPoints++] = { v.x + 1 + 0.5 *d/3, 6 };
+                  move5x6Vertex(v, tl, -d/3, d/3);
+                  vertices[numPoints++] = { v.x - 0, v.y - 0 };
+                  vertices[numPoints++] = { v.x - 1, v.y - 1 };
+                  vertices[numPoints++] = { v.x - 2, v.y - 2 };
+                  vertices[numPoints++] = { v.x - 3, v.y - 3 };
+                  if(!crs84)
+                  {
+                     // Trapezoidal cap
+                     vertices[numPoints++] = { 0, v.y - 3 - 0.5 * d/3 };
+                     vertices[numPoints++] = { 0, 2 }; // "South" pole
+                     vertices[numPoints++] = { 4, 6 }; // Also "South" pole
+                     vertices[numPoints++] = { v.x + 1 + 0.5 *d/3, 6 };
 
-                  // Rectangular cap Extra vertices to fill polygon in ISEA CRSs
-                  /*
+                     // Rectangular cap Extra vertices to fill polygon in ISEA CRSs
+                     /*
+                     vertices[numPoints++] = { v.x - 4, v.y - 4 };
+                     vertices[numPoints++] = { -1, 1 }; // "South" pole
+                     vertices[numPoints++] = { 4, 6 }; // Also "South" pole
+                     */
+                  }
+                  vertices[numPoints++] = { v.x + 1,  v.y + 1 };
+               }
+               else
+                  result = false;
+            }
+            else // Regular A
+            {
+               move5x6Vertex(vertices[numPoints++], tl,  2*d/3,    d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,    d/3,  2*d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -  d/3,    d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -2*d/3, -  d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -  d/3, -2*d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,    d/3, -  d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+            }
+            break;
+         case 1: // Odd level -- type B
+            if(rootRhombus == 10) // "North" pole
+            {
+               if(rhombusIX == 0)  // REVIEW: calculating tl for row == 0 && col == p-1
+               {
+                  move5x6Vertex(v, tl, 2*d/3, 0);
+                  // These are the pentagon's 5 vertices
+                  // vertices[numPoints++] = { v.x + 1 - d/3, v.y + 1 - d/3 }; -- For version before fix that crossed the interruption
+                  vertices[numPoints++] = { v.x + 0, v.y + 0 };
+                  vertices[numPoints++] = { v.x + 1, v.y + 1 };
+                  vertices[numPoints++] = { v.x + 2, v.y + 2 };
+                  vertices[numPoints++] = { v.x + 3, v.y + 3 };
+                  vertices[numPoints++] = { v.x + 4, v.y + 4 };
+                  if(!crs84)
+                  {
+                     // Extra vertices to fill polygon in ISEA CRSs
+                     vertices[numPoints++] = { 5, 4 + d/3 }; // This extends to right border of last triangle
+                     vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
+                     vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
+                  }
+               }
+               else
+                  result = false;
+            }
+            else if(rootRhombus == 11) // "South" pole
+            {
+               if(rhombusIX == 0) // REVIEW: calculating tl for col == 4*p && row == 6*p-1
+               {
+                  // Odd level -- "South" pole H
+                  move5x6Vertex(v, tl, d/3, d);
+                  // These are the pentagon's 5 vertices
+                  vertices[numPoints++] = { v.x - 0, v.y - 0 };
+                  vertices[numPoints++] = { v.x - 1, v.y - 1 };
+                  vertices[numPoints++] = { v.x - 2, v.y - 2 };
+                  vertices[numPoints++] = { v.x - 3, v.y - 3 };
                   vertices[numPoints++] = { v.x - 4, v.y - 4 };
-                  vertices[numPoints++] = { -1, 1 }; // "South" pole
-                  vertices[numPoints++] = { 4, 6 }; // Also "South" pole
-                  */
+                  if(!crs84)
+                  {
+                     // Extra vertices to fill polygon in ISEA CRSs
+                     vertices[numPoints++] = { 0, 2 - d/3 }; // This extends to the left wrapping point
+                     vertices[numPoints++] = { 0, 2 }; // This is the "south" pole
+                     vertices[numPoints++] = { 4, 6 }; // This is also the "south" pole
+                  }
                }
-               vertices[numPoints++] = { v.x + 1,  v.y + 1 };
+               else
+                  result = false;
             }
             else
-               result = false;
-            break;
-         case 3:  // Odd level -- type D
-            if(crs84)
             {
-               move5x6Vertex(vertices[numPoints++], tl, d/3,0);
+               if(crs84)
+               {
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,0);
+                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               }
+               else
+               {
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
+               }
+               move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
+               if(crs84)
+               {
+                  move5x6Vertex(vertices[numPoints++], tl, 0, d/3);
+                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               }
+               else
+               {
+                  move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
+                  move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
+               }
+               move5x6Vertex(vertices[numPoints++], tl,-d/3,    0);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,-d/3,-d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,    0,-d/3);
                if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
                   vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
             }
-            else
-            {
-               move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
-               move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
-            }
-            move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
-            if(crs84)
-            {
-               move5x6Vertex(vertices[numPoints++], tl, 0, d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            }
-            else
-            {
-               move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
-               move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
-            }
-            move5x6Vertex(vertices[numPoints++], tl,-d/3,    0);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,-d/3,-d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-            move5x6Vertex(vertices[numPoints++], tl,    0,-d/3);
-            if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-               vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
             break;
-         case 4:  // Odd level -- type E
+         case 2:  // Odd level -- type C
             move5x6Vertex(vertices[numPoints++], tl,  d/3,2E-11);
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,2E-11);
             move5x6Vertex(vertices[numPoints++], tl,    d,  d/3);
@@ -1729,57 +1796,13 @@ private:
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl,  d/3,  d/3);
             break;
-         case 5:  // Odd level -- type F
+         case 3:  // Odd level -- type D
             move5x6Vertex(vertices[numPoints++], tl,2E-11,   d/3);
             move5x6Vertex(vertices[numPoints++], tl, d/3,   d/3);
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,    d);
             move5x6Vertex(vertices[numPoints++], tl,  d/3,    d);
             move5x6Vertex(vertices[numPoints++], tl,2E-11,2*d/3);
-            break;
-         case 6:  // Odd level -- "North" pole G
-            if(row == 0 && col == p-1)
-            {
-               move5x6Vertex(v, tl, 2*d/3, 0);
-               // These are the pentagon's 5 vertices
-               // vertices[numPoints++] = { v.x + 1 - d/3, v.y + 1 - d/3 }; -- For version before fix that crossed the interruption
-               vertices[numPoints++] = { v.x + 0, v.y + 0 };
-               vertices[numPoints++] = { v.x + 1, v.y + 1 };
-               vertices[numPoints++] = { v.x + 2, v.y + 2 };
-               vertices[numPoints++] = { v.x + 3, v.y + 3 };
-               vertices[numPoints++] = { v.x + 4, v.y + 4 };
-               if(!crs84)
-               {
-                  // Extra vertices to fill polygon in ISEA CRSs
-                  vertices[numPoints++] = { 5, 4 + d/3 }; // This extends to right border of last triangle
-                  vertices[numPoints++] = { 5, 4 }; // This is the "north" pole
-                  vertices[numPoints++] = { 1, 0 }; // This is also the "north" pole
-               }
-            }
-            else
-               result = false;
-            break;
-         case 7:
-            if(col == 4*p && row == 6*p-1)
-            {
-               // Odd level -- "South" pole H
-               move5x6Vertex(v, tl, d/3, d);
-               // These are the pentagon's 5 vertices
-               vertices[numPoints++] = { v.x - 0, v.y - 0 };
-               vertices[numPoints++] = { v.x - 1, v.y - 1 };
-               vertices[numPoints++] = { v.x - 2, v.y - 2 };
-               vertices[numPoints++] = { v.x - 3, v.y - 3 };
-               vertices[numPoints++] = { v.x - 4, v.y - 4 };
-               if(!crs84)
-               {
-                  // Extra vertices to fill polygon in ISEA CRSs
-                  vertices[numPoints++] = { 0, 2 - d/3 }; // This extends to the left wrapping point
-                  vertices[numPoints++] = { 0, 2 }; // This is the "south" pole
-                  vertices[numPoints++] = { 4, 6 }; // This is also the "south" pole
-               }
-            }
-            else
-               result = false;
             break;
          default:
             result = false;
@@ -1800,28 +1823,19 @@ private:
             uint root = rootRhombus;
             uint64 rix = rhombusIX;
 
-            if(sh == 0) // Centroid child for Even level
-               centroidChild = { l9r, root, rix, 3 };
+            if(sh == 0) // Centroid child for Even level (including poles)
+               centroidChild = { l9r, root, rix, 1 };
+            else if(root > 9)
+               centroidChild = { l9r+1, root, 0, 0 }; // Odd level "North" and "South" Poles
             else
             {
                uint64 p = POW3(l9r);
-               switch(sh)
-               {
-                  case 1: centroidChild = { l9r, 0, p-1, 6 }; break; // Even level "North" Pole
-                  case 2: centroidChild = { l9r, 9, p*(p-1), 7 }; break; // Even level "South" Pole
-                  case 6: centroidChild = { l9r+1, 0, 3*p-1, 1 }; break; // Odd level "North" Pole
-                  case 7: centroidChild = { l9r+1, 9, 3*p*(3*p-1), 2 }; break; // Odd level "South" Pole
-                  default:
-                  {
-                     // Centroid child for Odd level
-                     int rowOP = (root + 1) >> 1, colOP = root >> 1, ixOP = (int)(rix / p);
-                     int row = (int)(rowOP * p + ixOP), col = (int)((colOP - ixOP) * p + rix); // distributivity on: ix - (ixOP * p) for (ix % p)
-                     int r = row * 3 + ((sh == 5) ? 2 : (sh == 4) ? 1 : 0);
-                     int c = col * 3 + ((sh == 4) ? 2 : (sh == 5) ? 1 : 0);
-                     centroidChild = I3HZone::fromI9R(l9r + 1, r, c, 'A');
-                     break;
-                  }
-               }
+               // Centroid child for Odd level
+               int rowOP = (root + 1) >> 1, colOP = root >> 1, ixOP = (int)(rix / p);
+               int row = (int)(rowOP * p + ixOP), col = (int)((colOP - ixOP) * p + rix); // distributivity on: ix - (ixOP * p) for (ix % p)
+               int r = row * 3 + ((sh == 3) ? 2 : (sh == 2) ? 1 : 0);
+               int c = col * 3 + ((sh == 2) ? 2 : (sh == 3) ? 1 : 0);
+               centroidChild = I3HZone::fromI9R(l9r + 1, r, c, 'A', 0);
             }
             return centroidChild;
          }
@@ -1832,31 +1846,31 @@ private:
    {
       uint l9r = levelI9R, sh = subHex;
       int i = 0;
+      uint root = this.rootRhombus;
 
       children[i++] = centroidChild;
 
-      if(sh == 1 || sh == 2 || sh == 6 || sh == 7)
+      if(root > 9)
       {
          // Special cases for the poles
          uint64 p = POW3(l9r);
-         switch(sh)
+         if(sh == 0) // Even level
          {
-            case 1: // Even level "North" Pole
+            if(root == 10) // "North" Pole
                for(; i < 6; i++)
-                  children[i] = { l9r, (i-1)*2, p-1, 4 };
-               break;
-            case 2: // Even level "South" Pole
+                  children[i] = { l9r, (i-1)*2, p-1, 2 };
+            else // "South" Pole
                for(; i < 6; i++)
-                  children[i] = { l9r, (i-1)*2 + 1, p*(p-1), 5 };
-               break;
-            case 6: // Odd level "North" Pole
+                  children[i] = { l9r, (i-1)*2 + 1, p*(p-1), 3 };
+         }
+         else // Odd level
+         {
+            if(root == 10) // "North" Pole
                for(; i < 6; i++)
                   children[i] = { l9r+1, (i-1)*2, 3*p-1, 0 };
-               break;
-            case 7: // Odd level "South" Pole
+            else // "South" Pole
                for(; i < 6; i++)
                   children[i] = { l9r+1, (i-1)*2+1, 3*p*(3*p-1), 0 };
-               break;
          }
       }
       else
@@ -1885,7 +1899,7 @@ private:
          {
             Array<Pointd> ap = null;
             //bool geodesic = false; //true;
-            bool refine = true; //zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: When and why do we need refinement here?
+            bool refine = true; //zone.subHex == 0;  // Only use refinement for ISEA for even levels -- REVIEW: When and why do we need refinement here?
             int i;
 
             if(refine)
@@ -1927,13 +1941,14 @@ private:
       get
       {
          int sh = subHex;
-         if(sh == 1 || sh == 6)
-            value = { 1, 0 }; // "North" pole (Even level B and Odd level G)
-         else if(sh == 2 || sh == 7)
-            value = { 4, 6 }; // "South" pole (Even level C and Odd level H)
+         uint root = this.rootRhombus;
+         if(root == 10)
+            value = { 1, 0 }; // "North" pole (Even level A and Odd level B)
+         else if(root == 11)
+            value = { 4, 6 }; // "South" pole (Even level A and Odd level B)
          else
          {
-            uint level = levelI9R, root = rootRhombus;
+            uint level = levelI9R;
             uint64 rix = rhombusIX;
             uint64 p = POW3(level);
             uint64 rowOP = (root + 1) >> 1, colOP = root >> 1;
@@ -1943,11 +1958,11 @@ private:
             double d =  1.0 / p;
             Pointd tl { col * d, row * d };
 
-            if(sh == 0 || sh == 3)
-               value = { tl.x, tl.y }; // Even level A or Odd level D hex
-            else if(sh == 4) // Odd level E hex
+            if(sh == 0 || sh == 1)
+               value = { tl.x, tl.y }; // Even level A or Odd level B hex
+            else if(sh == 2) // Odd level C hex
                value = { tl.x + 2*d/3, tl.y + d/3 };
-            else if(sh == 5) // Odd level F hex
+            else if(sh == 3) // Odd level D hex
                value = { tl.x + d/3, tl.y + 2*d/3 };
          }
       }
@@ -1957,12 +1972,13 @@ private:
    {
       get
       {
+         uint root = rootRhombus;
          int sh = subHex;
          if(this == nullZone)
             return false;
-         else if(sh > 2)  // Odd level
-            return sh == 3 || sh == 6 || sh == 7; // D, G and H are centroid children
-         else if(sh == 1 || sh == 2) // B and C are centroid children
+         else if(sh > 0)  // Odd level
+            return sh == 1; // B  are centroid children
+         else if(root == 10 || root == 11) // Polar A are centroid children
             return true;
          else
          {
@@ -2083,7 +2099,7 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
                         if(!zones.Find(cChild))
                         {
                            Pointd cv = cChild.centroid;
-                           int cl = 2*cChild.levelI9R + (cChild.subHex >= 3);
+                           int cl = 2*cChild.levelI9R + (cChild.subHex > 0);
                            I3HZone sub = I3HZone::fromCentroid(cl + 2, cv);
                            if(!output.Find(sub))
                               parentAllIn = false;
@@ -2164,8 +2180,8 @@ static void compactI3HZones(AVLTree<I3HZone> zones, int level)
          zones.Free();
          for(r = 0; r < 10; r++)
             zones.Add({ 0, r, 0, 0 });
-         zones.Add({ 0, 0, 0, 1 });
-         zones.Add({ 0, 9, 0, 2 });
+         zones.Add({ 0, 10, 0, 0 });
+         zones.Add({ 0, 11, 0, 0 });
       }
    }
 }
@@ -2217,7 +2233,7 @@ static Array<Pointd> getIcoNetRefinedVertices(I3HZone zone, int edgeRefinement) 
    if(numPoints)
    {
       Array<Pointd> ap = null;
-      bool refine = zone.subHex < 3;  // Only use refinement for ISEA for even levels -- REVIEW: Why and when do we want to refine?
+      bool refine = zone.subHex == 0;  // Only use refinement for ISEA for even levels -- REVIEW: Why and when do we want to refine?
       int i;
 
       if(refine)
