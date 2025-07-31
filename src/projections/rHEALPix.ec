@@ -77,10 +77,13 @@ public class HEALPixProjection
 
 public class rHEALPixProjection : HEALPixProjection
 {
-   public virtual bool forward(const GeoPoint p, Pointd v)
+   Degrees meridian; meridian = 50;
+
+   public virtual bool forward(const GeoPoint ip, Pointd v)
    {
       int sgn;
       double y;
+      GeoPoint p { ip.lat, wrapLon(ip.lon - meridian) };
 
       HEALPixProjection::forward(p, v);
 
@@ -120,11 +123,12 @@ public class rHEALPixProjection : HEALPixProjection
 
    public virtual bool inverse(const Pointd v, GeoPoint result, bool oddGrid)
    {
+      bool r = false;
       int sgn = v.y < 0 ? -1 : 1;
       double y = v.y * sgn;
       if(y <= Pi/4 + 1E-15)
          // Equatorial region
-         return HEALPixProjection::inverse(v, result, oddGrid);
+         r = HEALPixProjection::inverse(v, result, oddGrid);
       else if(v.x <= -Pi/2)
       {
          // Polar caps
@@ -139,8 +143,10 @@ public class rHEALPixProjection : HEALPixProjection
             case 2: vv = { -v.x - Pi/2, sgn * (Pi - y) }; break;
             case 3: vv = { 5*Pi/4 - y, sgn * (5*Pi/4 + v.x) }; break;
          }
-         return HEALPixProjection::inverse(vv, result, oddGrid);
+         r = HEALPixProjection::inverse(vv, result, oddGrid);
       }
-      return false;
+      if(r && fabs(fabs((Radians)result.lat) - Pi/2) > 1E-11)
+         result.lon = wrapLon(result.lon + meridian);
+      return r;
    }
 }

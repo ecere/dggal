@@ -10,6 +10,10 @@ static define POW_EPSILON = 0.1;
 
 define RHP_MAX_VERTICES = 200; // * 1024;
 
+extern uint64 powersOf3[34]; // in RI3H.ec
+
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
+
 class RHPZone : DGGRSZone
 {
 public:
@@ -327,16 +331,34 @@ public class rHEALPix : DGGRS
          // REVIEW: Dateline handling
          Pointd ll, ur;
          RHPZone tlZone, brZone;
+         Radians dLon = equatorial.ur.lon - equatorial.ll.lon;
+         if(dLon < 0) dLon += 2 * Pi;
 
          pj.forward(equatorial.ll, ll);
          pj.forward(equatorial.ur, ur);
 
-         tlZone = RHPZone::fromPoint({ ll.x + 1E-15, ur.y - 1E-15}, level);
+         if(fabs(ur.x - ll.x) < dLon / 2)
+            ll.x = -Pi, ur.x = Pi;
+
+         tlZone = RHPZone::fromPoint({ ll.x + 1E-15, ur.y - 1E-15 }, level);
          brZone = RHPZone::fromPoint({ ur.x - 1E-15, ll.y + 1E-15 }, level);
 
          for(r = tlZone.row; r <= brZone.row; r++)
-            for(c = tlZone.col; c <= brZone.col; c++)
-               zones.Add({ level, r, c });
+         {
+            if(brZone.col >= tlZone.col)
+            {
+               for(c = tlZone.col; c <= brZone.col; c++)
+                  zones.Add({ level, r, c });
+            }
+            else
+            {
+               for(c = 0; c <= tlZone.col; c++)
+                  zones.Add({ level, r, c });
+
+               for(c = brZone.col; c < 4 * POW3(level); c++)
+                  zones.Add({ level, r, c });
+            }
+         }
       }
 
       if(north.nonNull)
