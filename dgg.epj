@@ -46,7 +46,7 @@
                "ecrtStatic"
             ],
             "LibraryDirs" : [
-               "obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
+               "obj/static.$(PLATFORM)$(COMPILER_SUFFIX)"
             ],
             "Compress" : true,
             "FastMath" : true
@@ -57,10 +57,6 @@
                "Options" : {
                   "Libraries" : [
                      "m",
-                     "X11",
-                     "curses",
-                     "Xrender",
-                     "Xext",
                      "z",
                      "dl",
                      "pthread"

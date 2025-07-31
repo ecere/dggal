@@ -56,22 +56,7 @@
 
             ],
             "FastMath" : true
-         },
-         "Platforms" : [
-            {
-               "Name" : "linux",
-               "Options" : {
-                  "Libraries" : [
-                     "m",
-                     "X11",
-                     "curses",
-                     "Xrender",
-                     "Xext",
-                     "z"
-                  ]
-               }
-            }
-         ]
+         }
       }
    ],
    "Files" : [
