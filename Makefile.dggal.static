@@ -39,7 +39,7 @@ endif
 
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)default.cf
+include $(_CF_DIR)$(COMPILER).cf
 
 # POST-INCLUDES VARIABLES
 
@@ -67,6 +67,7 @@ _ECSOURCES = \
 	src/dggrs/rHEALPixGrid.ec \
 	src/dggrs/RI7H.ec \
 	src/dggrs/IVEA7H.ec \
+	src/dggrs/ISEA7H.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -206,6 +207,9 @@ $(OBJ)RI7H.sym: src/dggrs/RI7H.ec
 $(OBJ)IVEA7H.sym: src/dggrs/IVEA7H.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IVEA7H.ec) -o $(call quote_path,$@)
 
+$(OBJ)ISEA7H.sym: src/dggrs/ISEA7H.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA7H.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -289,6 +293,9 @@ $(OBJ)RI7H.c: src/dggrs/RI7H.ec $(OBJ)RI7H.sym | $(SYMBOLS)
 $(OBJ)IVEA7H.c: src/dggrs/IVEA7H.ec $(OBJ)IVEA7H.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IVEA7H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)ISEA7H.c: src/dggrs/ISEA7H.ec $(OBJ)ISEA7H.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA7H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -371,6 +378,9 @@ $(OBJ)RI7H$(O): $(OBJ)RI7H.c
 
 $(OBJ)IVEA7H$(O): $(OBJ)IVEA7H.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IVEA7H.c) -o $(call quote_path,$@)
+
+$(OBJ)ISEA7H$(O): $(OBJ)ISEA7H.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA7H.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)

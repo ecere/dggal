@@ -48,7 +48,7 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "IMPORT_STATIC=static",
-               "ECERE_STATIC"
+               "EC_STATIC"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "dggalStatic",
@@ -95,7 +95,8 @@
                   "RTEA9R.ec",
                   "rHEALPixGrid.ec",
                   "RI7H.ec",
-                  "IVEA7H.ec"
+                  "IVEA7H.ec",
+                  "ISEA7H.ec"
                ]
             },
             {
