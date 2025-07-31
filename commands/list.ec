@@ -1,5 +1,6 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
+import IMPORT_STATIC "GeoExtents"
 
 bool parseBBox(Map<String, const String> options, GeoExtent bbox)
 {

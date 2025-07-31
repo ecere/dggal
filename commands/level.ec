@@ -1,5 +1,6 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
+import IMPORT_STATIC "GeoExtents"
 
 int levelInfo(DGGRS dggrs, int level, Map<String, const String> options, bool asTable)
 {

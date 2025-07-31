@@ -1,5 +1,6 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
+import IMPORT_STATIC "GeoExtents"
 import "geom"
 
 int subZones(DGGRS dggrs, DGGRSZone zone, int64 index, Map<String, const String> options)

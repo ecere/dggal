@@ -1,5 +1,6 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
+import IMPORT_STATIC "GeoExtents"
 
 import "info"
 import "zone"

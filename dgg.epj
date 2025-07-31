@@ -43,7 +43,8 @@
             ],
             "Libraries" : [
                "dggalStatic",
-               "ecrtStatic"
+               "ecrtStatic",
+               "GeoExtentsStatic"
             ],
             "LibraryDirs" : [
                "obj/static.$(PLATFORM)$(COMPILER_SUFFIX)"

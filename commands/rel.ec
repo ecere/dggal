@@ -1,5 +1,6 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
+import IMPORT_STATIC "GeoExtents"
 
 int relationInfo(DGGRS dggrs, DGGRSZone a, DGGRSZone b, Map<String, const String> options)
 {
