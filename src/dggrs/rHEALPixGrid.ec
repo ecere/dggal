@@ -314,6 +314,27 @@ public class rHEALPix : DGGRS
       delete zonesTree;
    }
 
+   void addPolarZones(AVLTree<RHPZone> zonesTree, RHPZone pZone, int level, const GeoExtent bbox)
+   {
+      GeoExtent e;
+      getZoneWGS84Extent(pZone, e);
+
+      if(e.intersects(bbox))
+      {
+         int zLevel = pZone.level;
+         if(level == zLevel)
+            zonesTree.Add(pZone);
+         else
+         {
+            int sr = pZone.row * 3, sc = pZone.col * 3, r, c;
+
+            for(r = sr; r < sr + 3; r++)
+               for(c = sc; c < sc + 3; c++)
+                  addPolarZones(zonesTree, { zLevel + 1, r, c }, level, bbox);
+         }
+      }
+   }
+
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
       AVLTree<RHPZone> zonesTree { };
@@ -348,51 +369,23 @@ public class rHEALPix : DGGRS
             if(brZone.col >= tlZone.col)
             {
                for(c = tlZone.col; c <= brZone.col; c++)
-                  zones.Add({ level, r, c });
+                  zonesTree.Add({ level, r, c });
             }
             else
             {
                for(c = 0; c <= tlZone.col; c++)
-                  zones.Add({ level, r, c });
+                  zonesTree.Add({ level, r, c });
 
                for(c = brZone.col; c < 4 * POW3(level); c++)
-                  zones.Add({ level, r, c });
+                  zonesTree.Add({ level, r, c });
             }
          }
       }
 
       if(north.nonNull)
-      {
-         int p = (int)(pow(3, level) + POW_EPSILON);
-
-         for(r = 0; r < p; r++)
-            for(c = 0; c < p; c++)
-            {
-               RHPZone zone { level, r, c };
-               GeoExtent e;
-
-               getZoneWGS84Extent(zone, e);
-
-               if(e.intersects(north))
-                  zones.Add(zone);
-            }
-      }
+         addPolarZones(zonesTree, { 0, 0, 0 }, level, north);
       if(south.nonNull)
-      {
-         int p = (int)(pow(3, level) + POW_EPSILON);
-
-         for(r = 0; r < p; r++)
-            for(c = 0; c < p; c++)
-            {
-               RHPZone zone { level, 2*p+r, c };
-               GeoExtent e;
-
-               getZoneWGS84Extent(zone, e);
-
-               if(e.intersects(south))
-                  zones.Add(zone);
-            }
-      }
+         addPolarZones(zonesTree, { 0, 2, 0 }, level, south);
 
       zones.minAllocSize = zonesTree.count;
       for(t : zonesTree)
