@@ -64,7 +64,14 @@ public class HEALPixProjection
             double s = 2 * width / (sqrt(3) * Pi);
             Radians dLon = (v.x - (- Pi + Pi/2 * n + (Pi/2 - width) / 2)) * Pi/2 / width;
             if(dLon < 0 || dLon > Pi/2 + 1E-15)
-               r = false;
+            {
+               if(dLon < 0 && dLon > -1E-11)
+                  dLon = 0;
+               else if(dLon > 0 && dLon < Pi/2 + 1E-11)
+                  dLon = Pi/2;
+               else
+                  r = false;
+            }
             result.lat = Sgn(v.y) * latAuthalicToGeodetic(asin(1 - s*s));
             result.lon = dLon + (-Pi + Pi/2 * n);
          }
