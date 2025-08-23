@@ -1245,7 +1245,7 @@ void move5x6Vertex(Pointd v, const Pointd c, double dx, double dy)
 }
 
 // NOTE: This does not have safe optimizations disabled, which might potentially
-//       expalin issues using it after cross5x6Interruption()
+//       explain issues using it after cross5x6Interruption()
 void move5x6Vertex3(Pointd v, const Pointd c, double dx, double dy)
 {
    bool north;

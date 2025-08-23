@@ -1155,12 +1155,41 @@ private:
       parents[0] = parent0;
       if(parent0 == nullZone)
          return 0;
-      else if(parent0.centroidChild == this)
-         return 1;
       else
       {
-         // TODO: Second parent
-         return 1;
+         I7HZone cChild = parent0.centroidChild;
+         if(cChild == this)
+            return 1;
+         else
+         {
+            Pointd cc = cChild.centroid;
+            int i;
+            Pointd vertices[6];
+            int n = getVertices(vertices);
+            int pLevel = parent0.level;
+
+            for(i = 0; i < n; i++)
+            {
+               double dx = vertices[i].x - cc.x;
+               double dy = vertices[i].y - cc.y;
+               I7HZone z;
+               Pointd v {
+                  x = cc.x + .99 * dx,
+                  y = cc.y + .99 * dy
+               };
+
+               z = fromCentroid(pLevel, v);
+               if(z != nullZone && z != parent0)
+               {
+                  parents[1] = z;
+                  return 2;
+               }
+            }
+#ifdef _DEBUG
+            PrintLn("ERROR: Failed to determine second parent");
+#endif
+            return 1;
+         }
       }
    }
 
