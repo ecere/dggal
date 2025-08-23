@@ -94,7 +94,7 @@ public class RhombicIcosahedral7H : DGGRS
 #ifdef USE_GEOGRAPHIC_LIB
          area = computeGeodesisZoneArea(zone);
 #else
-         // FIXME: Is there a simple way to directly compute the area for other RI3H ?
+         // FIXME: Is there a simple way to directly compute the area for other RI7H ?
          area = 0;
 #endif
       }
@@ -128,11 +128,15 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getZoneNeighbors(I7HZone zone, I7HZone * neighbors, I7HNeighbor * nbType)
    {
+      // TODO:
       return zone.getNeighbors(neighbors, nbType);
    }
 
    I7HZone getZoneCentroidParent(I7HZone zone)
    {
+      // TODO: (low importance)
+      // NOTE: In 7H, some parents are centroid children themselves, but not all zones have a
+      //       centroid parent
       return nullZone; // REVIEW: zone.centroidParent;
    }
 
@@ -143,6 +147,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getZoneParents(I7HZone zone, I7HZone * parents)
    {
+      // TODO:
       return zone.getParents(parents);
    }
 
@@ -165,6 +170,7 @@ public class RhombicIcosahedral7H : DGGRS
    // Sub-zone Order
    I7HZone getFirstSubZone(I7HZone zone, int depth)
    {
+      // TODO:
       return zone.getFirstSubZone(depth);
    }
 
@@ -239,6 +245,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    I7HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
+      // TODO:
       if(level <= 21)
       {
          Pointd v;
@@ -827,6 +834,26 @@ private:
       return result;
    }
 
+   bool containsPoint(const Pointd v)
+   {
+      bool result = true;
+      Pointd v5x6[6];
+      int n = getVertices(v5x6), i;
+
+      for(i = 0; i < n; i++)
+      {
+         int j = i < n-1 ? i + 1 : 0;
+         double sa = pointLineSide(v.x, v.y, v5x6[i], v5x6[j]);
+
+         if(sa < 0)
+         {
+            result = false;
+            break;
+         }
+      }
+      return result;
+   }
+
    // This function generates the proposed I7H DGGRS Zone ID string
    // in the form {LevelChar}{RootPentagon}-{HierarchicalIndexFromPentagon}
    void getZoneID(String zoneID)
@@ -848,10 +875,19 @@ private:
 
    property I7HZone parent0
    {
+      // ivea7h info C2-8-A
+      // ivea7h zone 28.6888849753227,-69.0934671650866 1
       get
       {
-         // TODO:
          I7HZone key = nullZone;
+         int l9r = levelI49R;
+         if(l9r || subHex)
+         {
+            if(subHex)
+               key = { l9r, rhombusIX, 0 };
+            else
+               key = I7HZone::fromCentroid((l9r * 2) - 1, centroid);
+         }
          return key;
       }
    }
@@ -1096,25 +1132,75 @@ private:
       I7HZone parent0 = this.parent0;
 
       parents[0] = parent0;
-      if(isCentroidChild)
-         return parent0 == nullZone ? 0 : 1;
+      if(parent0 == nullZone)
+         return 0;
+      else if(parent0.centroidChild == this)
+         return 1;
       else
       {
-
-         // TODO:
-         return 0;
+         // TODO: Second parent
+         return 1;
       }
+   }
+
+   double ::pointLineSide(double x, double y, Pointd a, Pointd b)
+   {
+      double dx = b.x - a.x, dy = b.y - a.y;
+      double A = dy, B = -dx, C = a.y * dx - dy * a.x;
+      return A * x + B * y + C;
+   }
+
+   I7HZone ::calcCandidateParent(int l9r, int root, int64 row, int64 col, int addCol, int addRow)
+   {
+      uint64 p = POW7(l9r);
+      bool south = (root & 1);
+      uint64 cix;
+
+      col += addCol;
+      row += addRow;
+
+      // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
+      if(col == (int64)p && row < (int64)p && !south) // Cross at top-dent to the right
+      {
+         col = p-row;
+         row = 0;
+         root += 2;
+      }
+      else if(row == (int64)p && col < (int64)p && south) // Cross at bottom-dent to the right
+      {
+         row = p-col;
+         col = 0;
+         root += 2;
+      }
+      else
+      {
+         if(row < 0 && col < 0)
+            row += p, col += p, root -= 2;
+         else if(row < 0)
+            row += p, root -= 1;
+         else if(col < 0)
+            col += p, root -= 1;
+         else if(col >= (int64)p && row >= (int64)p)
+            row -= p, col -= p, root += 2;
+         else if(row >= (int64)p)
+            row -= p, root += 1;
+         else if(col >= (int64)p)
+            col -= p, root += 1;
+      }
+      if(root < 0) root += 10;
+      else if(root > 9) root -= 10;
+      cix = 2 + root * (p * p) + row * p + col;
+
+      // REVIEW: Polar zones considerations?
+      return I7HZone { l9r, cix, 0 };
    }
 
    I7HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
    {
-      // TODO: This is not yet implemented
-      return nullZone;
-
-      /*
+      int l9r = level / 2;
       Pointd c = centroid;
-      uint64 p = POW7(level);
-      double d =  1.0 / p;
+      uint64 p = POW7(l9r);
+      double oop =  1.0 / p;
 
       // bool isNorthPole = false, isSouthPole = false;
       if(fabs(c.x - c.y - 1) < 1E-10)
@@ -1123,7 +1209,6 @@ private:
          ;//isSouthPole = true;
       else if(c.y < -1E-11 && c.x > -1E-11)
          c.x -= c.y, c.y = 0;
-
       else if((int)floor(c.x + 1E-11) > (int)floor(c.y + 1E-11))
       {
          // Over top dent to the right
@@ -1140,16 +1225,143 @@ private:
          move5x6Vertex(c, { 5, 5 }, c.x, c.y);
 
       if(c.x > 5 - 1E-11 && c.y > 5 - 1E-11 &&  // This handles bottom right wrap e.g., A9-0E and A9-0-F
-         c.x + c.y > 5.0 + 5.0 - d - 1E-11)
+         c.x + c.y > 5.0 + 5.0 - oop - 1E-11)
          c.x -= 5, c.y -= 5;
-      {
-         // int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
-         uint rootPentagon = 0;
-         uint64 div = 0;
 
-         return { rootPentagon, div };
+      // Vancouver:     49.2827,-123.1207 2  -- C0-17-A
+      // Abbotsford:    49.0581,-122.2798 2  -- C0-1F-A
+      // Ottawa:        45.4963,-75.7016 2   -- C0-29-A
+      // Auckland:      -36.8543,174.7392 2  -- C9-1C-A
+      // Whakatāne:     -37.9583,176.98428 2 -- C9-23-A
+
+      {
+         int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
+         uint root = cx + cy;
+         double x = c.x - cx, y = c.y - cy;
+         int64 col = Max(0, (int64)(x * p + 0.5));
+         int64 row = Max(0, (int64)(y * p + 0.5));
+         double dx = x * p + 0.5 - col;
+         double dy = y * p + 0.5 - row;
+         uint64 cix;
+         bool south = (root & 1);
+
+         if(level & 1)
+         {
+            // Odd level -- currently using a rather brute-force approach
+            I7HZone zone = nullZone, candidateParents[7];
+            int i;
+
+            candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
+            // Top (2 potential children including 1 secondary child of prime candidate)
+            candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
+            // Bottom (2 potential children including 1 secondary child of prime candidate)
+            candidateParents[2] = calcCandidateParent(l9r, root, row, col, 0, 1);
+            // Right (2 potential children including 1 secondary child of prime candidate)
+            candidateParents[3] = calcCandidateParent(l9r, root, row, col, 1, 0);
+            // Left (2 potential children including 1 secondary child of prime candidate)
+            candidateParents[4] = calcCandidateParent(l9r, root, row, col, -1, 0);
+            // Top-Left (1 potential child including 1 secondary child of prime candidate)
+            candidateParents[5] = calcCandidateParent(l9r, root, row, col, -1, -1);
+            // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
+            candidateParents[6] = calcCandidateParent(l9r, root, row, col, 1, 1);
+
+            // int numMatches = 0;
+            for(i = 0; i < 7; i++)
+            {
+               I7HZone children[7];
+               int n = candidateParents[i].getPrimaryChildren(children), j;
+
+               for(j = 0; j < n; j++)
+               {
+                  // TODO: Optimize this to do a bounding box check first
+                  // char zID[128];
+                  // children[j].getZoneID(zID);
+                  if(children[j].containsPoint(c))
+                  {
+                     zone = children[j];
+                     // numMatches ++;
+                     break;
+                  }
+               }
+               if(zone != nullZone)
+                  break;
+            }
+            // PrintLn("matches: ", numMatches);
+            return zone;
+         }
+         else
+         {
+            // Even level
+            if(dx > 1 - dy)
+            {
+               // Bottom-Right diagonal
+               if(dx > dy)
+               {
+                  // Top-Right diagonal (right triangle)
+                  if(pointLineSide(dx, dy, { 1.0, 0.5 }, { 5/6.0, 1/6.0 }) < 0)
+                     col++;
+               }
+               else
+               {
+                  // Bottom-Left diagonal (bottom triangle)
+                  if(pointLineSide(dx, dy, { 1/6.0, 5/6.0 }, { 0.5, 1.0 }) < 0)
+                     row++;
+               }
+            }
+            else
+            {
+               // Top-Left diagonal
+               if(dx > dy)
+               {
+                  // Top-Right diagonal (top triangle)
+                  if(pointLineSide(dx, dy, { 5/6.0, 1/6.0 }, { 0.5, 0.0 }) < 0)
+                     row--;
+               }
+               else
+               {
+                  // Bottom-Left diagonal (left triangle)
+                  if(pointLineSide(dx, dy, { 0.0, 0.5 }, { 1/6.0, 5/6.0 }) < 0)
+                     col--;
+               }
+            }
+
+            // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
+            if(col == (int64)p && row < (int64)p && !south) // Cross at top-dent to the right
+            {
+               col = p-row;
+               row = 0;
+               root += 2;
+            }
+            else if(row == (int64)p && col < (int64)p && south) // Cross at bottom-dent to the right
+            {
+               row = p-col;
+               col = 0;
+               root += 2;
+            }
+            else
+            {
+               if(row < 0 && col < 0)
+                  row += p, col += p, root -= 2;
+               else if(row < 0)
+                  row += p, root -= 1;
+               else if(col < 0)
+                  col += p, root -= 1;
+               else if(col >= (int64)p && row >= (int64)p)
+                  row -= p, col -= p, root += 2;
+               else if(row >= (int64)p)
+                  row -= p, root += 1;
+               else if(col >= (int64)p)
+                  col -= p, root += 1;
+            }
+            if(root < 0) root += 10;
+            else if(root > 9) root -= 10;
+            cix = 2 + root * (p * p) + row * p + col;
+
+            // TODO: Polar zones
+
+            return I7HZone { l9r, cix, 0 };
+         }
       }
-      */
    }
 
    int getVertices(Pointd * vertices)
@@ -1385,9 +1597,9 @@ private:
       prev = (start + 5) % 6;
       dir = { point.x - (c.x + v[prev].x), point.y - (c.y + v[prev].y) };
 
-      vertices[count++] = point;
+      //vertices[count++] = point;
 
-      for(i = start + 1; i < start + nPoints; i++)
+      for(i = start + 0; i < start + nPoints; i++)
       {
          bool north;
          Pointd i1, i2, n, p = point;
@@ -1456,7 +1668,7 @@ private:
       point = { c.x + v[start].x, c.y + v[start].y };
       prev = (start + 5) % 6;
       dir = { point.x - (c.x + v[prev].x), point.y - (c.y + v[prev].y) };
-
+      // REVIEW: Is the first point is added twice?
       for(i = start + 1; i <= start + nPoints; i++)
       {
          bool north;
@@ -1986,7 +2198,14 @@ private:
    {
       get
       {
-         return subHex < 2; // '-A' and '-B' are centroid children
+         if(subHex == 1)  // All '-B' are centroid children
+            return true;
+         else if(subHex == 1)
+         {
+            // TODO: Some '-A' are centroid children
+            return false;
+         }
+         return false;
       }
    }
 
