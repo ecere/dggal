@@ -2050,8 +2050,25 @@ private:
 
    int getChildren(I7HZone children[13])
    {
-      // TODO: Add 6 extra children
-      return getPrimaryChildren(children);
+      int n = getPrimaryChildren(children);
+      if(n)
+      {
+         Pointd c = children[0].centroid;
+         Pointd cVerts[6];
+         int nv = children[0].getVertices(cVerts);
+         int i;
+         int cLevel = children[0].level;
+
+         for(i = 0; i < nv; i++)
+         {
+            double dx = cVerts[i].x - c.x;
+            double dy = cVerts[i].y - c.y;
+            Pointd v;
+            move5x6Vertex(v, c, dx * 3, dy * 3);
+            children[n++] = fromCentroid(cLevel, v);
+         }
+      }
+      return n;
    }
 
    int getPrimaryChildren(I7HZone children[7])
