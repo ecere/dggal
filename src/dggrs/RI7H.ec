@@ -843,7 +843,28 @@ private:
       for(i = 0; i < n; i++)
       {
          int j = i < n-1 ? i + 1 : 0;
-         double sa = pointLineSide(v.x, v.y, v5x6[i], v5x6[j]);
+         Pointd a = v5x6[i], b = v5x6[j];
+         double sa;
+
+         if(fabs(a.x - b.x) > 3 || fabs(a.y - b.y) > 3)
+         {
+            if(fabs(a.x - v.x) < 3 && fabs(a.y - v.y) < 3)
+            {
+               if(b.x > a.x)
+                  b.x -= 5, b.y -= 5;
+               else
+                  b.x += 5, b.y += 5;
+            }
+            else
+            {
+               if(a.x > b.x)
+                  a.x -= 5, a.y -= 5;
+               else
+                  a.x += 5, a.y += 5;
+            }
+         }
+
+         sa = pointLineSide(v.x, v.y, a, b);
 
          if(sa < 0)
          {
@@ -1189,7 +1210,13 @@ private:
       }
       if(root < 0) root += 10;
       else if(root > 9) root -= 10;
-      cix = 2 + root * (p * p) + row * p + col;
+
+      if(!south && row == 0 && col == p)
+         cix = 0;
+      else if(south && row == p && col == 0)
+         cix = 1;
+      else
+         cix = 2 + root * (p * p) + row * p + col;
 
       // REVIEW: Polar zones considerations?
       return I7HZone { l9r, cix, 0 };
@@ -1243,50 +1270,68 @@ private:
          double dx = x * p + 0.5 - col;
          double dy = y * p + 0.5 - row;
          uint64 cix;
-         bool south = (root & 1);
+         // bool south = (root & 1);
+         bool south = c.y - c.x - 1E-11 > 1; // Not counting pentagons as south or north
+         bool north = c.x - c.y - 1E-11 > 0;
+         bool northPole = north && fabs(c.x - c.y - 1.0) < 1E-11;
+         bool southPole = south && fabs(c.y - c.x - 2.0) < 1E-11;
 
          if(level & 1)
          {
             // Odd level -- currently using a rather brute-force approach
-            I7HZone zone = nullZone, candidateParents[7];
-            int i;
-
-            candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
-            // Top (2 potential children including 1 secondary child of prime candidate)
-            candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
-            // Bottom (2 potential children including 1 secondary child of prime candidate)
-            candidateParents[2] = calcCandidateParent(l9r, root, row, col, 0, 1);
-            // Right (2 potential children including 1 secondary child of prime candidate)
-            candidateParents[3] = calcCandidateParent(l9r, root, row, col, 1, 0);
-            // Left (2 potential children including 1 secondary child of prime candidate)
-            candidateParents[4] = calcCandidateParent(l9r, root, row, col, -1, 0);
-            // Top-Left (1 potential child including 1 secondary child of prime candidate)
-            candidateParents[5] = calcCandidateParent(l9r, root, row, col, -1, -1);
-            // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
-            candidateParents[6] = calcCandidateParent(l9r, root, row, col, 1, 1);
-
-            // int numMatches = 0;
-            for(i = 0; i < 7; i++)
+            I7HZone zone = nullZone;
+            if(northPole)
+               zone = { l9r, 0, 1 };
+            else if(southPole)
+               zone = { l9r, 1, 1 };
+            else
             {
-               I7HZone children[7];
-               int n = candidateParents[i].getPrimaryChildren(children), j;
+               I7HZone candidateParents[7];
+               int i;
 
-               for(j = 0; j < n; j++)
+               if(north && row == 0 && col == p)
+                  candidateParents[0] = { l9r, 0, 0 };
+               else if(south && row == p && col == 0)
+                  candidateParents[0] = { l9r, 1, 0 };
+               else
+                  candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
+
+               // Top (2 potential children including 1 secondary child of prime candidate)
+               candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
+               // Bottom (2 potential children including 1 secondary child of prime candidate)
+               candidateParents[2] = calcCandidateParent(l9r, root, row, col, 0, 1);
+               // Right (2 potential children including 1 secondary child of prime candidate)
+               candidateParents[3] = calcCandidateParent(l9r, root, row, col, 1, 0);
+               // Left (2 potential children including 1 secondary child of prime candidate)
+               candidateParents[4] = calcCandidateParent(l9r, root, row, col, -1, 0);
+               // Top-Left (1 potential child including 1 secondary child of prime candidate)
+               candidateParents[5] = calcCandidateParent(l9r, root, row, col, -1, -1);
+               // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
+               candidateParents[6] = calcCandidateParent(l9r, root, row, col, 1, 1);
+
+               // int numMatches = 0;
+               for(i = 0; i < 7; i++)
                {
-                  // TODO: Optimize this to do a bounding box check first
-                  // char zID[128];
-                  // children[j].getZoneID(zID);
-                  if(children[j].containsPoint(c))
+                  I7HZone children[7];
+                  int n = candidateParents[i].getPrimaryChildren(children), j;
+
+                  for(j = 0; j < n; j++)
                   {
-                     zone = children[j];
-                     // numMatches ++;
-                     break;
+                     // TODO: Optimize this to do a bounding box check first
+                     // char zID[128];
+                     // children[j].getZoneID(zID);
+                     if(children[j].containsPoint(c))
+                     {
+                        zone = children[j];
+                        // numMatches ++;
+                        break;
+                     }
                   }
+                  if(zone != nullZone)
+                     break;
                }
-               if(zone != nullZone)
-                  break;
+               // PrintLn("matches: ", numMatches);
             }
-            // PrintLn("matches: ", numMatches);
             return zone;
          }
          else
@@ -1325,40 +1370,44 @@ private:
                }
             }
 
-            // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
-            if(col == (int64)p && row < (int64)p && !south) // Cross at top-dent to the right
-            {
-               col = p-row;
-               row = 0;
-               root += 2;
-            }
-            else if(row == (int64)p && col < (int64)p && south) // Cross at bottom-dent to the right
-            {
-               row = p-col;
-               col = 0;
-               root += 2;
-            }
+            if(north && col == p && row == 0)
+               cix = 0;
+            else if(south && col == 0 && row == p)
+               cix = 1;
             else
             {
-               if(row < 0 && col < 0)
-                  row += p, col += p, root -= 2;
-               else if(row < 0)
-                  row += p, root -= 1;
-               else if(col < 0)
-                  col += p, root -= 1;
-               else if(col >= (int64)p && row >= (int64)p)
-                  row -= p, col -= p, root += 2;
-               else if(row >= (int64)p)
-                  row -= p, root += 1;
-               else if(col >= (int64)p)
-                  col -= p, root += 1;
+               // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
+               if(col == (int64)p && row < (int64)p && !south) // Cross at top-dent to the right
+               {
+                  col = p-row;
+                  row = 0;
+                  root += 2;
+               }
+               else if(row == (int64)p && col < (int64)p && south) // Cross at bottom-dent to the right
+               {
+                  row = p-col;
+                  col = 0;
+                  root += 2;
+               }
+               else
+               {
+                  if(row < 0 && col < 0)
+                     row += p, col += p, root -= 2;
+                  else if(row < 0)
+                     row += p, root -= 1;
+                  else if(col < 0)
+                     col += p, root -= 1;
+                  else if(col >= (int64)p && row >= (int64)p)
+                     row -= p, col -= p, root += 2;
+                  else if(row >= (int64)p)
+                     row -= p, root += 1;
+                  else if(col >= (int64)p)
+                     col -= p, root += 1;
+               }
+               if(root < 0) root += 10;
+               else if(root > 9) root -= 10;
+               cix = 2 + root * (p * p) + row * p + col;
             }
-            if(root < 0) root += 10;
-            else if(root > 9) root -= 10;
-            cix = 2 + root * (p * p) + row * p + col;
-
-            // TODO: Polar zones
-
             return I7HZone { l9r, cix, 0 };
          }
       }
@@ -2200,10 +2249,11 @@ private:
       {
          if(subHex == 1)  // All '-B' are centroid children
             return true;
-         else if(subHex == 1)
+         else if(subHex == 0)
          {
-            // TODO: Some '-A' are centroid children
-            return false;
+            // Some '-A' are centroid children
+            I7HZone parent0 = this.parent0;
+            return parent0 != nullZone && this == parent0.centroidChild;
          }
          return false;
       }
