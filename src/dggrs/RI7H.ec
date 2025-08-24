@@ -755,6 +755,7 @@ public class RhombicIcosahedral7H : DGGRS
 
 enum I7HNeighbor
 {
+   /*
    // The names reflect the planar ISEA projection arrangement
    top,        // Odd level only, except when replacing topLeft/topRight in interruptions for even level
    bottom,     // Odd level only, except when replacing bottomLeft/bottomRight in interruptions for even level
@@ -763,7 +764,13 @@ enum I7HNeighbor
    topLeft,
    topRight,
    bottomLeft,
-   bottomRight
+   bottomRight*/
+   first,
+   second,
+   third,
+   fourth,
+   fifth,
+   sixth
 };
 
 // Public for use in tests...
@@ -913,10 +920,9 @@ private:
       }
    }
 
+#if 0
    I7HZone getNeighbor(I7HNeighbor which)
    {
-      // TODO:
-#if 0
       Pointd centroid = this.centroid;
       int cx = (int)floor(centroid.x + 1E-11);
       int cy = (int)floor(centroid.y + 1E-11);
@@ -1063,13 +1069,38 @@ private:
          return result;
       }
       else
-#endif
          return nullZone;
    }
+#endif
 
    int getNeighbors(I7HZone neighbors[6], I7HNeighbor i7hNB[6])
    {
+      I7HZone children[7];
       int numNeighbors = 0;
+      int nc = getPrimaryChildren(children);
+
+      if(nc)
+      {
+         Pointd c = children[0].centroid;
+         Pointd cVerts[6];
+         int nv = children[0].getVertices(cVerts);
+         int i;
+         int nLevel = this.level;
+
+         for(i = 0; i < nv; i++)
+         {
+            double dx = cVerts[i].x - c.x;
+            double dy = cVerts[i].y - c.y;
+            Pointd v;
+            move5x6Vertex(v, c, dx * 3, dy * 3);
+            canonicalize5x6(v, v);
+            i7hNB[numNeighbors] = (I7HNeighbor)i;
+            neighbors[numNeighbors++] = fromCentroid(nLevel, v);
+         }
+      }
+      return numNeighbors;
+
+      /*
       I7HNeighbor n;
       I7HNeighbor localNB[6];
 
@@ -1105,6 +1136,7 @@ private:
          }
       }
       return numNeighbors;
+      */
    }
 
    int getContainingGrandParents(I7HZone cgParents[2])
@@ -2065,6 +2097,7 @@ private:
             double dy = cVerts[i].y - c.y;
             Pointd v;
             move5x6Vertex(v, c, dx * 3, dy * 3);
+            canonicalize5x6(v, v);
             children[n++] = fromCentroid(cLevel, v);
          }
       }

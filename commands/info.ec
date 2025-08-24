@@ -20,7 +20,7 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
    char zoneID[256];
    double area = dggrs.getZoneArea(zone);
    int depth = dggrs.get64KDepth();
-   DGGRSZone parents[3], neighbors[6], children[9];
+   DGGRSZone parents[3], neighbors[6], children[13];
    int nParents = dggrs.getZoneParents(zone, parents);
    int nbTypes[6];
    int nNeighbors = dggrs.getZoneNeighbors(zone, neighbors, nbTypes);
