@@ -1202,12 +1202,23 @@ private:
 
             for(i = 0; i < n; i++)
             {
-               double dx = vertices[i].x - cc.x;
-               double dy = vertices[i].y - cc.y;
+               Pointd acc = cc;
+               double dx = vertices[i].x - acc.x;
+               double dy = vertices[i].y - acc.y;
                I7HZone z;
-               Pointd v {
-                  x = cc.x + .99 * dx,
-                  y = cc.y + .99 * dy
+               Pointd v;
+
+               if(dx > 3 || dy > 3)
+               {
+                  acc.x += 5;
+                  acc.y += 5;
+                  dx = vertices[i].x - acc.x;
+                  dy = vertices[i].y - acc.y;
+               }
+
+               v = {
+                  x = acc.x + .99 * dx,
+                  y = acc.y + .99 * dy
                };
 
                z = fromCentroid(pLevel, v);
@@ -1218,7 +1229,11 @@ private:
                }
             }
 #ifdef _DEBUG
-            PrintLn("ERROR: Failed to determine second parent");
+            {
+               char zID[128];
+               getZoneID(zID);
+               PrintLn("ERROR: Failed to determine second parent for ", zID);
+            }
 #endif
             return 1;
          }
@@ -1331,7 +1346,8 @@ private:
          double dx = x * p + 0.5 - col;
          double dy = y * p + 0.5 - row;
          uint64 cix;
-         // bool south = (root & 1);
+         bool southRhombus = (root & 1);
+         // Review where this should be used...
          bool south = c.y - c.x - 1E-11 > 1; // Not counting pentagons as south or north
          bool north = c.x - c.y - 1E-11 > 0;
          bool northPole = north && fabs(c.x - c.y - 1.0) < 1E-11;
@@ -1355,7 +1371,11 @@ private:
                else if(south && row == p && col == 0)
                   candidateParents[0] = { l9r, 1, 0 };
                else
-                  candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
+               {
+                  // candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
+
+                  candidateParents[0] = calcCandidateParent(l9r, root, row, col, 0, 0);
+               }
 
                // Top (2 potential children including 1 secondary child of prime candidate)
                candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
@@ -1438,13 +1458,13 @@ private:
             else
             {
                // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
-               if(col == (int64)p && row < (int64)p && !south) // Cross at top-dent to the right
+               if(col == (int64)p && row < (int64)p && !southRhombus) // Cross at top-dent to the right
                {
                   col = p-row;
                   row = 0;
                   root += 2;
                }
-               else if(row == (int64)p && col < (int64)p && south) // Cross at bottom-dent to the right
+               else if(row == (int64)p && col < (int64)p && southRhombus) // Cross at bottom-dent to the right
                {
                   row = p-col;
                   col = 0;

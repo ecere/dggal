@@ -435,7 +435,7 @@ public class DGGSUnitTest : eTest
             for(z : allZones)
             {
                DGGRSZone zone = z;
-               DGGRSZone children[9];
+               DGGRSZone children[13];
                int n = dggrs.getZoneChildren(zone, children), i, j;
 
                for(i = 0; i < n; i++)
@@ -489,7 +489,7 @@ public class DGGSUnitTest : eTest
 
                for(i = 0; i < n; i++)
                {
-                  DGGRSZone children[9];
+                  DGGRSZone children[13];
                   int np = dggrs.getZoneChildren(parents[i], children);
 
                   for(j = 0; j < np; j++)
@@ -531,5 +531,6 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA9R), 2, 4);
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
+      testSubZones(class(ISEA7H), 1, 0);
    }
 }
