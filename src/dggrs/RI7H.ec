@@ -831,7 +831,7 @@ private:
       uint root;
 
       if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
-         &levelChar, &root, &ix, &subHex) == 4 && root < 12 && levelChar >= 'A' && levelChar <= 'V' && subHex >= 'A' && subHex <= 'G')
+         &levelChar, &root, &ix, &subHex) == 4 && root < 12 && levelChar >= 'A' && levelChar <= 'V' && subHex >= 'A' && subHex <= 'H')
       {
          int l49r = (levelChar - 'A') / 2;
          uint64 p = POW7(l49r), rSize = p * p;
@@ -843,42 +843,137 @@ private:
 
    bool containsPoint(const Pointd v)
    {
-      bool result = true;
-      Pointd v5x6[6];
-      int n = getVertices(v5x6), i;
+      bool result = false;
+      int i;
+      Array<Pointd> v5x6 = getBaseRefinedVertices(false, 1);
+      int n = v5x6 ? v5x6.count : 0;
+      CRSExtent bbox { };
+      CRSExtent pBBOX { };
+
+      pBBOX.tl.x = (int) v.x;
+      pBBOX.tl.y = (int) v.y;
+      pBBOX.br.x = pBBOX.tl.x + 1;
+      pBBOX.br.y = pBBOX.tl.y + 1;
+
+      if(!n)
+      {
+         delete v5x6;
+         return false;
+      }
+
+      bbox.br = { -100, -100 };
+      bbox.tl = {  100,  100 };
+      for(i = 0; i < n; i++)
+      {
+         double x = v5x6[i].x, y = v5x6[i].y;
+
+         if(x > bbox.br.x) bbox.br.x = x;
+         if(y > bbox.br.y) bbox.br.y = y;
+         if(x < bbox.tl.x) bbox.tl.x = x;
+         if(y < bbox.tl.y) bbox.tl.y = y;
+      }
+
+      if(v.x - bbox.br.x > 3 && v.y - bbox.br.y > 3 &&
+         v.x - bbox.tl.x > 3 && v.y - bbox.tl.y > 3)
+      {
+         bbox.tl.x += 5;
+         bbox.tl.y += 5;
+         bbox.br.x += 5;
+         bbox.br.y += 5;
+      }
+
+      if(v.x - bbox.br.x <-3 && v.y - bbox.br.y <-3 &&
+         v.x - bbox.tl.x <-3 && v.y - bbox.tl.y <-3)
+      {
+         bbox.tl.x -= 5;
+         bbox.tl.y -= 5;
+         bbox.br.x -= 5;
+         bbox.br.y -= 5;
+      }
+
+#if 0 //def _DEBUG
+      PrintLn("Zone  BBOX: ", bbox.tl.x, ", ", bbox.tl.y, " - ", bbox.br.x, ", ", bbox.br.y);
+      PrintLn("Point     : ", v.x, ", ", v.y);
+#endif
+
+      if(v.x < bbox.tl.x ||
+         v.y < bbox.tl.y ||
+         v.x > bbox.br.x ||
+         v.y > bbox.br.y)
+      {
+#if 0 //def _DEBUG
+         PrintLn("  Skipping this zone");
+#endif
+         delete v5x6;
+         return false;
+      }
+
+#if 0 // def _DEBUG
+      PrintLn("  Considering this zone");
+      PrintLn("Point BBOX: ", pBBOX.tl.x, ", ", pBBOX.tl.y, " - ", pBBOX.br.x, ", ", pBBOX.br.y);
+#endif
 
       for(i = 0; i < n; i++)
       {
          int j = i < n-1 ? i + 1 : 0;
          Pointd a = v5x6[i], b = v5x6[j];
          double sa;
+         Pointd aa = a, bb = b;
 
-         if(fabs(a.x - b.x) > 3 || fabs(a.y - b.y) > 3)
+         if(fabs(aa.x - v.x) > 3 &&
+            fabs(aa.y - v.y) > 3)
          {
-            if(fabs(a.x - v.x) < 3 && fabs(a.y - v.y) < 3)
-            {
-               if(b.x > a.x)
-                  b.x -= 5, b.y -= 5;
-               else
-                  b.x += 5, b.y += 5;
-            }
+            if(aa.x > 3 && aa.y > 3)
+               aa.x -= 5, aa.y -= 5;
             else
-            {
-               if(a.x > b.x)
-                  a.x -= 5, a.y -= 5;
-               else
-                  a.x += 5, a.y += 5;
-            }
+               aa.x += 5, aa.y += 5;
+         }
+         if(fabs(bb.x - v.x) > 3 &&
+            fabs(bb.y - v.y) > 3)
+         {
+            if(bb.x > 3 && bb.y > 3)
+               bb.x -= 5, bb.y -= 5;
+            else
+               bb.x += 5, bb.y += 5;
+         }
+#if 0 //def _DEBUG
+         PrintLn("  Segment: ", aa.x, ", ", aa.y, " - ", bb.x, ", ", bb.y);
+#endif
+
+         if((aa.x - 1E-11 < pBBOX.tl.x ||
+             aa.y - 1E-11 < pBBOX.tl.y ||
+             aa.x + 1E-11 > pBBOX.br.x ||
+             aa.y + 1E-11 > pBBOX.br.y) &&
+            (bb.x - 1E-11 < pBBOX.tl.x ||
+             bb.y - 1E-11 < pBBOX.tl.y ||
+             bb.x + 1E-11 > pBBOX.br.x ||
+             bb.y + 1E-11 > pBBOX.br.y))
+         {
+#if 0 //def _DEBUG
+            PrintLn("  Skipping this segment (B point)");
+#endif
+            continue;
          }
 
-         sa = pointLineSide(v.x, v.y, a, b);
+         sa = pointLineSide(v.x, v.y, aa, bb);
 
          if(sa < 0)
          {
+#if 0 // def _DEBUG
+            PrintLn("  We're outside this segment!");
+#endif
             result = false;
             break;
          }
+         else
+            result = true; // At least one edge segment should be checked
+                           // (BBOX check only gives false positive on e.g., B0-0-C)
       }
+#if 0 //def _DEBUG
+      if(result)
+         PrintLn("  Zone Contains point!");
+#endif
+      delete v5x6;
       return result;
    }
 
@@ -920,159 +1015,6 @@ private:
       }
    }
 
-#if 0
-   I7HZone getNeighbor(I7HNeighbor which)
-   {
-      Pointd centroid = this.centroid;
-      int cx = (int)floor(centroid.x + 1E-11);
-      int cy = (int)floor(centroid.y + 1E-11);
-      bool south = centroid.y - centroid.x - 1E-11 > 1; // Not counting pentagons as south or north
-      bool north = centroid.x - centroid.y - 1E-11 > 0;
-      bool northPole = north && fabs(centroid.x - centroid.y - 1.0) < 1E-11;
-      bool southPole = south && fabs(centroid.y - centroid.x - 2.0) < 1E-11;
-      uint l9r = levelI9R;
-      uint64 p = POW3(l9r);
-      double d = 1.0 / p, x = 0, y = 0;
-      int sh = subHex;
-      Pointd v;
-      bool crossEarly = true;
-
-      if(sh < 3)
-      {
-         // Even level
-
-         // NOTE: See getNeighbors() for special interruption cases
-         switch(which)
-         {
-            case top:
-               if(south && centroid.x - cx < 1E-11)
-               {
-                  crossEarly = false;
-                  if(southPole)
-                     x = -3, y = -3-d;
-                  else // Extra top neighbor at south interruptions
-                     y = -d;
-               }
-               break;
-            case bottom:
-               if(north && centroid.y - cy < 1E-11)
-               {
-                  crossEarly = false;
-                  if(northPole)
-                     x = 2-d, y = 2;
-                  else // Extra bottom neighbor at north interruptions
-                     x = -d;
-               }
-               break;
-            case left:        x = -d, y = -d; break;
-            case right:       x =  d, y =  d; break;
-            case topLeft:
-               if(northPole)
-                  crossEarly = false, x = 3-d, y = 3;
-               else if(southPole)
-                  crossEarly = false, y = -d;
-               else
-                  y = -d;
-               break;
-            case bottomLeft:
-               if(southPole)
-                  crossEarly = false, x = -2, y = -2-d;
-               else
-                  x = -d;
-               break;
-            case topRight:
-               if(northPole)
-                  crossEarly = false, x = 4-d, y = 4;
-               else if(southPole)
-                  crossEarly = false, x = -4, y = -d - 4;
-               else
-                  x = d;
-               break;
-            case bottomRight:
-               if(southPole)
-                  crossEarly = false, x = -1, y = -1-d;
-               else
-                  y =  d;
-               break;
-         }
-      }
-      else
-      {
-         // Odd level
-         double do3 = d/3;
-
-         // NOTE: See getNeighbors() for special interruption cases
-         switch(which)
-         {
-            case top:
-               if(southPole)
-                  x =   do3 - 5, y = -do3 - 5, crossEarly = false;
-               else if(!northPole)
-                  x =   do3, y = -do3;
-               break;
-            case bottom:
-               if(northPole)
-                  x = 1-do3, y = 1+do3, crossEarly = false;
-               else if(!southPole)
-                  x =  -do3, y =  do3;
-               break;
-            case topLeft:
-               if(northPole)
-                  x = 2-do3, y = 2+do3, crossEarly = false;
-               else if(southPole)
-                  x =   do3, y = -do3;
-               else
-                  x = -do3, y =-2*do3;
-               break;
-            case bottomLeft:
-               if(northPole)
-                  x = 4-do3, y = 4+do3, crossEarly = false;
-               else if(southPole)
-                  x = do3 - 2, y = -do3 - 2;
-               else
-                  x = -2*do3, y = -do3;
-               break;
-            case topRight:
-               if(northPole)
-                  x = 3-do3, y = 3+do3, crossEarly = false;
-               else if(southPole)
-                  x = do3 - 4, y = -do3 - 4;
-               else
-                  x =  2*do3, y = do3;
-               break;
-            case bottomRight:
-               if(northPole)
-                  x = 5-do3, y = 5+do3, crossEarly = false;
-               else if(southPole)
-                  x = do3 - 1, y = -do3 - 1;
-               else
-                  x = do3, y = 2*do3;
-               break;
-            case right: // Currently stand-in for second bottom / top neighbor
-               // Extra bottom neighbor at north interruptions
-               if(north && !northPole && centroid.y - cy < 1E-11)
-                  crossEarly = false, y = do3, x = -do3;
-               // Extra bottom neighbor at south interruptions
-               else if(south && !southPole && centroid.x - cx < 1E-11)
-                  crossEarly = false, x = do3, y = -do3;
-               break;
-         }
-      }
-      if(x || y)
-      {
-         I7HZone result;
-         // REVIEW: This is the only place we use moveISEAVertex2()
-         move5x6Vertex2(v, centroid, x, y, crossEarly);
-         result = fromCentroid(2*l9r + (sh >= 3), v);
-         if(result == this)
-            return nullZone; // This should not happen
-         return result;
-      }
-      else
-         return nullZone;
-   }
-#endif
-
    int getNeighbors(I7HZone neighbors[6], I7HNeighbor i7hNB[6])
    {
       I7HZone children[7];
@@ -1092,51 +1034,13 @@ private:
             double dx = cVerts[i].x - c.x;
             double dy = cVerts[i].y - c.y;
             Pointd v;
-            move5x6Vertex(v, c, dx * 3, dy * 3);
+            move5x6Vertex2(v, c, dx * 3, dy * 3, false);
             canonicalize5x6(v, v);
             i7hNB[numNeighbors] = (I7HNeighbor)i;
             neighbors[numNeighbors++] = fromCentroid(nLevel, v);
          }
       }
       return numNeighbors;
-
-      /*
-      I7HNeighbor n;
-      I7HNeighbor localNB[6];
-
-      if(i7hNB == null) i7hNB = localNB;
-
-      for(n = 0; n < I7HNeighbor::enumSize; n++)
-      {
-         I7HZone nb = getNeighbor(n);
-         if(nb != nullZone)
-         {
-            I7HNeighbor which = n;
-            if(numNeighbors)
-            {
-               // Handle special cases here so that getNeighbor()
-               // can still return same neighbor for multiple directions
-               if(n == topRight && i7hNB[numNeighbors-1] == topLeft && neighbors[numNeighbors-1] == nb)
-               {
-                  i7hNB[numNeighbors-1] = top;
-                  continue;
-               }
-               else if(n == bottomRight && i7hNB[numNeighbors-1] == bottomLeft && neighbors[numNeighbors-1] == nb)
-               {
-                  i7hNB[numNeighbors-1] = bottom;
-                  continue;
-               }
-               else if(n == topRight && i7hNB[numNeighbors-1] != topLeft)
-                  which = top;
-               else if(n == bottomRight && i7hNB[numNeighbors-1] != bottomLeft)
-                  which = bottom;
-            }
-            i7hNB[numNeighbors] = which;
-            neighbors[numNeighbors++] = nb;
-         }
-      }
-      return numNeighbors;
-      */
    }
 
    int getContainingGrandParents(I7HZone cgParents[2])
@@ -1194,9 +1098,12 @@ private:
             return 1;
          else
          {
-            Pointd cc = cChild.centroid;
+            // REVIEW: We should use the current zone's centroid -- not parent0's centroidChild's?
+            //         This was breaking for calculating C8-14-A 's second parent
+            Pointd cc = /*cChild.*/centroid;
             int i;
             Pointd vertices[6];
+
             int n = getVertices(vertices);
             int pLevel = parent0.level;
 
@@ -1210,16 +1117,53 @@ private:
 
                if(dx > 3 || dy > 3)
                {
-                  acc.x += 5;
-                  acc.y += 5;
-                  dx = vertices[i].x - acc.x;
-                  dy = vertices[i].y - acc.y;
+                  dx = vertices[i].x - 5 - acc.x;
+                  dy = vertices[i].y - 5 - acc.y;
+               }
+               else if(dx < -3 || dy < -3)
+               {
+                  dx = vertices[i].x + 5 - acc.x;
+                  dy = vertices[i].y + 5 - acc.y;
                }
 
-               v = {
-                  x = acc.x + .99 * dx,
-                  y = acc.y + .99 * dy
-               };
+               if(fabs(dx) < 1 && fabs(dy) < 1)
+               {
+                  bool north = acc.x - acc.y - 1E-11 > 0;
+                  int cy = (int)(acc.y + 1E-11);
+                  int cx = (int)(acc.x + 1E-11);
+
+                  // We need to avoid computing dx and dy across interuptions
+                  if(( north && fabs(acc.y - cy) < 1E-11) ||
+                     (!north && fabs(acc.x - cx) < 1E-11))
+                  {
+                     double x, y;
+                     Pointd ci;
+                     cross5x6Interruption(cc, ci, !north, true);
+
+                     x = vertices[i].x - ci.x;
+                     y = vertices[i].y - ci.y;
+
+                     if(x > 3 && dy > 3)
+                     {
+                        x = vertices[i].x - 5 - ci.x;
+                        y = vertices[i].y - 5 - ci.y;
+                     }
+                     else if(x < -3 && y < -3)
+                     {
+                        x = vertices[i].x + 5 - ci.x;
+                        y = vertices[i].y + 5 - ci.y;
+                     }
+
+                     if(fabs(x) < fabs(dx) && fabs(y) < fabs(dy))
+                     {
+                        acc = ci;
+                        dx = x;
+                        dy = y;
+                     }
+                  }
+               }
+
+               move5x6Vertex2(v, acc, .99 * dx, .99 * dy, false);
 
                z = fromCentroid(pLevel, v);
                if(z != nullZone && z != parent0)
@@ -1232,6 +1176,7 @@ private:
             {
                char zID[128];
                getZoneID(zID);
+               // PrintLn((uint64)this);
                PrintLn("ERROR: Failed to determine second parent for ", zID);
             }
 #endif
@@ -1287,12 +1232,25 @@ private:
       if(root < 0) root += 10;
       else if(root > 9) root -= 10;
 
+      south = (root & 1);
+
       if(!south && row == 0 && col == p)
          cix = 0;
       else if(south && row == p && col == 0)
          cix = 1;
       else
-         cix = 2 + root * (p * p) + row * p + col;
+      {
+         if(row < 0 || row >= p ||
+            col < 0 || col >= p)
+         {
+#ifdef _DEBUG
+            // PrintLn("WARNING: Invalid zone calculated");
+#endif
+            return nullZone;
+         }
+         else
+            cix = 2 + root * (p * p) + row * p + col;
+      }
 
       // REVIEW: Polar zones considerations?
       return I7HZone { l9r, cix, 0 };
@@ -1325,7 +1283,7 @@ private:
          c.y += (cx+1 - c.x), c.x = cx+1;
       }
       else if(c.x < -1E-11 || c.y < -1E-11)
-         move5x6Vertex(c, { 5, 5 }, c.x, c.y);
+         move5x6Vertex2(c, { 5, 5 }, c.x, c.y, false);
 
       if(c.x > 5 - 1E-11 && c.y > 5 - 1E-11 &&  // This handles bottom right wrap e.g., A9-0E and A9-0-F
          c.x + c.y > 5.0 + 5.0 - oop - 1E-11)
@@ -1377,6 +1335,15 @@ private:
                   candidateParents[0] = calcCandidateParent(l9r, root, row, col, 0, 0);
                }
 
+#if 0 //def _DEBUG
+               {
+                  char pID[128];
+                  candidateParents[0].getZoneID(pID);
+
+                  // PrintLn("Main candidate parent: ", pID);
+               }
+#endif
+
                // Top (2 potential children including 1 secondary child of prime candidate)
                candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
                // Bottom (2 potential children including 1 secondary child of prime candidate)
@@ -1394,13 +1361,39 @@ private:
                for(i = 0; i < 7; i++)
                {
                   I7HZone children[7];
-                  int n = candidateParents[i].getPrimaryChildren(children), j;
+                  int n, j;
+#if 0 //def _DEBUG
+                  char pID[128];
+                  candidateParents[i].getZoneID(pID);
+                  if(candidateParents[i] != fromZoneID(pID))
+                  {
+                     PrintLn("ERROR: Invalid candidate parent zone: ", pID);
+                     candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
+                  }
+                  // PrintLn("Generating primary children for ", pID);
+#endif
+
+                  n = candidateParents[i].getPrimaryChildren(children);
 
                   for(j = 0; j < n; j++)
                   {
                      // TODO: Optimize this to do a bounding box check first
-                     // char zID[128];
-                     // children[j].getZoneID(zID);
+
+#if 0 //def _DEBUG
+                     char zID[128];
+                     children[j].getZoneID(zID);
+                     if(children[j] != fromZoneID(zID))
+                     {
+                        PrintLn("ERROR: Invalid zone generated: ", zID);
+
+                        children[j].getZoneID(zID);
+                        fromZoneID(zID);
+
+                        candidateParents[i].getPrimaryChildren(children);
+                     }
+
+                     // PrintLn("Testing whether child ", zID, " contains point ", centroid.x, ", ", centroid.y);
+#endif
                      if(children[j].containsPoint(c))
                      {
                         zone = children[j];
@@ -1413,6 +1406,21 @@ private:
                }
                // PrintLn("matches: ", numMatches);
             }
+
+#if 0 //def _DEBUG
+            if(zone == nullZone)
+               PrintLn("WARNING: Unable to resolve zone for ", centroid.x, ", ", centroid.y);
+
+            if(zone != nullZone)
+            {
+               char id[256];
+               I7HZone z;
+               zone.getZoneID(id);
+               z = fromZoneID(id);
+               if(z != zone)
+                  PrintLn("ERROR: Invalid zone returned");
+            }
+#endif
             return zone;
          }
          else
@@ -1487,7 +1495,17 @@ private:
                }
                if(root < 0) root += 10;
                else if(root > 9) root -= 10;
-               cix = 2 + root * (p * p) + row * p + col;
+
+               if(row < 0 || row >= p ||
+                  col < 0 || col >= p)
+               {
+      #ifdef _DEBUG
+                  // PrintLn("WARNING: Invalid zone calculated");
+      #endif
+                  return nullZone;
+               }
+               else
+                  cix = 2 + root * (p * p) + row * p + col;
             }
             return I7HZone { l9r, cix, 0 };
          }
@@ -2077,6 +2095,36 @@ private:
                      case 6: row += 2; col += 3; break;
                      case 7: row -= 1; col += 2; break;
                   }
+
+                  if(col == (int64)cp && row < (int64)cp && !south) // Cross at top-dent to the right
+                  {
+                     col = cp-row;
+                     row = 0;
+                     cRhombus += 2;
+                  }
+                  else if(row == (int64)cp && col < (int64)cp && south) // Cross at bottom-dent to the right
+                  {
+                     row = cp-col;
+                     col = 0;
+                     cRhombus += 2;
+                  }
+                  else if(col > 0 && col < (int64)cp && row < 0 && !south) // Cross at top-dent to the left
+                  {
+                     int64 ncol = cp + row;
+                     int64 nrow = cp - col;
+                     col = ncol;
+                     row += nrow;
+                     cRhombus -= 2;
+                  }
+                  else if(row > 0 && row < (int64)cp && col < 0 && south) // Cross at bottom-dent to the left
+                  {
+                     int64 nrow = cp + col;
+                     int64 ncol = cp - row;
+                     row = nrow;
+                     col += ncol;
+                     cRhombus -= 2;
+                  }
+
                   if(row < 0 && col < 0)
                      row += cp, col += cp, cRhombus -= 2;
                   else if(row < 0)
@@ -2092,9 +2140,14 @@ private:
                }
                if(cRhombus < 0) cRhombus += 10;
                else if(cRhombus > 9) cRhombus -= 10;
-               cix = 2 + cRhombus * cRSize + row * cp + col;
 
-               return I7HZone { levelI49R + 1, cix, 0 };
+               if(row >= 0 && col >= 0 && row < cp && col < cp)
+               {
+                  cix = 2 + cRhombus * cRSize + row * cp + col;
+
+                  return I7HZone { levelI49R + 1, cix, 0 };
+               }
+               return nullZone;
             }
          }
       }
@@ -2110,15 +2163,78 @@ private:
          int nv = children[0].getVertices(cVerts);
          int i;
          int cLevel = children[0].level;
+         bool north = c.x - c.y - 1E-11 > 0;
+         int cy = (int)(c.y + 1E-11);
+         int cx = (int)(c.x + 1E-11);
+
+#if 0 //def _DEBUG
+         char pID[128];
+         getZoneID(pID);
+         //PrintLn("Calculating children of ", pID);
+#endif
 
          for(i = 0; i < nv; i++)
          {
-            double dx = cVerts[i].x - c.x;
-            double dy = cVerts[i].y - c.y;
+            Pointd cc = c;
             Pointd v;
-            move5x6Vertex(v, c, dx * 3, dy * 3);
+
+            double dx = cVerts[i].x - cc.x;
+            double dy = cVerts[i].y - cc.y;
+
+            if(dx > 3 && dy > 3)
+            {
+               dx = cVerts[i].x - 5 - cc.x;
+               dy = cVerts[i].y - 5 - cc.y;
+            }
+            else if(dx < -3 && dy < -3)
+            {
+               dx = cVerts[i].x + 5 - cc.x;
+               dy = cVerts[i].y + 5 - cc.y;
+            }
+
+            if(fabs(dx) < 1 && fabs(dy) < 1)
+            {
+               // We need to avoid computing dx and dy across interuptions
+               if(( north && fabs(c.y - cy) < 1E-11) ||
+                  (!north && fabs(c.x - cx) < 1E-11))
+               {
+                  double x, y;
+                  Pointd ci;
+                  cross5x6Interruption(c, ci, !north, true);
+
+                  x = cVerts[i].x - ci.x;
+                  y = cVerts[i].y - ci.y;
+
+                  if(x > 3 && dy > 3)
+                  {
+                     x = cVerts[i].x - 5 - ci.x;
+                     y = cVerts[i].y - 5 - ci.y;
+                  }
+                  else if(x < -3 && y < -3)
+                  {
+                     x = cVerts[i].x + 5 - ci.x;
+                     y = cVerts[i].y + 5 - ci.y;
+                  }
+
+                  if(fabs(x) < fabs(dx) && fabs(y) < fabs(dy))
+                  {
+                     cc = ci;
+                     dx = x;
+                     dy = y;
+                  }
+               }
+            }
+
+            move5x6Vertex2(v, cc, dx * 3, dy * 3, false);
+
             canonicalize5x6(v, v);
+
             children[n++] = fromCentroid(cLevel, v);
+#if 0 //def _DEBUG
+            char cID[256];
+            children[n-1].getZoneID(cID);
+            Print(""); //Ln(cID);
+#endif
          }
       }
       return n;
@@ -2131,6 +2247,9 @@ private:
       uint64 ix = this.rhombusIX;
       uint64 p = POW7(l49r), rSize = p * p;
       uint64 rix = ix >= 2 ? (ix - 2) % rSize : 0;
+
+      if(this == nullZone)
+         return 0;
 
       if(subHex == 0)
       {
@@ -2215,9 +2334,25 @@ private:
                   col = 0;
                   cRhombus += 2;
                }
+               else if(col > 0 && col < (int64)cp && row < 0 && !south) // Cross at top-dent to the left
+               {
+                  int64 ncol = cp + row;
+                  int64 nrow = cp - col;
+                  col = ncol;
+                  row += nrow;
+                  cRhombus -= 2;
+               }
+               else if(row > 0 && row < (int64)cp && col < 0 && south) // Cross at bottom-dent to the left
+               {
+                  int64 nrow = cp + col;
+                  int64 ncol = cp - row;
+                  row = nrow;
+                  col += ncol;
+                  cRhombus -= 2;
+               }
+               // REVIEW: Wrapping without crossing interruption
                else
                {
-                  // REVIEW: Wrapping without crossing interruption
                   if(row < 0 && col < 0)
                      row += cp, col += cp, cRhombus -= 2;
                   else if(row < 0)
@@ -2231,11 +2366,19 @@ private:
                   else if(col >= (int64)cp)
                      col -= cp, cRhombus += 1;
                }
+
                if(cRhombus < 0) cRhombus += 10;
                else if(cRhombus > 9) cRhombus -= 10;
 
-               cix = 2 + cRhombus * cRSize + row * cp + col;
-               children[count++] = { l49r + 1, cix, 0 };
+               if(row >= 0 && col >= 0 && row < cp && col < cp)
+               {
+                  cix = 2 + cRhombus * cRSize + row * cp + col;
+                  children[count++] = { l49r + 1, cix, 0 };
+               }
+#ifdef _DEBUG
+               else
+                  PrintLn("WARNING: out of range row/col");
+#endif
             }
          }
       }
@@ -2320,6 +2463,7 @@ private:
             switch(sh)
             {
                case 1: value = v; break; // Centroid child
+               // NOTE: move5x6Vertex2() does not generate correct geometry at level 2
                case 2: move5x6Vertex(value, v, - 1 * oop, - 3 * oop); break;
                case 3: move5x6Vertex(value, v, - 3 * oop, - 2 * oop); break;
                case 4: move5x6Vertex(value, v, - 2 * oop, + 1 * oop); break;
@@ -2405,12 +2549,10 @@ private:
             I7HZone key = I7HZone::fromCentroid(zoneLevel, centroids[i]);
             if(tsZones.Find(key))
                zones.Add(key);
-            else
-            {
       #ifdef _DEBUG
+            else
                PrintLn("WARNING: mismatched sub-zone while re-ordering");
       #endif
-            }
          }
          delete centroids;
          return true;

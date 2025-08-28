@@ -1193,6 +1193,8 @@ bool crosses5x6Interruption(const Pointd cIn, double dx, double dy, Pointd iSrc,
 // and which could even potentially support jumping over multiple interruptions
 // such as for iterating polar scanlines.
 
+
+// WARNING: This functions seems to assume starting from somewhere exactly on the edge of an interruption
 #if !defined(__EMSCRIPTEN__)
 __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
 #endif
