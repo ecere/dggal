@@ -399,6 +399,17 @@ public class DGGSUnitTest : eTest
 
                for(i = 0; i < n; i++)
                {
+                  if(neighbors[i] == nullZone)
+                  {
+                     char zID[256];
+                     dggrs.getZoneTextID(zone, zID);
+                     PrintLn("Null neighbor for zone ", zID);
+
+                     fail("DGGS neighbors", thisTest, "of null neighbor zone");
+                     i = n;
+                     break;
+                  }
+
                   for(j = 0; j < n; j++)
                      if(i != j && neighbors[i] == neighbors[j])
                         break;
@@ -406,7 +417,13 @@ public class DGGSUnitTest : eTest
                      break;
                }
                if(i < n)
+               {
+                  char zID[256];
+                  dggrs.getZoneTextID(zone, zID);
+                  PrintLn("Duplicate neighbors for zone ", zID);
+
                   fail("DGGS neighbors", thisTest, "of duplicate neighbors for zone");
+               }
 
                for(i = 0; i < n; i++)
                {

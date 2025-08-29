@@ -850,8 +850,8 @@ private:
       CRSExtent bbox { };
       CRSExtent pBBOX { };
 
-      pBBOX.tl.x = (int) v.x;
-      pBBOX.tl.y = (int) v.y;
+      pBBOX.tl.x = (int) (v.x + 1E-11);
+      pBBOX.tl.y = (int) (v.y + 1E-11);
       pBBOX.br.x = pBBOX.tl.x + 1;
       pBBOX.br.y = pBBOX.tl.y + 1;
 
@@ -896,10 +896,10 @@ private:
       PrintLn("Point     : ", v.x, ", ", v.y);
 #endif
 
-      if(v.x < bbox.tl.x ||
-         v.y < bbox.tl.y ||
-         v.x > bbox.br.x ||
-         v.y > bbox.br.y)
+      if(v.x < bbox.tl.x - 1E-11 ||
+         v.y < bbox.tl.y - 1E-11 ||
+         v.x > bbox.br.x + 1E-11 ||
+         v.y > bbox.br.y + 1E-11)
       {
 #if 0 //def _DEBUG
          PrintLn("  Skipping this zone");
@@ -1028,16 +1028,69 @@ private:
          int nv = children[0].getVertices(cVerts);
          int i;
          int nLevel = this.level;
+         int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
+         bool north = c.x - c.y - 1E-11 > 0;
 
          for(i = 0; i < nv; i++)
          {
-            double dx = cVerts[i].x - c.x;
-            double dy = cVerts[i].y - c.y;
             Pointd v;
-            move5x6Vertex2(v, c, dx * 3, dy * 3, false);
+            Pointd cc = c;
+            double dx = cVerts[i].x - cc.x;
+            double dy = cVerts[i].y - cc.y;
+
+            if(dx > 3 && dy > 3)
+            {
+               dx = cVerts[i].x - 5 - cc.x;
+               dy = cVerts[i].y - 5 - cc.y;
+            }
+            else if(dx < -3 && dy < -3)
+            {
+               dx = cVerts[i].x + 5 - cc.x;
+               dy = cVerts[i].y + 5 - cc.y;
+            }
+
+            if(fabs(dx) < 1 && fabs(dy) < 1)
+            {
+               // We need to avoid computing dx and dy across interuptions
+               if(( north && fabs(c.y - cy) < 1E-11) ||
+                  (!north && fabs(c.x - cx) < 1E-11))
+               {
+                  double x, y;
+                  Pointd ci;
+                  cross5x6Interruption(c, ci, !north, true);
+
+                  x = cVerts[i].x - ci.x;
+                  y = cVerts[i].y - ci.y;
+
+                  if(x > 3 && dy > 3)
+                  {
+                     x = cVerts[i].x - 5 - ci.x;
+                     y = cVerts[i].y - 5 - ci.y;
+                  }
+                  else if(x < -3 && y < -3)
+                  {
+                     x = cVerts[i].x + 5 - ci.x;
+                     y = cVerts[i].y + 5 - ci.y;
+                  }
+
+                  if(fabs(x) < fabs(dx) && fabs(y) < fabs(dy))
+                  {
+                     cc = ci;
+                     dx = x;
+                     dy = y;
+                  }
+               }
+            }
+
+            move5x6Vertex2(v, cc, dx * 3, dy * 3, false);
+
             canonicalize5x6(v, v);
             i7hNB[numNeighbors] = (I7HNeighbor)i;
             neighbors[numNeighbors++] = fromCentroid(nLevel, v);
+#if 0 //def _DEBUG
+            if(neighbors[numNeighbors-1] == nullZone)
+               fromCentroid(nLevel, v);
+#endif
          }
       }
       return numNeighbors;
