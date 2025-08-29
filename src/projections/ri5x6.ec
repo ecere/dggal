@@ -1156,6 +1156,10 @@ bool crosses5x6Interruption(const Pointd cIn, double dx, double dy, Pointd iSrc,
    else if(fabs(c.y - 5) < 1E-12) c.y = 5;
    else if(fabs(c.y - 6) < 1E-12) c.y = 6;
 
+   if((int)(c.x + 1) == (int) (c.x + dx + 1) && // +1 avoids rounding the wrong way for < 0
+      (int)(c.y + 1) == (int) (c.y + dy + 1))
+      return false;
+
    for(h = 0; h < 2; h++)
    {
       for(r = 0; r < 5; r++)
