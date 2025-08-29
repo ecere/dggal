@@ -128,7 +128,6 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getZoneNeighbors(I7HZone zone, I7HZone * neighbors, I7HNeighbor * nbType)
    {
-      // TODO:
       return zone.getNeighbors(neighbors, nbType);
    }
 
@@ -147,7 +146,6 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getZoneParents(I7HZone zone, I7HZone * parents)
    {
-      // TODO:
       return zone.getParents(parents);
    }
 
@@ -245,7 +243,6 @@ public class RhombicIcosahedral7H : DGGRS
 
    I7HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      // TODO:
       if(level <= 21)
       {
          Pointd v;
@@ -609,7 +606,6 @@ public class RhombicIcosahedral7H : DGGRS
 
    static Array<DGGRSZone> listZones(int zoneLevel, const GeoExtent bbox)
    {
-      // TODO:
       Array<DGGRSZone> zones = null;
       AVLTree<I7HZone> tsZones { };
       int level = 0;
@@ -631,19 +627,50 @@ public class RhombicIcosahedral7H : DGGRS
       //tsZones.Add(I7HZone::fromZoneID("BA-0-F"));
       //tsZones.Add(I7HZone::fromZoneID("BB-0-E"));
 
+      if(zoneLevel == 0 && bbox != null)
+      {
+         AVLTree<I7HZone> tmp { };
+
+         for(z : tsZones)
+         {
+            I7HZone zone = (I7HZone)z;
+            GeoExtent e;
+            getZoneWGS84Extent(zone, e);
+            if(e.intersects(bbox))
+               tmp.Add(zone);
+         }
+         delete tsZones;
+         tsZones = tmp;
+      }
+
       for(level = 1; level <= zoneLevel; level++)
       {
          AVLTree<I7HZone> tmp { };
 
          for(z : tsZones)
          {
-            I7HZone z7 = z;
-            I7HZone children[7];
-            int i;
-            int n = z7.getPrimaryChildren(children);
+            I7HZone zone = (I7HZone)z;
+            I7HZone children[13];
+            // int n = zone.getPrimaryChildren(children), i;
+            int n = zone.getChildren(children), i;
 
             for(i = 0; i < n; i++)
-               tmp.Add(children[i]);
+            {
+               I7HZone c = children[i];
+               if(bbox != null)
+               {
+                  GeoExtent e;
+                  if(!tmp.Find(c))
+                  {
+                     getZoneWGS84Extent(c, e);
+                     if(!e.intersects(bbox))
+                        continue;
+                  }
+                  else
+                     continue;
+               }
+               tmp.Add(c);
+            }
          }
          delete tsZones;
          tsZones = tmp;
@@ -729,9 +756,11 @@ public class RhombicIcosahedral7H : DGGRS
                GeoExtent e;
 
                // REVIEW: Should we check 5x6 extent as well or instead of this approximate extent?
+               /* TODO:
                getApproxWGS84Extent(zone, e);
                if(!e.intersects(bbox))
                   continue;
+               */
 
                getZoneWGS84Extent(zone, e);
                if(!e.intersects(bbox))
@@ -1430,8 +1459,6 @@ private:
 
                   for(j = 0; j < n; j++)
                   {
-                     // TODO: Optimize this to do a bounding box check first
-
 #if 0 //def _DEBUG
                      char zID[128];
                      children[j].getZoneID(zID);
