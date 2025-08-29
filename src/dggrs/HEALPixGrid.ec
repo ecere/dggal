@@ -34,7 +34,8 @@ public:
          {
             int row = (int)(subIndex >> level);
             int col = (int)(subIndex - (row << level));
-            return { level - 1, rootRhombus, ((row / 2) << level) + (col / 2) };
+            int pLevel = level - 1;
+            return { pLevel, rootRhombus, ((row >> 1) << pLevel) | (col >> 1) };
          }
          return nullZone;
       }
