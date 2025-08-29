@@ -457,12 +457,41 @@ public class DGGSUnitTest : eTest
                   for(j = 0; j < np; j++)
                      if(parents[j] == zone)
                         break;
-                  if(j == np)
+
+                  if(np == 0)
+                  {
+                     char cID[256];
+                     dggrs.getZoneTextID(children[i], cID);
+                     PrintLn("Failure to determine parents of ", cID);
+                     np = dggrs.getZoneParents(children[i], parents);
+                  }
+                  else if(j == np)
                   {
                      char zID[256], cID[256];
                      dggrs.getZoneTextID(zone, zID);
                      dggrs.getZoneTextID(children[i], cID);
                      PrintLn("Non reciprocal parent / child: ", zID, " and ", cID);
+
+#if 0
+                     PrintLn("Calculated parents of ", cID, " which is thought to be a child of ", zID, " are:");
+                     for(j = 0; j < np; j++)
+                     {
+                        char pID[256];
+                        dggrs.getZoneTextID(parents[j], pID);
+                        PrintLn("   ", pID);
+                     }
+                     PrintLn("Calculated children of ", zID, " are:");
+                     for(j = 0; j < n; j++)
+                     {
+                        char cID[256];
+                        dggrs.getZoneTextID(children[j], cID);
+                        PrintLn("   ", cID);
+                     }
+
+                     PrintLn("\n\n\n=================================\n\n");
+                     np = dggrs.getZoneParents(children[i], parents);
+                     dggrs.getZoneChildren(zone, children);
+#endif
                      break;
                   }
                }
@@ -531,6 +560,6 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA9R), 2, 4);
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
-      testSubZones(class(ISEA7H), 1, 0);
+      testSubZones(class(ISEA7H), 5, 0);
    }
 }
