@@ -296,14 +296,14 @@ public class DGGSUnitTest : eTest
 
                   dggrs.getZoneTextID(zone, zoneID);
 
-                  if(!subZones || nz != subZones.count)
+                  if(nz != (subZones ? subZones.count : 0))
                   {
                      PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone { ", zoneID, " }: "
                         "subZones count: ", subZones ? subZones.count : 0, ", expected: ", nz);
                      fail("DGGS sub-zones", thisTest, "of mismatched sub-zones count");
                      success = false;
                   }
-                  else
+                  else if(subZones)
                   {
                      HashTable<DGGRSZone> table { initSize = subZones.count };
                      int i;
