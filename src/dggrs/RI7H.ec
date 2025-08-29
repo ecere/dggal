@@ -1114,7 +1114,7 @@ private:
             move5x6Vertex2(v, cc, dx * 3, dy * 3, false);
 
             canonicalize5x6(v, v);
-            i7hNB[numNeighbors] = (I7HNeighbor)i;
+            if(i7hNB) i7hNB[numNeighbors] = (I7HNeighbor)i;
             neighbors[numNeighbors++] = fromCentroid(nLevel, v);
 #if 0 //def _DEBUG
             if(neighbors[numNeighbors-1] == nullZone)
