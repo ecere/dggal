@@ -189,7 +189,7 @@ public class RhombicIcosahedral7H : DGGRS
          }
       }
 
-      // TODO: compactI7HZones(zonesTree, maxLevel);
+      compactI7HZones(zonesTree, maxLevel);
       zones.Free();
 
       count = zonesTree.count;
@@ -2650,28 +2650,27 @@ __attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int 
    AVLTree<I7HZone> next { };
    int l;
 
-   for(l = level - 2; l >= 0; l -= 2)
+   for(l = level - 1; l >= 0; l -= 1)
    {
       int i;
       for(z : zones)
       {
-         I7HZone zone = z, cgParents[2];
-         int nCGParents = zone.getContainingGrandParents(cgParents);
+         I7HZone zone = z, cParents[2];
+         int nCParents = zone.getParents(cParents);
          int p;
-         for(p = 0; p < nCGParents; p++)
+         for(p = 0; p < nCParents; p++)
          {
-            I7HZone gParent = cgParents[p];
-            if(gParent != nullZone && !next.Find(gParent))
+            I7HZone cParent = cParents[p];
+            if(cParent != nullZone && !next.Find(cParent))
             {
-               I7HZone cZone = gParent.centroidChild.centroidChild;
-               I7HZone neighbors[6];
-               int nNeighbors = cZone.getNeighbors(neighbors, null);
+               I7HZone children[13];
                bool parentAllIn = true;
+               int nChildren = cParent.getChildren(children);
 
-               for(i = 0; i < nNeighbors; i++)
+               for(i = 0; i < nChildren; i++)
                {
-                  I7HZone nb = neighbors[i];
-                  if(nb != nullZone && !zones.Find(nb))
+                  I7HZone c = children[i];
+                  if(c != nullZone && !zones.Find(c))
                   {
                      parentAllIn = false;
                      break;
@@ -2679,45 +2678,20 @@ __attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int 
                }
 
                if(parentAllIn)
-               {
-                  // Grandparent vertex children's centroid children are partially within it
-                  // and must be present to perform replacement
-                  I7HZone children[13];
-                  int nChildren = gParent.getChildren(children);
-
-                  for(i = 1; i < nChildren; i++)
-                  {
-                     I7HZone ch = children[i];
-                     if(ch != nullZone)
-                     {
-                        I7HZone cChild = ch.centroidChild;
-
-                        if(!zones.Find(cChild))
-                        {
-                           Pointd cv = cChild.centroid;
-                           int cl = cChild.level;
-                           I7HZone sub = I7HZone::fromCentroid(cl + 2, cv);
-                           if(!output.Find(sub))
-                              parentAllIn = false;
-                        }
-                     }
-                  }
-                  if(parentAllIn)
-                     next.Add(gParent);
-               }
+                  next.Add(cParent);
             }
          }
       }
 
       for(z : zones)
       {
-         I7HZone zone = z, cgParents[2];
-         int nCGParents = zone.getContainingGrandParents(cgParents), i;
+         I7HZone zone = z, cParents[2];
+         int nCParents = zone.getParents(cParents), i;
          bool allIn = true;
 
-         for(i = 0; i < nCGParents; i++)
+         for(i = 0; i < nCParents; i++)
          {
-            if(!next.Find(cgParents[i]))
+            if(!next.Find(cParents[i]))
             {
                allIn = false;
                break;
@@ -2727,7 +2701,7 @@ __attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int 
             output.Add(zone);
       }
 
-      if(/*0 && */l - 2 >= 0 && next.count)
+      if(/*0 && */l - 1 >= 0 && next.count)
       {
          // Not done -- next level becomes zones to compact
          zones.copySrc = next;
