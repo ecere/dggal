@@ -409,7 +409,7 @@ public class HEALPix : DGGRS
          }
       }
 
-      compactRHPZones(zonesTree, maxLevel);
+      compactHPZones(zonesTree, maxLevel);
       zones.Free();
 
       count = zonesTree.count;
@@ -859,7 +859,7 @@ public class HEALPix : DGGRS
    }
 }
 
-static void compactRHPZones(AVLTree<HPZone> zones, int level)
+static void compactHPZones(AVLTree<HPZone> zones, int level)
 {
    AVLTree<HPZone> output { };
    AVLTree<HPZone> next { };
@@ -874,11 +874,10 @@ static void compactRHPZones(AVLTree<HPZone> zones, int level)
          if(!next.Find(parent))
          {
             bool parentAllIn = true;
-            HPZone children[9];
+            HPZone children[4];
+            int n = parent.getChildren(children);
 
-            parent.getChildren(children);
-
-            for(i = 0; i < 9; i++)
+            for(i = 0; i < n; i++)
             {
                HPZone ch = children[i];
                if(ch != nullZone && !zones.Find(ch))
