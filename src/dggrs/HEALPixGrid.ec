@@ -453,6 +453,22 @@ public class HEALPix : DGGRS
       for(root = 0; root < 12; root++)
          zonesTree.Add({ 0, root, 0 });
 
+      if(level == 0 && bbox != null)
+      {
+         AVLTree<HPZone> tmp { };
+
+         for(z : zonesTree)
+         {
+            HPZone zone = (HPZone)z;
+            GeoExtent e;
+            getZoneWGS84Extent(zone, e);
+            if(e.intersects(bbox))
+               tmp.Add(zone);
+         }
+         delete zonesTree;
+         zonesTree = tmp;
+      }
+
       for(l = 1; l <= level; l++)
       {
          AVLTree<HPZone> tmp { };
@@ -465,7 +481,22 @@ public class HEALPix : DGGRS
             int n = zz.getChildren(children);
 
             for(i = 0; i < n; i++)
+            {
+               HPZone c = children[i];
+               if(bbox != null)
+               {
+                  GeoExtent e;
+                  if(!tmp.Find(c))
+                  {
+                     getZoneWGS84Extent(c, e);
+                     if(!e.intersects(bbox))
+                        continue;
+                  }
+                  else
+                     continue;
+               }
                tmp.Add(children[i]);
+            }
          }
          delete zonesTree;
          zonesTree = tmp;
