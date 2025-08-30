@@ -12,8 +12,6 @@ static define POW_EPSILON = 0.1;
 
 define HP_MAX_VERTICES = 200; // * 1024;
 
-/*static*/ define sqrt2 = 1.41421356237309504880168872420969807856967; //sqrt(2);
-
 class HPZone : private DGGRSZone
 {
 public:
@@ -120,20 +118,16 @@ public:
 
    Array<Pointd> getSubZoneCentroids(int depth)
    {
-      return null;
-
-      /*
-      int p = (int)(pow(3, depth) + POW_EPSILON);
-      Array<Pointd> centroids { size = p * p };
+      uint dm = 1 << depth;
+      Array<Pointd> centroids { size = dm * dm };
       int r, c, i = 0;
       CRSExtent e = hpExtent;
       double w = e.br.x - e.tl.x, h = e.br.y - e.tl.y;
 
-      for(r = 0; r < p; r++)
-         for(c = 0; c < p; c++, i++)
-            centroids[i] = { e.tl.x + c * w / p, e.tl.y + r * h / p };
+      for(r = 0; r < dm; r++)
+         for(c = 0; c < dm; c++, i++)
+            centroids[i] = { e.tl.x + c * w / dm, e.tl.y + r * h / dm };
       return centroids;
-      */
    }
 
    int getChildren(HPZone * children)
@@ -168,40 +162,6 @@ public class HEALPix : DGGRS
       out = { (Radians)atan2(-c.y, p), (Radians)atan2(c.x, -c.z) };
    }
 
-/*
-   HEALPix()
-   {
-      Vector3D rdVertices[14] =
-      {
-         { -0.5, -0.5, -0.5 },
-         { -0.5, -0.5,  0.5 },
-         { -0.5,  0.5, -0.5 },
-         { -0.5,  0.5,  0.5 },
-         {  0.5, -0.5, -0.5 },
-         {  0.5, -0.5,  0.5 },
-         {  0.5,  0.5, -0.5 },
-         {  0.5,  0.5,  0.5 },
-         {  0.0,  0.0, -1.0 },
-         {  0.0,  0.0,  1.0 },
-         {  0.0, -1.0,  0.0 },
-         {  0.0,  1.0,  0.0 },
-         { -1.0,  0.0,  0.0 },
-         {  1.0,  0.0,  0.0 }
-      };
-      Pointd invPj[14];
-      int i;
-
-      for(i = 0; i < 14; i++)
-      {
-         GeoPoint geo;
-         cartesianToGeo(rdVertices[i], geo);
-         pj.forward(geo, invPj[i]);
-
-         PrintLn(i, ": ", invPj[i].x / Pi, " π, ", invPj[i].y / Pi, " π");
-      }
-   }
-*/
-
    uint64 countZones(int level)
    {
       return (uint64)(12 * (pow(4, level)) + POW_EPSILON);
@@ -218,7 +178,7 @@ public class HEALPix : DGGRS
       return area;
    }
 
-   int getMaxDGGRSZoneLevel() { return 16; }
+   int getMaxDGGRSZoneLevel() { return 26; }
    int getRefinementRatio() { return 4; }
    int getMaxParents() { return 1; }
    int getMaxNeighbors() { return 4; }
@@ -226,7 +186,7 @@ public class HEALPix : DGGRS
 
    uint64 countSubZones(HPZone zone, int depth)
    {
-      return 0; // TODO: 1LL << (2 * depth);
+      return 1LL << (2 * depth);
    }
 
    int getZoneLevel(HPZone zone)
@@ -336,7 +296,7 @@ public class HEALPix : DGGRS
 
    HPZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      if(level <= 16)
+      if(level <= 26)
       {
          Pointd v;
 
@@ -381,15 +341,79 @@ public class HEALPix : DGGRS
    // Sub-zone Order
    HPZone getFirstSubZone(HPZone parent, int depth)
    {
-      /* TODO:
-      int level = parent.level + depth;
-      if(level <= 16)
+      int pLevel = parent.level, level = pLevel + depth;
+      if(level <= 26)
       {
-         int p = (int)(pow(3, depth) + POW_EPSILON);
-         return HPZone { level, parent.row * p, parent.col * p };
+         uint root = parent.rootRhombus;
+         uint64 pSubIndex = parent.subIndex;
+         uint dm = 1 << depth;
+         int pRow = (int)(pSubIndex >> pLevel);
+         int pCol = (int)(pSubIndex - ((int64)pRow << pLevel));
+         return HPZone { level, root, (((uint64)pRow * dm) << level) | (pCol * dm) };
       }
-      */
       return nullZone;
+   }
+
+   Array<DGGRSZone> getSubZones(HPZone parent, int relativeDepth)
+   {
+      int pLevel = parent.level, level = pLevel + relativeDepth;
+      if(level <= 26)
+      {
+         uint root = parent.rootRhombus;
+         uint64 pSubIndex = parent.subIndex;
+         uint dm = 1 << relativeDepth;
+         int pRow = (int)(pSubIndex >> pLevel);
+         int pCol = (int)(pSubIndex - ((int64)pRow << pLevel));
+         Array<DGGRSZone> subZones { size = dm * dm };
+         int r, c, i = 0;
+
+         for(r = 0; r < dm; r++)
+            for(c = 0; c < dm; c++, i++)
+               subZones[i] = HPZone { level, root, (((uint64)pRow * dm + r) << level) | (pCol * dm + c) };
+         return subZones;
+      }
+      return null;
+   }
+
+   Array<Pointd> getSubZoneCRSCentroids(HPZone parent, CRS crs, int depth)
+   {
+      Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
+      if(centroids)
+      {
+         uint count = centroids.count, i;
+         switch(crs)
+         {
+            case 0: case CRS { ogc, 99999 }: break;
+            case CRS { epsg, 4326 }:
+            case CRS { ogc, 84 }:
+               for(i = 0; i < count; i++)
+               {
+                  GeoPoint geo;
+                  pj.inverse(centroids[i], geo, false);
+                  centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
+               }
+               break;
+            default: delete centroids;
+         }
+      }
+      return centroids;
+   }
+
+   Array<GeoPoint> getSubZoneWGS84Centroids(HPZone parent, int depth)
+   {
+      Array<GeoPoint> geo = null;
+      Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
+      if(centroids)
+      {
+         uint count = centroids.count;
+         int i;
+
+         geo = { size = count };
+         for(i = 0; i < count; i++)
+            pj.inverse(centroids[i], geo[i], false);
+         delete centroids;
+      }
+      return geo;
    }
 
    void compactZones(Array<DGGRSZone> zones)
@@ -564,23 +588,6 @@ public class HEALPix : DGGRS
       return (Array<DGGRSZone>)zones;
    }
 
-   Array<GeoPoint> getSubZoneWGS84Centroids(HPZone parent, int depth)
-   {
-      Array<GeoPoint> geo = null;
-      Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
-      if(centroids)
-      {
-         uint count = centroids.count;
-         int i;
-
-         geo = { size = count };
-         for(i = 0; i < count; i++)
-            pj.inverse(centroids[i], geo[i], false);
-         delete centroids;
-      }
-      return geo;
-   }
-
    // edge refinement is not supported
    Array<GeoPoint> getZoneRefinedWGS84Vertices(HPZone zone, int edgeRefinement)
    {
@@ -664,6 +671,10 @@ public class HEALPix : DGGRS
             if(v[i].lon < 0 && v[i].lon > value.ur.lon) value.ur.lon = v[i].lon;
          }
       }
+
+      if(value.ll.lon < -180)
+         value.ll.lon += 360;
+
       if(includesNorthPole)
       {
          value.ll.lon = -180;
@@ -680,7 +691,7 @@ public class HEALPix : DGGRS
 
    HPZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
    {
-      if(level <= 16)
+      if(level <= 26)
       {
          switch(crs)
          {
@@ -694,24 +705,6 @@ public class HEALPix : DGGRS
          }
       }
       return nullZone;
-   }
-
-   Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
-   {
-      // TODO:
-      /*
-      int level = parent.level + relativeDepth;
-      int row = parent.row, col = parent.col;
-      int p = (int)(pow(3, relativeDepth) + POW_EPSILON);
-      Array<DGGRSZone> subZones { size = p * p };
-      int r, c, i = 0;
-
-      for(r = 0; r < p; r++)
-         for(c = 0; c < p; c++, i++)
-            subZones[i] = HPZone { level, row * p + r, col * p + c };
-      return subZones;
-      */
-      return null;
    }
 
    void getZoneCRSCentroid(HPZone zone, CRS crs, Pointd centroid)
@@ -832,30 +825,6 @@ public class HEALPix : DGGRS
             break;
          }
       }
-   }
-
-   Array<Pointd> getSubZoneCRSCentroids(HPZone parent, CRS crs, int depth)
-   {
-      Array<Pointd> centroids = parent.getSubZoneCentroids(depth);
-      if(centroids)
-      {
-         uint count = centroids.count, i;
-         switch(crs)
-         {
-            case 0: case CRS { ogc, 99999 }: break;
-            case CRS { epsg, 4326 }:
-            case CRS { ogc, 84 }:
-               for(i = 0; i < count; i++)
-               {
-                  GeoPoint geo;
-                  pj.inverse(centroids[i], geo, false);
-                  centroids[i] = crs == { ogc, 84 } ? { geo.lon, geo.lat } : { geo.lat, geo.lon };
-               }
-               break;
-            default: delete centroids;
-         }
-      }
-      return centroids;
    }
 }
 
@@ -1002,11 +971,13 @@ static uint getHPRefinedWGS84Vertices(HEALPix dggrs, HPZone zone, GeoPoint * out
             }
             */
          }
+#ifdef _DEBUG
          else
          {
-            pj.inverse(in, out, false);
-            Print("bug");
+            PrintLn("WARNING: Failure to inverse project");
+            // pj.inverse(in, out, false);
          }
+#endif
       }
    }
 

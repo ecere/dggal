@@ -102,16 +102,22 @@ class DGGAL : Application
       const String zone1ID = null, zone2ID = null, input = null, coordinates = null;
 
            if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsClass = class(ISEA3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
+      else if(!strcmpi(argv[0], "i7h") || !strcmpi(argv[0], "isea7h")) dggrsClass = class(ISEA7H), cmdArg = 1;
+
       else if(!strcmpi(argv[0], "r3h") || !strcmpi(argv[0], "rtea3h")) dggrsClass = class(RTEA3H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsClass = class(GNOSISGlobalGrid), cmdArg = 1;
+      else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
+      else if(!strcmpi(argv[0], "r7h") || !strcmpi(argv[0], "rtea7h")) dggrsClass = class(RTEA7H), cmdArg = 1;
+
+      else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsClass = class(IVEA3H), cmdArg = 1;
+      else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
+      else if(!strcmpi(argv[0], "v7h") || !strcmpi(argv[0], "ivea7h")) dggrsClass = class(IVEA7H), cmdArg = 1;
+
       else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "gpp3h"))  dggrsClass = class(GPP3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "b3h") || !strcmpi(argv[0], "bcta3h")) dggrsClass = class(BCTA3H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsClass = class(IVEA3H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "v7h") || !strcmpi(argv[0], "ivea7h")) dggrsClass = class(IVEA7H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "i7h") || !strcmpi(argv[0], "isea7h")) dggrsClass = class(ISEA7H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
-      else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
-      else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
+
+      else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsClass = class(GNOSISGlobalGrid), cmdArg = 1;
+
       else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsClass = class(rHEALPix), cmdArg = 1;
       else if(!strcmpi(argv[0], "hlp") || !strcmpi(argv[0], "HEALPix")) dggrsClass = class(HEALPix), cmdArg = 1;
 
@@ -140,18 +146,25 @@ class DGGAL : Application
                case 0:
                   // DGGRS
                   if(!strncasecmp(arg, "GNOSIS", 6)) dggrsClass = class(GNOSISGlobalGrid);
+
                   else if(!strcmpi(arg, "ISEA3H"))   dggrsClass = class(ISEA3H);
                   else if(!strcmpi(arg, "ISEA9R"))   dggrsClass = class(ISEA9R);
-                  else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
-                  else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
+                  else if(!strcmpi(arg, "ISEA7H"))   dggrsClass = class(ISEA7H);
+
                   else if(!strcmpi(arg, "IVEA3H"))   dggrsClass = class(IVEA3H);
                   else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
                   else if(!strcmpi(arg, "IVEA7H"))   dggrsClass = class(IVEA7H);
-                  else if(!strcmpi(arg, "ISEA7H"))   dggrsClass = class(ISEA7H);
+
                   else if(!strcmpi(arg, "RTEA3H"))   dggrsClass = class(RTEA3H);
                   else if(!strcmpi(arg, "RTEA9R"))   dggrsClass = class(RTEA9R);
+                  else if(!strcmpi(arg, "RTEA7H"))   dggrsClass = class(RTEA7H);
+
                   else if(!strcmpi(arg, "rHEALPix")) dggrsClass = class(rHEALPix);
                   else if(!strcmpi(arg, "HEALPix"))  dggrsClass = class(HEALPix);
+
+                  else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
+                  else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
+
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
                   else

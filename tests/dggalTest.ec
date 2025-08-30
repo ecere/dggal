@@ -281,7 +281,7 @@ public class DGGSUnitTest : eTest
             if(allZones.count != expectedZones)
             {
                PrintLn("Expected: ", expectedZones, " zones, but ", allZones.count, " returned");
-               fail("DGGS sub-zones", thisTest, "of unexpected unmber of parent zones listed");
+               fail("DGGS sub-zones", thisTest, "of unexpected number of top-level zones listed");
                success = false;
             }
 
