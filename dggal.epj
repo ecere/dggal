@@ -83,7 +83,11 @@
                   "IVEA7H.ec",
                   "ISEA7H.ec",
                   "HEALPixGrid.ec",
-                  "RTEA7H.ec"
+                  "RTEA7H.ec",
+                  "RI4R.ec",
+                  "IVEA4R.ec",
+                  "ISEA4R.ec",
+                  "RTEA4R.ec"
                ]
             },
             {

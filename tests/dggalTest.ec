@@ -585,6 +585,7 @@ public class DGGSUnitTest : eTest
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
       testSubZones(class(ISEA7H), 4, 0);
-      testSubZones(class(HEALPix), 4, 0);
+      testSubZones(class(HEALPix), 4, 3);
+      testSubZones(class(ISEA4R), 4, 3);
    }
 }

@@ -70,6 +70,10 @@ _ECSOURCES = \
 	src/dggrs/ISEA7H.ec \
 	src/dggrs/HEALPixGrid.ec \
 	src/dggrs/RTEA7H.ec \
+	src/dggrs/RI4R.ec \
+	src/dggrs/IVEA4R.ec \
+	src/dggrs/ISEA4R.ec \
+	src/dggrs/RTEA4R.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -262,6 +266,18 @@ $(OBJ)HEALPixGrid.sym: src/dggrs/HEALPixGrid.ec
 $(OBJ)RTEA7H.sym: src/dggrs/RTEA7H.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA7H.ec) -o $(call quote_path,$@)
 
+$(OBJ)RI4R.sym: src/dggrs/RI4R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RI4R.ec) -o $(call quote_path,$@)
+
+$(OBJ)IVEA4R.sym: src/dggrs/IVEA4R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/IVEA4R.ec) -o $(call quote_path,$@)
+
+$(OBJ)ISEA4R.sym: src/dggrs/ISEA4R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA4R.ec) -o $(call quote_path,$@)
+
+$(OBJ)RTEA4R.sym: src/dggrs/RTEA4R.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA4R.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -354,6 +370,18 @@ $(OBJ)HEALPixGrid.c: src/dggrs/HEALPixGrid.ec $(OBJ)HEALPixGrid.sym | $(SYMBOLS)
 $(OBJ)RTEA7H.c: src/dggrs/RTEA7H.ec $(OBJ)RTEA7H.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA7H.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)RI4R.c: src/dggrs/RI4R.ec $(OBJ)RI4R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RI4R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)IVEA4R.c: src/dggrs/IVEA4R.ec $(OBJ)IVEA4R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/IVEA4R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ISEA4R.c: src/dggrs/ISEA4R.ec $(OBJ)ISEA4R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA4R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)RTEA4R.c: src/dggrs/RTEA4R.ec $(OBJ)RTEA4R.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA4R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -445,6 +473,18 @@ $(OBJ)HEALPixGrid$(O): $(OBJ)HEALPixGrid.c
 
 $(OBJ)RTEA7H$(O): $(OBJ)RTEA7H.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA7H.c) -o $(call quote_path,$@)
+
+$(OBJ)RI4R$(O): $(OBJ)RI4R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RI4R.c) -o $(call quote_path,$@)
+
+$(OBJ)IVEA4R$(O): $(OBJ)IVEA4R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IVEA4R.c) -o $(call quote_path,$@)
+
+$(OBJ)ISEA4R$(O): $(OBJ)ISEA4R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA4R.c) -o $(call quote_path,$@)
+
+$(OBJ)RTEA4R$(O): $(OBJ)RTEA4R.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA4R.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)
