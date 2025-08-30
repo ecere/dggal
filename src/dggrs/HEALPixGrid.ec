@@ -62,7 +62,7 @@ public:
          value =
          {
             x = (x + y + oop) * Pi/4 - 5*Pi/4,
-            y = (y - x) * Pi/4
+            y = -(y - x) * Pi/4
          };
       }
    }
@@ -82,32 +82,40 @@ public:
          /*
          Conversion from 4x6 to HEALPix:
             x = (x + y) * Pi/4 - 5*Pi/4,
-            y = (y - x) * Pi/4
+            y = -(y - x) * Pi/4
          */
 
          value.tl = {
             x = (x + y) * Pi/4 - 5*Pi/4,
-            y = (y - x - oop) * Pi/4
+            y = -(y - (x + oop)) * Pi/4
          };
          value.br = {
             x = (x + y + 2*oop) * Pi/4 - 5*Pi/4,
-            y = (y + oop - x) * Pi/4
+            y = -((y + oop) - x) * Pi/4
          };
       }
    }
 
    HPZone ::fromPoint(const Pointd v, int level)
    {
-      // TODO:
-      return nullZone;
-      /*
-      int row, col;
-      int p = (int)(pow(3, level) + POW_EPSILON);
+      HPZone zone = nullZone;
+      int64 p = 1LL << level;
+      // Conversion from HEALPix to 4x6 space:
+      double x = (v.y + v.x + 5 * Pi / 4) * 2/Pi;
+      double y = v.x * 4 / Pi + 5 - x;
+      int cx = (int)(x + 1E-11);
+      int cy = (int)(y + 1E-11);
+      double sx = x - cx, sy = y - cy;
+      bool addX = cx > cy, addY = cy > cx;
+      int rCol = cx - addX; // or cy - addY
+      int rRow = addX ? 0 : addY ? 2 : 1;
+      int64 col = (int64)(sx * p);
+      int64 row = (int64)(sy * p);
+      int root = (rRow << 2) | rCol;
 
-      row = Max(0, Min(3 * p - 1, (int)((3*Pi/4 - v.y) * p / (Pi/2))));
-      col = Max(0, Min(((row / p) == 1 ? 4 * p : p) - 1, (int)((v.x + Pi) * p / (Pi/2))));
-      return { level, row, col };
-      */
+      if(rCol >= 0 && rCol <= 4 && rRow >= 0 && rRow <= 2 && col >= 0 && col < p && row >= 0 && row < p)
+         zone = { level, root, ((int64)row << level) | col };
+      return zone;
    }
 
    Array<Pointd> getSubZoneCentroids(int depth)
@@ -608,8 +616,12 @@ public class HEALPix : DGGRS
       {
          if(v[i].lat < value.ll.lat) value.ll.lat = v[i].lat;
          if(v[i].lat > value.ur.lat) value.ur.lat = v[i].lat;
-         if(v[i].lon < value.ll.lon) value.ll.lon = v[i].lon;
-         if(v[i].lon > value.ur.lon) value.ur.lon = v[i].lon;
+
+         if(fabs(fabs((Radians)v[i].lat) - Pi/2) > 1E-11)
+         {
+            if(v[i].lon < value.ll.lon) value.ll.lon = v[i].lon;
+            if(v[i].lon > value.ur.lon) value.ur.lon = v[i].lon;
+         }
       }
       if(value.ur.lon - value.ll.lon > Pi)
       {
