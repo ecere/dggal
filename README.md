@@ -13,16 +13,54 @@ Both a source distribution and built distribution for Linux and Windows, includi
 
 ## Supported Discrete Global Grid Reference Systems
 
-DGGAL currently supports all three DGGRS described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
+DGGAL currently supports all nine DGGRSs described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
 
-* [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038r1.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
-* [ISEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Snyder Equal Area (ISEA) projection
+### Axis-aligned DGGRS in WGS84 latitude and longitude (simple bounding boxes)
+
+* [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038r1.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions achieving an approximate maximum of ~48% variance from median zone area, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
+
+### Equal-Area DGGRSs based on Icosahedral Projections (aperture 3 and 7 Hexagonal, aperture 4 and 9 Axis-Aligned Rhombic)
+
+_WARNING: The aperture 7 hexagonal grids are still experimental and do not yet implement sub-zones._
+
+#### Icosahedral Snyder Equal Area (ISEA) projection
+
+([An Equal-Area Map Projection for Polyhedral Globes (1992)](https://doi.org/10.3138%2F27H7-8K88-4882-1752), or alternate configuration of [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687))
+
+* **ISEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the  transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 * [ISEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
-* **IVEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Icosahedral Vertex-oriented Great Circle Equal Area (tentatively called IVEA) projection based on [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), using the same global indexing and sub-zone ordering as for ISEA3H
-* **IVEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
-* **RTEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the Rhombic Triacontahedron Equal Area (RTEA) projection, a configuration of the Slice & Dice great circle projection equivalent to applying Snyder's projection to the RT, using the same global indexing and sub-zone ordering as for ISEA3H
+* [ISEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
+* [ISEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
+
+#### Icosahedral Vertex-oriented Great Circle Equal Area (IVEA) projection
+
+([Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), or applying [Snyder 1992](https://doi.org/10.3138%2F27H7-8K88-4882-1752) to the dodecahedron (DSEA))
+
+* **IVEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA4R
+* [IVEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+* [IVEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
+* [IVEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
+
+NOTE: This projection is superior to ISEA and RT(S)EA at avoiding perceptible cusps, resulting in more compact shapes appearing more regular.
+
+#### Rhombic Triacontahedron (Snyder) Equal-Area (RT(S)EA) projection
+
+(applying [Snyder 1992](https://doi.org/10.3138%2F27H7-8K88-4882-1752) to the Rhombic Triacontahedron,
+ alternate configuration of [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687),
+[Disdyakis Triacontahedron Discrete Global Grid System](http://hdl.handle.net/1880/114595), or
+[Construction of rhombic triacontahedron discrete global grid systems](https://doi.org/10.1080/17538947.2022.2130459))
+
+* **RTEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the RTEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA4R
 * **RTEA9R**: An equal area rhombic grid with a refinement ratio of 9 defined in the RTEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
-* [rHEALPix](https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection (using same parameters as default [PROJ implementation](https://proj.org/en/stable/operations/projections/rhealpix.html)) with the original hierarchical indexing and scanline-based sub-zone ordering
+* **RTEA3H**: An equal area hexagonal grid with a refinement ratio of 3 defined in the RTEA projection using the same global indexing and sub-zone ordering as for ISEA3H
+* **RTEA7H**: An equal area hexagonal grid with a refinement ratio of 7 defined in the RTEA projection using the same global indexing and sub-zone ordering as for ISEA7H
+
+### Axis-aligned and Equal-Area DGGRSs based on HEALPix Projection
+
+([HEALPix projection](https://arxiv.org/pdf/astro-ph/0409513))
+
+* [HEALPix](https://docs.ogc.org/DRAFTS/21-038r1.html#HEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 4 defined in the HEALPix projection, using configuration Nφ/H = 4, Nθ/K = 3 (same as default [PROJ implementation](https://proj.org/en/stable/operations/projections/healpix.html)), the new indexing described in OGC API - DGGS Annex B, and scanline-based sub-zone ordering
+* [rHEALPix](https://docs.ogc.org/DRAFTS/21-038r1.html#rHEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection using 50° E prime meridian (equivalent to [PROJ implementation](https://proj.org/en/stable/operations/projections/rhealpix.html) with parameters `+proj=rhealpix +lon_0=50 +ellps=WGS84`), the [original hierarchical indexing](https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012), and scanline-based sub-zone ordering
 
 ## libDGGAL API Documentation
 
@@ -84,13 +122,20 @@ A Rust example using the DGGAL Rust bindings is [available here](https://github.
 
 ### Supported DGGRSs
 * `gnosis` (Global Grid)
-* `isea3h`
+* `isea4r`
 * `isea9r`
-* `ivea3h`
+* `isea3h`
+* `isea7h`
+* `ivea4r`
 * `ivea9r`
-* `rtea3h`
+* `ivea3h`
+* `ivea7h`
+* `rtea4r`
 * `rtea9r`
-* `rhealpix` (aperture 9)
+* `rtea3h`
+* `rtea7h`
+* `rhealpix` (aperture 9, 50° E)
+* `healpix` (aperture 4, Nφ/H = 4, Nθ/K = 3)
 
 ### Commands
 
@@ -140,7 +185,7 @@ A Rust example using the DGGAL Rust bindings is [available here](https://github.
 
 **-crs** <_crs_>
 - Select an output coordinate reference system, one of:
-EPSG:4326, OGC:CRS84, ISEA, 5x6
+EPSG:4326, OGC:CRS84, 5x6, ico (icosahedron net), rhp (rHEALPix), hpx (HEALPix)
 
 **-depth** <_relative depth_>
 - For sub, specify relative depth
@@ -190,37 +235,37 @@ Default ~64K sub-zones relative depth: 10
 > dgg isea3h info A4-0-A
 DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/ISEA3H
 Textual Zone ID: A4-0-A
-64-bit integer ID: 72057594037927936 (0x100000000000000)
+64-bit integer ID: 36028797018963968 (0x80000000000000)
 
 Level 0 zone (5 edges, centroid child)
 42505468477007.4 m² (42505468.4770074 km²)
 49411 sub-zones at depth 10
-WGS84 Centroid (lat, lon): 0, -20.517474411461
-WGS84 Extent (lat, lon): { -35.385453143805, -57.894842551487 }, { 35.3854531438384, 11.2 }
+WGS84 Centroid (lat, lon): 0, -20.517474730219
+WGS84 Extent (lat, lon): { -35.385452137707, -57.8948427221833 }, { 35.385452137707, 11.2 }
 
 No parent
 
 Children (6):
-   A4-0-D (centroid)
-   A4-0-E
-   A4-0-F
-   A3-0-E
-   A2-0-F
-   A2-0-E
+   A4-0-B (centroid)
+   A4-0-C
+   A4-0-D
+   A3-0-C
+   A2-0-D
+   A2-0-C
 
 Neighbors (5):
    (direction 2): A2-0-A
    (direction 3): A6-0-A
-   (direction 0): A0-0-B
+   (direction 0): AA-0-A
    (direction 6): A3-0-A
    (direction 7): A5-0-A
 
 [EPSG:4326] Vertices (5):
-   20.9908533396875, 11.2
-   -20.9908533396875, 11.2
-   -35.385453143805, -33.7999999994894
-   0.0000000010850795, -57.894842551487
-   35.3854531438384, -33.8000000009355
+   20.9908527620464, 11.2
+   -20.9908527620465, 11.2
+   -35.385452137707, -33.8
+   0, -57.8948427221833
+   35.385452137707, -33.8
 ```
 
 #### `zone`
@@ -231,37 +276,37 @@ Identify zone at a particular geodetic position.
 > dgg isea3h zone 34,-70
 DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/ISEA3H
 Textual Zone ID: A2-0-A
-64-bit integer ID: 36028797018963968 (0x80000000000000)
+64-bit integer ID: 18014398509481984 (0x40000000000000)
 
 Level 0 zone (5 edges, centroid child)
 42505468477007.4 m² (42505468.4770074 km²)
 49411 sub-zones at depth 10
-WGS84 Centroid (lat, lon): 31.832359041336, -78.8
-WGS84 Extent (lat, lon): { 0.00000000095824612, -123.799999999422 }, { 69.1802100999282, -33.8000000009355 }
+WGS84 Centroid (lat, lon): 31.832357532016, -78.8
+WGS84 Extent (lat, lon): { 0, -123.8 }, { 69.1802093248182, -33.8 }
 
 No parent
 
 Children (6):
-   A2-0-D (centroid)
-   A2-0-E
-   A2-0-F
-   A1-0-E
-   A0-0-F
-   A0-0-E
+   A2-0-B (centroid)
+   A2-0-C
+   A2-0-D
+   A1-0-C
+   A0-0-D
+   A0-0-C
 
 Neighbors (5):
    (direction 2): A0-0-A
    (direction 3): A4-0-A
-   (direction 0): A0-0-B
+   (direction 0): AA-0-A
    (direction 6): A1-0-A
    (direction 7): A3-0-A
 
 [EPSG:4326] Vertices (5):
-   35.3854531438384, -33.8000000009355
-   0.0000000010850795, -57.894842551487
-   0.00000000095824612, -99.7051574473385
-   35.3854531459823, -123.799999999422
-   69.1802100999282, -78.8000000030274
+   35.385452137707, -33.8
+   0, -57.8948427221833
+   0, -99.7051575819393
+   35.3854519371908, -123.8
+   69.1802093248182, -78.8
 ```
 
 #### `level`
@@ -330,7 +375,7 @@ Assuming sub-zone depth of 10 (59293 sub-zones) and display resolution of 0.28 m
 Output is [GeoJSON](https://geojson.org/):
 
 ```
-> dgg isea3h -crs isea grid 3 > isea3h-level3-isea.geojson
+> dgg isea3h -crs ico grid 3 > isea3h-level3-isea.geojson
 ```
 
 ![image](images/isea3h-grid-level3.png)
@@ -375,7 +420,7 @@ Generate geometry of a specific zone
 ```
 
 ```
-> dgg -crs isea isea3h geom A4-0-A
+> dgg -crs ico isea3h geom A4-0-A
 ```
 
 ![image](images/zone-geom.png)
@@ -389,8 +434,8 @@ Generate geometry of a specific zone
 ```
 
 ```json
-[ "A0-0-A", "A0-0-B", "A1-0-A", "A2-0-A", "A3-0-A", "A4-0-A", "A5-0-A",
-"A6-0-A", "A7-0-A", "A8-0-A", "A9-0-A", "A9-0-C" ]
+[ "A0-0-A", "A1-0-A", "A2-0-A", "A3-0-A", "A4-0-A", "A5-0-A",
+"A6-0-A", "A7-0-A", "A8-0-A", "A9-0-A", "AA-0-A", "AB-0-A" ]
 ```
 
 ##### List compacted zones of a given refinement level for a particular bounding box
@@ -415,9 +460,9 @@ Generate geometry of a specific zone
 Show relationships between two zones
 
 ```
-> dgg isea3h rel A4-0-A D4-20-F
+> dgg isea3h rel A4-0-A D4-20-D
 DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/ISEA3H
-Relationships between zones A4-0-A (A) and D4-20-F (B):
+Relationships between zones A4-0-A (A) and D4-20-D (B):
 
 Zone A is coarser than zone B by 7 refinement levels
 The area of zone A is greater than the area of zone B (area of B is 0.054869684499314 % of zone A)
@@ -443,11 +488,11 @@ Zone A and B overlap
 ```
 
 ```json
-[ "B2-7-D", "B2-4-F", "B2-4-E", "B2-5-D", "B2-7-F", "B2-7-E", "B2-8-D",
-"B2-5-F", "B2-5-E", "B3-1-E", "B3-2-D", "B2-8-F", "B2-8-E", "B4-1-D",
-"B4-1-E", "B3-5-D", "B3-2-F", "B3-2-E", "B4-0-D", "B4-0-E", "B4-1-F",
-"B4-5-D", "B3-5-E", "B4-3-D", "B4-0-F", "B4-4-D", "B4-4-E", "B4-3-F",
-"B4-3-E", "B4-4-F", "B4-7-D" ]
+[ "B2-7-B", "B2-4-D", "B2-4-C", "B2-5-B", "B2-7-D", "B2-7-C", "B2-8-B",
+"B2-5-D", "B2-5-C", "B3-1-C", "B3-2-B", "B2-8-D", "B2-8-C", "B4-1-B",
+"B4-1-C", "B3-5-B", "B3-2-D", "B3-2-C", "B4-0-B", "B4-0-C", "B4-1-D",
+"B4-5-B", "B3-5-C", "B4-3-B", "B4-0-D", "B4-4-B", "B4-4-C", "B4-3-D",
+"B4-3-C", "B4-4-D", "B4-7-B" ]
 ```
 
 ##### Identify sub-zone of parent zone at a particular relative depth and index
@@ -457,7 +502,7 @@ Zone A and B overlap
 ```
 
 ```json
-"B2-5-E"
+"B2-5-C"
 ```
 
 #### `index`
@@ -465,15 +510,15 @@ Zone A and B overlap
 ##### Query index of sub-zone
 
 ```
-> dgg isea3h index A4-0-A B2-5-E
+> dgg isea3h index A4-0-A B2-5-C
 DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/ISEA3H
-B2-5-E is at index 8 of A4-0-A at depth 3
+B2-5-C is at index 8 of A4-0-A at depth 3
 ```
 
 ```
-> dgg isea3h index A4-0-A B6-5-E
+> dgg isea3h index A4-0-A B6-5-C
 DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/ISEA3H
-sub-zone B6-5-E not found within parent A4-0-A
+sub-zone B6-5-C not found within parent A4-0-A
 ```
 
 #### `togeo`
@@ -481,10 +526,10 @@ sub-zone B6-5-E not found within parent A4-0-A
 Converts [DGGS-JSON](http://dggs-json.org) (and eventually [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg) and [UBJSON](https://ubjson.org/) variants) to GeoJSON
 to facilitate interoperability with traditional GIS software / software not aware of the DGGRS.
 
-https://maps.gnosis.earth/ogcapi/collections/sentinel2-l2a/dggs/ISEA3H/zones/G7-67252-D/data.json?zone-depth=8&datetime=2022-10-28&properties=B08
+https://maps.gnosis.earth/ogcapi/collections/sentinel2-l2a/dggs/ISEA3H/zones/G7-67252-B/data.json?zone-depth=8&datetime=2022-10-28&properties=B08
 
 ```
-> dgg isea3h togeo -isea G7-67252-D-B08.json
+> dgg isea3h togeo -crs ico G7-67252-B-B08.json
 ```
 
 ![image](images/B08.png)

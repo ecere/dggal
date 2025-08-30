@@ -57,7 +57,7 @@ static void showSyntax()
       "     Output to file instead of standard output\n"
       "   -crs <crs>\n"
       "     Select an output coordinate reference system, one of:\n"
-      "        EPSG:4326, OGC:CRS84, 5x6, ico (icosahedron net), rhp (rHEALPix)\n"
+      "        EPSG:4326, OGC:CRS84, 5x6, ico (icosahedron net), rhp (rHEALPix), hpx (HEALPix)\n"
       "   -depth <relative depth>\n"
       "      For sub, specify relative depth\n"
       "      Also to change depth considered for calculating optional [level] from -scale, -mpp and -pixels\n"
