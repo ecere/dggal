@@ -14,7 +14,7 @@ extern uint64 powersOf3[34]; // in RI3H.ec
 
 #define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
 
-class RHPZone : DGGRSZone
+public class RHPZone : private DGGRSZone
 {
 public:
    uint level:5:59, row:29:30, col:30:0;

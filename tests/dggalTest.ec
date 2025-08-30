@@ -440,6 +440,13 @@ public class DGGSUnitTest : eTest
                      dggrs.getZoneTextID(zone, zID);
                      dggrs.getZoneTextID(neighbors[i], nID);
                      PrintLn("Non reciprocal neighbors: ", zID, " and ", nID);
+
+                     PrintLn("Computed neighbors for ", nID, " which ", zID, " considers its neighbor are:");
+                     for(j = 0; j < nr; j++)
+                     {
+                        dggrs.getZoneTextID(rNeighbors[j], nID);
+                        PrintLn("   ", nID);
+                     }
                      break;
                   }
                }
@@ -578,5 +585,6 @@ public class DGGSUnitTest : eTest
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
       testSubZones(class(ISEA7H), 4, 0);
+      testSubZones(class(HEALPix), 4, 0);
    }
 }

@@ -479,7 +479,7 @@ public class RhombicIcosahedral9R : DGGRS
 }
 
 // public for use in tests
-public class I9RZone : DGGRSZone
+public class I9RZone : private DGGRSZone
 {
 public:
    uint level:5:59, row:29:30, col:30:0;

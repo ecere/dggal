@@ -525,7 +525,7 @@ public:
 }
 
 // Public for use in test
-public class GGGZone : DGGRSZone
+public class GGGZone : private DGGRSZone
 {
 public:
    uint level:5:59, row:29:30, col:30:0;

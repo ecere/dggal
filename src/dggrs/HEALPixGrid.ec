@@ -12,19 +12,25 @@ static define POW_EPSILON = 0.1;
 
 define HP_MAX_VERTICES = 200; // * 1024;
 
-extern uint64 powersOf3[34]; // in RI3H.ec
-
-#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
-
 /*static*/ define sqrt2 = 1.41421356237309504880168872420969807856967; //sqrt(2);
 
-class HPZone : DGGRSZone
+class HPZone : private DGGRSZone
 {
 public:
    uint level:5:56;
    uint rootRhombus:4:52;
    uint64 subIndex:52:0;
 
+   // These are only to avoid mistakingly accessing the invalid base DGGRSZone row and col properties
+   // The formulas should be used directly to avoid the property overhead.
+   property int row
+   {
+      get { return (int)(subIndex >> level); }
+   }
+   property int col
+   {
+      get { return (int)(subIndex - (((int64)(subIndex >> level)) << level)); }
+   }
    property HPZone parent
    {
       get
@@ -33,7 +39,7 @@ public:
          if(level > 0)
          {
             int row = (int)(subIndex >> level);
-            int col = (int)(subIndex - (row << level));
+            int col = (int)(subIndex - ((int64)row << level));
             int pLevel = level - 1;
             return { pLevel, rootRhombus, ((row >> 1) << pLevel) | (col >> 1) };
          }
@@ -49,7 +55,7 @@ public:
          int64 p = 1LL << level;
          double oop = 1.0 / p;
          int row = (int)(subIndex >> level);
-         int col = (int)(subIndex - (row << level));
+         int col = (int)(subIndex - ((int64)row << level));
          double x = rCol + (int)(rRow == 0) + col * oop;
          double y = rCol + (int)(rRow == 2) + row * oop;
 
@@ -69,7 +75,7 @@ public:
          int64 p = 1LL << level;
          double oop = 1.0 / p;
          int row = (int)(subIndex >> level);
-         int col = (int)(subIndex - (row << level));
+         int col = (int)(subIndex - ((int64)row << level));
          double x = rCol + (int)(rRow == 0) + col * oop;
          double y = rCol + (int)(rRow == 2) + row * oop;
 
@@ -92,6 +98,7 @@ public:
 
    HPZone ::fromPoint(const Pointd v, int level)
    {
+      // TODO:
       return nullZone;
       /*
       int row, col;
@@ -211,7 +218,7 @@ public class HEALPix : DGGRS
 
    uint64 countSubZones(HPZone zone, int depth)
    {
-      return 1LL << (2 * depth);
+      return 0; // TODO: 1LL << (2 * depth);
    }
 
    int getZoneLevel(HPZone zone)
@@ -236,58 +243,82 @@ public class HEALPix : DGGRS
 
    int getZoneNeighbors(HPZone zone, HPZone * neighbors, int * nbType)
    {
-      int level = zone.level, row = zone.row, col = zone.col;
-      int p = (int)(pow(3, level) + POW_EPSILON);
-      int rr = row / p;
+      int level = zone.level, root = zone.rootRhombus;
+      uint64 subIndex = zone.subIndex;
+      int row = (int)(subIndex >> level);
+      int col = (int)(subIndex - ((int64)row << level));
+      int64 p = 1LL << level;
 
       // Left
       if(col > 0)
-         neighbors[0] = { level, row, col - 1 };
-      else if(rr == 1) // Equatorial wrap around
-         neighbors[0] = { level, row, 4 * p - 1 };
-      else if(rr == 0) // North -> equatorial
-         neighbors[0] = { level, p, 4 * p - (p-row) };
-      else if(rr == 2) // South -> equatorial
-         neighbors[0] = { level, 2*p-1, 4 * p - 1 - (row - 2*p) };
+         neighbors[0] = { level, root, ((int64)row << level) | (col - 1) };
+      else if(root >= 8)
+      {
+         // Crossing interruption to the left
+         int lRoot = root == 8 ? 0xB : root - 1;
+         neighbors[0] = { level, lRoot, ((int64)(p-1) << level) | (p-1-row) };
+      }
+      else
+      {
+         int lRoot =
+            root <= 3 ? root + 4 :
+            root >= 5 && root <= 7 ? root + 3 :
+            /*root == 4 ? */0xB;
+         neighbors[0] = { level, lRoot, ((int64)row << level) | (p - 1) };
+      }
 
       // Right
-      if(col < (rr == 1 ? 4*p : p) - 1)
-         neighbors[1] = { level, row, col + 1 };
-      else if(rr == 1) // Equatorial wrap around
-         neighbors[1] = { level, row, 0 };
-      else if(rr == 0) // North -> equatorial
-         neighbors[1] = { level, p, p + (p-1-row) };
-      else if(rr == 2) // South -> equatorial
-         neighbors[1] = { level, 2*p-1, p + (row - 2*p) };
+      if(col < p-1)
+         neighbors[1] = { level, root, ((int64)row << level) | (col + 1) };
+      else if(root <= 3)
+      {
+         // Crossing interruption to the right
+         int rRoot = root == 3 ? 0 : root + 1;
+         neighbors[1] = { level, rRoot, ((int64)0 << level) | (p-1-row) };
+      }
+      else
+      {
+         int rRoot =
+            root >= 4 && root <= 7 ? root - 4 :
+            root >= 8 && root <= 0xA ? root - 3 :
+            /*root == 0xB ? */4;
+         neighbors[1] = { level, rRoot, ((int64)row << level) | 0 };
+      }
 
       // Top
-      if(row > 0 && (col < p || row > p))
-         neighbors[2] = { level, row - 1, col };
-      else if(rr == 0) // North -> equatorial
-         neighbors[2] = { level, p, 2*p + (p-1-col) };
-      else if(rr == 1) // Equatorial -> North
+      if(row > 0)
+         neighbors[2] = { level, root, ((int64)(row - 1) << level) | col };
+      else if(root <= 3)
       {
-         if(col < 2 * p)
-            neighbors[2] = { level, (p - (col - p)) - 1, p-1 };  // FIXME: eC bug here if using row =  or col =
-         else if(col < 3 * p)
-            neighbors[2] = { level, 0, p - 1 - (col - 2*p) };
-         else
-            neighbors[2] = { level, col - 3*p, 0 };
+         // Crossing interruption to the left
+         int tRoot = root == 0 ? 3 : root - 1;
+         neighbors[2] = { level, tRoot, ((int64)(p-1-col) << level) | (p - 1) };
+      }
+      else
+      {
+         int tRoot =
+            root >= 8 && root <= 0xB ? root - 4 :
+            root >= 5 && root <= 7 ? root - 5 :
+            /*root == 4 ? **/ 3;
+         neighbors[2] = { level, tRoot, ((int64)(p - 1) << level) | col };
       }
 
       // Bottom
-      if(row < 3*p-1 && (col < p || row < 2*p-1))
-         neighbors[3] = { level, row + 1, col };
-      else if(rr == 2) // South -> equatorial
-         neighbors[3] = { level, 2*p-1, 2*p + (p-col) - 1 };
-      else if(rr == 1) // Equatorial -> South
+      if(row < p-1)
+         neighbors[3] = { level, root, ((int64)(row + 1) << level) | col };
+      else if(root >= 8)
       {
-         if(col < 2 * p)
-            neighbors[3] = { level, 2*p + (col - p), p-1 };
-         else if(col < 3 * p)
-            neighbors[3] = { level, 3*p-1, p - 1 - (col - 2*p) };
-         else
-            neighbors[3] = { level, 2*p + p - (col - 3*p) - 1, 0 };
+         // Crossing interruption to the right
+         int bRoot = root == 0xB ? 8 : root + 1;
+         neighbors[3] = { level, bRoot, ((int64)(p-1-col) << level) | 0 };
+      }
+      else
+      {
+         int bRoot =
+            root >= 4 && root <= 7 ? root + 4 :
+            root >= 0 && root <= 2 ? root + 5 :
+            /*root == 3 ? */4;
+         neighbors[3] = { level, bRoot, ((int64)0 << level) | col };
       }
 
       if(nbType)
@@ -381,6 +412,7 @@ public class HEALPix : DGGRS
       delete zonesTree;
    }
 
+   /*
    void addPolarZones(AVLTree<HPZone> zonesTree, HPZone pZone, int level, const GeoExtent bbox)
    {
       GeoExtent e;
@@ -401,6 +433,7 @@ public class HEALPix : DGGRS
          }
       }
    }
+   */
 
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
@@ -528,7 +561,7 @@ public class HEALPix : DGGRS
       int64 p = 1LL << level;
       double oop = 1.0 / p;
       int row = (int)(subIndex >> level);
-      int col = (int)(subIndex - (row << level));
+      int col = (int)(subIndex - ((int64)row << level));
       double x = rCol + (int)(rRow == 0) + col * oop;
       double y = rCol + (int)(rRow == 2) + row * oop;
       uint count = 4, i;
@@ -622,6 +655,8 @@ public class HEALPix : DGGRS
 
    Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
    {
+      // TODO:
+      /*
       int level = parent.level + relativeDepth;
       int row = parent.row, col = parent.col;
       int p = (int)(pow(3, relativeDepth) + POW_EPSILON);
@@ -632,6 +667,8 @@ public class HEALPix : DGGRS
          for(c = 0; c < p; c++, i++)
             subZones[i] = HPZone { level, row * p + r, col * p + c };
       return subZones;
+      */
+      return null;
    }
 
    void getZoneCRSCentroid(HPZone zone, CRS crs, Pointd centroid)
@@ -663,7 +700,7 @@ public class HEALPix : DGGRS
       int64 p = 1LL << level;
       double oop = 1.0 / p;
       int row = (int)(subIndex >> level);
-      int col = (int)(subIndex - (row << level));
+      int col = (int)(subIndex - ((int64)row << level));
       double x = rCol + (int)(rRow == 0) + col * oop;
       double y = rCol + (int)(rRow == 2) + row * oop;
 
