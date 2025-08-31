@@ -866,6 +866,8 @@ private:
          uint64 p = POW7(l49r), rSize = p * p;
          uint64 rix = root == 10 ? 0 : root == 11 ? 1 : 2 + root * rSize + ix;
          result = { l49r, rix, subHex - 'A' };
+         if((result.subHex > 0) != ((levelChar - 'A') & 1) || ix >= rSize || root > 11)
+            result = nullZone;
       }
       return result;
    }
