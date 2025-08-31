@@ -1,6 +1,66 @@
 from ecrt import *
 from _pydggal import *
 
+@ffi.callback("eC_bool(eC_RI5x6Projection, const eC_GeoPoint *, eC_Pointd *)")
+def cb_RI5x6Projection_forward(__e, p, v):
+   ri5x6projection = pyOrNewObject(RI5x6Projection, __e)
+   return ri5x6projection.fn_RI5x6Projection_forward(ri5x6projection, GeoPoint(impl = p), Pointd(impl = v))
+
+@ffi.callback("eC_bool(eC_RI5x6Projection, const eC_Pointd *, eC_GeoPoint *, eC_bool)")
+def cb_RI5x6Projection_inverse(__e, v, result, oddGrid):
+   ri5x6projection = pyOrNewObject(RI5x6Projection, __e)
+   return ri5x6projection.fn_RI5x6Projection_inverse(ri5x6projection, Pointd(impl = v), GeoPoint(impl = result), oddGrid)
+
+class RI5x6Projection(Instance):
+   class_members = [
+                      'forward',
+                      'inverse',
+                   ]
+
+   def init_args(self, args, kwArgs): init_args(RI5x6Projection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+   def extent5x6FromWGS84(self, wgs84Extent = None, topLeft = None, bottomRight = None):
+      if wgs84Extent is not None and not isinstance(wgs84Extent, GeoExtent): wgs84Extent = GeoExtent(wgs84Extent)
+      wgs84Extent = ffi.NULL if wgs84Extent is None else wgs84Extent.impl
+      if topLeft is not None and not isinstance(topLeft, Pointd): topLeft = Pointd(topLeft)
+      topLeft = ffi.NULL if topLeft is None else topLeft.impl
+      if bottomRight is not None and not isinstance(bottomRight, Pointd): bottomRight = Pointd(bottomRight)
+      bottomRight = ffi.NULL if bottomRight is None else bottomRight.impl
+      lib.RI5x6Projection_extent5x6FromWGS84(self.impl, ffi.cast("eC_GeoExtent *", wgs84Extent), ffi.cast("eC_Pointd *", topLeft), ffi.cast("eC_Pointd *", bottomRight))
+
+   def fn_unset_RI5x6Projection_forward(self, p, v):
+      return lib.RI5x6Projection_forward(self.impl, ffi.NULL if p is None else p.impl, ffi.NULL if v is None else v.impl)
+
+   @property
+   def forward(self):
+      if hasattr(self, 'fn_RI5x6Projection_forward'): return self.fn_RI5x6Projection_forward
+      else: return self.fn_unset_RI5x6Projection_forward
+   @forward.setter
+   def forward(self, value):
+      self.fn_RI5x6Projection_forward = value
+      lib.Instance_setMethod(self.impl, "forward".encode('u8'), cb_RI5x6Projection_forward)
+
+   def fn_unset_RI5x6Projection_inverse(self, v, result, oddGrid):
+      return lib.RI5x6Projection_inverse(self.impl, ffi.NULL if v is None else v.impl, ffi.NULL if result is None else result.impl, oddGrid)
+
+   @property
+   def inverse(self):
+      if hasattr(self, 'fn_RI5x6Projection_inverse'): return self.fn_RI5x6Projection_inverse
+      else: return self.fn_unset_RI5x6Projection_inverse
+   @inverse.setter
+   def inverse(self, value):
+      self.fn_RI5x6Projection_inverse = value
+      lib.Instance_setMethod(self.impl, "inverse".encode('u8'), cb_RI5x6Projection_inverse)
+
+class BarycentricSphericalTriAreaProjection(RI5x6Projection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(BarycentricSphericalTriAreaProjection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class GeoPoint(Struct):
    def __init__(self, lat = 0, lon = 0, impl = None):
       if impl is not None:
@@ -906,15 +966,81 @@ class GeoExtent(Struct):
       self.impl.ur = value.impl[0]
 
    @property
+   def nonNull(self): return lib.GeoExtent_get_nonNull(self.impl)
+
+   @property
    def geodeticArea(self): return lib.GeoExtent_get_geodeticArea(self.impl)
 
    def clear(self):
       lib.GeoExtent_clear(ffi.cast("eC_GeoExtent *", self.impl))
 
+   def clip(self, e = None, clipExtent = None):
+      if e is not None and not isinstance(e, GeoExtent): e = GeoExtent(e)
+      e = ffi.NULL if e is None else e.impl
+      if clipExtent is not None and not isinstance(clipExtent, GeoExtent): clipExtent = GeoExtent(clipExtent)
+      clipExtent = ffi.NULL if clipExtent is None else clipExtent.impl
+      return lib.GeoExtent_clip(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", e), ffi.cast("eC_GeoExtent *", clipExtent))
+
+   def clipHandlingDateline(self, e = None, clipExtent = None):
+      if e is not None and not isinstance(e, GeoExtent): e = GeoExtent(e)
+      e = ffi.NULL if e is None else e.impl
+      if clipExtent is not None and not isinstance(clipExtent, GeoExtent): clipExtent = GeoExtent(clipExtent)
+      clipExtent = ffi.NULL if clipExtent is None else clipExtent.impl
+      return lib.GeoExtent_clipHandlingDateline(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", e), ffi.cast("eC_GeoExtent *", clipExtent))
+
+   def doUnionDL(self, e = None):
+      if e is not None and not isinstance(e, GeoExtent): e = GeoExtent(e)
+      e = ffi.NULL if e is None else e.impl
+      lib.GeoExtent_doUnionDL(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", e))
+
    def intersects(self, b = None):
       if b is not None and not isinstance(b, GeoExtent): b = GeoExtent(b)
       b = ffi.NULL if b is None else b.impl
       return lib.GeoExtent_intersects(ffi.cast("eC_GeoExtent *", self.impl), ffi.cast("eC_GeoExtent *", b))
+
+@ffi.callback("eC_bool(eC_HEALPixProjection, const eC_GeoPoint *, eC_Pointd *)")
+def cb_HEALPixProjection_forward(__e, p, v):
+   healpixprojection = pyOrNewObject(HEALPixProjection, __e)
+   return healpixprojection.fn_HEALPixProjection_forward(healpixprojection, GeoPoint(impl = p), Pointd(impl = v))
+
+@ffi.callback("eC_bool(eC_HEALPixProjection, const eC_Pointd *, eC_GeoPoint *, eC_bool)")
+def cb_HEALPixProjection_inverse(__e, v, result, oddGrid):
+   healpixprojection = pyOrNewObject(HEALPixProjection, __e)
+   return healpixprojection.fn_HEALPixProjection_inverse(healpixprojection, Pointd(impl = v), GeoPoint(impl = result), oddGrid)
+
+class HEALPixProjection(Instance):
+   class_members = [
+                      'forward',
+                      'inverse',
+                   ]
+
+   def init_args(self, args, kwArgs): init_args(HEALPixProjection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+   def fn_unset_HEALPixProjection_forward(self, p, v):
+      return lib.HEALPixProjection_forward(self.impl, ffi.NULL if p is None else p.impl, ffi.NULL if v is None else v.impl)
+
+   @property
+   def forward(self):
+      if hasattr(self, 'fn_HEALPixProjection_forward'): return self.fn_HEALPixProjection_forward
+      else: return self.fn_unset_HEALPixProjection_forward
+   @forward.setter
+   def forward(self, value):
+      self.fn_HEALPixProjection_forward = value
+      lib.Instance_setMethod(self.impl, "forward".encode('u8'), cb_HEALPixProjection_forward)
+
+   def fn_unset_HEALPixProjection_inverse(self, v, result, oddGrid):
+      return lib.HEALPixProjection_inverse(self.impl, ffi.NULL if v is None else v.impl, ffi.NULL if result is None else result.impl, oddGrid)
+
+   @property
+   def inverse(self):
+      if hasattr(self, 'fn_HEALPixProjection_inverse'): return self.fn_HEALPixProjection_inverse
+      else: return self.fn_unset_HEALPixProjection_inverse
+   @inverse.setter
+   def inverse(self, value):
+      self.fn_HEALPixProjection_inverse = value
+      lib.Instance_setMethod(self.impl, "inverse".encode('u8'), cb_HEALPixProjection_inverse)
 
 class RhombicIcosahedral3H(DGGRS):
    class_members = []
@@ -923,10 +1049,31 @@ class RhombicIcosahedral3H(DGGRS):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class RhombicIcosahedral4R(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral4R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RhombicIcosahedral7H(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class RhombicIcosahedral9R(DGGRS):
    class_members = []
 
    def init_args(self, args, kwArgs): init_args(RhombicIcosahedral9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class SliceAndDiceGreatCircleIcosahedralProjection(RI5x6Projection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(SliceAndDiceGreatCircleIcosahedralProjection, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
@@ -1123,6 +1270,64 @@ class DGGSJSONDepth(Instance):
    @data.setter
    def data(self, value): IPTR(lib, ffi, self, DGGSJSONDepth).data = value.impl
 
+class DGGSJSONDimension(Instance):
+   class_members = [
+                      'name',
+                      'interval',
+                      'grid',
+                      'definition',
+                      'unit',
+                      'unitLang',
+                   ]
+
+   def init_args(self, args, kwArgs): init_args(DGGSJSONDimension, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+   @property
+   def name(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSONDimension).name)
+   @name.setter
+   def name(self, value):
+      if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
+      elif value is None: value = ffi.NULL
+      IPTR(lib, ffi, self, DGGSJSONDimension).name = value
+
+   @property
+   def interval(self): return pyOrNewObject(Array, IPTR(lib, ffi, self, DGGSJSONDimension).interval)
+   @interval.setter
+   def interval(self, value): IPTR(lib, ffi, self, DGGSJSONDimension).interval = value.impl
+
+   @property
+   def grid(self): return pyOrNewObject(DGGSJSONGrid, IPTR(lib, ffi, self, DGGSJSONDimension).grid)
+   @grid.setter
+   def grid(self, value):
+      if not isinstance(value, DGGSJSONGrid): value = DGGSJSONGrid(value)
+      IPTR(lib, ffi, self, DGGSJSONDimension).grid = value.impl
+
+   @property
+   def definition(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSONDimension).definition)
+   @definition.setter
+   def definition(self, value):
+      if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
+      elif value is None: value = ffi.NULL
+      IPTR(lib, ffi, self, DGGSJSONDimension).definition = value
+
+   @property
+   def unit(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSONDimension).unit)
+   @unit.setter
+   def unit(self, value):
+      if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
+      elif value is None: value = ffi.NULL
+      IPTR(lib, ffi, self, DGGSJSONDimension).unit = value
+
+   @property
+   def unitLang(self): return pyOrNewObject(String, IPTR(lib, ffi, self, DGGSJSONDimension).unitLang)
+   @unitLang.setter
+   def unitLang(self, value):
+      if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
+      elif value is None: value = ffi.NULL
+      IPTR(lib, ffi, self, DGGSJSONDimension).unitLang = value
+
 class DGGSJSONGrid(Instance):
    class_members = [
                       'cellsCount',
@@ -1235,19 +1440,59 @@ class GNOSISGlobalGrid(DGGRS):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
-class rHEALPix(DGGRS):
-   class_members = []
-
-   def init_args(self, args, kwArgs): init_args(rHEALPix, self, args, kwArgs)
-   def __init__(self, *args, **kwArgs):
-      self.init_args(list(args), kwArgs)
-
 class GPP3H(RhombicIcosahedral3H):
    class_members = []
 
    def init_args(self, args, kwArgs): init_args(GPP3H, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
+
+class GoldbergPolyhedraProjection(BarycentricSphericalTriAreaProjection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(GoldbergPolyhedraProjection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class HEALPix(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(HEALPix, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class HPZone(DGGRSZone):
+   def __init__(self, level = 0, rootRhombus = 0, subIndex = 0, impl = None):
+      if impl is not None:
+         self.impl = impl
+      elif isinstance(level, HPZone):
+         self.impl = level.impl
+      else:
+         if isinstance(level, tuple):
+            __tuple = level
+            level = 0
+            if len(__tuple) > 0: level = __tuple[0]
+            if len(__tuple) > 1: rootRhombus = __tuple[1]
+            if len(__tuple) > 2: subIndex = __tuple[2]
+         self.impl = (
+            (level       << lib.HPZONE_level_SHIFT)       |
+            (rootRhombus << lib.HPZONE_rootRhombus_SHIFT) |
+            (subIndex    << lib.HPZONE_subIndex_SHIFT)    )
+
+   @property
+   def level(self): return ((((self.impl)) & lib.HPZONE_level_MASK) >> lib.HPZONE_level_SHIFT)
+   @level.setter
+   def level(self, value): self.impl = ((self.impl) & ~(lib.HPZONE_level_MASK)) | (((value)) << lib.HPZONE_level_SHIFT)
+
+   @property
+   def rootRhombus(self): return ((((self.impl)) & lib.HPZONE_rootRhombus_MASK) >> lib.HPZONE_rootRhombus_SHIFT)
+   @rootRhombus.setter
+   def rootRhombus(self, value): self.impl = ((self.impl) & ~(lib.HPZONE_rootRhombus_MASK)) | (((value)) << lib.HPZONE_rootRhombus_SHIFT)
+
+   @property
+   def subIndex(self): return ((((self.impl)) & lib.HPZONE_subIndex_MASK) >> lib.HPZONE_subIndex_SHIFT)
+   @subIndex.setter
+   def subIndex(self, value): self.impl = ((self.impl) & ~(lib.HPZONE_subIndex_MASK)) | (((value)) << lib.HPZONE_subIndex_SHIFT)
 
 class I3HZone(DGGRSZone):
    def __init__(self, levelI9R = 0, rootRhombus = 0, rhombusIX = 0, subHex = 0, impl = None):
@@ -1289,6 +1534,72 @@ class I3HZone(DGGRSZone):
    @subHex.setter
    def subHex(self, value): self.impl = ((self.impl) & ~(lib.I3HZONE_subHex_MASK)) | (((value)) << lib.I3HZONE_subHex_SHIFT)
 
+class I4RZone(DGGRSZone):
+   def __init__(self, level = 0, row = 0, col = 0, impl = None):
+      if impl is not None:
+         self.impl = impl
+      elif isinstance(level, I4RZone):
+         self.impl = level.impl
+      else:
+         if isinstance(level, tuple):
+            __tuple = level
+            level = 0
+            if len(__tuple) > 0: level = __tuple[0]
+            if len(__tuple) > 1: row = __tuple[1]
+            if len(__tuple) > 2: col = __tuple[2]
+         self.impl = (
+            (level << lib.I4RZONE_level_SHIFT) |
+            (row   << lib.I4RZONE_row_SHIFT)   |
+            (col   << lib.I4RZONE_col_SHIFT)   )
+
+   @property
+   def level(self): return ((((self.impl)) & lib.I4RZONE_level_MASK) >> lib.I4RZONE_level_SHIFT)
+   @level.setter
+   def level(self, value): self.impl = ((self.impl) & ~(lib.I4RZONE_level_MASK)) | (((value)) << lib.I4RZONE_level_SHIFT)
+
+   @property
+   def row(self): return ((((self.impl)) & lib.I4RZONE_row_MASK) >> lib.I4RZONE_row_SHIFT)
+   @row.setter
+   def row(self, value): self.impl = ((self.impl) & ~(lib.I4RZONE_row_MASK)) | (((value)) << lib.I4RZONE_row_SHIFT)
+
+   @property
+   def col(self): return ((((self.impl)) & lib.I4RZONE_col_MASK) >> lib.I4RZONE_col_SHIFT)
+   @col.setter
+   def col(self, value): self.impl = ((self.impl) & ~(lib.I4RZONE_col_MASK)) | (((value)) << lib.I4RZONE_col_SHIFT)
+
+class I7HZone(DGGRSZone):
+   def __init__(self, levelI49R = 0, rhombusIX = 0, subHex = 0, impl = None):
+      if impl is not None:
+         self.impl = impl
+      elif isinstance(levelI49R, I7HZone):
+         self.impl = levelI49R.impl
+      else:
+         if isinstance(levelI49R, tuple):
+            __tuple = levelI49R
+            levelI49R = 0
+            if len(__tuple) > 0: levelI49R = __tuple[0]
+            if len(__tuple) > 1: rhombusIX = __tuple[1]
+            if len(__tuple) > 2: subHex = __tuple[2]
+         self.impl = (
+            (levelI49R << lib.I7HZONE_levelI49R_SHIFT) |
+            (rhombusIX << lib.I7HZONE_rhombusIX_SHIFT) |
+            (subHex    << lib.I7HZONE_subHex_SHIFT)    )
+
+   @property
+   def levelI49R(self): return ((((self.impl)) & lib.I7HZONE_levelI49R_MASK) >> lib.I7HZONE_levelI49R_SHIFT)
+   @levelI49R.setter
+   def levelI49R(self, value): self.impl = ((self.impl) & ~(lib.I7HZONE_levelI49R_MASK)) | (((value)) << lib.I7HZONE_levelI49R_SHIFT)
+
+   @property
+   def rhombusIX(self): return ((((self.impl)) & lib.I7HZONE_rhombusIX_MASK) >> lib.I7HZONE_rhombusIX_SHIFT)
+   @rhombusIX.setter
+   def rhombusIX(self, value): self.impl = ((self.impl) & ~(lib.I7HZONE_rhombusIX_MASK)) | (((value)) << lib.I7HZONE_rhombusIX_SHIFT)
+
+   @property
+   def subHex(self): return ((((self.impl)) & lib.I7HZONE_subHex_MASK) >> lib.I7HZONE_subHex_SHIFT)
+   @subHex.setter
+   def subHex(self, value): self.impl = ((self.impl) & ~(lib.I7HZONE_subHex_MASK)) | (((value)) << lib.I7HZONE_subHex_SHIFT)
+
 class I9RZone(DGGRSZone):
    def __init__(self, level = 0, row = 0, col = 0, impl = None):
       if impl is not None:
@@ -1329,10 +1640,31 @@ class ISEA3H(RhombicIcosahedral3H):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class ISEA4R(RhombicIcosahedral4R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEA4R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class ISEA7H(RhombicIcosahedral7H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEA7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class ISEA9R(RhombicIcosahedral9R):
    class_members = []
 
    def init_args(self, args, kwArgs): init_args(ISEA9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class ISEAProjection(SliceAndDiceGreatCircleIcosahedralProjection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEAProjection, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
@@ -1343,6 +1675,20 @@ class IVEA3H(RhombicIcosahedral3H):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class IVEA4R(RhombicIcosahedral4R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(IVEA4R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class IVEA7H(RhombicIcosahedral7H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(IVEA7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class IVEA9R(RhombicIcosahedral9R):
    class_members = []
 
@@ -1350,17 +1696,10 @@ class IVEA9R(RhombicIcosahedral9R):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
-class RTEA3H(RhombicIcosahedral3H):
+class IVEAProjection(SliceAndDiceGreatCircleIcosahedralProjection):
    class_members = []
 
-   def init_args(self, args, kwArgs): init_args(RTEA3H, self, args, kwArgs)
-   def __init__(self, *args, **kwArgs):
-      self.init_args(list(args), kwArgs)
-
-class RTEA9R(RhombicIcosahedral9R):
-   class_members = []
-
-   def init_args(self, args, kwArgs): init_args(RTEA9R, self, args, kwArgs)
+   def init_args(self, args, kwArgs): init_args(IVEAProjection, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
@@ -1754,6 +2093,120 @@ class Plane(Struct):
       v3 = ffi.NULL if v3 is None else v3.impl
       lib.Plane_fromPoints(ffi.cast("eC_Plane *", self.impl), ffi.cast("eC_Vector3D *", v1), ffi.cast("eC_Vector3D *", v2), ffi.cast("eC_Vector3D *", v3))
 
+class Quaternion(Struct):
+   def __init__(self, w = 0.0, x = 0.0, y = 0.0, z = 0.0, impl = None):
+      if impl is not None:
+         self.impl = ffi.new("eC_Quaternion *", impl)
+      else:
+         if isinstance(w, tuple):
+            __tuple = w
+            w = 0.0
+            if len(__tuple) > 0: w = __tuple[0]
+            if len(__tuple) > 1: x = __tuple[1]
+            if len(__tuple) > 2: y = __tuple[2]
+            if len(__tuple) > 3: z = __tuple[3]
+         self.impl = ffi.new("eC_Quaternion *", { 'w' : w, 'x' : x, 'y' : y, 'z' : z })
+
+   @property
+   def w(self): return self.impl.w
+   @w.setter
+   def w(self, value): self.impl.w = value
+
+   @property
+   def x(self): return self.impl.x
+   @x.setter
+   def x(self, value): self.impl.x = value
+
+   @property
+   def y(self): return self.impl.y
+   @y.setter
+   def y(self, value): self.impl.y = value
+
+   @property
+   def z(self): return self.impl.z
+   @z.setter
+   def z(self, value): self.impl.z = value
+
+   def yawPitch(self, yaw, pitch):
+      if yaw is not None and not isinstance(yaw, Angle): yaw = Degrees(yaw)
+      if yaw is None: yaw = ffi.NULL
+      if pitch is not None and not isinstance(pitch, Angle): pitch = Degrees(pitch)
+      if pitch is None: pitch = ffi.NULL
+      lib.Quaternion_yawPitch(ffi.cast("eC_Quaternion *", self.impl), yaw.impl, pitch.impl)
+
+class RHPZone(DGGRSZone):
+   def __init__(self, level = 0, row = 0, col = 0, impl = None):
+      if impl is not None:
+         self.impl = impl
+      elif isinstance(level, RHPZone):
+         self.impl = level.impl
+      else:
+         if isinstance(level, tuple):
+            __tuple = level
+            level = 0
+            if len(__tuple) > 0: level = __tuple[0]
+            if len(__tuple) > 1: row = __tuple[1]
+            if len(__tuple) > 2: col = __tuple[2]
+         self.impl = (
+            (level << lib.RHPZONE_level_SHIFT) |
+            (row   << lib.RHPZONE_row_SHIFT)   |
+            (col   << lib.RHPZONE_col_SHIFT)   )
+
+   @property
+   def level(self): return ((((self.impl)) & lib.RHPZONE_level_MASK) >> lib.RHPZONE_level_SHIFT)
+   @level.setter
+   def level(self, value): self.impl = ((self.impl) & ~(lib.RHPZONE_level_MASK)) | (((value)) << lib.RHPZONE_level_SHIFT)
+
+   @property
+   def row(self): return ((((self.impl)) & lib.RHPZONE_row_MASK) >> lib.RHPZONE_row_SHIFT)
+   @row.setter
+   def row(self, value): self.impl = ((self.impl) & ~(lib.RHPZONE_row_MASK)) | (((value)) << lib.RHPZONE_row_SHIFT)
+
+   @property
+   def col(self): return ((((self.impl)) & lib.RHPZONE_col_MASK) >> lib.RHPZONE_col_SHIFT)
+   @col.setter
+   def col(self, value): self.impl = ((self.impl) & ~(lib.RHPZONE_col_MASK)) | (((value)) << lib.RHPZONE_col_SHIFT)
+
+class RTEA3H(RhombicIcosahedral3H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEA3H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RTEA4R(RhombicIcosahedral4R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEA4R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RTEA7H(RhombicIcosahedral7H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEA7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RTEA9R(RhombicIcosahedral9R):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEA9R, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RTEAProjection(SliceAndDiceGreatCircleIcosahedralProjection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEAProjection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class VGCRadialVertex:
+   isea = lib.VGCRadialVertex_isea
+   ivea = lib.VGCRadialVertex_ivea
+   rtea = lib.VGCRadialVertex_rtea
+
 class Vector3D(Struct):
    def __init__(self, x = 0.0, y = 0.0, z = 0.0, impl = None):
       if impl is not None:
@@ -1797,6 +2250,13 @@ class Vector3D(Struct):
       vector2 = ffi.NULL if vector2 is None else vector2.impl
       return lib.Vector3D_dotProduct(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector2))
 
+   def multQuaternion(self, s = None, quat = None):
+      if s is not None and not isinstance(s, Vector3D): s = Vector3D(s)
+      s = ffi.NULL if s is None else s.impl
+      if quat is not None and not isinstance(quat, Quaternion): quat = Quaternion(quat)
+      quat = ffi.NULL if quat is None else quat.impl
+      lib.Vector3D_multQuaternion(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", s), ffi.cast("eC_Quaternion *", quat))
+
    def normalize(self, source = None):
       if source is not None and not isinstance(source, Vector3D): source = Vector3D(source)
       source = ffi.NULL if source is None else source.impl
@@ -1809,6 +2269,20 @@ class Vector3D(Struct):
       vector2 = ffi.NULL if vector2 is None else vector2.impl
       lib.Vector3D_subtract(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector1), ffi.cast("eC_Vector3D *", vector2))
 
+class rHEALPix(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(rHEALPix, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class rHEALPixProjection(HEALPixProjection):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(rHEALPixProjection, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 def readDGGSJSON(f = None):
    if f is not None and not isinstance(f, File): f = File(f)
    f = ffi.NULL if f is None else f.impl
@@ -1818,22 +2292,41 @@ def pydggal_setup(app):
    app.appGlobals.append(globals())
    if lib.dggal_init(app.impl) == ffi.NULL: raise Exception("Failed to load library")
    app.registerClass(BCTA3H, True)
+   app.registerClass(BarycentricSphericalTriAreaProjection, True)
    app.registerClass(DGGRS, True)
    app.registerClass(DGGSJSON, True)
    app.registerClass(DGGSJSONDepth, True)
+   app.registerClass(DGGSJSONDimension, True)
    app.registerClass(DGGSJSONGrid, True)
    app.registerClass(DGGSJSONShape, True)
    app.registerClass(GNOSISGlobalGrid, True)
-   app.registerClass(rHEALPix, True)
    app.registerClass(GPP3H, True)
+   app.registerClass(GoldbergPolyhedraProjection, True)
+   app.registerClass(HEALPix, True)
+   app.registerClass(HEALPixProjection, True)
    app.registerClass(ISEA3H, True)
+   app.registerClass(ISEA4R, True)
+   app.registerClass(ISEA7H, True)
    app.registerClass(ISEA9R, True)
+   app.registerClass(ISEAProjection, True)
    app.registerClass(IVEA3H, True)
+   app.registerClass(IVEA4R, True)
+   app.registerClass(IVEA7H, True)
    app.registerClass(IVEA9R, True)
-   app.registerClass(RTEA3H, True)
-   app.registerClass(RTEA9R, True)
+   app.registerClass(IVEAProjection, True)
    app.registerClass(JSONSchema, True)
+   app.registerClass(RI5x6Projection, True)
+   app.registerClass(RTEA3H, True)
+   app.registerClass(RTEA4R, True)
+   app.registerClass(RTEA7H, True)
+   app.registerClass(RTEA9R, True)
+   app.registerClass(RTEAProjection, True)
    app.registerClass(RhombicIcosahedral3H, True)
+   app.registerClass(RhombicIcosahedral4R, True)
+   app.registerClass(RhombicIcosahedral7H, True)
    app.registerClass(RhombicIcosahedral9R, True)
+   app.registerClass(SliceAndDiceGreatCircleIcosahedralProjection, True)
+   app.registerClass(rHEALPix, True)
+   app.registerClass(rHEALPixProjection, True)
 
 nullZone = lib.nullZone

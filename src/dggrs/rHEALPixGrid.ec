@@ -19,6 +19,7 @@ public class RHPZone : private DGGRSZone
 public:
    uint level:5:59, row:29:30, col:30:0;
 
+private:
    property RHPZone parent
    {
       get

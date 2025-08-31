@@ -12,13 +12,14 @@ static define POW_EPSILON = 0.1;
 
 define HP_MAX_VERTICES = 200; // * 1024;
 
-class HPZone : private DGGRSZone
+public class HPZone : private DGGRSZone
 {
 public:
    uint level:5:56;
    uint rootRhombus:4:52;
    uint64 subIndex:52:0;
 
+private:
    // These are only to avoid mistakingly accessing the invalid base DGGRSZone row and col properties
    // The formulas should be used directly to avoid the property overhead.
    property int row
@@ -29,6 +30,7 @@ public:
    {
       get { return (int)(subIndex - (((int64)(subIndex >> level)) << level)); }
    }
+
    property HPZone parent
    {
       get

@@ -45,7 +45,16 @@ extern "C" {
 // namespace /////////////// //////////////////////////////////////////////////////////////////// ////////////////////////////////
 
 
+
+
 // start -- moved backwards outputs
+typedef uint64 C(CRS);
+struct C(CRSExtent)
+{
+   C(CRS) crs;
+   C(Pointd) tl;
+   C(Pointd) br;
+};
 struct C(GeoPoint)
 {
    C(Angle) lat;
@@ -57,14 +66,17 @@ struct C(Vector3D)
    double y;
    double z;
 };
-typedef uint64 C(CRS);
+typedef C(Instance) C(RI5x6Projection);
+typedef C(RI5x6Projection) C(BarycentricSphericalTriAreaProjection);
 typedef struct C(CRSExtent) C(CRSExtent);
 typedef C(Instance) C(DGGRS);
 typedef uint64 C(DGGRSZone);
 typedef C(Instance) C(DGGSJSON);
+typedef C(Instance) C(DGGSJSONGrid);
 typedef C(Instance) C(DGGSJSONShape);
 typedef struct C(GeoExtent) C(GeoExtent);
 typedef struct C(GeoPoint) C(GeoPoint);
+typedef C(Instance) C(HEALPixProjection);
 typedef C(Instance) C(JSONSchema);
 #if CPP11
 enum C(JSONSchemaType) : int
@@ -84,11 +96,15 @@ enum C(JSONSchemaType)
 };
 
 typedef struct C(Plane) C(Plane);
+typedef struct C(Quaternion) C(Quaternion);
 typedef C(DGGRS) C(RhombicIcosahedral3H);
+typedef C(DGGRS) C(RhombicIcosahedral4R);
+typedef C(DGGRS) C(RhombicIcosahedral7H);
 typedef C(DGGRS) C(RhombicIcosahedral9R);
+typedef C(RI5x6Projection) C(SliceAndDiceGreatCircleIcosahedralProjection);
 typedef struct C(Vector3D) C(Vector3D);
 // end -- moved backwards outputs
-#define nullZone ((C(DGGRSZone))0xFFFFFFFFFFFFFFFFLL)
+#define nullZone (0xFFFFFFFFFFFFFFFFLL)
 
 #define wgs84InvFlattening (298.257223563)
 
@@ -111,19 +127,48 @@ enum C(CRSRegistry)
 };
 
 typedef C(Instance) C(DGGSJSONDepth);
-typedef C(Instance) C(DGGSJSONGrid);
+typedef C(Instance) C(DGGSJSONDimension);
 typedef uint64 C(GGGZone);
 typedef C(DGGRS) C(GNOSISGlobalGrid);
 typedef C(RhombicIcosahedral3H) C(GPP3H);
+typedef C(BarycentricSphericalTriAreaProjection) C(GoldbergPolyhedraProjection);
+typedef C(DGGRS) C(HEALPix);
+typedef uint64 C(HPZone);
 typedef uint64 C(I3HZone);
+typedef uint64 C(I4RZone);
+typedef uint64 C(I7HZone);
 typedef uint64 C(I9RZone);
 typedef C(RhombicIcosahedral3H) C(ISEA3H);
+typedef C(RhombicIcosahedral4R) C(ISEA4R);
+typedef C(RhombicIcosahedral7H) C(ISEA7H);
 typedef C(RhombicIcosahedral9R) C(ISEA9R);
+typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(ISEAProjection);
 typedef C(RhombicIcosahedral3H) C(IVEA3H);
+typedef C(RhombicIcosahedral4R) C(IVEA4R);
+typedef C(RhombicIcosahedral7H) C(IVEA7H);
 typedef C(RhombicIcosahedral9R) C(IVEA9R);
+typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(IVEAProjection);
+typedef uint64 C(RHPZone);
 typedef C(RhombicIcosahedral3H) C(RTEA3H);
+typedef C(RhombicIcosahedral4R) C(RTEA4R);
+typedef C(RhombicIcosahedral7H) C(RTEA7H);
 typedef C(RhombicIcosahedral9R) C(RTEA9R);
+typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(RTEAProjection);
+#if CPP11
+enum C(VGCRadialVertex) : int
+#else
+typedef int C(VGCRadialVertex);
+enum C(VGCRadialVertex)
+#endif
+{
+   VGCRadialVertex_isea = 0x0,
+   VGCRadialVertex_ivea = 0x1,
+   VGCRadialVertex_rtea = 0x2
+};
+
 typedef C(DGGRS) C(rHEALPix);
+typedef C(HEALPixProjection) C(rHEALPixProjection);
+typedef C(Array) T(Array, Pointd);
 typedef C(Array) T(Array, JSONSchema);
 typedef C(Map) T(Map, String, JSONSchema);
 typedef C(Array) T(Array, String);
@@ -132,10 +177,10 @@ typedef C(Array) T(Array, double);
 typedef C(Map) T(Map, String, int);
 typedef C(Array) T(Array, DGGSJSONDepth);
 typedef C(Map) T(Map, String, template_Array_DGGSJSONDepth);
+typedef C(Array) T(Array, DGGSJSONDimension);
 typedef C(Array) T(Array, int);
 typedef C(Array) T(Array, DGGRSZone);
 typedef C(Array) T(Array, GeoPoint);
-typedef C(Array) T(Array, Pointd);
 #define CRS_registry_SHIFT                               0
 #define CRS_registry_MASK                                0x3FFFFFFF
 #define CRS_registry(x)                                  ((((C(CRS))(x)) & CRS_registry_MASK) >> CRS_registry_SHIFT)
@@ -151,12 +196,6 @@ typedef C(Array) T(Array, Pointd);
 #define CRS(registry, crsID, h)                                     (((((C(CRS))(registry)) << CRS_registry_SHIFT) | ((C(CRS))(crsID)) << CRS_crsID_SHIFT) | ((C(CRS))(h)) << CRS_h_SHIFT)
 
 
-struct C(CRSExtent)
-{
-   C(CRS) crs;
-   C(Pointd) tl;
-   C(Pointd) br;
-};
 extern THIS_LIB_IMPORT C(bool) (* DGGRS_areZonesNeighbors)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
 
 extern THIS_LIB_IMPORT C(bool) (* DGGRS_areZonesSiblings)(C(DGGRS) __this, C(DGGRSZone) a, C(DGGRSZone) b);
@@ -217,7 +256,7 @@ extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getIndexMaxDepth);
 
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromMetersPerSubZone)(C(DGGRS) __this, double physicalMetersPerSubZone, int relativeDepth);
 
-extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, C(Point) * pixels, int relativeDepth);
+extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, const C(Point) * pixels, int relativeDepth);
 
 extern THIS_LIB_IMPORT int (* DGGRS_getLevelFromRefZoneArea)(C(DGGRS) __this, double metersSquared);
 
@@ -522,6 +561,15 @@ struct CM(DGGSJSONDepth)
    C(DGGSJSONShape) shape;
    C(Array) data;
 };
+struct CM(DGGSJSONDimension)
+{
+   C(String) name;
+   C(Array) interval;
+   C(DGGSJSONGrid) grid;
+   C(String) definition;
+   C(String) unit;
+   C(String) unitLang;
+};
 struct CM(DGGSJSONGrid)
 {
    int cellsCount;
@@ -559,28 +607,98 @@ struct C(GeoExtent)
 };
 extern THIS_LIB_IMPORT void (* GeoExtent_clear)(C(GeoExtent) * __this);
 
+extern THIS_LIB_IMPORT C(bool) (* GeoExtent_clip)(C(GeoExtent) * __this, const C(GeoExtent) * e, const C(GeoExtent) * clipExtent);
+
+extern THIS_LIB_IMPORT C(bool) (* GeoExtent_clipHandlingDateline)(C(GeoExtent) * __this, const C(GeoExtent) * e, const C(GeoExtent) * clipExtent);
+
+extern THIS_LIB_IMPORT void (* GeoExtent_doUnionDL)(C(GeoExtent) * __this, const C(GeoExtent) * e);
+
 extern THIS_LIB_IMPORT C(bool) (* GeoExtent_intersects)(C(GeoExtent) * __this, const C(GeoExtent) * b);
+
+extern THIS_LIB_IMPORT C(Property) * PROPERTY(GeoExtent, nonNull);
+extern THIS_LIB_IMPORT C(bool) (* GeoExtent_get_nonNull)(const C(GeoExtent) * g);
 
 extern THIS_LIB_IMPORT C(Property) * PROPERTY(GeoExtent, geodeticArea);
 extern THIS_LIB_IMPORT double (* GeoExtent_get_geodeticArea)(const C(GeoExtent) * g);
 
-#define I3HZONE_levelI9R_SHIFT                           58
-#define I3HZONE_levelI9R_MASK                            0x7C00000000000000LL
+extern THIS_LIB_IMPORT int M_VTBLID(HEALPixProjection, forward);
+// C(bool) HEALPixProjection_forward(C(HEALPixProjection) __i, const C(GeoPoint) * p, C(Pointd) * v);
+#define HEALPixProjection_forward(__i, p, v) \
+   VMETHOD(CO(HEALPixProjection), HEALPixProjection, forward, __i, C(bool), \
+      C(HEALPixProjection) _ARG const C(GeoPoint) * _ARG C(Pointd) *, \
+      __i _ARG p _ARG v)
+extern THIS_LIB_IMPORT C(Method) * METHOD(HEALPixProjection, forward);
+
+extern THIS_LIB_IMPORT int M_VTBLID(HEALPixProjection, inverse);
+// C(bool) HEALPixProjection_inverse(C(HEALPixProjection) __i, const C(Pointd) * v, C(GeoPoint) * result, C(bool) oddGrid);
+#define HEALPixProjection_inverse(__i, v, result, oddGrid) \
+   VMETHOD(CO(HEALPixProjection), HEALPixProjection, inverse, __i, C(bool), \
+      C(HEALPixProjection) _ARG const C(Pointd) * _ARG C(GeoPoint) * _ARG C(bool), \
+      __i _ARG v _ARG result _ARG oddGrid)
+extern THIS_LIB_IMPORT C(Method) * METHOD(HEALPixProjection, inverse);
+
+#define HPZONE_level_SHIFT                               56
+#define HPZONE_level_MASK                                0x1F00000000000000LL
+#define HPZONE_level(x)                                  ((((C(HPZone))(x)) & HPZONE_level_MASK) >> HPZONE_level_SHIFT)
+#define HPZONE_SET_level(x, level)                           (x) = ((C(HPZone))(x) & ~((C(HPZone))HPZONE_level_MASK)) | (((C(HPZone))(level)) << HPZONE_level_SHIFT)
+#define HPZONE_rootRhombus_SHIFT                         52
+#define HPZONE_rootRhombus_MASK                          0xF0000000000000LL
+#define HPZONE_rootRhombus(x)                            ((((C(HPZone))(x)) & HPZONE_rootRhombus_MASK) >> HPZONE_rootRhombus_SHIFT)
+#define HPZONE_SET_rootRhombus(x, rootRhombus)                     (x) = ((C(HPZone))(x) & ~((C(HPZone))HPZONE_rootRhombus_MASK)) | (((C(HPZone))(rootRhombus)) << HPZONE_rootRhombus_SHIFT)
+#define HPZONE_subIndex_SHIFT                            0
+#define HPZONE_subIndex_MASK                             0xFFFFFFFFFFFFFLL
+#define HPZONE_subIndex(x)                               ((((C(HPZone))(x)) & HPZONE_subIndex_MASK) >> HPZONE_subIndex_SHIFT)
+#define HPZONE_SET_subIndex(x, subIndex)                        (x) = ((C(HPZone))(x) & ~((C(HPZone))HPZONE_subIndex_MASK)) | (((C(HPZone))(subIndex)) << HPZONE_subIndex_SHIFT)
+#define HPZONE(level, rootRhombus, subIndex)                                  (((((C(HPZone))(level)) << HPZONE_level_SHIFT) | ((C(HPZone))(rootRhombus)) << HPZONE_rootRhombus_SHIFT) | ((C(HPZone))(subIndex)) << HPZONE_subIndex_SHIFT)
+
+
+#define I3HZONE_levelI9R_SHIFT                           57
+#define I3HZONE_levelI9R_MASK                            0x3E00000000000000LL
 #define I3HZONE_levelI9R(x)                              ((((C(I3HZone))(x)) & I3HZONE_levelI9R_MASK) >> I3HZONE_levelI9R_SHIFT)
 #define I3HZONE_SET_levelI9R(x, levelI9R)                       (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_levelI9R_MASK)) | (((C(I3HZone))(levelI9R)) << I3HZONE_levelI9R_SHIFT)
-#define I3HZONE_rootRhombus_SHIFT                        54
-#define I3HZONE_rootRhombus_MASK                         0x3C0000000000000LL
+#define I3HZONE_rootRhombus_SHIFT                        53
+#define I3HZONE_rootRhombus_MASK                         0x1E0000000000000LL
 #define I3HZONE_rootRhombus(x)                           ((((C(I3HZone))(x)) & I3HZONE_rootRhombus_MASK) >> I3HZONE_rootRhombus_SHIFT)
 #define I3HZONE_SET_rootRhombus(x, rootRhombus)                    (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_rootRhombus_MASK)) | (((C(I3HZone))(rootRhombus)) << I3HZONE_rootRhombus_SHIFT)
-#define I3HZONE_rhombusIX_SHIFT                          3
-#define I3HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
+#define I3HZONE_rhombusIX_SHIFT                          2
+#define I3HZONE_rhombusIX_MASK                           0x1FFFFFFFFFFFFCLL
 #define I3HZONE_rhombusIX(x)                             ((((C(I3HZone))(x)) & I3HZONE_rhombusIX_MASK) >> I3HZONE_rhombusIX_SHIFT)
 #define I3HZONE_SET_rhombusIX(x, rhombusIX)                      (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_rhombusIX_MASK)) | (((C(I3HZone))(rhombusIX)) << I3HZONE_rhombusIX_SHIFT)
 #define I3HZONE_subHex_SHIFT                             0
-#define I3HZONE_subHex_MASK                              0x7
+#define I3HZONE_subHex_MASK                              0x3
 #define I3HZONE_subHex(x)                                ((((C(I3HZone))(x)) & I3HZONE_subHex_MASK) >> I3HZONE_subHex_SHIFT)
 #define I3HZONE_SET_subHex(x, subHex)                         (x) = ((C(I3HZone))(x) & ~((C(I3HZone))I3HZONE_subHex_MASK)) | (((C(I3HZone))(subHex)) << I3HZONE_subHex_SHIFT)
 #define I3HZONE(levelI9R, rootRhombus, rhombusIX, subHex)                               ((((((C(I3HZone))(levelI9R)) << I3HZONE_levelI9R_SHIFT) | ((C(I3HZone))(rootRhombus)) << I3HZONE_rootRhombus_SHIFT) | ((C(I3HZone))(rhombusIX)) << I3HZONE_rhombusIX_SHIFT) | ((C(I3HZone))(subHex)) << I3HZONE_subHex_SHIFT)
+
+
+#define I4RZONE_level_SHIFT                              59
+#define I4RZONE_level_MASK                               0xF800000000000000LL
+#define I4RZONE_level(x)                                 ((((C(I4RZone))(x)) & I4RZONE_level_MASK) >> I4RZONE_level_SHIFT)
+#define I4RZONE_SET_level(x, level)                          (x) = ((C(I4RZone))(x) & ~((C(I4RZone))I4RZONE_level_MASK)) | (((C(I4RZone))(level)) << I4RZONE_level_SHIFT)
+#define I4RZONE_row_SHIFT                                30
+#define I4RZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define I4RZONE_row(x)                                   ((((C(I4RZone))(x)) & I4RZONE_row_MASK) >> I4RZONE_row_SHIFT)
+#define I4RZONE_SET_row(x, row)                            (x) = ((C(I4RZone))(x) & ~((C(I4RZone))I4RZONE_row_MASK)) | (((C(I4RZone))(row)) << I4RZONE_row_SHIFT)
+#define I4RZONE_col_SHIFT                                0
+#define I4RZONE_col_MASK                                 0x3FFFFFFF
+#define I4RZONE_col(x)                                   ((((C(I4RZone))(x)) & I4RZONE_col_MASK) >> I4RZONE_col_SHIFT)
+#define I4RZONE_SET_col(x, col)                            (x) = ((C(I4RZone))(x) & ~((C(I4RZone))I4RZONE_col_MASK)) | (((C(I4RZone))(col)) << I4RZONE_col_SHIFT)
+#define I4RZONE(level, row, col)                                 (((((C(I4RZone))(level)) << I4RZONE_level_SHIFT) | ((C(I4RZone))(row)) << I4RZONE_row_SHIFT) | ((C(I4RZone))(col)) << I4RZONE_col_SHIFT)
+
+
+#define I7HZONE_levelI49R_SHIFT                          60
+#define I7HZONE_levelI49R_MASK                           0xF000000000000000LL
+#define I7HZONE_levelI49R(x)                             ((((C(I7HZone))(x)) & I7HZONE_levelI49R_MASK) >> I7HZONE_levelI49R_SHIFT)
+#define I7HZONE_SET_levelI49R(x, levelI49R)                      (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_levelI49R_MASK)) | (((C(I7HZone))(levelI49R)) << I7HZONE_levelI49R_SHIFT)
+#define I7HZONE_rhombusIX_SHIFT                          3
+#define I7HZONE_rhombusIX_MASK                           0xFFFFFFFFFFFFFF8LL
+#define I7HZONE_rhombusIX(x)                             ((((C(I7HZone))(x)) & I7HZONE_rhombusIX_MASK) >> I7HZONE_rhombusIX_SHIFT)
+#define I7HZONE_SET_rhombusIX(x, rhombusIX)                      (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_rhombusIX_MASK)) | (((C(I7HZone))(rhombusIX)) << I7HZONE_rhombusIX_SHIFT)
+#define I7HZONE_subHex_SHIFT                             0
+#define I7HZONE_subHex_MASK                              0x7
+#define I7HZONE_subHex(x)                                ((((C(I7HZone))(x)) & I7HZONE_subHex_MASK) >> I7HZONE_subHex_SHIFT)
+#define I7HZONE_SET_subHex(x, subHex)                         (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_subHex_MASK)) | (((C(I7HZone))(subHex)) << I7HZONE_subHex_SHIFT)
+#define I7HZONE(levelI49R, rhombusIX, subHex)                                 (((((C(I7HZone))(levelI49R)) << I7HZONE_levelI49R_SHIFT) | ((C(I7HZone))(rhombusIX)) << I7HZONE_rhombusIX_SHIFT) | ((C(I7HZone))(subHex)) << I7HZONE_subHex_SHIFT)
 
 
 #define I9RZONE_level_SHIFT                              59
@@ -698,9 +816,53 @@ struct C(Plane)
 };
 extern THIS_LIB_IMPORT void (* Plane_fromPoints)(C(Plane) * __this, const C(Vector3D) * v1, const C(Vector3D) * v2, const C(Vector3D) * v3);
 
+struct C(Quaternion)
+{
+   double w;
+   double x;
+   double y;
+   double z;
+};
+extern THIS_LIB_IMPORT void (* Quaternion_yawPitch)(C(Quaternion) * __this, C(Angle) yaw, C(Angle) pitch);
+
+#define RHPZONE_level_SHIFT                              59
+#define RHPZONE_level_MASK                               0xF800000000000000LL
+#define RHPZONE_level(x)                                 ((((C(RHPZone))(x)) & RHPZONE_level_MASK) >> RHPZONE_level_SHIFT)
+#define RHPZONE_SET_level(x, level)                          (x) = ((C(RHPZone))(x) & ~((C(RHPZone))RHPZONE_level_MASK)) | (((C(RHPZone))(level)) << RHPZONE_level_SHIFT)
+#define RHPZONE_row_SHIFT                                30
+#define RHPZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define RHPZONE_row(x)                                   ((((C(RHPZone))(x)) & RHPZONE_row_MASK) >> RHPZONE_row_SHIFT)
+#define RHPZONE_SET_row(x, row)                            (x) = ((C(RHPZone))(x) & ~((C(RHPZone))RHPZONE_row_MASK)) | (((C(RHPZone))(row)) << RHPZONE_row_SHIFT)
+#define RHPZONE_col_SHIFT                                0
+#define RHPZONE_col_MASK                                 0x3FFFFFFF
+#define RHPZONE_col(x)                                   ((((C(RHPZone))(x)) & RHPZONE_col_MASK) >> RHPZONE_col_SHIFT)
+#define RHPZONE_SET_col(x, col)                            (x) = ((C(RHPZone))(x) & ~((C(RHPZone))RHPZONE_col_MASK)) | (((C(RHPZone))(col)) << RHPZONE_col_SHIFT)
+#define RHPZONE(level, row, col)                                 (((((C(RHPZone))(level)) << RHPZONE_level_SHIFT) | ((C(RHPZone))(row)) << RHPZONE_row_SHIFT) | ((C(RHPZone))(col)) << RHPZONE_col_SHIFT)
+
+
+extern THIS_LIB_IMPORT void (* RI5x6Projection_extent5x6FromWGS84)(C(RI5x6Projection) __this, const C(GeoExtent) * wgs84Extent, C(Pointd) * topLeft, C(Pointd) * bottomRight);
+
+extern THIS_LIB_IMPORT int M_VTBLID(RI5x6Projection, forward);
+// C(bool) RI5x6Projection_forward(C(RI5x6Projection) __i, const C(GeoPoint) * p, C(Pointd) * v);
+#define RI5x6Projection_forward(__i, p, v) \
+   VMETHOD(CO(RI5x6Projection), RI5x6Projection, forward, __i, C(bool), \
+      C(RI5x6Projection) _ARG const C(GeoPoint) * _ARG C(Pointd) *, \
+      __i _ARG p _ARG v)
+extern THIS_LIB_IMPORT C(Method) * METHOD(RI5x6Projection, forward);
+
+extern THIS_LIB_IMPORT int M_VTBLID(RI5x6Projection, inverse);
+// C(bool) RI5x6Projection_inverse(C(RI5x6Projection) __i, const C(Pointd) * v, C(GeoPoint) * result, C(bool) oddGrid);
+#define RI5x6Projection_inverse(__i, v, result, oddGrid) \
+   VMETHOD(CO(RI5x6Projection), RI5x6Projection, inverse, __i, C(bool), \
+      C(RI5x6Projection) _ARG const C(Pointd) * _ARG C(GeoPoint) * _ARG C(bool), \
+      __i _ARG v _ARG result _ARG oddGrid)
+extern THIS_LIB_IMPORT C(Method) * METHOD(RI5x6Projection, inverse);
+
 extern THIS_LIB_IMPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 
 extern THIS_LIB_IMPORT double (* Vector3D_dotProduct)(C(Vector3D) * __this, const C(Vector3D) * vector2);
+
+extern THIS_LIB_IMPORT void (* Vector3D_multQuaternion)(C(Vector3D) * __this, const C(Vector3D) * s, const C(Quaternion) * quat);
 
 extern THIS_LIB_IMPORT void (* Vector3D_normalize)(C(Vector3D) * __this, const C(Vector3D) * source);
 
@@ -711,6 +873,7 @@ extern THIS_LIB_IMPORT double (* Vector3D_get_length)(const C(Vector3D) * v);
 
 extern THIS_LIB_IMPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 extern THIS_LIB_IMPORT C(Class) * CO(BCTA3H);
+extern THIS_LIB_IMPORT C(Class) * CO(BarycentricSphericalTriAreaProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(CRS);
 extern THIS_LIB_IMPORT C(Class) * CO(CRSExtent);
 extern THIS_LIB_IMPORT C(Class) * CO(CRSRegistry);
@@ -718,6 +881,7 @@ extern THIS_LIB_IMPORT C(Class) * CO(DGGRS);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGRSZone);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSON);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONDepth);
+extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONDimension);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONGrid);
 extern THIS_LIB_IMPORT C(Class) * CO(DGGSJSONShape);
 extern THIS_LIB_IMPORT C(Class) * CO(GGGZone);
@@ -725,21 +889,44 @@ extern THIS_LIB_IMPORT C(Class) * CO(GNOSISGlobalGrid);
 extern THIS_LIB_IMPORT C(Class) * CO(GPP3H);
 extern THIS_LIB_IMPORT C(Class) * CO(GeoExtent);
 extern THIS_LIB_IMPORT C(Class) * CO(GeoPoint);
+extern THIS_LIB_IMPORT C(Class) * CO(GoldbergPolyhedraProjection);
+extern THIS_LIB_IMPORT C(Class) * CO(HEALPix);
+extern THIS_LIB_IMPORT C(Class) * CO(HEALPixProjection);
+extern THIS_LIB_IMPORT C(Class) * CO(HPZone);
 extern THIS_LIB_IMPORT C(Class) * CO(I3HZone);
+extern THIS_LIB_IMPORT C(Class) * CO(I4RZone);
+extern THIS_LIB_IMPORT C(Class) * CO(I7HZone);
 extern THIS_LIB_IMPORT C(Class) * CO(I9RZone);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA3H);
+extern THIS_LIB_IMPORT C(Class) * CO(ISEA4R);
+extern THIS_LIB_IMPORT C(Class) * CO(ISEA7H);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA9R);
+extern THIS_LIB_IMPORT C(Class) * CO(ISEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA3H);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEA4R);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEA7H);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA9R);
-extern THIS_LIB_IMPORT C(Class) * CO(RTEA3H);
-extern THIS_LIB_IMPORT C(Class) * CO(RTEA9R);
-extern THIS_LIB_IMPORT C(Class) * CO(rHEALPix);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(JSONSchema);
 extern THIS_LIB_IMPORT C(Class) * CO(JSONSchemaType);
 extern THIS_LIB_IMPORT C(Class) * CO(Plane);
+extern THIS_LIB_IMPORT C(Class) * CO(Quaternion);
+extern THIS_LIB_IMPORT C(Class) * CO(RHPZone);
+extern THIS_LIB_IMPORT C(Class) * CO(RI5x6Projection);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEA3H);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEA4R);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEA7H);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEA9R);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral3H);
+extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral4R);
+extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral7H);
 extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral9R);
+extern THIS_LIB_IMPORT C(Class) * CO(SliceAndDiceGreatCircleIcosahedralProjection);
+extern THIS_LIB_IMPORT C(Class) * CO(VGCRadialVertex);
 extern THIS_LIB_IMPORT C(Class) * CO(Vector3D);
+extern THIS_LIB_IMPORT C(Class) * CO(rHEALPix);
+extern THIS_LIB_IMPORT C(Class) * CO(rHEALPixProjection);
 
 extern THIS_LIB_IMPORT C(Module) dggal_init(C(Module) fromModule);
 

@@ -12,6 +12,7 @@
 #include "dggal.h"
 
 class BCTA3H;
+class BarycentricSphericalTriAreaProjection;
 class CRS_;
 struct CRSExtent;
 enum class CRSRegistry : int;
@@ -19,6 +20,7 @@ class DGGRS;
 class DGGRSZone;
 class DGGSJSON;
 class DGGSJSONDepth;
+class DGGSJSONDimension;
 class DGGSJSONGrid;
 class DGGSJSONShape;
 class GGGZone;
@@ -26,21 +28,412 @@ class GNOSISGlobalGrid;
 class GPP3H;
 struct GeoExtent;
 struct GeoPoint;
+class GoldbergPolyhedraProjection;
+class HEALPix;
+class HEALPixProjection;
+class HPZone;
 class I3HZone;
+class I4RZone;
+class I7HZone;
 class I9RZone;
 class ISEA3H;
+class ISEA4R;
+class ISEA7H;
 class ISEA9R;
+class ISEAProjection;
 class IVEA3H;
+class IVEA4R;
+class IVEA7H;
 class IVEA9R;
+class IVEAProjection;
 class JSONSchema;
 enum class JSONSchemaType : int;
 struct Plane;
+struct Quaternion;
+class RHPZone;
+class RI5x6Projection;
+class RTEA3H;
+class RTEA4R;
+class RTEA7H;
+class RTEA9R;
+class RTEAProjection;
 class RhombicIcosahedral3H;
+class RhombicIcosahedral4R;
+class RhombicIcosahedral7H;
 class RhombicIcosahedral9R;
+class SliceAndDiceGreatCircleIcosahedralProjection;
+enum class VGCRadialVertex : int;
 struct Vector3D;
+class rHEALPix;
+class rHEALPixProjection;
 
 int dggal_cpp_init(const Module & module);
 
+
+#define REG_RI5x6Projection_forward(m, c) REGVMETHOD(RI5x6Projection, forward, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const GeoPoint & p, /*1Ab*/Pointd & v),                           c, (/*4Im*/p, /*4Im*/v))
+#define REG_RI5x6Projection_inverse(m, c) REGVMETHOD(RI5x6Projection, inverse, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const Pointd & v, /*1Ab*/GeoPoint & result, /*1Ab*/bool oddGrid), c, (/*4Im*/v, /*4Im*/result, /*4Hm*/(bool)oddGrid))
+
+#define REG_RI5x6Projection(c) \
+      RI5x6Projection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define RI5X6PROJECTION_VIRTUAL_METHODS_PROTO(c) \
+   VIRTUAL_METHOD_PROTO(forward, forward, c, RI5x6Projection, \
+      bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v); \
+   VIRTUAL_METHOD_PROTO(inverse, inverse, c, RI5x6Projection, \
+      bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid);
+
+#define RI5X6PROJECTION_VIRTUAL_METHODS(c) \
+VIRTUAL_METHOD(forward, forward, c, RI5x6Projection, \
+   bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v, \
+   return (bool)RI5x6Projection_forward(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&p.impl, /*7Al*/&v.impl);); \
+VIRTUAL_METHOD(inverse, inverse, c, RI5x6Projection, \
+   bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid, \
+   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid););
+
+class RI5x6Projection : public Instance
+{
+public:
+   inline RI5x6Projection(RI5x6Projection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RI5x6Projection & operator= (RI5x6Projection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RI5x6Projection() : RI5x6Projection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RI5x6Projection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RI5x6Projection * inst = new RI5x6Projection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RI5x6Projection * inst = (RI5x6Projection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RI5x6Projection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RI5x6Projection(C(Instance) _impl, CPPClass & cl = _cpp_class) : Instance(_impl, cl) { }
+
+   inline void extent5x6FromWGS84(/*1Ab*/const GeoExtent & wgs84Extent, /*1Ab*/Pointd & topLeft, /*1Ab*/Pointd & bottomRight); // RI5x6Projection_extent5x6FromWGS84
+   inline void extent5x6FromWGS84(/*1Ac*/const GeoExtent * wgs84Extent, /*1Ac*/Pointd * topLeft, /*1Ac*/Pointd * bottomRight); // RI5x6Projection_extent5x6FromWGS84
+
+   struct RI5x6Projection_forward_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(RI5x6Projection & , /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()( /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v);
+   } forward;
+   // inline static void register_forward(CPPClass & cl, RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType func)
+
+   struct RI5x6Projection_inverse_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(RI5x6Projection & , /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+   } inverse;
+   // inline static void register_inverse(CPPClass & cl, RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType func)
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_BarycentricSphericalTriAreaProjection(c) \
+      BarycentricSphericalTriAreaProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define BARYCENTRICSPHERICALTRIAREAPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define BARYCENTRICSPHERICALTRIAREAPROJECTION_VIRTUAL_METHODS(c) \
+
+class BarycentricSphericalTriAreaProjection : public RI5x6Projection
+{
+public:
+   inline BarycentricSphericalTriAreaProjection(BarycentricSphericalTriAreaProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline BarycentricSphericalTriAreaProjection & operator= (BarycentricSphericalTriAreaProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   BarycentricSphericalTriAreaProjection() : BarycentricSphericalTriAreaProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<BarycentricSphericalTriAreaProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         BarycentricSphericalTriAreaProjection * inst = new BarycentricSphericalTriAreaProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      BarycentricSphericalTriAreaProjection * inst = (BarycentricSphericalTriAreaProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(BarycentricSphericalTriAreaProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline BarycentricSphericalTriAreaProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : RI5x6Projection(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
 
 class DGGRSZone
 {
@@ -493,8 +886,8 @@ public:
    inline C(bool) doesZoneContain(/*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle); // DGGRS_doesZoneContain
    inline int get64KDepth(); // DGGRS_get64KDepth
    inline int getLevelFromMetersPerSubZone(/*1Ab*/double physicalMetersPerSubZone, /*1Ab*/int relativeDepth); // DGGRS_getLevelFromMetersPerSubZone
-   inline int getLevelFromPixelsAndExtent(/*1Ab*/const GeoExtent & extent, /*1Ab*/Point & pixels, /*1Ab*/int relativeDepth); // DGGRS_getLevelFromPixelsAndExtent
-   inline int getLevelFromPixelsAndExtent(/*1Ac*/const GeoExtent * extent, /*1Ac*/Point * pixels, /*1Ac*/int relativeDepth); // DGGRS_getLevelFromPixelsAndExtent
+   inline int getLevelFromPixelsAndExtent(/*1Ab*/const GeoExtent & extent, /*1Ab*/const Point & pixels, /*1Ab*/int relativeDepth); // DGGRS_getLevelFromPixelsAndExtent
+   inline int getLevelFromPixelsAndExtent(/*1Ac*/const GeoExtent * extent, /*1Ac*/const Point * pixels, /*1Ac*/int relativeDepth); // DGGRS_getLevelFromPixelsAndExtent
    inline int getLevelFromRefZoneArea(/*1Ab*/double metersSquared); // DGGRS_getLevelFromRefZoneArea
    inline int getLevelFromScaleDenominator(/*1Ab*/double scaleDenominator, /*1Ab*/int relativeDepth, /*1Ab*/double mmPerPixel); // DGGRS_getLevelFromScaleDenominator
    inline int getMaxDepth(); // DGGRS_getMaxDepth
@@ -844,6 +1237,202 @@ public:
    static void class_registration(CPPClass & _cpp_class);
 };
 
+#define REG_HEALPixProjection_forward(m, c) REGVMETHOD(HEALPixProjection, forward, c::m, (/*1Ab*/HEALPixProjection & self, /*1Ab*/const GeoPoint & p, /*1Ab*/Pointd & v),                           c, (/*4Im*/p, /*4Im*/v))
+#define REG_HEALPixProjection_inverse(m, c) REGVMETHOD(HEALPixProjection, inverse, c::m, (/*1Ab*/HEALPixProjection & self, /*1Ab*/const Pointd & v, /*1Ab*/GeoPoint & result, /*1Ab*/bool oddGrid), c, (/*4Im*/v, /*4Im*/result, /*4Hm*/(bool)oddGrid))
+
+#define REG_HEALPixProjection(c) \
+      HEALPixProjection::class_registration(_cpp_class); \
+      REG_HEALPixProjection_forward(forward, c); \
+      REG_HEALPixProjection_inverse(inverse, c);
+
+#define HEALPIXPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+   VIRTUAL_METHOD_PROTO(forward, forward, c, HEALPixProjection, \
+      bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v); \
+   VIRTUAL_METHOD_PROTO(inverse, inverse, c, HEALPixProjection, \
+      bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid);
+
+#define HEALPIXPROJECTION_VIRTUAL_METHODS(c) \
+VIRTUAL_METHOD(forward, forward, c, HEALPixProjection, \
+   bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v, \
+   return (bool)HEALPixProjection_forward(self ? self->impl : (C(HEALPixProjection))null, /*7Al*/&p.impl, /*7Al*/&v.impl);); \
+VIRTUAL_METHOD(inverse, inverse, c, HEALPixProjection, \
+   bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid, \
+   return (bool)HEALPixProjection_inverse(self ? self->impl : (C(HEALPixProjection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid););
+
+class HEALPixProjection : public Instance
+{
+public:
+   inline HEALPixProjection(HEALPixProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline HEALPixProjection & operator= (HEALPixProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   HEALPixProjection() : HEALPixProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<HEALPixProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         HEALPixProjection * inst = new HEALPixProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      HEALPixProjection * inst = (HEALPixProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(HEALPixProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline HEALPixProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : Instance(_impl, cl) { }
+
+   struct HEALPixProjection_forward_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(HEALPixProjection & , /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()( /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v);
+   } forward;
+   // inline static void register_forward(CPPClass & cl, HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType func)
+
+   struct HEALPixProjection_inverse_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(HEALPixProjection & , /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+   } inverse;
+   // inline static void register_inverse(CPPClass & cl, HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType func)
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
 
 #define REG_RhombicIcosahedral3H(c) \
       RhombicIcosahedral3H::class_registration(_cpp_class); \
@@ -1046,6 +1635,408 @@ public:
 };
 
 
+#define REG_RhombicIcosahedral4R(c) \
+      RhombicIcosahedral4R::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RHOMBICICOSAHEDRAL4R_VIRTUAL_METHODS_PROTO(c) \
+
+#define RHOMBICICOSAHEDRAL4R_VIRTUAL_METHODS(c) \
+
+class RhombicIcosahedral4R : public DGGRS
+{
+public:
+   inline RhombicIcosahedral4R(RhombicIcosahedral4R && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RhombicIcosahedral4R & operator= (RhombicIcosahedral4R && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RhombicIcosahedral4R() : RhombicIcosahedral4R((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RhombicIcosahedral4R> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RhombicIcosahedral4R * inst = new RhombicIcosahedral4R(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RhombicIcosahedral4R * inst = (RhombicIcosahedral4R *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RhombicIcosahedral4R & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RhombicIcosahedral4R(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RhombicIcosahedral7H(c) \
+      RhombicIcosahedral7H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS_PROTO(c) \
+
+#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS(c) \
+
+class RhombicIcosahedral7H : public DGGRS
+{
+public:
+   inline RhombicIcosahedral7H(RhombicIcosahedral7H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RhombicIcosahedral7H & operator= (RhombicIcosahedral7H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RhombicIcosahedral7H() : RhombicIcosahedral7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RhombicIcosahedral7H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RhombicIcosahedral7H * inst = new RhombicIcosahedral7H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RhombicIcosahedral7H * inst = (RhombicIcosahedral7H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RhombicIcosahedral7H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RhombicIcosahedral7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_RhombicIcosahedral9R(c) \
       RhombicIcosahedral9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -1242,6 +2233,172 @@ public:
       }
    }
    explicit inline RhombicIcosahedral9R(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_SliceAndDiceGreatCircleIcosahedralProjection(c) \
+      SliceAndDiceGreatCircleIcosahedralProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define SLICEANDDICEGREATCIRCLEICOSAHEDRALPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define SLICEANDDICEGREATCIRCLEICOSAHEDRALPROJECTION_VIRTUAL_METHODS(c) \
+
+class SliceAndDiceGreatCircleIcosahedralProjection : public RI5x6Projection
+{
+public:
+   inline SliceAndDiceGreatCircleIcosahedralProjection(SliceAndDiceGreatCircleIcosahedralProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline SliceAndDiceGreatCircleIcosahedralProjection & operator= (SliceAndDiceGreatCircleIcosahedralProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   SliceAndDiceGreatCircleIcosahedralProjection() : SliceAndDiceGreatCircleIcosahedralProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<SliceAndDiceGreatCircleIcosahedralProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         SliceAndDiceGreatCircleIcosahedralProjection * inst = new SliceAndDiceGreatCircleIcosahedralProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      SliceAndDiceGreatCircleIcosahedralProjection * inst = (SliceAndDiceGreatCircleIcosahedralProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(SliceAndDiceGreatCircleIcosahedralProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline SliceAndDiceGreatCircleIcosahedralProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : RI5x6Projection(_impl, cl) { }
 
    static void class_registration(CPPClass & _cpp_class);
 };
@@ -1736,7 +2893,9 @@ public:
       constexpr dimensions_Prop() :_() { };
       [[no_unique_address]] int _[0];
       /*nstSet*/inline /*0H*/Array operator= (/*0H*/Array v);
+      // REVIEW: /*nstSet*/inline /*0H*/TArray<C(DGGSJSONDimension) _ARG int _ARG C(DGGSJSONDimension)> operator= (/*0H*/TArray<C(DGGSJSONDimension) _ARG int _ARG C(DGGSJSONDimension)> v);
       /*regSet*/inline DGGSJSON::dimensions_Prop & operator= (DGGSJSON::dimensions_Prop & prop);
+      // REVIEW: /*regGet*/inline operator /*0I*/TArray<C(DGGSJSONDimension) _ARG int _ARG C(DGGSJSONDimension)> () const;
       /*regGet*/inline operator /*0I*/Array () const;
    } dimensions;
    struct values_Prop
@@ -1938,6 +3097,221 @@ public:
       /*regSet*/inline DGGSJSONDepth::data_Prop & operator= (DGGSJSONDepth::data_Prop & prop);
       /*regGet*/inline operator /*0I*/TArray<FieldValue _ARG int _ARG FieldValue> () const;
    } data;
+};
+
+
+#define REG_DGGSJSONDimension(c) \
+      DGGSJSONDimension::class_registration(_cpp_class);
+
+#define DGGSJSONDIMENSION_VIRTUAL_METHODS_PROTO(c) \
+
+#define DGGSJSONDIMENSION_VIRTUAL_METHODS(c) \
+
+class DGGSJSONDimension : public Instance
+{
+public:
+   inline DGGSJSONDimension(DGGSJSONDimension && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline DGGSJSONDimension & operator= (DGGSJSONDimension && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   DGGSJSONDimension() : DGGSJSONDimension((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<DGGSJSONDimension> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         DGGSJSONDimension * inst = new DGGSJSONDimension(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      DGGSJSONDimension * inst = (DGGSJSONDimension *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(DGGSJSONDimension & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline DGGSJSONDimension(C(Instance) _impl, CPPClass & cl = _cpp_class) : Instance(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+
+   inline DGGSJSONDimension(char * name);
+
+   struct name_Prop
+   {
+      constexpr name_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/char * operator= (/*0H*/char * v);
+      /*regSet*/inline DGGSJSONDimension::name_Prop & operator= (DGGSJSONDimension::name_Prop & prop);
+      /*regGet*/inline operator /*0I*/char * () const;
+   } name;
+   struct interval_Prop
+   {
+      constexpr interval_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/TArray<FieldValue _ARG int _ARG FieldValue> operator= (/*0H*/TArray<FieldValue _ARG int _ARG FieldValue> v);
+      /*regSet*/inline DGGSJSONDimension::interval_Prop & operator= (DGGSJSONDimension::interval_Prop & prop);
+      /*regGet*/inline operator /*0I*/TArray<FieldValue _ARG int _ARG FieldValue> () const;
+   } interval;
+   struct grid_Prop
+   {
+      constexpr grid_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/DGGSJSONGrid operator= (/*0H*/DGGSJSONGrid v);
+      /*regSet*/inline DGGSJSONDimension::grid_Prop & operator= (DGGSJSONDimension::grid_Prop & prop);
+      /*regGet*/inline operator /*0I*/DGGSJSONGrid () const;
+   } grid;
+   struct definition_Prop
+   {
+      constexpr definition_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/char * operator= (/*0H*/char * v);
+      /*regSet*/inline DGGSJSONDimension::definition_Prop & operator= (DGGSJSONDimension::definition_Prop & prop);
+      /*regGet*/inline operator /*0I*/char * () const;
+   } definition;
+   struct unit_Prop
+   {
+      constexpr unit_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/char * operator= (/*0H*/char * v);
+      /*regSet*/inline DGGSJSONDimension::unit_Prop & operator= (DGGSJSONDimension::unit_Prop & prop);
+      /*regGet*/inline operator /*0I*/char * () const;
+   } unit;
+   struct unitLang_Prop
+   {
+      constexpr unitLang_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/char * operator= (/*0H*/char * v);
+      /*regSet*/inline DGGSJSONDimension::unitLang_Prop & operator= (DGGSJSONDimension::unitLang_Prop & prop);
+      /*regGet*/inline operator /*0I*/char * () const;
+   } unitLang;
 };
 
 
@@ -2796,11 +4170,23 @@ public:
    constexpr GeoExtent(const C(GeoExtent) impl) : impl(impl) { }
 
    inline void clear(); // GeoExtent_clear
+   inline C(bool) clip(/*1Ab*/const GeoExtent & e, /*1Ab*/const GeoExtent & clipExtent); // GeoExtent_clip
+   inline C(bool) clip(/*1Ac*/const GeoExtent * e, /*1Ac*/const GeoExtent * clipExtent); // GeoExtent_clip
+   inline C(bool) clipHandlingDateline(/*1Ab*/const GeoExtent & e, /*1Ab*/const GeoExtent & clipExtent); // GeoExtent_clipHandlingDateline
+   inline C(bool) clipHandlingDateline(/*1Ac*/const GeoExtent * e, /*1Ac*/const GeoExtent * clipExtent); // GeoExtent_clipHandlingDateline
+   inline void doUnionDL(/*1Ab*/const GeoExtent & e); // GeoExtent_doUnionDL
+   inline void doUnionDL(/*1Ac*/const GeoExtent * e); // GeoExtent_doUnionDL
    inline C(bool) intersects(/*1Ab*/const GeoExtent & b); // GeoExtent_intersects
    inline C(bool) intersects(/*1Ac*/const GeoExtent * b); // GeoExtent_intersects
 
    inline GeoExtent(GeoPoint ll, GeoPoint ur);
 
+   struct nonNull_Prop
+   {
+      constexpr nonNull_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*regGet*/inline operator /*0I*/bool () const;
+   } nonNull;
    struct geodeticArea_Prop
    {
       constexpr geodeticArea_Prop() :_() { };
@@ -2855,12 +4241,419 @@ public:
    } lon;
 };
 
+
+#define REG_GoldbergPolyhedraProjection(c) \
+      GoldbergPolyhedraProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define GOLDBERGPOLYHEDRAPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define GOLDBERGPOLYHEDRAPROJECTION_VIRTUAL_METHODS(c) \
+
+class GoldbergPolyhedraProjection : public BarycentricSphericalTriAreaProjection
+{
+public:
+   inline GoldbergPolyhedraProjection(GoldbergPolyhedraProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline GoldbergPolyhedraProjection & operator= (GoldbergPolyhedraProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   GoldbergPolyhedraProjection() : GoldbergPolyhedraProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<GoldbergPolyhedraProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         GoldbergPolyhedraProjection * inst = new GoldbergPolyhedraProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      GoldbergPolyhedraProjection * inst = (GoldbergPolyhedraProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(GoldbergPolyhedraProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline GoldbergPolyhedraProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : BarycentricSphericalTriAreaProjection(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_HEALPix(c) \
+      HEALPix::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define HEALPIX_VIRTUAL_METHODS_PROTO(c) \
+
+#define HEALPIX_VIRTUAL_METHODS(c) \
+
+class HEALPix : public DGGRS
+{
+public:
+   inline HEALPix(HEALPix && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline HEALPix & operator= (HEALPix && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   HEALPix() : HEALPix((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<HEALPix> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         HEALPix * inst = new HEALPix(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      HEALPix * inst = (HEALPix *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(HEALPix & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline HEALPix(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+class HPZone : public DGGRSZone
+{
+public:
+   constexpr HPZone() : DGGRSZone() { }
+   HPZone(C(HPZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
+   HPZone(uint level, uint rootRhombus, uint64 subIndex)
+   {
+      impl = HPZONE(level, rootRhombus, subIndex);
+   }
+   operator C(HPZone)() { return impl; }
+   HPZone & operator =(C(HPZone) impl) { impl = impl; return *this; }
+   bool operator ==(const HPZone & value) const { return impl == value.impl; }
+   bool operator !=(const HPZone & value) const { return impl != value.impl; }
+
+   struct level_Prop
+   {
+      constexpr level_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline HPZone::level_Prop & operator= (HPZone::level_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } level;
+   struct rootRhombus_Prop
+   {
+      constexpr rootRhombus_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline HPZone::rootRhombus_Prop & operator= (HPZone::rootRhombus_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } rootRhombus;
+   struct subIndex_Prop
+   {
+      constexpr subIndex_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint64 operator= (/*0H*/uint64 v);
+      /*regSet*/inline HPZone::subIndex_Prop & operator= (HPZone::subIndex_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint64 () const;
+   } subIndex;
+};
+
 class I3HZone : public DGGRSZone
 {
 public:
    constexpr I3HZone() : DGGRSZone() { }
    I3HZone(C(I3HZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
-   I3HZone(uint levelI9R, uint rootRhombus, uint subHex)
+   I3HZone(uint levelI9R, uint rootRhombus, uint64 rhombusIX, uint subHex)
    {
       impl = I3HZONE(levelI9R, rootRhombus, rhombusIX, subHex);
    }
@@ -2899,6 +4692,86 @@ public:
       [[no_unique_address]] int _[0];
       /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
       /*regSet*/inline I3HZone::subHex_Prop & operator= (I3HZone::subHex_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } subHex;
+};
+
+class I4RZone : public DGGRSZone
+{
+public:
+   constexpr I4RZone() : DGGRSZone() { }
+   I4RZone(C(I4RZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
+   I4RZone(uint level, uint row, uint col)
+   {
+      impl = I4RZONE(level, row, col);
+   }
+   operator C(I4RZone)() { return impl; }
+   I4RZone & operator =(C(I4RZone) impl) { impl = impl; return *this; }
+   bool operator ==(const I4RZone & value) const { return impl == value.impl; }
+   bool operator !=(const I4RZone & value) const { return impl != value.impl; }
+
+   struct level_Prop
+   {
+      constexpr level_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I4RZone::level_Prop & operator= (I4RZone::level_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } level;
+   struct row_Prop
+   {
+      constexpr row_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I4RZone::row_Prop & operator= (I4RZone::row_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } row;
+   struct col_Prop
+   {
+      constexpr col_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I4RZone::col_Prop & operator= (I4RZone::col_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } col;
+};
+
+class I7HZone : public DGGRSZone
+{
+public:
+   constexpr I7HZone() : DGGRSZone() { }
+   I7HZone(C(I7HZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
+   I7HZone(uint levelI49R, uint64 rhombusIX, uint subHex)
+   {
+      impl = I7HZONE(levelI49R, rhombusIX, subHex);
+   }
+   operator C(I7HZone)() { return impl; }
+   I7HZone & operator =(C(I7HZone) impl) { impl = impl; return *this; }
+   bool operator ==(const I7HZone & value) const { return impl == value.impl; }
+   bool operator !=(const I7HZone & value) const { return impl != value.impl; }
+
+   struct levelI49R_Prop
+   {
+      constexpr levelI49R_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I7HZone::levelI49R_Prop & operator= (I7HZone::levelI49R_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } levelI49R;
+   struct rhombusIX_Prop
+   {
+      constexpr rhombusIX_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint64 operator= (/*0H*/uint64 v);
+      /*regSet*/inline I7HZone::rhombusIX_Prop & operator= (I7HZone::rhombusIX_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint64 () const;
+   } rhombusIX;
+   struct subHex_Prop
+   {
+      constexpr subHex_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I7HZone::subHex_Prop & operator= (I7HZone::subHex_Prop & prop);
       /*regGet*/inline operator /*0I*/uint () const;
    } subHex;
 };
@@ -3145,6 +5018,408 @@ public:
 };
 
 
+#define REG_ISEA4R(c) \
+      ISEA4R::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define ISEA4R_VIRTUAL_METHODS_PROTO(c) \
+
+#define ISEA4R_VIRTUAL_METHODS(c) \
+
+class ISEA4R : public RhombicIcosahedral4R
+{
+public:
+   inline ISEA4R(ISEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline ISEA4R & operator= (ISEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   ISEA4R() : ISEA4R((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<ISEA4R> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         ISEA4R * inst = new ISEA4R(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      ISEA4R * inst = (ISEA4R *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(ISEA4R & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline ISEA4R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral4R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_ISEA7H(c) \
+      ISEA7H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define ISEA7H_VIRTUAL_METHODS_PROTO(c) \
+
+#define ISEA7H_VIRTUAL_METHODS(c) \
+
+class ISEA7H : public RhombicIcosahedral7H
+{
+public:
+   inline ISEA7H(ISEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline ISEA7H & operator= (ISEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   ISEA7H() : ISEA7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<ISEA7H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         ISEA7H * inst = new ISEA7H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      ISEA7H * inst = (ISEA7H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(ISEA7H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline ISEA7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral7H(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_ISEA9R(c) \
       ISEA9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -3341,6 +5616,172 @@ public:
       }
    }
    explicit inline ISEA9R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral9R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_ISEAProjection(c) \
+      ISEAProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define ISEAPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define ISEAPROJECTION_VIRTUAL_METHODS(c) \
+
+class ISEAProjection : public SliceAndDiceGreatCircleIcosahedralProjection
+{
+public:
+   inline ISEAProjection(ISEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline ISEAProjection & operator= (ISEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   ISEAProjection() : ISEAProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<ISEAProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         ISEAProjection * inst = new ISEAProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      ISEAProjection * inst = (ISEAProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(ISEAProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline ISEAProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : SliceAndDiceGreatCircleIcosahedralProjection(_impl, cl) { }
 
    static void class_registration(CPPClass & _cpp_class);
 };
@@ -3547,6 +5988,408 @@ public:
 };
 
 
+#define REG_IVEA4R(c) \
+      IVEA4R::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define IVEA4R_VIRTUAL_METHODS_PROTO(c) \
+
+#define IVEA4R_VIRTUAL_METHODS(c) \
+
+class IVEA4R : public RhombicIcosahedral4R
+{
+public:
+   inline IVEA4R(IVEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline IVEA4R & operator= (IVEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   IVEA4R() : IVEA4R((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<IVEA4R> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         IVEA4R * inst = new IVEA4R(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      IVEA4R * inst = (IVEA4R *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(IVEA4R & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline IVEA4R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral4R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_IVEA7H(c) \
+      IVEA7H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define IVEA7H_VIRTUAL_METHODS_PROTO(c) \
+
+#define IVEA7H_VIRTUAL_METHODS(c) \
+
+class IVEA7H : public RhombicIcosahedral7H
+{
+public:
+   inline IVEA7H(IVEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline IVEA7H & operator= (IVEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   IVEA7H() : IVEA7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<IVEA7H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         IVEA7H * inst = new IVEA7H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      IVEA7H * inst = (IVEA7H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(IVEA7H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline IVEA7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral7H(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_IVEA9R(c) \
       IVEA9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -3743,6 +6586,172 @@ public:
       }
    }
    explicit inline IVEA9R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral9R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_IVEAProjection(c) \
+      IVEAProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define IVEAPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define IVEAPROJECTION_VIRTUAL_METHODS(c) \
+
+class IVEAProjection : public SliceAndDiceGreatCircleIcosahedralProjection
+{
+public:
+   inline IVEAProjection(IVEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline IVEAProjection & operator= (IVEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   IVEAProjection() : IVEAProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<IVEAProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         IVEAProjection * inst = new IVEAProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      IVEAProjection * inst = (IVEAProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(IVEAProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline IVEAProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : SliceAndDiceGreatCircleIcosahedralProjection(_impl, cl) { }
 
    static void class_registration(CPPClass & _cpp_class);
 };
@@ -4305,6 +7314,1068 @@ public:
    } d;
 };
 
+struct Quaternion : public TStruct<Quaternion>
+{
+public:
+   C(Quaternion) impl;
+   constexpr Quaternion() : impl({}) { }
+   constexpr Quaternion(const C(Quaternion) impl) : impl(impl) { }
+
+   inline void yawPitch(/*1Ab*/Angle yaw, /*1Ab*/Angle pitch); // Quaternion_yawPitch
+
+   inline Quaternion(double w, double x, double y, double z);
+
+   struct w_Prop
+   {
+      constexpr w_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/double operator= (/*0H*/double v);
+      /*regSet*/inline Quaternion::w_Prop & operator= (Quaternion::w_Prop & prop);
+      /*regGet*/inline operator /*0I*/double () const;
+   } w;
+   struct x_Prop
+   {
+      constexpr x_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/double operator= (/*0H*/double v);
+      /*regSet*/inline Quaternion::x_Prop & operator= (Quaternion::x_Prop & prop);
+      /*regGet*/inline operator /*0I*/double () const;
+   } x;
+   struct y_Prop
+   {
+      constexpr y_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/double operator= (/*0H*/double v);
+      /*regSet*/inline Quaternion::y_Prop & operator= (Quaternion::y_Prop & prop);
+      /*regGet*/inline operator /*0I*/double () const;
+   } y;
+   struct z_Prop
+   {
+      constexpr z_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/double operator= (/*0H*/double v);
+      /*regSet*/inline Quaternion::z_Prop & operator= (Quaternion::z_Prop & prop);
+      /*regGet*/inline operator /*0I*/double () const;
+   } z;
+};
+
+class RHPZone : public DGGRSZone
+{
+public:
+   constexpr RHPZone() : DGGRSZone() { }
+   RHPZone(C(RHPZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
+   RHPZone(uint level, uint row, uint col)
+   {
+      impl = RHPZONE(level, row, col);
+   }
+   operator C(RHPZone)() { return impl; }
+   RHPZone & operator =(C(RHPZone) impl) { impl = impl; return *this; }
+   bool operator ==(const RHPZone & value) const { return impl == value.impl; }
+   bool operator !=(const RHPZone & value) const { return impl != value.impl; }
+
+   struct level_Prop
+   {
+      constexpr level_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline RHPZone::level_Prop & operator= (RHPZone::level_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } level;
+   struct row_Prop
+   {
+      constexpr row_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline RHPZone::row_Prop & operator= (RHPZone::row_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } row;
+   struct col_Prop
+   {
+      constexpr col_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline RHPZone::col_Prop & operator= (RHPZone::col_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } col;
+};
+
+
+#define REG_RTEA3H(c) \
+      RTEA3H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RTEA3H_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEA3H_VIRTUAL_METHODS(c) \
+
+class RTEA3H : public RhombicIcosahedral3H
+{
+public:
+   inline RTEA3H(RTEA3H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEA3H & operator= (RTEA3H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEA3H() : RTEA3H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEA3H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEA3H * inst = new RTEA3H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEA3H * inst = (RTEA3H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEA3H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEA3H(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral3H(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RTEA4R(c) \
+      RTEA4R::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RTEA4R_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEA4R_VIRTUAL_METHODS(c) \
+
+class RTEA4R : public RhombicIcosahedral4R
+{
+public:
+   inline RTEA4R(RTEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEA4R & operator= (RTEA4R && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEA4R() : RTEA4R((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEA4R> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEA4R * inst = new RTEA4R(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEA4R * inst = (RTEA4R *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEA4R & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEA4R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral4R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RTEA7H(c) \
+      RTEA7H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RTEA7H_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEA7H_VIRTUAL_METHODS(c) \
+
+class RTEA7H : public RhombicIcosahedral7H
+{
+public:
+   inline RTEA7H(RTEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEA7H & operator= (RTEA7H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEA7H() : RTEA7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEA7H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEA7H * inst = new RTEA7H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEA7H * inst = (RTEA7H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEA7H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEA7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral7H(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RTEA9R(c) \
+      RTEA9R::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RTEA9R_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEA9R_VIRTUAL_METHODS(c) \
+
+class RTEA9R : public RhombicIcosahedral9R
+{
+public:
+   inline RTEA9R(RTEA9R && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEA9R & operator= (RTEA9R && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEA9R() : RTEA9R((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEA9R> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEA9R * inst = new RTEA9R(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEA9R * inst = (RTEA9R *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEA9R & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEA9R(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral9R(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RTEAProjection(c) \
+      RTEAProjection::class_registration(_cpp_class); \
+      REG_RI5x6Projection_forward(forward, c); \
+      REG_RI5x6Projection_inverse(inverse, c);
+
+#define RTEAPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEAPROJECTION_VIRTUAL_METHODS(c) \
+
+class RTEAProjection : public SliceAndDiceGreatCircleIcosahedralProjection
+{
+public:
+   inline RTEAProjection(RTEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEAProjection & operator= (RTEAProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEAProjection() : RTEAProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEAProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEAProjection * inst = new RTEAProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEAProjection * inst = (RTEAProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEAProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEAProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : SliceAndDiceGreatCircleIcosahedralProjection(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+enum class VGCRadialVertex : int
+{
+   isea = VGCRadialVertex_isea,
+   ivea = VGCRadialVertex_ivea,
+   rtea = VGCRadialVertex_rtea
+};
+
 struct Vector3D : public TStruct<Vector3D>
 {
 public:
@@ -4316,6 +8387,8 @@ public:
    inline void crossProduct(/*1Ac*/const Vector3D * vector1, /*1Ac*/const Vector3D * vector2); // Vector3D_crossProduct
    inline double dotProduct(/*1Ab*/const Vector3D & vector2); // Vector3D_dotProduct
    inline double dotProduct(/*1Ac*/const Vector3D * vector2); // Vector3D_dotProduct
+   inline void multQuaternion(/*1Ab*/const Vector3D & s, /*1Ab*/const Quaternion & quat); // Vector3D_multQuaternion
+   inline void multQuaternion(/*1Ac*/const Vector3D * s, /*1Ac*/const Quaternion * quat); // Vector3D_multQuaternion
    inline void normalize(/*1Ab*/const Vector3D & source); // Vector3D_normalize
    inline void normalize(/*1Ac*/const Vector3D * source); // Vector3D_normalize
    inline void subtract(/*1Ab*/const Vector3D & vector1, /*1Ab*/const Vector3D & vector2); // Vector3D_subtract
@@ -4355,6 +8428,373 @@ public:
       /*regGet*/inline operator /*0I*/double () const;
    } z;
 };
+
+
+#define REG_rHEALPix(c) \
+      rHEALPix::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c);
+
+#define RHEALPIX_VIRTUAL_METHODS_PROTO(c) \
+
+#define RHEALPIX_VIRTUAL_METHODS(c) \
+
+class rHEALPix : public DGGRS
+{
+public:
+   inline rHEALPix(rHEALPix && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline rHEALPix & operator= (rHEALPix && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   rHEALPix() : rHEALPix((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<rHEALPix> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         rHEALPix * inst = new rHEALPix(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      rHEALPix * inst = (rHEALPix *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(rHEALPix & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline rHEALPix(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_rHEALPixProjection(c) \
+      rHEALPixProjection::class_registration(_cpp_class); \
+      REG_HEALPixProjection_forward(forward, c); \
+      REG_HEALPixProjection_inverse(inverse, c);
+
+#define RHEALPIXPROJECTION_VIRTUAL_METHODS_PROTO(c) \
+
+#define RHEALPIXPROJECTION_VIRTUAL_METHODS(c) \
+
+class rHEALPixProjection : public HEALPixProjection
+{
+public:
+   inline rHEALPixProjection(rHEALPixProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline rHEALPixProjection & operator= (rHEALPixProjection && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   rHEALPixProjection() : rHEALPixProjection((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<rHEALPixProjection> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         rHEALPixProjection * inst = new rHEALPixProjection(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      rHEALPixProjection * inst = (rHEALPixProjection *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(rHEALPixProjection & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline rHEALPixProjection(C(Instance) _impl, CPPClass & cl = _cpp_class) : HEALPixProjection(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
 //////////////////////////////////////////////////////////////////////////////// ////////////////////////
 //////////////////////////////////////////////////////////////////////////////// ////////////////////////
 ////                                                                        //// ////////////////////////
@@ -4371,6 +8811,7 @@ public:
 
 #undef wgs84Major
 static constexpr Meters wgs84Major { 6378137.0 };
+
 
 
 
@@ -5369,11 +9810,11 @@ inline int DGGRS::getLevelFromMetersPerSubZone(/*1Ab*/double physicalMetersPerSu
 {
    return DGGRS_getLevelFromMetersPerSubZone(impl, /*5Ge*/physicalMetersPerSubZone, /*5Ge*/relativeDepth);
 }
-inline int DGGRS::getLevelFromPixelsAndExtent(/*1Ab*/const GeoExtent & extent, /*1Ab*/Point & pixels, /*1Ab*/int relativeDepth)
+inline int DGGRS::getLevelFromPixelsAndExtent(/*1Ab*/const GeoExtent & extent, /*1Ab*/const Point & pixels, /*1Ab*/int relativeDepth)
 {
    return DGGRS_getLevelFromPixelsAndExtent(impl, /*5De*/&extent.impl, /*5De*/&pixels.impl, /*5Ge*/relativeDepth);
 }
-inline int DGGRS::getLevelFromPixelsAndExtent(/*1Ac*/const GeoExtent * extent, /*1Ac*/Point * pixels, /*1Ac*/int relativeDepth)
+inline int DGGRS::getLevelFromPixelsAndExtent(/*1Ac*/const GeoExtent * extent, /*1Ac*/const Point * pixels, /*1Ac*/int relativeDepth)
 {
    return DGGRS_getLevelFromPixelsAndExtent(impl, /*5Cf*/(C(GeoExtent) *)extent, /*5Cf*/(C(Point) *)pixels, /*5Gf*/relativeDepth);
 }
@@ -5685,6 +10126,153 @@ inline DGGSJSONDepth::DGGSJSONDepth(int depth) : DGGSJSONDepth()
    SELF(DGGSJSONDepth, data);
    TArray<FieldValue _ARG int _ARG FieldValue> value(IPTR(self->impl, DGGSJSONDepth)->data, DGGSJSONDepth::_cpp_class);
    return value;
+}
+
+inline DGGSJSONDimension::DGGSJSONDimension(char * name) : DGGSJSONDimension()
+{
+   this->name = name;
+}
+
+
+
+// member accessors: DGGSJSONDimension::name
+// (normal::string)
+
+/*nstSet*/inline /*0H*/char * DGGSJSONDimension::name_Prop::operator= (/*0H*/char * v)
+{
+   SELF(DGGSJSONDimension, name);
+   IPTR(self->impl, DGGSJSONDimension)->name = v;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::name_Prop & DGGSJSONDimension::name_Prop::operator= (DGGSJSONDimension::name_Prop & prop)
+{
+   SELF(DGGSJSONDimension, name);
+   /*0H*/char * v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->name = v;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::name_Prop::operator /*0I*/char * () const
+{
+   SELF(DGGSJSONDimension, name);
+   return self ? IPTR(self->impl, DGGSJSONDimension)->name : 0;
+}
+
+// member accessors: DGGSJSONDimension::interval
+// (normal::normal)
+
+/*nstSet*/inline /*0H*/TArray<FieldValue _ARG int _ARG FieldValue> DGGSJSONDimension::interval_Prop::operator= (/*0H*/TArray<FieldValue _ARG int _ARG FieldValue> v)
+{
+   SELF(DGGSJSONDimension, interval);
+   IPTR(self->impl, DGGSJSONDimension)->interval = ((Instance *)&v)->impl;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::interval_Prop & DGGSJSONDimension::interval_Prop::operator= (DGGSJSONDimension::interval_Prop & prop)
+{
+   SELF(DGGSJSONDimension, interval);
+   /*0H*/TArray<FieldValue _ARG int _ARG FieldValue> v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->interval = ((Instance *)&v)->impl;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::interval_Prop::operator /*0I*/TArray<FieldValue _ARG int _ARG FieldValue> () const
+{
+   SELF(DGGSJSONDimension, interval);
+   TArray<FieldValue _ARG int _ARG FieldValue> value(IPTR(self->impl, DGGSJSONDimension)->interval, DGGSJSONDimension::_cpp_class);
+   return value;
+}
+
+// member accessors: DGGSJSONDimension::grid
+// (normal::normal)
+
+/*nstSet*/inline /*0H*/DGGSJSONGrid DGGSJSONDimension::grid_Prop::operator= (/*0H*/DGGSJSONGrid v)
+{
+   SELF(DGGSJSONDimension, grid);
+   IPTR(self->impl, DGGSJSONDimension)->grid = v.impl;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::grid_Prop & DGGSJSONDimension::grid_Prop::operator= (DGGSJSONDimension::grid_Prop & prop)
+{
+   SELF(DGGSJSONDimension, grid);
+   /*0H*/DGGSJSONGrid v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->grid = v.impl;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::grid_Prop::operator /*0I*/DGGSJSONGrid () const
+{
+   SELF(DGGSJSONDimension, grid);
+   DGGSJSONGrid value(IPTR(self->impl, DGGSJSONDimension)->grid, DGGSJSONDimension::_cpp_class);
+   return value;
+}
+
+// member accessors: DGGSJSONDimension::definition
+// (normal::string)
+
+/*nstSet*/inline /*0H*/char * DGGSJSONDimension::definition_Prop::operator= (/*0H*/char * v)
+{
+   SELF(DGGSJSONDimension, definition);
+   IPTR(self->impl, DGGSJSONDimension)->definition = v;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::definition_Prop & DGGSJSONDimension::definition_Prop::operator= (DGGSJSONDimension::definition_Prop & prop)
+{
+   SELF(DGGSJSONDimension, definition);
+   /*0H*/char * v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->definition = v;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::definition_Prop::operator /*0I*/char * () const
+{
+   SELF(DGGSJSONDimension, definition);
+   return self ? IPTR(self->impl, DGGSJSONDimension)->definition : 0;
+}
+
+// member accessors: DGGSJSONDimension::unit
+// (normal::string)
+
+/*nstSet*/inline /*0H*/char * DGGSJSONDimension::unit_Prop::operator= (/*0H*/char * v)
+{
+   SELF(DGGSJSONDimension, unit);
+   IPTR(self->impl, DGGSJSONDimension)->unit = v;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::unit_Prop & DGGSJSONDimension::unit_Prop::operator= (DGGSJSONDimension::unit_Prop & prop)
+{
+   SELF(DGGSJSONDimension, unit);
+   /*0H*/char * v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->unit = v;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::unit_Prop::operator /*0I*/char * () const
+{
+   SELF(DGGSJSONDimension, unit);
+   return self ? IPTR(self->impl, DGGSJSONDimension)->unit : 0;
+}
+
+// member accessors: DGGSJSONDimension::unitLang
+// (normal::string)
+
+/*nstSet*/inline /*0H*/char * DGGSJSONDimension::unitLang_Prop::operator= (/*0H*/char * v)
+{
+   SELF(DGGSJSONDimension, unitLang);
+   IPTR(self->impl, DGGSJSONDimension)->unitLang = v;
+   return v;
+}
+
+/*regSet*/inline DGGSJSONDimension::unitLang_Prop & DGGSJSONDimension::unitLang_Prop::operator= (DGGSJSONDimension::unitLang_Prop & prop)
+{
+   SELF(DGGSJSONDimension, unitLang);
+   /*0H*/char * v = prop;
+   IPTR(self->impl, DGGSJSONDimension)->unitLang = v;
+   return prop;
+}
+/*regGet*/inline DGGSJSONDimension::unitLang_Prop::operator /*0I*/char * () const
+{
+   SELF(DGGSJSONDimension, unitLang);
+   return self ? IPTR(self->impl, DGGSJSONDimension)->unitLang : 0;
 }
 
 inline DGGSJSONGrid::DGGSJSONGrid(int cellsCount, double resolution = 0) : DGGSJSONGrid()
@@ -5999,6 +10587,30 @@ inline void GeoExtent::clear()
 {
    GeoExtent_clear(&impl);
 }
+inline C(bool) GeoExtent::clip(/*1Ab*/const GeoExtent & e, /*1Ab*/const GeoExtent & clipExtent)
+{
+   return GeoExtent_clip(&impl, /*5De*/&e.impl, /*5De*/&clipExtent.impl);
+}
+inline C(bool) GeoExtent::clip(/*1Ac*/const GeoExtent * e, /*1Ac*/const GeoExtent * clipExtent)
+{
+   return GeoExtent_clip(&impl, /*5Cf*/(C(GeoExtent) *)e, /*5Cf*/(C(GeoExtent) *)clipExtent);
+}
+inline C(bool) GeoExtent::clipHandlingDateline(/*1Ab*/const GeoExtent & e, /*1Ab*/const GeoExtent & clipExtent)
+{
+   return GeoExtent_clipHandlingDateline(&impl, /*5De*/&e.impl, /*5De*/&clipExtent.impl);
+}
+inline C(bool) GeoExtent::clipHandlingDateline(/*1Ac*/const GeoExtent * e, /*1Ac*/const GeoExtent * clipExtent)
+{
+   return GeoExtent_clipHandlingDateline(&impl, /*5Cf*/(C(GeoExtent) *)e, /*5Cf*/(C(GeoExtent) *)clipExtent);
+}
+inline void GeoExtent::doUnionDL(/*1Ab*/const GeoExtent & e)
+{
+   GeoExtent_doUnionDL(&impl, /*5De*/&e.impl);
+}
+inline void GeoExtent::doUnionDL(/*1Ac*/const GeoExtent * e)
+{
+   GeoExtent_doUnionDL(&impl, /*5Cf*/(C(GeoExtent) *)e);
+}
 inline C(bool) GeoExtent::intersects(/*1Ab*/const GeoExtent & b)
 {
    return GeoExtent_intersects(&impl, /*5De*/&b.impl);
@@ -6008,6 +10620,15 @@ inline C(bool) GeoExtent::intersects(/*1Ac*/const GeoExtent * b)
    return GeoExtent_intersects(&impl, /*5Cf*/(C(GeoExtent) *)b);
 }
 
+
+// property callers: GeoExtent::nonNull   // get only
+// (struct::enum|uint)
+
+/*regGet*/inline GeoExtent::nonNull_Prop::operator /*0I*/bool () const
+{
+   SELF(GeoExtent, nonNull);
+   return (bool)GeoExtent_get_nonNull(self ? &self->impl : null);
+}
 
 // property callers: GeoExtent::geodeticArea   // get only
 // (struct::double)
@@ -6133,6 +10754,124 @@ inline GeoPoint::GeoPoint(Degrees lat, Degrees lon = 0)
 
 
 
+inline HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType HEALPixProjection::HEALPixProjection_forward_Functor::operator= (FunctionType func)
+{
+   SELF(HEALPixProjection, forward);
+   if(self->vTbl == HEALPixProjection::_cpp_class.vTbl)
+   {
+      uint size = HEALPixProjection::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType, size);
+      memcpy(self->vTbl, HEALPixProjection::_cpp_class.vTbl, sizeof(HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType) * size);
+   }
+   ((HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType *)self->vTbl)[M_VTBLID(HEALPixProjection, forward)] = func;
+   return func;
+}
+inline bool HEALPixProjection::HEALPixProjection_forward_Functor::operator()( /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v)
+{
+   SELF(HEALPixProjection, forward);
+   return (bool)HEALPixProjection_forward(self ? self->impl : (C(HEALPixProjection))null, /*7Al*/&p.impl, /*7Al*/&v.impl);
+}
+// inline void HEALPixProjection::register_forward(CPPClass & cl, HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType func)
+// {
+//    ((HEALPixProjection::HEALPixProjection_forward_Functor::FunctionType *)cl.vTbl)[M_VTBLID(HEALPixProjection, forward)] = func;
+// }
+
+inline HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType HEALPixProjection::HEALPixProjection_inverse_Functor::operator= (FunctionType func)
+{
+   SELF(HEALPixProjection, inverse);
+   if(self->vTbl == HEALPixProjection::_cpp_class.vTbl)
+   {
+      uint size = HEALPixProjection::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType, size);
+      memcpy(self->vTbl, HEALPixProjection::_cpp_class.vTbl, sizeof(HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType) * size);
+   }
+   ((HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType *)self->vTbl)[M_VTBLID(HEALPixProjection, inverse)] = func;
+   return func;
+}
+inline bool HEALPixProjection::HEALPixProjection_inverse_Functor::operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid)
+{
+   SELF(HEALPixProjection, inverse);
+   return (bool)HEALPixProjection_inverse(self ? self->impl : (C(HEALPixProjection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid);
+}
+// inline void HEALPixProjection::register_inverse(CPPClass & cl, HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType func)
+// {
+//    ((HEALPixProjection::HEALPixProjection_inverse_Functor::FunctionType *)cl.vTbl)[M_VTBLID(HEALPixProjection, inverse)] = func;
+// }
+
+
+
+
+// member accessors: HPZone::level
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint HPZone::level_Prop::operator= (/*0H*/uint v)
+{
+   SELF(HPZone, level);
+   HPZONE_SET_level(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline HPZone::level_Prop & HPZone::level_Prop::operator= (HPZone::level_Prop & prop)
+{
+   SELF(HPZone, level);
+   /*0H*/uint v = prop;
+   HPZONE_SET_level(self->impl, v);
+   return prop;
+}
+/*regGet*/inline HPZone::level_Prop::operator /*0I*/uint () const
+{
+   SELF(HPZone, level);
+   return HPZONE_level(self->impl);
+}
+
+// member accessors: HPZone::rootRhombus
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint HPZone::rootRhombus_Prop::operator= (/*0H*/uint v)
+{
+   SELF(HPZone, rootRhombus);
+   HPZONE_SET_rootRhombus(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline HPZone::rootRhombus_Prop & HPZone::rootRhombus_Prop::operator= (HPZone::rootRhombus_Prop & prop)
+{
+   SELF(HPZone, rootRhombus);
+   /*0H*/uint v = prop;
+   HPZONE_SET_rootRhombus(self->impl, v);
+   return prop;
+}
+/*regGet*/inline HPZone::rootRhombus_Prop::operator /*0I*/uint () const
+{
+   SELF(HPZone, rootRhombus);
+   return HPZONE_rootRhombus(self->impl);
+}
+
+// member accessors: HPZone::subIndex
+// (bits::uint64)
+
+/*nstSet*/inline /*0H*/uint64 HPZone::subIndex_Prop::operator= (/*0H*/uint64 v)
+{
+   SELF(HPZone, subIndex);
+   HPZONE_SET_subIndex(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline HPZone::subIndex_Prop & HPZone::subIndex_Prop::operator= (HPZone::subIndex_Prop & prop)
+{
+   SELF(HPZone, subIndex);
+   /*0H*/uint64 v = prop;
+   HPZONE_SET_subIndex(self->impl, v);
+   return prop;
+}
+/*regGet*/inline HPZone::subIndex_Prop::operator /*0I*/uint64 () const
+{
+   SELF(HPZone, subIndex);
+   return HPZONE_subIndex(self->impl);
+}
+
+
+
 // member accessors: I3HZone::levelI9R
 // (bits::uint)
 
@@ -6227,6 +10966,148 @@ inline GeoPoint::GeoPoint(Degrees lat, Degrees lon = 0)
 
 
 
+// member accessors: I4RZone::level
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I4RZone::level_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I4RZone, level);
+   I4RZONE_SET_level(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I4RZone::level_Prop & I4RZone::level_Prop::operator= (I4RZone::level_Prop & prop)
+{
+   SELF(I4RZone, level);
+   /*0H*/uint v = prop;
+   I4RZONE_SET_level(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I4RZone::level_Prop::operator /*0I*/uint () const
+{
+   SELF(I4RZone, level);
+   return I4RZONE_level(self->impl);
+}
+
+// member accessors: I4RZone::row
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I4RZone::row_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I4RZone, row);
+   I4RZONE_SET_row(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I4RZone::row_Prop & I4RZone::row_Prop::operator= (I4RZone::row_Prop & prop)
+{
+   SELF(I4RZone, row);
+   /*0H*/uint v = prop;
+   I4RZONE_SET_row(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I4RZone::row_Prop::operator /*0I*/uint () const
+{
+   SELF(I4RZone, row);
+   return I4RZONE_row(self->impl);
+}
+
+// member accessors: I4RZone::col
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I4RZone::col_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I4RZone, col);
+   I4RZONE_SET_col(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I4RZone::col_Prop & I4RZone::col_Prop::operator= (I4RZone::col_Prop & prop)
+{
+   SELF(I4RZone, col);
+   /*0H*/uint v = prop;
+   I4RZONE_SET_col(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I4RZone::col_Prop::operator /*0I*/uint () const
+{
+   SELF(I4RZone, col);
+   return I4RZONE_col(self->impl);
+}
+
+
+
+// member accessors: I7HZone::levelI49R
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I7HZone::levelI49R_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I7HZone, levelI49R);
+   I7HZONE_SET_levelI49R(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I7HZone::levelI49R_Prop & I7HZone::levelI49R_Prop::operator= (I7HZone::levelI49R_Prop & prop)
+{
+   SELF(I7HZone, levelI49R);
+   /*0H*/uint v = prop;
+   I7HZONE_SET_levelI49R(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I7HZone::levelI49R_Prop::operator /*0I*/uint () const
+{
+   SELF(I7HZone, levelI49R);
+   return I7HZONE_levelI49R(self->impl);
+}
+
+// member accessors: I7HZone::rhombusIX
+// (bits::uint64)
+
+/*nstSet*/inline /*0H*/uint64 I7HZone::rhombusIX_Prop::operator= (/*0H*/uint64 v)
+{
+   SELF(I7HZone, rhombusIX);
+   I7HZONE_SET_rhombusIX(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I7HZone::rhombusIX_Prop & I7HZone::rhombusIX_Prop::operator= (I7HZone::rhombusIX_Prop & prop)
+{
+   SELF(I7HZone, rhombusIX);
+   /*0H*/uint64 v = prop;
+   I7HZONE_SET_rhombusIX(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I7HZone::rhombusIX_Prop::operator /*0I*/uint64 () const
+{
+   SELF(I7HZone, rhombusIX);
+   return I7HZONE_rhombusIX(self->impl);
+}
+
+// member accessors: I7HZone::subHex
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I7HZone::subHex_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I7HZone, subHex);
+   I7HZONE_SET_subHex(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I7HZone::subHex_Prop & I7HZone::subHex_Prop::operator= (I7HZone::subHex_Prop & prop)
+{
+   SELF(I7HZone, subHex);
+   /*0H*/uint v = prop;
+   I7HZONE_SET_subHex(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I7HZone::subHex_Prop::operator /*0I*/uint () const
+{
+   SELF(I7HZone, subHex);
+   return I7HZONE_subHex(self->impl);
+}
+
+
+
 // member accessors: I9RZone::level
 // (bits::uint)
 
@@ -6295,6 +11176,12 @@ inline GeoPoint::GeoPoint(Degrees lat, Degrees lon = 0)
    SELF(I9RZone, col);
    return I9RZONE_col(self->impl);
 }
+
+
+
+
+
+
 
 
 
@@ -7318,6 +12205,246 @@ inline void Plane::fromPoints(/*1Ac*/const Vector3D * v1, /*1Ac*/const Vector3D 
    return self ? ((C(Plane) *)&self->impl)->d : 0;
 }
 
+inline Quaternion::Quaternion(double w, double x = 0, double y = 0, double z = 0)
+{
+   impl.w = w;
+   impl.x = x;
+   impl.y = y;
+   impl.z = z;
+}
+
+
+inline void Quaternion::yawPitch(/*1Ab*/Angle yaw, /*1Ab*/Angle pitch)
+{
+   Quaternion_yawPitch(&impl, /*5Ee*/(C(Angle))yaw.impl, /*5Ee*/(C(Angle))pitch.impl);
+}
+
+
+// member accessors: Quaternion::w
+// (struct::double)
+
+/*nstSet*/inline /*0H*/double Quaternion::w_Prop::operator= (/*0H*/double v)
+{
+   SELF(Quaternion, w);
+   self->impl.w = v;
+   return v;
+}
+
+/*regSet*/inline Quaternion::w_Prop & Quaternion::w_Prop::operator= (Quaternion::w_Prop & prop)
+{
+   SELF(Quaternion, w);
+   /*0H*/double v = prop;
+   self->impl.w = v;
+   return prop;
+}
+/*regGet*/inline Quaternion::w_Prop::operator /*0I*/double () const
+{
+   SELF(Quaternion, w);
+   return self ? ((C(Quaternion) *)&self->impl)->w : 0;
+}
+
+// member accessors: Quaternion::x
+// (struct::double)
+
+/*nstSet*/inline /*0H*/double Quaternion::x_Prop::operator= (/*0H*/double v)
+{
+   SELF(Quaternion, x);
+   self->impl.x = v;
+   return v;
+}
+
+/*regSet*/inline Quaternion::x_Prop & Quaternion::x_Prop::operator= (Quaternion::x_Prop & prop)
+{
+   SELF(Quaternion, x);
+   /*0H*/double v = prop;
+   self->impl.x = v;
+   return prop;
+}
+/*regGet*/inline Quaternion::x_Prop::operator /*0I*/double () const
+{
+   SELF(Quaternion, x);
+   return self ? ((C(Quaternion) *)&self->impl)->x : 0;
+}
+
+// member accessors: Quaternion::y
+// (struct::double)
+
+/*nstSet*/inline /*0H*/double Quaternion::y_Prop::operator= (/*0H*/double v)
+{
+   SELF(Quaternion, y);
+   self->impl.y = v;
+   return v;
+}
+
+/*regSet*/inline Quaternion::y_Prop & Quaternion::y_Prop::operator= (Quaternion::y_Prop & prop)
+{
+   SELF(Quaternion, y);
+   /*0H*/double v = prop;
+   self->impl.y = v;
+   return prop;
+}
+/*regGet*/inline Quaternion::y_Prop::operator /*0I*/double () const
+{
+   SELF(Quaternion, y);
+   return self ? ((C(Quaternion) *)&self->impl)->y : 0;
+}
+
+// member accessors: Quaternion::z
+// (struct::double)
+
+/*nstSet*/inline /*0H*/double Quaternion::z_Prop::operator= (/*0H*/double v)
+{
+   SELF(Quaternion, z);
+   self->impl.z = v;
+   return v;
+}
+
+/*regSet*/inline Quaternion::z_Prop & Quaternion::z_Prop::operator= (Quaternion::z_Prop & prop)
+{
+   SELF(Quaternion, z);
+   /*0H*/double v = prop;
+   self->impl.z = v;
+   return prop;
+}
+/*regGet*/inline Quaternion::z_Prop::operator /*0I*/double () const
+{
+   SELF(Quaternion, z);
+   return self ? ((C(Quaternion) *)&self->impl)->z : 0;
+}
+
+
+
+// member accessors: RHPZone::level
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint RHPZone::level_Prop::operator= (/*0H*/uint v)
+{
+   SELF(RHPZone, level);
+   RHPZONE_SET_level(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline RHPZone::level_Prop & RHPZone::level_Prop::operator= (RHPZone::level_Prop & prop)
+{
+   SELF(RHPZone, level);
+   /*0H*/uint v = prop;
+   RHPZONE_SET_level(self->impl, v);
+   return prop;
+}
+/*regGet*/inline RHPZone::level_Prop::operator /*0I*/uint () const
+{
+   SELF(RHPZone, level);
+   return RHPZONE_level(self->impl);
+}
+
+// member accessors: RHPZone::row
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint RHPZone::row_Prop::operator= (/*0H*/uint v)
+{
+   SELF(RHPZone, row);
+   RHPZONE_SET_row(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline RHPZone::row_Prop & RHPZone::row_Prop::operator= (RHPZone::row_Prop & prop)
+{
+   SELF(RHPZone, row);
+   /*0H*/uint v = prop;
+   RHPZONE_SET_row(self->impl, v);
+   return prop;
+}
+/*regGet*/inline RHPZone::row_Prop::operator /*0I*/uint () const
+{
+   SELF(RHPZone, row);
+   return RHPZONE_row(self->impl);
+}
+
+// member accessors: RHPZone::col
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint RHPZone::col_Prop::operator= (/*0H*/uint v)
+{
+   SELF(RHPZone, col);
+   RHPZONE_SET_col(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline RHPZone::col_Prop & RHPZone::col_Prop::operator= (RHPZone::col_Prop & prop)
+{
+   SELF(RHPZone, col);
+   /*0H*/uint v = prop;
+   RHPZONE_SET_col(self->impl, v);
+   return prop;
+}
+/*regGet*/inline RHPZone::col_Prop::operator /*0I*/uint () const
+{
+   SELF(RHPZone, col);
+   return RHPZONE_col(self->impl);
+}
+
+inline RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType RI5x6Projection::RI5x6Projection_forward_Functor::operator= (FunctionType func)
+{
+   SELF(RI5x6Projection, forward);
+   if(self->vTbl == RI5x6Projection::_cpp_class.vTbl)
+   {
+      uint size = RI5x6Projection::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType, size);
+      memcpy(self->vTbl, RI5x6Projection::_cpp_class.vTbl, sizeof(RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType) * size);
+   }
+   ((RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType *)self->vTbl)[M_VTBLID(RI5x6Projection, forward)] = func;
+   return func;
+}
+inline bool RI5x6Projection::RI5x6Projection_forward_Functor::operator()( /*6Fj*/const GeoPoint & p, /*6Fj*/Pointd & v)
+{
+   SELF(RI5x6Projection, forward);
+   return (bool)RI5x6Projection_forward(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&p.impl, /*7Al*/&v.impl);
+}
+// inline void RI5x6Projection::register_forward(CPPClass & cl, RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType func)
+// {
+//    ((RI5x6Projection::RI5x6Projection_forward_Functor::FunctionType *)cl.vTbl)[M_VTBLID(RI5x6Projection, forward)] = func;
+// }
+
+inline RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType RI5x6Projection::RI5x6Projection_inverse_Functor::operator= (FunctionType func)
+{
+   SELF(RI5x6Projection, inverse);
+   if(self->vTbl == RI5x6Projection::_cpp_class.vTbl)
+   {
+      uint size = RI5x6Projection::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType, size);
+      memcpy(self->vTbl, RI5x6Projection::_cpp_class.vTbl, sizeof(RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType) * size);
+   }
+   ((RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType *)self->vTbl)[M_VTBLID(RI5x6Projection, inverse)] = func;
+   return func;
+}
+inline bool RI5x6Projection::RI5x6Projection_inverse_Functor::operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid)
+{
+   SELF(RI5x6Projection, inverse);
+   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid);
+}
+// inline void RI5x6Projection::register_inverse(CPPClass & cl, RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType func)
+// {
+//    ((RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType *)cl.vTbl)[M_VTBLID(RI5x6Projection, inverse)] = func;
+// }
+
+
+inline void RI5x6Projection::extent5x6FromWGS84(/*1Ab*/const GeoExtent & wgs84Extent, /*1Ab*/Pointd & topLeft, /*1Ab*/Pointd & bottomRight)
+{
+   RI5x6Projection_extent5x6FromWGS84(impl, /*5De*/&wgs84Extent.impl, /*5De*/&topLeft.impl, /*5De*/&bottomRight.impl);
+}
+inline void RI5x6Projection::extent5x6FromWGS84(/*1Ac*/const GeoExtent * wgs84Extent, /*1Ac*/Pointd * topLeft, /*1Ac*/Pointd * bottomRight)
+{
+   RI5x6Projection_extent5x6FromWGS84(impl, /*5Cf*/(C(GeoExtent) *)wgs84Extent, /*5Cf*/(C(Pointd) *)topLeft, /*5Cf*/(C(Pointd) *)bottomRight);
+}
+
+
+
+
+
+
+
+
+
 
 
 inline Vector3D::Vector3D(double x, double y = 0, double z = 0)
@@ -7343,6 +12470,14 @@ inline double Vector3D::dotProduct(/*1Ab*/const Vector3D & vector2)
 inline double Vector3D::dotProduct(/*1Ac*/const Vector3D * vector2)
 {
    return Vector3D_dotProduct(&impl, /*5Cf*/(C(Vector3D) *)vector2);
+}
+inline void Vector3D::multQuaternion(/*1Ab*/const Vector3D & s, /*1Ab*/const Quaternion & quat)
+{
+   Vector3D_multQuaternion(&impl, /*5De*/&s.impl, /*5De*/&quat.impl);
+}
+inline void Vector3D::multQuaternion(/*1Ac*/const Vector3D * s, /*1Ac*/const Quaternion * quat)
+{
+   Vector3D_multQuaternion(&impl, /*5Cf*/(C(Vector3D) *)s, /*5Cf*/(C(Quaternion) *)quat);
 }
 inline void Vector3D::normalize(/*1Ab*/const Vector3D & source)
 {
@@ -7440,6 +12575,8 @@ inline void Vector3D::subtract(/*1Ac*/const Vector3D * vector1, /*1Ac*/const Vec
    SELF(Vector3D, z);
    return self ? ((C(Vector3D) *)&self->impl)->z : 0;
 }
+
+
 // function: readDGGSJSON
 inline DGGSJSON readDGGSJSON(/*1Ab*/File & f)
 {

@@ -45,20 +45,60 @@ pub const GGGZONE_row_SHIFT: u32 = 30;
 pub const GGGZONE_row_MASK: u64 = 576460751229681664;
 pub const GGGZONE_col_SHIFT: u32 = 0;
 pub const GGGZONE_col_MASK: u32 = 1073741823;
-pub const I3HZONE_levelI9R_SHIFT: u32 = 58;
-pub const I3HZONE_levelI9R_MASK: u64 = 8935141660703064064;
-pub const I3HZONE_rootRhombus_SHIFT: u32 = 54;
-pub const I3HZONE_rootRhombus_MASK: u64 = 270215977642229760;
-pub const I3HZONE_rhombusIX_SHIFT: u32 = 3;
-pub const I3HZONE_rhombusIX_MASK: u64 = 18014398509481976;
+pub const HPZONE_level_SHIFT: u32 = 56;
+pub const HPZONE_level_MASK: u64 = 2233785415175766016;
+pub const HPZONE_rootRhombus_SHIFT: u32 = 52;
+pub const HPZONE_rootRhombus_MASK: u64 = 67553994410557440;
+pub const HPZONE_subIndex_SHIFT: u32 = 0;
+pub const HPZONE_subIndex_MASK: u64 = 4503599627370495;
+pub const I3HZONE_levelI9R_SHIFT: u32 = 57;
+pub const I3HZONE_levelI9R_MASK: u64 = 4467570830351532032;
+pub const I3HZONE_rootRhombus_SHIFT: u32 = 53;
+pub const I3HZONE_rootRhombus_MASK: u64 = 135107988821114880;
+pub const I3HZONE_rhombusIX_SHIFT: u32 = 2;
+pub const I3HZONE_rhombusIX_MASK: u64 = 9007199254740988;
 pub const I3HZONE_subHex_SHIFT: u32 = 0;
-pub const I3HZONE_subHex_MASK: u32 = 7;
+pub const I3HZONE_subHex_MASK: u32 = 3;
+pub const I4RZONE_level_SHIFT: u32 = 59;
+pub const I4RZONE_level_MASK: i64 = -576460752303423488;
+pub const I4RZONE_row_SHIFT: u32 = 30;
+pub const I4RZONE_row_MASK: u64 = 576460751229681664;
+pub const I4RZONE_col_SHIFT: u32 = 0;
+pub const I4RZONE_col_MASK: u32 = 1073741823;
+pub const I7HZONE_levelI49R_SHIFT: u32 = 60;
+pub const I7HZONE_levelI49R_MASK: i64 = -1152921504606846976;
+pub const I7HZONE_rhombusIX_SHIFT: u32 = 3;
+pub const I7HZONE_rhombusIX_MASK: u64 = 1152921504606846968;
+pub const I7HZONE_subHex_SHIFT: u32 = 0;
+pub const I7HZONE_subHex_MASK: u32 = 7;
 pub const I9RZONE_level_SHIFT: u32 = 59;
 pub const I9RZONE_level_MASK: i64 = -576460752303423488;
 pub const I9RZONE_row_SHIFT: u32 = 30;
 pub const I9RZONE_row_MASK: u64 = 576460751229681664;
 pub const I9RZONE_col_SHIFT: u32 = 0;
 pub const I9RZONE_col_MASK: u32 = 1073741823;
+pub const RHPZONE_level_SHIFT: u32 = 59;
+pub const RHPZONE_level_MASK: i64 = -576460752303423488;
+pub const RHPZONE_row_SHIFT: u32 = 30;
+pub const RHPZONE_row_MASK: u64 = 576460751229681664;
+pub const RHPZONE_col_SHIFT: u32 = 0;
+pub const RHPZONE_col_MASK: u32 = 1073741823;
+pub type CRS = uint64;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct CRSExtent {
+    pub crs: CRS,
+    pub tl: Pointd,
+    pub br: Pointd,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of CRSExtent"][::std::mem::size_of::<CRSExtent>() - 40usize];
+    ["Alignment of CRSExtent"][::std::mem::align_of::<CRSExtent>() - 8usize];
+    ["Offset of field: CRSExtent::crs"][::std::mem::offset_of!(CRSExtent, crs) - 0usize];
+    ["Offset of field: CRSExtent::tl"][::std::mem::offset_of!(CRSExtent, tl) - 8usize];
+    ["Offset of field: CRSExtent::br"][::std::mem::offset_of!(CRSExtent, br) - 24usize];
+};
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct GeoPoint {
@@ -87,11 +127,14 @@ const _: () = {
     ["Offset of field: Vector3D::y"][::std::mem::offset_of!(Vector3D, y) - 8usize];
     ["Offset of field: Vector3D::z"][::std::mem::offset_of!(Vector3D, z) - 16usize];
 };
-pub type CRS = uint64;
+pub type RI5x6Projection = Instance;
+pub type BarycentricSphericalTriAreaProjection = RI5x6Projection;
 pub type DGGRS = Instance;
 pub type DGGRSZone = uint64;
 pub type DGGSJSON = Instance;
+pub type DGGSJSONGrid = Instance;
 pub type DGGSJSONShape = Instance;
+pub type HEALPixProjection = Instance;
 pub type JSONSchema = Instance;
 pub type JSONSchemaType = ::std::os::raw::c_int;
 pub const JSONSchemaType_JSONSchemaType_unset: JSONSchemaType = 0;
@@ -103,22 +146,49 @@ pub const JSONSchemaType_JSONSchemaType_number: JSONSchemaType = 5;
 pub const JSONSchemaType_JSONSchemaType_object: JSONSchemaType = 6;
 pub const JSONSchemaType_JSONSchemaType_string: JSONSchemaType = 7;
 pub type RhombicIcosahedral3H = DGGRS;
+pub type RhombicIcosahedral4R = DGGRS;
+pub type RhombicIcosahedral7H = DGGRS;
 pub type RhombicIcosahedral9R = DGGRS;
+pub type SliceAndDiceGreatCircleIcosahedralProjection = RI5x6Projection;
 pub type BCTA3H = RhombicIcosahedral3H;
 pub type CRSRegistry = ::std::os::raw::c_int;
 pub const CRSRegistry_CRSRegistry_epsg: CRSRegistry = 0;
 pub const CRSRegistry_CRSRegistry_ogc: CRSRegistry = 1;
 pub type DGGSJSONDepth = Instance;
-pub type DGGSJSONGrid = Instance;
+pub type DGGSJSONDimension = Instance;
 pub type GGGZone = uint64;
 pub type GNOSISGlobalGrid = DGGRS;
 pub type GPP3H = RhombicIcosahedral3H;
+pub type GoldbergPolyhedraProjection = BarycentricSphericalTriAreaProjection;
+pub type HEALPix = DGGRS;
+pub type HPZone = uint64;
 pub type I3HZone = uint64;
+pub type I4RZone = uint64;
+pub type I7HZone = uint64;
 pub type I9RZone = uint64;
 pub type ISEA3H = RhombicIcosahedral3H;
+pub type ISEA4R = RhombicIcosahedral4R;
+pub type ISEA7H = RhombicIcosahedral7H;
 pub type ISEA9R = RhombicIcosahedral9R;
+pub type ISEAProjection = SliceAndDiceGreatCircleIcosahedralProjection;
 pub type IVEA3H = RhombicIcosahedral3H;
+pub type IVEA4R = RhombicIcosahedral4R;
+pub type IVEA7H = RhombicIcosahedral7H;
 pub type IVEA9R = RhombicIcosahedral9R;
+pub type IVEAProjection = SliceAndDiceGreatCircleIcosahedralProjection;
+pub type RHPZone = uint64;
+pub type RTEA3H = RhombicIcosahedral3H;
+pub type RTEA4R = RhombicIcosahedral4R;
+pub type RTEA7H = RhombicIcosahedral7H;
+pub type RTEA9R = RhombicIcosahedral9R;
+pub type RTEAProjection = SliceAndDiceGreatCircleIcosahedralProjection;
+pub type VGCRadialVertex = ::std::os::raw::c_int;
+pub const VGCRadialVertex_VGCRadialVertex_isea: VGCRadialVertex = 0;
+pub const VGCRadialVertex_VGCRadialVertex_ivea: VGCRadialVertex = 1;
+pub const VGCRadialVertex_VGCRadialVertex_rtea: VGCRadialVertex = 2;
+pub type rHEALPix = DGGRS;
+pub type rHEALPixProjection = HEALPixProjection;
+pub type template_Array_Pointd = Array;
 pub type template_Array_JSONSchema = Array;
 pub type template_Map_String_JSONSchema = Map;
 pub type template_Array_String = Array;
@@ -126,25 +196,10 @@ pub type template_Array_double = Array;
 pub type template_Map_String_int = Map;
 pub type template_Array_DGGSJSONDepth = Array;
 pub type template_Map_String_template_Array_DGGSJSONDepth = Map;
+pub type template_Array_DGGSJSONDimension = Array;
 pub type template_Array_int = Array;
 pub type template_Array_DGGRSZone = Array;
 pub type template_Array_GeoPoint = Array;
-pub type template_Array_Pointd = Array;
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
-pub struct CRSExtent {
-    pub crs: CRS,
-    pub tl: Pointd,
-    pub br: Pointd,
-}
-#[allow(clippy::unnecessary_operation, clippy::identity_op)]
-const _: () = {
-    ["Size of CRSExtent"][::std::mem::size_of::<CRSExtent>() - 40usize];
-    ["Alignment of CRSExtent"][::std::mem::align_of::<CRSExtent>() - 8usize];
-    ["Offset of field: CRSExtent::crs"][::std::mem::offset_of!(CRSExtent, crs) - 0usize];
-    ["Offset of field: CRSExtent::tl"][::std::mem::offset_of!(CRSExtent, tl) - 8usize];
-    ["Offset of field: CRSExtent::br"][::std::mem::offset_of!(CRSExtent, br) - 24usize];
-};
 /*unsafe*/ extern "C" {
     pub static mut DGGRS_areZonesNeighbors: ::std::option::Option<
         /*unsafe*/ extern "C" fn(__this: DGGRS, a: DGGRSZone, b: DGGRSZone) -> bool_,
@@ -545,6 +600,35 @@ const _: () = {
         [::std::mem::offset_of!(class_members_DGGSJSONDepth, data) - 16usize];
 };
 #[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct class_members_DGGSJSONDimension {
+    pub name: String,
+    pub interval: Array,
+    pub grid: DGGSJSONGrid,
+    pub definition: String,
+    pub unit: String,
+    pub unitLang: String,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of class_members_DGGSJSONDimension"]
+        [::std::mem::size_of::<class_members_DGGSJSONDimension>() - 48usize];
+    ["Alignment of class_members_DGGSJSONDimension"]
+        [::std::mem::align_of::<class_members_DGGSJSONDimension>() - 8usize];
+    ["Offset of field: class_members_DGGSJSONDimension::name"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, name) - 0usize];
+    ["Offset of field: class_members_DGGSJSONDimension::interval"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, interval) - 8usize];
+    ["Offset of field: class_members_DGGSJSONDimension::grid"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, grid) - 16usize];
+    ["Offset of field: class_members_DGGSJSONDimension::definition"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, definition) - 24usize];
+    ["Offset of field: class_members_DGGSJSONDimension::unit"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, unit) - 32usize];
+    ["Offset of field: class_members_DGGSJSONDimension::unitLang"]
+        [::std::mem::offset_of!(class_members_DGGSJSONDimension, unitLang) - 40usize];
+};
+#[repr(C)]
 #[derive(Copy, Clone)]
 pub struct class_members_DGGSJSONGrid {
     pub cellsCount: ::std::os::raw::c_int,
@@ -611,9 +695,38 @@ const _: () = {
         ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut GeoExtent)>;
 }
 /*unsafe*/ extern "C" {
+    pub static mut GeoExtent_clip: ::std::option::Option<
+        /*unsafe*/ extern "C" fn(
+            __this: *mut GeoExtent,
+            e: *const GeoExtent,
+            clipExtent: *const GeoExtent,
+        ) -> bool_,
+    >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut GeoExtent_clipHandlingDateline: ::std::option::Option<
+        /*unsafe*/ extern "C" fn(
+            __this: *mut GeoExtent,
+            e: *const GeoExtent,
+            clipExtent: *const GeoExtent,
+        ) -> bool_,
+    >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut GeoExtent_doUnionDL:
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: *mut GeoExtent, e: *const GeoExtent)>;
+}
+/*unsafe*/ extern "C" {
     pub static mut GeoExtent_intersects: ::std::option::Option<
         /*unsafe*/ extern "C" fn(__this: *mut GeoExtent, b: *const GeoExtent) -> bool_,
     >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut property_GeoExtent_nonNull: *mut Property;
+}
+/*unsafe*/ extern "C" {
+    pub static mut GeoExtent_get_nonNull:
+        ::std::option::Option</*unsafe*/ extern "C" fn(g: *const GeoExtent) -> bool_>;
 }
 /*unsafe*/ extern "C" {
     pub static mut property_GeoExtent_geodeticArea: *mut Property;
@@ -621,6 +734,18 @@ const _: () = {
 /*unsafe*/ extern "C" {
     pub static mut GeoExtent_get_geodeticArea:
         ::std::option::Option</*unsafe*/ extern "C" fn(g: *const GeoExtent) -> f64>;
+}
+/*unsafe*/ extern "C" {
+    pub static mut HEALPixProjection_forward_vTblID: ::std::os::raw::c_int;
+}
+/*unsafe*/ extern "C" {
+    pub static mut method_HEALPixProjection_forward: *mut Method;
+}
+/*unsafe*/ extern "C" {
+    pub static mut HEALPixProjection_inverse_vTblID: ::std::os::raw::c_int;
+}
+/*unsafe*/ extern "C" {
+    pub static mut method_HEALPixProjection_inverse: *mut Method;
 }
 #[repr(C)]
 #[derive(Copy, Clone)]
@@ -919,6 +1044,50 @@ const _: () = {
         ),
     >;
 }
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct Quaternion {
+    pub w: f64,
+    pub x: f64,
+    pub y: f64,
+    pub z: f64,
+}
+#[allow(clippy::unnecessary_operation, clippy::identity_op)]
+const _: () = {
+    ["Size of Quaternion"][::std::mem::size_of::<Quaternion>() - 32usize];
+    ["Alignment of Quaternion"][::std::mem::align_of::<Quaternion>() - 8usize];
+    ["Offset of field: Quaternion::w"][::std::mem::offset_of!(Quaternion, w) - 0usize];
+    ["Offset of field: Quaternion::x"][::std::mem::offset_of!(Quaternion, x) - 8usize];
+    ["Offset of field: Quaternion::y"][::std::mem::offset_of!(Quaternion, y) - 16usize];
+    ["Offset of field: Quaternion::z"][::std::mem::offset_of!(Quaternion, z) - 24usize];
+};
+/*unsafe*/ extern "C" {
+    pub static mut Quaternion_yawPitch: ::std::option::Option<
+        /*unsafe*/ extern "C" fn(__this: *mut Quaternion, yaw: Angle, pitch: Angle),
+    >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut RI5x6Projection_extent5x6FromWGS84: ::std::option::Option<
+        /*unsafe*/ extern "C" fn(
+            __this: RI5x6Projection,
+            wgs84Extent: *const GeoExtent,
+            topLeft: *mut Pointd,
+            bottomRight: *mut Pointd,
+        ),
+    >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut RI5x6Projection_forward_vTblID: ::std::os::raw::c_int;
+}
+/*unsafe*/ extern "C" {
+    pub static mut method_RI5x6Projection_forward: *mut Method;
+}
+/*unsafe*/ extern "C" {
+    pub static mut RI5x6Projection_inverse_vTblID: ::std::os::raw::c_int;
+}
+/*unsafe*/ extern "C" {
+    pub static mut method_RI5x6Projection_inverse: *mut Method;
+}
 /*unsafe*/ extern "C" {
     pub static mut Vector3D_crossProduct: ::std::option::Option<
         /*unsafe*/ extern "C" fn(
@@ -931,6 +1100,11 @@ const _: () = {
 /*unsafe*/ extern "C" {
     pub static mut Vector3D_dotProduct: ::std::option::Option<
         /*unsafe*/ extern "C" fn(__this: *mut Vector3D, vector2: *const Vector3D) -> f64,
+    >;
+}
+/*unsafe*/ extern "C" {
+    pub static mut Vector3D_multQuaternion: ::std::option::Option<
+        /*unsafe*/ extern "C" fn(__this: *mut Vector3D, s: *const Vector3D, quat: *const Quaternion),
     >;
 }
 /*unsafe*/ extern "C" {
@@ -960,6 +1134,9 @@ const _: () = {
     pub static mut class_BCTA3H: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_BarycentricSphericalTriAreaProjection: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_CRS: *mut Class;
 }
 /*unsafe*/ extern "C" {
@@ -979,6 +1156,9 @@ const _: () = {
 }
 /*unsafe*/ extern "C" {
     pub static mut class_DGGSJSONDepth: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_DGGSJSONDimension: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_DGGSJSONGrid: *mut Class;
@@ -1002,7 +1182,25 @@ const _: () = {
     pub static mut class_GeoPoint: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_GoldbergPolyhedraProjection: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_HEALPix: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_HEALPixProjection: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_HPZone: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_I3HZone: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_I4RZone: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_I7HZone: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_I9RZone: *mut Class;
@@ -1011,13 +1209,31 @@ const _: () = {
     pub static mut class_ISEA3H: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_ISEA4R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_ISEA7H: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_ISEA9R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_ISEAProjection: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_IVEA3H: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_IVEA4R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_IVEA7H: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_IVEA9R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_IVEAProjection: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_JSONSchema: *mut Class;
@@ -1029,13 +1245,55 @@ const _: () = {
     pub static mut class_Plane: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_Quaternion: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RHPZone: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RI5x6Projection: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RTEA3H: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RTEA4R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RTEA7H: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RTEA9R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RTEAProjection: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_RhombicIcosahedral3H: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RhombicIcosahedral4R: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_RhombicIcosahedral7H: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub static mut class_RhombicIcosahedral9R: *mut Class;
 }
 /*unsafe*/ extern "C" {
+    pub static mut class_SliceAndDiceGreatCircleIcosahedralProjection: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_VGCRadialVertex: *mut Class;
+}
+/*unsafe*/ extern "C" {
     pub static mut class_Vector3D: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_rHEALPix: *mut Class;
+}
+/*unsafe*/ extern "C" {
+    pub static mut class_rHEALPixProjection: *mut Class;
 }
 /*unsafe*/ extern "C" {
     pub fn dggal_init(fromModule: Module) -> Module;

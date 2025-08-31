@@ -71,12 +71,25 @@ LIB_EXPORT C(Method) * METHOD(DGGRS, listZones);
 LIB_EXPORT C(Method) * METHOD(DGGRS, zoneHasSubZone);
 
 LIB_EXPORT C(Method) * METHOD(GeoExtent, clear);
+LIB_EXPORT C(Method) * METHOD(GeoExtent, clip);
+LIB_EXPORT C(Method) * METHOD(GeoExtent, clipHandlingDateline);
+LIB_EXPORT C(Method) * METHOD(GeoExtent, doUnionDL);
 LIB_EXPORT C(Method) * METHOD(GeoExtent, intersects);
+
+LIB_EXPORT C(Method) * METHOD(HEALPixProjection, forward);
+LIB_EXPORT C(Method) * METHOD(HEALPixProjection, inverse);
 
 LIB_EXPORT C(Method) * METHOD(Plane, fromPoints);
 
+LIB_EXPORT C(Method) * METHOD(Quaternion, yawPitch);
+
+LIB_EXPORT C(Method) * METHOD(RI5x6Projection, extent5x6FromWGS84);
+LIB_EXPORT C(Method) * METHOD(RI5x6Projection, forward);
+LIB_EXPORT C(Method) * METHOD(RI5x6Projection, inverse);
+
 LIB_EXPORT C(Method) * METHOD(Vector3D, crossProduct);
 LIB_EXPORT C(Method) * METHOD(Vector3D, dotProduct);
+LIB_EXPORT C(Method) * METHOD(Vector3D, multQuaternion);
 LIB_EXPORT C(Method) * METHOD(Vector3D, normalize);
 LIB_EXPORT C(Method) * METHOD(Vector3D, subtract);
 
@@ -91,7 +104,7 @@ LIB_EXPORT C(bool) (* DGGRS_doZonesOverlap)(C(DGGRS) __this, C(DGGRSZone) a, C(D
 LIB_EXPORT C(bool) (* DGGRS_doesZoneContain)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 LIB_EXPORT int (* DGGRS_get64KDepth)(C(DGGRS) __this);
 LIB_EXPORT int (* DGGRS_getLevelFromMetersPerSubZone)(C(DGGRS) __this, double physicalMetersPerSubZone, int relativeDepth);
-LIB_EXPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, C(Point) * pixels, int relativeDepth);
+LIB_EXPORT int (* DGGRS_getLevelFromPixelsAndExtent)(C(DGGRS) __this, const C(GeoExtent) * extent, const C(Point) * pixels, int relativeDepth);
 LIB_EXPORT int (* DGGRS_getLevelFromRefZoneArea)(C(DGGRS) __this, double metersSquared);
 LIB_EXPORT int (* DGGRS_getLevelFromScaleDenominator)(C(DGGRS) __this, double scaleDenominator, int relativeDepth, double mmPerPixel);
 LIB_EXPORT int (* DGGRS_getMaxDepth)(C(DGGRS) __this);
@@ -106,16 +119,28 @@ LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateParentOf)(C(DGGRS) __this, C(DGGRSZon
 LIB_EXPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
 LIB_EXPORT void (* GeoExtent_clear)(C(GeoExtent) * __this);
+LIB_EXPORT C(bool) (* GeoExtent_clip)(C(GeoExtent) * __this, const C(GeoExtent) * e, const C(GeoExtent) * clipExtent);
+LIB_EXPORT C(bool) (* GeoExtent_clipHandlingDateline)(C(GeoExtent) * __this, const C(GeoExtent) * e, const C(GeoExtent) * clipExtent);
+LIB_EXPORT void (* GeoExtent_doUnionDL)(C(GeoExtent) * __this, const C(GeoExtent) * e);
 LIB_EXPORT C(bool) (* GeoExtent_intersects)(C(GeoExtent) * __this, const C(GeoExtent) * b);
+
 
 LIB_EXPORT void (* Plane_fromPoints)(C(Plane) * __this, const C(Vector3D) * v1, const C(Vector3D) * v2, const C(Vector3D) * v3);
 
+LIB_EXPORT void (* Quaternion_yawPitch)(C(Quaternion) * __this, C(Angle) yaw, C(Angle) pitch);
+
+LIB_EXPORT void (* RI5x6Projection_extent5x6FromWGS84)(C(RI5x6Projection) __this, const C(GeoExtent) * wgs84Extent, C(Pointd) * topLeft, C(Pointd) * bottomRight);
+
 LIB_EXPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 LIB_EXPORT double (* Vector3D_dotProduct)(C(Vector3D) * __this, const C(Vector3D) * vector2);
+LIB_EXPORT void (* Vector3D_multQuaternion)(C(Vector3D) * __this, const C(Vector3D) * s, const C(Quaternion) * quat);
 LIB_EXPORT void (* Vector3D_normalize)(C(Vector3D) * __this, const C(Vector3D) * source);
 LIB_EXPORT void (* Vector3D_subtract)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 
 
+
+LIB_EXPORT C(Property) * PROPERTY(GeoExtent, nonNull);
+LIB_EXPORT C(bool) (* GeoExtent_get_nonNull)(const C(GeoExtent) * g);
 
 LIB_EXPORT C(Property) * PROPERTY(GeoExtent, geodeticArea);
 LIB_EXPORT double (* GeoExtent_get_geodeticArea)(const C(GeoExtent) * g);
@@ -173,11 +198,16 @@ LIB_EXPORT double (* Vector3D_get_length)(const C(Vector3D) * v);
 LIB_EXPORT C(Class) * CO(CRS);
 LIB_EXPORT C(Class) * CO(DGGRSZone);
 LIB_EXPORT C(Class) * CO(GGGZone);
+LIB_EXPORT C(Class) * CO(HPZone);
 LIB_EXPORT C(Class) * CO(I3HZone);
+LIB_EXPORT C(Class) * CO(I4RZone);
+LIB_EXPORT C(Class) * CO(I7HZone);
 LIB_EXPORT C(Class) * CO(I9RZone);
+LIB_EXPORT C(Class) * CO(RHPZone);
 // enumClass
 LIB_EXPORT C(Class) * CO(CRSRegistry);
 LIB_EXPORT C(Class) * CO(JSONSchemaType);
+LIB_EXPORT C(Class) * CO(VGCRadialVertex);
 // unitClass
 // systemClass
 // structClass
@@ -185,27 +215,47 @@ LIB_EXPORT C(Class) * CO(CRSExtent);
 LIB_EXPORT C(Class) * CO(GeoExtent);
 LIB_EXPORT C(Class) * CO(GeoPoint);
 LIB_EXPORT C(Class) * CO(Plane);
+LIB_EXPORT C(Class) * CO(Quaternion);
 LIB_EXPORT C(Class) * CO(Vector3D);
 // noHeadClass
 // normalClass
 LIB_EXPORT C(Class) * CO(BCTA3H);
+LIB_EXPORT C(Class) * CO(BarycentricSphericalTriAreaProjection);
 LIB_EXPORT C(Class) * CO(DGGRS);
 LIB_EXPORT C(Class) * CO(DGGSJSON);
 LIB_EXPORT C(Class) * CO(DGGSJSONDepth);
+LIB_EXPORT C(Class) * CO(DGGSJSONDimension);
 LIB_EXPORT C(Class) * CO(DGGSJSONGrid);
 LIB_EXPORT C(Class) * CO(DGGSJSONShape);
 LIB_EXPORT C(Class) * CO(GNOSISGlobalGrid);
 LIB_EXPORT C(Class) * CO(GPP3H);
+LIB_EXPORT C(Class) * CO(GoldbergPolyhedraProjection);
+LIB_EXPORT C(Class) * CO(HEALPix);
+LIB_EXPORT C(Class) * CO(HEALPixProjection);
 LIB_EXPORT C(Class) * CO(ISEA3H);
+LIB_EXPORT C(Class) * CO(ISEA4R);
+LIB_EXPORT C(Class) * CO(ISEA7H);
 LIB_EXPORT C(Class) * CO(ISEA9R);
+LIB_EXPORT C(Class) * CO(ISEAProjection);
 LIB_EXPORT C(Class) * CO(IVEA3H);
+LIB_EXPORT C(Class) * CO(IVEA4R);
+LIB_EXPORT C(Class) * CO(IVEA7H);
 LIB_EXPORT C(Class) * CO(IVEA9R);
-LIB_EXPORT C(Class) * CO(RTEA3H);
-LIB_EXPORT C(Class) * CO(RTEA9R);
-LIB_EXPORT C(Class) * CO(rHEALPix);
+LIB_EXPORT C(Class) * CO(IVEAProjection);
 LIB_EXPORT C(Class) * CO(JSONSchema);
+LIB_EXPORT C(Class) * CO(RI5x6Projection);
+LIB_EXPORT C(Class) * CO(RTEA3H);
+LIB_EXPORT C(Class) * CO(RTEA4R);
+LIB_EXPORT C(Class) * CO(RTEA7H);
+LIB_EXPORT C(Class) * CO(RTEA9R);
+LIB_EXPORT C(Class) * CO(RTEAProjection);
 LIB_EXPORT C(Class) * CO(RhombicIcosahedral3H);
+LIB_EXPORT C(Class) * CO(RhombicIcosahedral4R);
+LIB_EXPORT C(Class) * CO(RhombicIcosahedral7H);
 LIB_EXPORT C(Class) * CO(RhombicIcosahedral9R);
+LIB_EXPORT C(Class) * CO(SliceAndDiceGreatCircleIcosahedralProjection);
+LIB_EXPORT C(Class) * CO(rHEALPix);
+LIB_EXPORT C(Class) * CO(rHEALPixProjection);
 
 
 
@@ -249,6 +299,11 @@ LIB_EXPORT int M_VTBLID(DGGRS, getZoneWGS84Vertices);
 LIB_EXPORT int M_VTBLID(DGGRS, isZoneCentroidChild);
 LIB_EXPORT int M_VTBLID(DGGRS, listZones);
 
+LIB_EXPORT int M_VTBLID(HEALPixProjection, forward);
+LIB_EXPORT int M_VTBLID(HEALPixProjection, inverse);
+
+LIB_EXPORT int M_VTBLID(RI5x6Projection, forward);
+LIB_EXPORT int M_VTBLID(RI5x6Projection, inverse);
 
 #ifdef EC_STATIC
 unsigned int __eCDll_Load_dggal(C(Module) * module);
@@ -279,6 +334,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
 
       CO(BCTA3H) = eC_findClass(module, "BCTA3H");
+      CO(BarycentricSphericalTriAreaProjection) = eC_findClass(module, "BarycentricSphericalTriAreaProjection");
       CO(CRS) = eC_findClass(module, "CRS");
       CO(CRSExtent) = eC_findClass(module, "CRSExtent");
       CO(CRSRegistry) = eC_findClass(module, "CRSRegistry");
@@ -335,7 +391,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
          METHOD(DGGRS, getLevelFromPixelsAndExtent) = Class_findMethod(CO(DGGRS), "getLevelFromPixelsAndExtent", module);
          if(METHOD(DGGRS, getLevelFromPixelsAndExtent))
-            DGGRS_getLevelFromPixelsAndExtent = (int (*)(C(DGGRS), const C(GeoExtent) *, C(Point) *, int))METHOD(DGGRS, getLevelFromPixelsAndExtent)->function;
+            DGGRS_getLevelFromPixelsAndExtent = (int (*)(C(DGGRS), const C(GeoExtent) *, const C(Point) *, int))METHOD(DGGRS, getLevelFromPixelsAndExtent)->function;
 
          METHOD(DGGRS, getLevelFromRefZoneArea) = Class_findMethod(CO(DGGRS), "getLevelFromRefZoneArea", module);
          if(METHOD(DGGRS, getLevelFromRefZoneArea))
@@ -512,6 +568,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
       CO(DGGRSZone) = eC_findClass(module, "DGGRSZone");
       CO(DGGSJSON) = eC_findClass(module, "DGGSJSON");
       CO(DGGSJSONDepth) = eC_findClass(module, "DGGSJSONDepth");
+      CO(DGGSJSONDimension) = eC_findClass(module, "DGGSJSONDimension");
       CO(DGGSJSONGrid) = eC_findClass(module, "DGGSJSONGrid");
       CO(DGGSJSONShape) = eC_findClass(module, "DGGSJSONShape");
       CO(GGGZone) = eC_findClass(module, "GGGZone");
@@ -524,24 +581,59 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(GeoExtent, clear))
             GeoExtent_clear = (void (*)(C(GeoExtent) *))METHOD(GeoExtent, clear)->function;
 
+         METHOD(GeoExtent, clip) = Class_findMethod(CO(GeoExtent), "clip", module);
+         if(METHOD(GeoExtent, clip))
+            GeoExtent_clip = (C(bool) (*)(C(GeoExtent) *, const C(GeoExtent) *, const C(GeoExtent) *))METHOD(GeoExtent, clip)->function;
+
+         METHOD(GeoExtent, clipHandlingDateline) = Class_findMethod(CO(GeoExtent), "clipHandlingDateline", module);
+         if(METHOD(GeoExtent, clipHandlingDateline))
+            GeoExtent_clipHandlingDateline = (C(bool) (*)(C(GeoExtent) *, const C(GeoExtent) *, const C(GeoExtent) *))METHOD(GeoExtent, clipHandlingDateline)->function;
+
+         METHOD(GeoExtent, doUnionDL) = Class_findMethod(CO(GeoExtent), "doUnionDL", module);
+         if(METHOD(GeoExtent, doUnionDL))
+            GeoExtent_doUnionDL = (void (*)(C(GeoExtent) *, const C(GeoExtent) *))METHOD(GeoExtent, doUnionDL)->function;
+
          METHOD(GeoExtent, intersects) = Class_findMethod(CO(GeoExtent), "intersects", module);
          if(METHOD(GeoExtent, intersects))
             GeoExtent_intersects = (C(bool) (*)(C(GeoExtent) *, const C(GeoExtent) *))METHOD(GeoExtent, intersects)->function;
+
+         PROPERTY(GeoExtent, nonNull) = Class_findProperty(CO(GeoExtent), "nonNull", module);
+         if(PROPERTY(GeoExtent, nonNull))
+            GeoExtent_get_nonNull = (void *)PROPERTY(GeoExtent, nonNull)->Get;
 
          PROPERTY(GeoExtent, geodeticArea) = Class_findProperty(CO(GeoExtent), "geodeticArea", module);
          if(PROPERTY(GeoExtent, geodeticArea))
             GeoExtent_get_geodeticArea = (void *)PROPERTY(GeoExtent, geodeticArea)->Get;
       }
       CO(GeoPoint) = eC_findClass(module, "GeoPoint");
+      CO(GoldbergPolyhedraProjection) = eC_findClass(module, "GoldbergPolyhedraProjection");
+      CO(HEALPix) = eC_findClass(module, "HEALPix");
+      CO(HEALPixProjection) = eC_findClass(module, "HEALPixProjection");
+      if(CO(HEALPixProjection))
+      {
+         METHOD(HEALPixProjection, forward) = Class_findMethod(CO(HEALPixProjection), "forward", module);
+         if(METHOD(HEALPixProjection, forward))
+            M_VTBLID(HEALPixProjection, forward) = METHOD(HEALPixProjection, forward)->vid;
+
+         METHOD(HEALPixProjection, inverse) = Class_findMethod(CO(HEALPixProjection), "inverse", module);
+         if(METHOD(HEALPixProjection, inverse))
+            M_VTBLID(HEALPixProjection, inverse) = METHOD(HEALPixProjection, inverse)->vid;
+      }
+      CO(HPZone) = eC_findClass(module, "HPZone");
       CO(I3HZone) = eC_findClass(module, "I3HZone");
+      CO(I4RZone) = eC_findClass(module, "I4RZone");
+      CO(I7HZone) = eC_findClass(module, "I7HZone");
       CO(I9RZone) = eC_findClass(module, "I9RZone");
       CO(ISEA3H) = eC_findClass(module, "ISEA3H");
+      CO(ISEA4R) = eC_findClass(module, "ISEA4R");
+      CO(ISEA7H) = eC_findClass(module, "ISEA7H");
       CO(ISEA9R) = eC_findClass(module, "ISEA9R");
+      CO(ISEAProjection) = eC_findClass(module, "ISEAProjection");
       CO(IVEA3H) = eC_findClass(module, "IVEA3H");
+      CO(IVEA4R) = eC_findClass(module, "IVEA4R");
+      CO(IVEA7H) = eC_findClass(module, "IVEA7H");
       CO(IVEA9R) = eC_findClass(module, "IVEA9R");
-      CO(RTEA3H) = eC_findClass(module, "RTEA3H");
-      CO(RTEA9R) = eC_findClass(module, "RTEA9R");
-      CO(rHEALPix) = eC_findClass(module, "rHEALPix");
+      CO(IVEAProjection) = eC_findClass(module, "IVEAProjection");
       CO(JSONSchema) = eC_findClass(module, "JSONSchema");
       if(CO(JSONSchema))
       {
@@ -617,8 +709,40 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(Plane, fromPoints))
             Plane_fromPoints = (void (*)(C(Plane) *, const C(Vector3D) *, const C(Vector3D) *, const C(Vector3D) *))METHOD(Plane, fromPoints)->function;
       }
+      CO(Quaternion) = eC_findClass(module, "Quaternion");
+      if(CO(Quaternion))
+      {
+         METHOD(Quaternion, yawPitch) = Class_findMethod(CO(Quaternion), "YawPitch", module);
+         if(METHOD(Quaternion, yawPitch))
+            Quaternion_yawPitch = (void (*)(C(Quaternion) *, C(Angle), C(Angle)))METHOD(Quaternion, yawPitch)->function;
+      }
+      CO(RHPZone) = eC_findClass(module, "RHPZone");
+      CO(RI5x6Projection) = eC_findClass(module, "RI5x6Projection");
+      if(CO(RI5x6Projection))
+      {
+         METHOD(RI5x6Projection, extent5x6FromWGS84) = Class_findMethod(CO(RI5x6Projection), "extent5x6FromWGS84", module);
+         if(METHOD(RI5x6Projection, extent5x6FromWGS84))
+            RI5x6Projection_extent5x6FromWGS84 = (void (*)(C(RI5x6Projection), const C(GeoExtent) *, C(Pointd) *, C(Pointd) *))METHOD(RI5x6Projection, extent5x6FromWGS84)->function;
+
+         METHOD(RI5x6Projection, forward) = Class_findMethod(CO(RI5x6Projection), "forward", module);
+         if(METHOD(RI5x6Projection, forward))
+            M_VTBLID(RI5x6Projection, forward) = METHOD(RI5x6Projection, forward)->vid;
+
+         METHOD(RI5x6Projection, inverse) = Class_findMethod(CO(RI5x6Projection), "inverse", module);
+         if(METHOD(RI5x6Projection, inverse))
+            M_VTBLID(RI5x6Projection, inverse) = METHOD(RI5x6Projection, inverse)->vid;
+      }
+      CO(RTEA3H) = eC_findClass(module, "RTEA3H");
+      CO(RTEA4R) = eC_findClass(module, "RTEA4R");
+      CO(RTEA7H) = eC_findClass(module, "RTEA7H");
+      CO(RTEA9R) = eC_findClass(module, "RTEA9R");
+      CO(RTEAProjection) = eC_findClass(module, "RTEAProjection");
       CO(RhombicIcosahedral3H) = eC_findClass(module, "RhombicIcosahedral3H");
+      CO(RhombicIcosahedral4R) = eC_findClass(module, "RhombicIcosahedral4R");
+      CO(RhombicIcosahedral7H) = eC_findClass(module, "RhombicIcosahedral7H");
       CO(RhombicIcosahedral9R) = eC_findClass(module, "RhombicIcosahedral9R");
+      CO(SliceAndDiceGreatCircleIcosahedralProjection) = eC_findClass(module, "SliceAndDiceGreatCircleIcosahedralProjection");
+      CO(VGCRadialVertex) = eC_findClass(module, "VGCRadialVertex");
       CO(Vector3D) = eC_findClass(module, "Vector3D");
       if(CO(Vector3D))
       {
@@ -629,6 +753,10 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          METHOD(Vector3D, dotProduct) = Class_findMethod(CO(Vector3D), "DotProduct", module);
          if(METHOD(Vector3D, dotProduct))
             Vector3D_dotProduct = (double (*)(C(Vector3D) *, const C(Vector3D) *))METHOD(Vector3D, dotProduct)->function;
+
+         METHOD(Vector3D, multQuaternion) = Class_findMethod(CO(Vector3D), "MultQuaternion", module);
+         if(METHOD(Vector3D, multQuaternion))
+            Vector3D_multQuaternion = (void (*)(C(Vector3D) *, const C(Vector3D) *, const C(Quaternion) *))METHOD(Vector3D, multQuaternion)->function;
 
          METHOD(Vector3D, normalize) = Class_findMethod(CO(Vector3D), "Normalize", module);
          if(METHOD(Vector3D, normalize))
@@ -642,6 +770,8 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(PROPERTY(Vector3D, length))
             Vector3D_get_length = (void *)PROPERTY(Vector3D, length)->Get;
       }
+      CO(rHEALPix) = eC_findClass(module, "rHEALPix");
+      CO(rHEALPixProjection) = eC_findClass(module, "rHEALPixProjection");
 
 
 

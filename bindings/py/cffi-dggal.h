@@ -1,3 +1,10 @@
+typedef uint64 eC_CRS;
+struct eC_CRSExtent
+{
+   eC_CRS crs;
+   eC_Pointd tl;
+   eC_Pointd br;
+};
 struct eC_GeoPoint
 {
    eC_Angle lat;
@@ -9,14 +16,17 @@ struct eC_Vector3D
    double y;
    double z;
 };
-typedef uint64 eC_CRS;
+typedef eC_Instance eC_RI5x6Projection;
+typedef eC_RI5x6Projection eC_BarycentricSphericalTriAreaProjection;
 typedef struct eC_CRSExtent eC_CRSExtent;
 typedef eC_Instance eC_DGGRS;
 typedef uint64 eC_DGGRSZone;
 typedef eC_Instance eC_DGGSJSON;
+typedef eC_Instance eC_DGGSJSONGrid;
 typedef eC_Instance eC_DGGSJSONShape;
 typedef struct eC_GeoExtent eC_GeoExtent;
 typedef struct eC_GeoPoint eC_GeoPoint;
+typedef eC_Instance eC_HEALPixProjection;
 typedef eC_Instance eC_JSONSchema;
 typedef int eC_JSONSchemaType;
 enum
@@ -32,8 +42,12 @@ enum
 };
 
 typedef struct eC_Plane eC_Plane;
+typedef struct eC_Quaternion eC_Quaternion;
 typedef eC_DGGRS eC_RhombicIcosahedral3H;
+typedef eC_DGGRS eC_RhombicIcosahedral4R;
+typedef eC_DGGRS eC_RhombicIcosahedral7H;
 typedef eC_DGGRS eC_RhombicIcosahedral9R;
+typedef eC_RI5x6Projection eC_SliceAndDiceGreatCircleIcosahedralProjection;
 typedef struct eC_Vector3D eC_Vector3D;
 static const uint64 nullZone;
 
@@ -50,19 +64,43 @@ enum
 };
 
 typedef eC_Instance eC_DGGSJSONDepth;
-typedef eC_Instance eC_DGGSJSONGrid;
+typedef eC_Instance eC_DGGSJSONDimension;
 typedef uint64 eC_GGGZone;
 typedef eC_DGGRS eC_GNOSISGlobalGrid;
 typedef eC_RhombicIcosahedral3H eC_GPP3H;
+typedef eC_BarycentricSphericalTriAreaProjection eC_GoldbergPolyhedraProjection;
+typedef eC_DGGRS eC_HEALPix;
+typedef uint64 eC_HPZone;
 typedef uint64 eC_I3HZone;
+typedef uint64 eC_I4RZone;
+typedef uint64 eC_I7HZone;
 typedef uint64 eC_I9RZone;
 typedef eC_RhombicIcosahedral3H eC_ISEA3H;
+typedef eC_RhombicIcosahedral4R eC_ISEA4R;
+typedef eC_RhombicIcosahedral7H eC_ISEA7H;
 typedef eC_RhombicIcosahedral9R eC_ISEA9R;
+typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_ISEAProjection;
 typedef eC_RhombicIcosahedral3H eC_IVEA3H;
+typedef eC_RhombicIcosahedral4R eC_IVEA4R;
+typedef eC_RhombicIcosahedral7H eC_IVEA7H;
 typedef eC_RhombicIcosahedral9R eC_IVEA9R;
+typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_IVEAProjection;
+typedef uint64 eC_RHPZone;
 typedef eC_RhombicIcosahedral3H eC_RTEA3H;
+typedef eC_RhombicIcosahedral4R eC_RTEA4R;
+typedef eC_RhombicIcosahedral7H eC_RTEA7H;
 typedef eC_RhombicIcosahedral9R eC_RTEA9R;
+typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_RTEAProjection;
+typedef int eC_VGCRadialVertex;
+enum
+{
+   VGCRadialVertex_isea = 0x0,
+   VGCRadialVertex_ivea = 0x1,
+   VGCRadialVertex_rtea = 0x2
+};
+
 typedef eC_DGGRS eC_rHEALPix;
+typedef eC_HEALPixProjection eC_rHEALPixProjection;
 typedef eC_Array template_Array_JSONSchema;
 typedef eC_Map template_Map_String_JSONSchema;
 typedef eC_Array template_Array_String;
@@ -71,6 +109,7 @@ typedef eC_Array template_Array_double;
 typedef eC_Map template_Map_String_int;
 typedef eC_Array template_Array_DGGSJSONDepth;
 typedef eC_Map template_Map_String_template_Array_DGGSJSONDepth;
+typedef eC_Array template_Array_DGGSJSONDimension;
 typedef eC_Array template_Array_int;
 typedef eC_Array template_Array_DGGRSZone;
 typedef eC_Array template_Array_GeoPoint;
@@ -83,12 +122,6 @@ typedef eC_Array template_Array_Pointd;
 #define CRS_h_MASK                                       0x4000000000000000LL
 
 
-struct eC_CRSExtent
-{
-   eC_CRS crs;
-   eC_Pointd tl;
-   eC_Pointd br;
-};
 extern eC_bool (* DGGRS_areZonesNeighbors)(eC_DGGRS __this, eC_DGGRSZone a, eC_DGGRSZone b);
 
 extern eC_bool (* DGGRS_areZonesSiblings)(eC_DGGRS __this, eC_DGGRSZone a, eC_DGGRSZone b);
@@ -125,7 +158,7 @@ extern eC_Method * method_DGGRS_getIndexMaxDepth;
 
 extern int (* DGGRS_getLevelFromMetersPerSubZone)(eC_DGGRS __this, double physicalMetersPerSubZone, int relativeDepth);
 
-extern int (* DGGRS_getLevelFromPixelsAndExtent)(eC_DGGRS __this, const eC_GeoExtent * extent, eC_Point * pixels, int relativeDepth);
+extern int (* DGGRS_getLevelFromPixelsAndExtent)(eC_DGGRS __this, const eC_GeoExtent * extent, const eC_Point * pixels, int relativeDepth);
 
 extern int (* DGGRS_getLevelFromRefZoneArea)(eC_DGGRS __this, double metersSquared);
 
@@ -299,6 +332,15 @@ struct class_members_DGGSJSONDepth
    eC_DGGSJSONShape shape;
    eC_Array data;
 };
+struct class_members_DGGSJSONDimension
+{
+   eC_String name;
+   eC_Array interval;
+   eC_DGGSJSONGrid grid;
+   eC_String definition;
+   eC_String unit;
+   eC_String unitLang;
+};
 struct class_members_DGGSJSONGrid
 {
    int cellsCount;
@@ -329,19 +371,60 @@ struct eC_GeoExtent
 };
 extern void (* GeoExtent_clear)(eC_GeoExtent * __this);
 
+extern eC_bool (* GeoExtent_clip)(eC_GeoExtent * __this, const eC_GeoExtent * e, const eC_GeoExtent * clipExtent);
+
+extern eC_bool (* GeoExtent_clipHandlingDateline)(eC_GeoExtent * __this, const eC_GeoExtent * e, const eC_GeoExtent * clipExtent);
+
+extern void (* GeoExtent_doUnionDL)(eC_GeoExtent * __this, const eC_GeoExtent * e);
+
 extern eC_bool (* GeoExtent_intersects)(eC_GeoExtent * __this, const eC_GeoExtent * b);
+
+extern eC_Property * property_GeoExtent_nonNull;
+extern eC_bool (* GeoExtent_get_nonNull)(const eC_GeoExtent * g);
 
 extern eC_Property * property_GeoExtent_geodeticArea;
 extern double (* GeoExtent_get_geodeticArea)(const eC_GeoExtent * g);
 
-#define I3HZONE_levelI9R_SHIFT                           58
-#define I3HZONE_levelI9R_MASK                            0x7C00000000000000LL
-#define I3HZONE_rootRhombus_SHIFT                        54
-#define I3HZONE_rootRhombus_MASK                         0x3C0000000000000LL
-#define I3HZONE_rhombusIX_SHIFT                          3
-#define I3HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
+extern int HEALPixProjection_forward_vTblID;
+eC_bool HEALPixProjection_forward(eC_HEALPixProjection __i, const eC_GeoPoint * p, eC_Pointd * v);
+extern eC_Method * method_HEALPixProjection_forward;
+
+extern int HEALPixProjection_inverse_vTblID;
+eC_bool HEALPixProjection_inverse(eC_HEALPixProjection __i, const eC_Pointd * v, eC_GeoPoint * result, eC_bool oddGrid);
+extern eC_Method * method_HEALPixProjection_inverse;
+
+#define HPZONE_level_SHIFT                               56
+#define HPZONE_level_MASK                                0x1F00000000000000LL
+#define HPZONE_rootRhombus_SHIFT                         52
+#define HPZONE_rootRhombus_MASK                          0xF0000000000000LL
+#define HPZONE_subIndex_SHIFT                            0
+#define HPZONE_subIndex_MASK                             0xFFFFFFFFFFFFFLL
+
+
+#define I3HZONE_levelI9R_SHIFT                           57
+#define I3HZONE_levelI9R_MASK                            0x3E00000000000000LL
+#define I3HZONE_rootRhombus_SHIFT                        53
+#define I3HZONE_rootRhombus_MASK                         0x1E0000000000000LL
+#define I3HZONE_rhombusIX_SHIFT                          2
+#define I3HZONE_rhombusIX_MASK                           0x1FFFFFFFFFFFFCLL
 #define I3HZONE_subHex_SHIFT                             0
-#define I3HZONE_subHex_MASK                              0x7
+#define I3HZONE_subHex_MASK                              0x3
+
+
+#define I4RZONE_level_SHIFT                              59
+#define I4RZONE_level_MASK                               0xF800000000000000LL
+#define I4RZONE_row_SHIFT                                30
+#define I4RZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define I4RZONE_col_SHIFT                                0
+#define I4RZONE_col_MASK                                 0x3FFFFFFF
+
+
+#define I7HZONE_levelI49R_SHIFT                          60
+#define I7HZONE_levelI49R_MASK                           0xF000000000000000LL
+#define I7HZONE_rhombusIX_SHIFT                          3
+#define I7HZONE_rhombusIX_MASK                           0xFFFFFFFFFFFFFF8LL
+#define I7HZONE_subHex_SHIFT                             0
+#define I7HZONE_subHex_MASK                              0x7
 
 
 #define I9RZONE_level_SHIFT                              59
@@ -452,9 +535,38 @@ struct eC_Plane
 };
 extern void (* Plane_fromPoints)(eC_Plane * __this, const eC_Vector3D * v1, const eC_Vector3D * v2, const eC_Vector3D * v3);
 
+struct eC_Quaternion
+{
+   double w;
+   double x;
+   double y;
+   double z;
+};
+extern void (* Quaternion_yawPitch)(eC_Quaternion * __this, eC_Angle yaw, eC_Angle pitch);
+
+#define RHPZONE_level_SHIFT                              59
+#define RHPZONE_level_MASK                               0xF800000000000000LL
+#define RHPZONE_row_SHIFT                                30
+#define RHPZONE_row_MASK                                 0x7FFFFFFC0000000LL
+#define RHPZONE_col_SHIFT                                0
+#define RHPZONE_col_MASK                                 0x3FFFFFFF
+
+
+extern void (* RI5x6Projection_extent5x6FromWGS84)(eC_RI5x6Projection __this, const eC_GeoExtent * wgs84Extent, eC_Pointd * topLeft, eC_Pointd * bottomRight);
+
+extern int RI5x6Projection_forward_vTblID;
+eC_bool RI5x6Projection_forward(eC_RI5x6Projection __i, const eC_GeoPoint * p, eC_Pointd * v);
+extern eC_Method * method_RI5x6Projection_forward;
+
+extern int RI5x6Projection_inverse_vTblID;
+eC_bool RI5x6Projection_inverse(eC_RI5x6Projection __i, const eC_Pointd * v, eC_GeoPoint * result, eC_bool oddGrid);
+extern eC_Method * method_RI5x6Projection_inverse;
+
 extern void (* Vector3D_crossProduct)(eC_Vector3D * __this, const eC_Vector3D * vector1, const eC_Vector3D * vector2);
 
 extern double (* Vector3D_dotProduct)(eC_Vector3D * __this, const eC_Vector3D * vector2);
+
+extern void (* Vector3D_multQuaternion)(eC_Vector3D * __this, const eC_Vector3D * s, const eC_Quaternion * quat);
 
 extern void (* Vector3D_normalize)(eC_Vector3D * __this, const eC_Vector3D * source);
 
@@ -465,6 +577,7 @@ extern double (* Vector3D_get_length)(const eC_Vector3D * v);
 
 extern eC_DGGSJSON (* eC_readDGGSJSON)(eC_File f);
 extern eC_Class * class_BCTA3H;
+extern eC_Class * class_BarycentricSphericalTriAreaProjection;
 extern eC_Class * class_CRS;
 extern eC_Class * class_CRSExtent;
 extern eC_Class * class_CRSRegistry;
@@ -472,6 +585,7 @@ extern eC_Class * class_DGGRS;
 extern eC_Class * class_DGGRSZone;
 extern eC_Class * class_DGGSJSON;
 extern eC_Class * class_DGGSJSONDepth;
+extern eC_Class * class_DGGSJSONDimension;
 extern eC_Class * class_DGGSJSONGrid;
 extern eC_Class * class_DGGSJSONShape;
 extern eC_Class * class_GGGZone;
@@ -479,21 +593,44 @@ extern eC_Class * class_GNOSISGlobalGrid;
 extern eC_Class * class_GPP3H;
 extern eC_Class * class_GeoExtent;
 extern eC_Class * class_GeoPoint;
+extern eC_Class * class_GoldbergPolyhedraProjection;
+extern eC_Class * class_HEALPix;
+extern eC_Class * class_HEALPixProjection;
+extern eC_Class * class_HPZone;
 extern eC_Class * class_I3HZone;
+extern eC_Class * class_I4RZone;
+extern eC_Class * class_I7HZone;
 extern eC_Class * class_I9RZone;
 extern eC_Class * class_ISEA3H;
+extern eC_Class * class_ISEA4R;
+extern eC_Class * class_ISEA7H;
 extern eC_Class * class_ISEA9R;
+extern eC_Class * class_ISEAProjection;
 extern eC_Class * class_IVEA3H;
+extern eC_Class * class_IVEA4R;
+extern eC_Class * class_IVEA7H;
 extern eC_Class * class_IVEA9R;
-extern eC_Class * class_RTEA3H;
-extern eC_Class * class_RTEA9R;
-extern eC_Class * class_rHEALPix;
+extern eC_Class * class_IVEAProjection;
 extern eC_Class * class_JSONSchema;
 extern eC_Class * class_JSONSchemaType;
 extern eC_Class * class_Plane;
+extern eC_Class * class_Quaternion;
+extern eC_Class * class_RHPZone;
+extern eC_Class * class_RI5x6Projection;
+extern eC_Class * class_RTEA3H;
+extern eC_Class * class_RTEA4R;
+extern eC_Class * class_RTEA7H;
+extern eC_Class * class_RTEA9R;
+extern eC_Class * class_RTEAProjection;
 extern eC_Class * class_RhombicIcosahedral3H;
+extern eC_Class * class_RhombicIcosahedral4R;
+extern eC_Class * class_RhombicIcosahedral7H;
 extern eC_Class * class_RhombicIcosahedral9R;
+extern eC_Class * class_SliceAndDiceGreatCircleIcosahedralProjection;
+extern eC_Class * class_VGCRadialVertex;
 extern eC_Class * class_Vector3D;
+extern eC_Class * class_rHEALPix;
+extern eC_Class * class_rHEALPixProjection;
 
 extern eC_Module dggal_init(eC_Module fromModule);
 

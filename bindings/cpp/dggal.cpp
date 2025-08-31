@@ -1,24 +1,46 @@
 #include "dggal.hpp"
 
 TCPPClass<BCTA3H> BCTA3H::_cpp_class;
+TCPPClass<BarycentricSphericalTriAreaProjection> BarycentricSphericalTriAreaProjection::_cpp_class;
 TCPPClass<DGGRS> DGGRS::_cpp_class;
 TCPPClass<DGGSJSON> DGGSJSON::_cpp_class;
 TCPPClass<DGGSJSONDepth> DGGSJSONDepth::_cpp_class;
+TCPPClass<DGGSJSONDimension> DGGSJSONDimension::_cpp_class;
 TCPPClass<DGGSJSONGrid> DGGSJSONGrid::_cpp_class;
 TCPPClass<DGGSJSONShape> DGGSJSONShape::_cpp_class;
 TCPPClass<GNOSISGlobalGrid> GNOSISGlobalGrid::_cpp_class;
 TCPPClass<GPP3H> GPP3H::_cpp_class;
+TCPPClass<GoldbergPolyhedraProjection> GoldbergPolyhedraProjection::_cpp_class;
+TCPPClass<HEALPix> HEALPix::_cpp_class;
+TCPPClass<HEALPixProjection> HEALPixProjection::_cpp_class;
 TCPPClass<ISEA3H> ISEA3H::_cpp_class;
+TCPPClass<ISEA4R> ISEA4R::_cpp_class;
+TCPPClass<ISEA7H> ISEA7H::_cpp_class;
 TCPPClass<ISEA9R> ISEA9R::_cpp_class;
+TCPPClass<ISEAProjection> ISEAProjection::_cpp_class;
 TCPPClass<IVEA3H> IVEA3H::_cpp_class;
+TCPPClass<IVEA4R> IVEA4R::_cpp_class;
+TCPPClass<IVEA7H> IVEA7H::_cpp_class;
 TCPPClass<IVEA9R> IVEA9R::_cpp_class;
+TCPPClass<IVEAProjection> IVEAProjection::_cpp_class;
 TCPPClass<JSONSchema> JSONSchema::_cpp_class;
+TCPPClass<RI5x6Projection> RI5x6Projection::_cpp_class;
+TCPPClass<RTEA3H> RTEA3H::_cpp_class;
+TCPPClass<RTEA4R> RTEA4R::_cpp_class;
+TCPPClass<RTEA7H> RTEA7H::_cpp_class;
+TCPPClass<RTEA9R> RTEA9R::_cpp_class;
+TCPPClass<RTEAProjection> RTEAProjection::_cpp_class;
 TCPPClass<RhombicIcosahedral3H> RhombicIcosahedral3H::_cpp_class;
+TCPPClass<RhombicIcosahedral4R> RhombicIcosahedral4R::_cpp_class;
+TCPPClass<RhombicIcosahedral7H> RhombicIcosahedral7H::_cpp_class;
 TCPPClass<RhombicIcosahedral9R> RhombicIcosahedral9R::_cpp_class;
+TCPPClass<SliceAndDiceGreatCircleIcosahedralProjection> SliceAndDiceGreatCircleIcosahedralProjection::_cpp_class;
+TCPPClass<rHEALPix> rHEALPix::_cpp_class;
+TCPPClass<rHEALPixProjection> rHEALPixProjection::_cpp_class;
 
 int dggal_cpp_init(const Module & module)
 {
-   if(!RhombicIcosahedral9R::_cpp_class.impl)
+   if(!rHEALPixProjection::_cpp_class.impl)
    {
 #ifdef _DEBUG
       // printf("%s_cpp_init\n", "dggal");
@@ -28,6 +50,7 @@ int dggal_cpp_init(const Module & module)
    TStruct<GeoExtent>::_class = CO(GeoExtent);
    TStruct<GeoPoint>::_class = CO(GeoPoint);
    TStruct<Plane>::_class = CO(Plane);
+   TStruct<Quaternion>::_class = CO(Quaternion);
    TStruct<Vector3D>::_class = CO(Vector3D);
 
    BCTA3H::_cpp_class.setup(
@@ -37,6 +60,15 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) BCTA3H::constructor,
                (void(*)(void *)) BCTA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   BarycentricSphericalTriAreaProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "BarycentricSphericalTriAreaProjection", "BarycentricSphericalTriAreaProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) BarycentricSphericalTriAreaProjection::constructor,
+               (void(*)(void *)) BarycentricSphericalTriAreaProjection::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    DGGRS::_cpp_class.setup(
@@ -64,6 +96,15 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) DGGSJSONDepth::constructor,
                (void(*)(void *)) DGGSJSONDepth::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   DGGSJSONDimension::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "DGGSJSONDimension", "DGGSJSONDimension",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) DGGSJSONDimension::constructor,
+               (void(*)(void *)) DGGSJSONDimension::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    DGGSJSONGrid::_cpp_class.setup(
@@ -102,6 +143,33 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) GPP3H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   GoldbergPolyhedraProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "GoldbergPolyhedraProjection", "GoldbergPolyhedraProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) GoldbergPolyhedraProjection::constructor,
+               (void(*)(void *)) GoldbergPolyhedraProjection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   HEALPix::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "HEALPix", "HEALPix",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) HEALPix::constructor,
+               (void(*)(void *)) HEALPix::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   HEALPixProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "HEALPixProjection", "HEALPixProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) HEALPixProjection::constructor,
+               (void(*)(void *)) HEALPixProjection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    ISEA3H::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -109,6 +177,24 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) ISEA3H::constructor,
                (void(*)(void *)) ISEA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   ISEA4R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "ISEA4R", "ISEA4R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) ISEA4R::constructor,
+               (void(*)(void *)) ISEA4R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   ISEA7H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "ISEA7H", "ISEA7H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) ISEA7H::constructor,
+               (void(*)(void *)) ISEA7H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    ISEA9R::_cpp_class.setup(
@@ -120,6 +206,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) ISEA9R::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   ISEAProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "ISEAProjection", "ISEAProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) ISEAProjection::constructor,
+               (void(*)(void *)) ISEAProjection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    IVEA3H::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -127,6 +222,24 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) IVEA3H::constructor,
                (void(*)(void *)) IVEA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEA4R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEA4R", "IVEA4R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEA4R::constructor,
+               (void(*)(void *)) IVEA4R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEA7H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEA7H", "IVEA7H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEA7H::constructor,
+               (void(*)(void *)) IVEA7H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    IVEA9R::_cpp_class.setup(
@@ -138,6 +251,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) IVEA9R::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEAProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEAProjection", "IVEAProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEAProjection::constructor,
+               (void(*)(void *)) IVEAProjection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    JSONSchema::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -145,6 +267,60 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) JSONSchema::constructor,
                (void(*)(void *)) JSONSchema::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RI5x6Projection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RI5x6Projection", "RI5x6Projection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RI5x6Projection::constructor,
+               (void(*)(void *)) RI5x6Projection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEA3H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEA3H", "RTEA3H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEA3H::constructor,
+               (void(*)(void *)) RTEA3H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEA4R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEA4R", "RTEA4R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEA4R::constructor,
+               (void(*)(void *)) RTEA4R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEA7H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEA7H", "RTEA7H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEA7H::constructor,
+               (void(*)(void *)) RTEA7H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEA9R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEA9R", "RTEA9R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEA9R::constructor,
+               (void(*)(void *)) RTEA9R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEAProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEAProjection", "RTEAProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEAProjection::constructor,
+               (void(*)(void *)) RTEAProjection::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    RhombicIcosahedral3H::_cpp_class.setup(
@@ -156,6 +332,24 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) RhombicIcosahedral3H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   RhombicIcosahedral4R::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RhombicIcosahedral4R", "RhombicIcosahedral4R",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RhombicIcosahedral4R::constructor,
+               (void(*)(void *)) RhombicIcosahedral4R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RhombicIcosahedral7H::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RhombicIcosahedral7H", "RhombicIcosahedral7H",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RhombicIcosahedral7H::constructor,
+               (void(*)(void *)) RhombicIcosahedral7H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    RhombicIcosahedral9R::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -163,6 +357,33 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) RhombicIcosahedral9R::constructor,
                (void(*)(void *)) RhombicIcosahedral9R::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   SliceAndDiceGreatCircleIcosahedralProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "SliceAndDiceGreatCircleIcosahedralProjection", "SliceAndDiceGreatCircleIcosahedralProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) SliceAndDiceGreatCircleIcosahedralProjection::constructor,
+               (void(*)(void *)) SliceAndDiceGreatCircleIcosahedralProjection::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   rHEALPix::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "rHEALPix", "rHEALPix",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) rHEALPix::constructor,
+               (void(*)(void *)) rHEALPix::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   rHEALPixProjection::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "rHEALPixProjection", "rHEALPixProjection",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) rHEALPixProjection::constructor,
+               (void(*)(void *)) rHEALPixProjection::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    }
@@ -188,6 +409,9 @@ int dggal_cpp_init(const Module & module)
 GeoExtent wholeWorld = GeoExtent {  { -90, -180 },  { 90, 180 } };
 
 void BCTA3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void BarycentricSphericalTriAreaProjection::class_registration(CPPClass & _cpp_class)
 {
 }
    CRS_::CRS_(CRSRegistry registry, int crsID, bool h)
@@ -1018,6 +1242,9 @@ void DGGSJSON::class_registration(CPPClass & _cpp_class)
 void DGGSJSONDepth::class_registration(CPPClass & _cpp_class)
 {
 }
+void DGGSJSONDimension::class_registration(CPPClass & _cpp_class)
+{
+}
 void DGGSJSONGrid::class_registration(CPPClass & _cpp_class)
 {
 }
@@ -1030,24 +1257,174 @@ void GNOSISGlobalGrid::class_registration(CPPClass & _cpp_class)
 void GPP3H::class_registration(CPPClass & _cpp_class)
 {
 }
+void GoldbergPolyhedraProjection::class_registration(CPPClass & _cpp_class)
+{
+}
+void HEALPix::class_registration(CPPClass & _cpp_class)
+{
+}
+void HEALPixProjection::class_registration(CPPClass & _cpp_class)
+{
+
+      addMethod(_cpp_class.impl, "forward", (void *) +[](/*1Aa*/C(HEALPixProjection) o_, /*1Aa*/const C(GeoPoint) * p, /*1Aa*/C(Pointd) * v)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         HEALPixProjection * i = (o_) ? (HEALPixProjection *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(HEALPixProjection, forward);
+         HEALPixProjection_forward_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (HEALPixProjection_forward_Functor::FunctionType) i->vTbl[vid];
+            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(GeoPoint *)p, /*3Id*/*(Pointd *)v); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(bool) (*) (/*1Aa*/C(HEALPixProjection) o_, /*1Aa*/const C(GeoPoint) * p, /*1Aa*/C(Pointd) * v))(CO(HEALPixProjection)->_vTbl)[M_VTBLID(HEALPixProjection, forward)]);
+            if(method) return method (o_, p, v);
+         }
+         return (C(bool))1;
+      });
+
+
+      addMethod(_cpp_class.impl, "inverse", (void *) +[](/*1Aa*/C(HEALPixProjection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         HEALPixProjection * i = (o_) ? (HEALPixProjection *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(HEALPixProjection, inverse);
+         HEALPixProjection_inverse_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (HEALPixProjection_inverse_Functor::FunctionType) i->vTbl[vid];
+            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(Pointd *)v, /*3Id*/*(GeoPoint *)result, /*3Hd*/(bool)oddGrid); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(bool) (*) (/*1Aa*/C(HEALPixProjection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid))(CO(HEALPixProjection)->_vTbl)[M_VTBLID(HEALPixProjection, inverse)]);
+            if(method) return method (o_, v, result, oddGrid);
+         }
+         return (C(bool))1;
+      });
+
+
+}
 void ISEA3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void ISEA4R::class_registration(CPPClass & _cpp_class)
+{
+}
+void ISEA7H::class_registration(CPPClass & _cpp_class)
 {
 }
 void ISEA9R::class_registration(CPPClass & _cpp_class)
 {
 }
+void ISEAProjection::class_registration(CPPClass & _cpp_class)
+{
+}
 void IVEA3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void IVEA4R::class_registration(CPPClass & _cpp_class)
+{
+}
+void IVEA7H::class_registration(CPPClass & _cpp_class)
 {
 }
 void IVEA9R::class_registration(CPPClass & _cpp_class)
 {
 }
+void IVEAProjection::class_registration(CPPClass & _cpp_class)
+{
+}
 void JSONSchema::class_registration(CPPClass & _cpp_class)
+{
+}
+void RI5x6Projection::class_registration(CPPClass & _cpp_class)
+{
+
+      addMethod(_cpp_class.impl, "forward", (void *) +[](/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(GeoPoint) * p, /*1Aa*/C(Pointd) * v)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         RI5x6Projection * i = (o_) ? (RI5x6Projection *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(RI5x6Projection, forward);
+         RI5x6Projection_forward_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (RI5x6Projection_forward_Functor::FunctionType) i->vTbl[vid];
+            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(GeoPoint *)p, /*3Id*/*(Pointd *)v); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(bool) (*) (/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(GeoPoint) * p, /*1Aa*/C(Pointd) * v))(CO(RI5x6Projection)->_vTbl)[M_VTBLID(RI5x6Projection, forward)]);
+            if(method) return method (o_, p, v);
+         }
+         return (C(bool))1;
+      });
+
+
+      addMethod(_cpp_class.impl, "inverse", (void *) +[](/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         RI5x6Projection * i = (o_) ? (RI5x6Projection *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(RI5x6Projection, inverse);
+         RI5x6Projection_inverse_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (RI5x6Projection_inverse_Functor::FunctionType) i->vTbl[vid];
+            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(Pointd *)v, /*3Id*/*(GeoPoint *)result, /*3Hd*/(bool)oddGrid); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(bool) (*) (/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid))(CO(RI5x6Projection)->_vTbl)[M_VTBLID(RI5x6Projection, inverse)]);
+            if(method) return method (o_, v, result, oddGrid);
+         }
+         return (C(bool))1;
+      });
+
+
+}
+void RTEA3H::class_registration(CPPClass & _cpp_class)
+{
+}
+void RTEA4R::class_registration(CPPClass & _cpp_class)
+{
+}
+void RTEA7H::class_registration(CPPClass & _cpp_class)
+{
+}
+void RTEA9R::class_registration(CPPClass & _cpp_class)
+{
+}
+void RTEAProjection::class_registration(CPPClass & _cpp_class)
 {
 }
 void RhombicIcosahedral3H::class_registration(CPPClass & _cpp_class)
 {
 }
+void RhombicIcosahedral4R::class_registration(CPPClass & _cpp_class)
+{
+}
+void RhombicIcosahedral7H::class_registration(CPPClass & _cpp_class)
+{
+}
 void RhombicIcosahedral9R::class_registration(CPPClass & _cpp_class)
+{
+}
+void SliceAndDiceGreatCircleIcosahedralProjection::class_registration(CPPClass & _cpp_class)
+{
+}
+void rHEALPix::class_registration(CPPClass & _cpp_class)
+{
+}
+void rHEALPixProjection::class_registration(CPPClass & _cpp_class)
 {
 }
