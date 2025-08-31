@@ -21,18 +21,22 @@ DGGAL currently supports all nine DGGRSs described in [OGC API - DGGS Annex B](h
 
 ### Equal-Area DGGRSs based on Icosahedral Projections (aperture 3 and 7 Hexagonal, aperture 4 and 9 Axis-Aligned Rhombic)
 
-_WARNING: The aperture 7 hexagonal grids are still experimental and do not yet implement sub-zones._
+All of these Icosahedral DGGRSs achieve equal-area on the WGS84 ellipsoid, and are oriented with a first vertex of the icosahedron positioned at
+authalic latitude of _atan(φ)_ (where φ is the golden ratio), and longitude 11.20°E, with second vertex due North, resulting in only one
+vertex / pentagon on land. Each of the 12 pentagons occupies 5/6th the area of a hexagon at the same refinement level.
+
+_WARNING: The aperture 7 hexagonal grids are still experimental; sub-zones are not yet implemented for them._
 
 #### Icosahedral Snyder Equal Area (ISEA) projection
 
-([An Equal-Area Map Projection for Polyhedral Globes (1992)](https://doi.org/10.3138%2F27H7-8K88-4882-1752), or alternate configuration of [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687))
+([An Equal-Area Map Projection for Polyhedral Globes (1992)](https://doi.org/10.3138%2F27H7-8K88-4882-1752), or dodecahedron configuration (DVEA) of [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687))
 
 * **ISEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the  transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 * [ISEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 * [ISEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
 * [ISEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
 
-#### Icosahedral Vertex-oriented Great Circle Equal Area (IVEA) projection
+#### Icosahedral Vertex-oriented great circle Equal Area (IVEA) projection
 
 ([Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), or applying [Snyder 1992](https://doi.org/10.3138%2F27H7-8K88-4882-1752) to the dodecahedron (DSEA))
 
@@ -41,7 +45,7 @@ _WARNING: The aperture 7 hexagonal grids are still experimental and do not yet i
 * [IVEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
 * [IVEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
 
-NOTE: This projection is superior to ISEA and RT(S)EA at avoiding perceptible cusps, resulting in more compact shapes appearing more regular.
+**NOTE:** This projection is superior to ISEA and RT(S)EA at avoiding perceptible cusps, resulting in more compact/regular zones.
 
 #### Rhombic Triacontahedron (Snyder) Equal-Area (RT(S)EA) projection
 
@@ -122,18 +126,9 @@ A Rust example using the DGGAL Rust bindings is [available here](https://github.
 
 ### Supported DGGRSs
 * `gnosis` (Global Grid)
-* `isea4r`
-* `isea9r`
-* `isea3h`
-* `isea7h`
-* `ivea4r`
-* `ivea9r`
-* `ivea3h`
-* `ivea7h`
-* `rtea4r`
-* `rtea9r`
-* `rtea3h`
-* `rtea7h`
+* `isea4r`, `isea9r`, `isea3h`, `isea7h`
+* `ivea4r`, `ivea9r`, `ivea3h`, `ivea7h`
+* `rtea4r`, `rtea9r`, `rtea3h`, `rtea7h`
 * `rhealpix` (aperture 9, 50° E)
 * `healpix` (aperture 4, Nφ/H = 4, Nθ/K = 3)
 
