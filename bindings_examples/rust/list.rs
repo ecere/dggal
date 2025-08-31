@@ -117,24 +117,38 @@ fn main()
    let arg0: &str = &args[0];
    let mut options = HashMap::<&str, &str>::new();
 
-        if arg0.eq_ignore_ascii_case("i3h") { dggrs_name = &"ISEA3H"; }
-   else if arg0.eq_ignore_ascii_case("v3h") { dggrs_name = &"IVEA3H"; }
-   else if arg0.eq_ignore_ascii_case("r3h") { dggrs_name = &"RTEA3H"; }
+        if arg0.eq_ignore_ascii_case("i4r") { dggrs_name = &"ISEA4R"; }
    else if arg0.eq_ignore_ascii_case("i9r") { dggrs_name = &"ISEA9R"; }
+   else if arg0.eq_ignore_ascii_case("i3h") { dggrs_name = &"ISEA3H"; }
+   else if arg0.eq_ignore_ascii_case("i7h") { dggrs_name = &"ISEA7H"; }
+   else if arg0.eq_ignore_ascii_case("v4r") { dggrs_name = &"IVEA4R"; }
    else if arg0.eq_ignore_ascii_case("v9r") { dggrs_name = &"IVEA9R"; }
+   else if arg0.eq_ignore_ascii_case("v3h") { dggrs_name = &"IVEA3H"; }
+   else if arg0.eq_ignore_ascii_case("v7h") { dggrs_name = &"IVEA7H"; }
+   else if arg0.eq_ignore_ascii_case("r4r") { dggrs_name = &"RTEA4R"; }
    else if arg0.eq_ignore_ascii_case("r9r") { dggrs_name = &"RTEA9R"; }
+   else if arg0.eq_ignore_ascii_case("r3h") { dggrs_name = &"RTEA3H"; }
+   else if arg0.eq_ignore_ascii_case("r7h") { dggrs_name = &"RTEA7H"; }
    else if arg0.eq_ignore_ascii_case("rhp") { dggrs_name = &"rHEALPix"; }
+   else if arg0.eq_ignore_ascii_case("hpx") { dggrs_name = &"HEALPix"; }
    else if arg0.eq_ignore_ascii_case("ggg") { dggrs_name = &"GNOSISGlobalGrid"; }
 
    if dggrs_name == "" && argc > 1 {
       let arg1: &str = &args[1];
-           if arg1.eq_ignore_ascii_case("isea3h") { dggrs_name = &"ISEA3H"; }
+           if arg1.eq_ignore_ascii_case("isea4r") { dggrs_name = &"ISEA4R"; }
       else if arg1.eq_ignore_ascii_case("isea9r") { dggrs_name = &"ISEA9R"; }
-      else if arg1.eq_ignore_ascii_case("ivea3h") { dggrs_name = &"IVEA3H"; }
+      else if arg1.eq_ignore_ascii_case("isea3h") { dggrs_name = &"ISEA3H"; }
+      else if arg1.eq_ignore_ascii_case("isea7h") { dggrs_name = &"ISEA7H"; }
+      else if arg1.eq_ignore_ascii_case("ivea4r") { dggrs_name = &"IVEA4R"; }
       else if arg1.eq_ignore_ascii_case("ivea9r") { dggrs_name = &"IVEA9R"; }
+      else if arg1.eq_ignore_ascii_case("ivea3h") { dggrs_name = &"IVEA3H"; }
+      else if arg1.eq_ignore_ascii_case("ivea7h") { dggrs_name = &"IVEA7H"; }
+      else if arg1.eq_ignore_ascii_case("rtea4r") { dggrs_name = &"RTEA4R"; }
+      else if arg1.eq_ignore_ascii_case("rtea9r") { dggrs_name = &"RTEA9R"; }
       else if arg1.eq_ignore_ascii_case("rtea3h") { dggrs_name = &"RTEA3H"; }
-      else if arg1.eq_ignore_ascii_case("rtea9r") { dggrs_name = &"RTVEA9R"; }
-      else if arg1.eq_ignore_ascii_case("rHEALPix") { dggrs_name = &"rHEALPix"; }
+      else if arg1.eq_ignore_ascii_case("rtea7h") { dggrs_name = &"RTEA7H"; }
+      else if arg1.eq_ignore_ascii_case("rHEALPIx") { dggrs_name = &"rHEALPix"; }
+      else if arg1.eq_ignore_ascii_case("HEALPIx") { dggrs_name = &"HEALPix"; }
       else if arg1.eq_ignore_ascii_case("gnosis") { dggrs_name = &"GNOSISGlobalGrid"; }
       a += 1;
    }
@@ -187,7 +201,7 @@ fn main()
    if show_syntax {
       println!("Syntax:");
       println!("   list <dggrs> [level [options]]");
-      println!("where dggrs is one of gnosis, isea3h, isea9r, ivea3h, ivea9r, rtea3h, rtea9r or rHEALPix");
+      println!("where dggrs is one of gnosis, isea(4r/9r/3h/7h), ivea(4r/9r/3h/7h), rtea(4r/9r/3h/7h), HEALPix, rHEALPix");
    }
 
    exit(exit_code)

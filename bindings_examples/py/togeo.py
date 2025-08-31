@@ -16,12 +16,19 @@ def convertToGeoJSON(inputFile, options):
 
          # We could use globals()['GNOSISGlobalGrid'] to be more generic, but here we limit to DGGRSs we know
          if   not strnicmp(dggrsID, "GNOSIS", 6): dggrsClass = GNOSISGlobalGrid
-         elif not strnicmp(dggrsID, "ISEA3H", 6): dggrsClass = ISEA3H
+         elif not strnicmp(dggrsID, "ISEA4R", 6): dggrsClass = ISEA4R
          elif not strnicmp(dggrsID, "ISEA9R", 6): dggrsClass = ISEA9R
-         elif not strnicmp(dggrsID, "IVEA3H", 6): dggrsClass = IVEA3H
+         elif not strnicmp(dggrsID, "ISEA3H", 6): dggrsClass = ISEA3H
+         elif not strnicmp(dggrsID, "ISEA7H", 6): dggrsClass = ISEA7H
+         elif not strnicmp(dggrsID, "IVEA4R", 6): dggrsClass = IVEA4R
          elif not strnicmp(dggrsID, "IVEA9R", 6): dggrsClass = IVEA9R
-         elif not strnicmp(dggrsID, "RTEA3H", 6): dggrsClass = RTEA3H
+         elif not strnicmp(dggrsID, "IVEA3H", 6): dggrsClass = IVEA3H
+         elif not strnicmp(dggrsID, "IVEA7H", 6): dggrsClass = IVEA7H
+         elif not strnicmp(dggrsID, "RTEA4R", 6): dggrsClass = RTEA4R
          elif not strnicmp(dggrsID, "RTEA9R", 6): dggrsClass = RTEA9R
+         elif not strnicmp(dggrsID, "RTEA3H", 6): dggrsClass = RTEA3H
+         elif not strnicmp(dggrsID, "RTEA7H", 6): dggrsClass = RTEA7H
+         elif not strnicmp(dggrsID, "HEALPix", 7): dggrsClass = HEALPix
          elif not strnicmp(dggrsID, "rHEALPix", 8): dggrsClass = rHEALPix
 
          if dggrsClass:

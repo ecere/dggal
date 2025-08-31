@@ -162,15 +162,47 @@ int main(int argc, char * argv[])
    class_Map_String_constString = eC_findClass(app, "Map<String, const String>");
    options = newi(Map, String, constString);
 
-        if(!strcmpi(argv[0], "i3h")) dggrsName = "ISEA3H";
-   else if(!strcmpi(argv[0], "i9r")) dggrsName = "ISEA9R";
-   else if(!strcmpi(argv[0], "ggg")) dggrsName = "GNOSISGlobalGrid";
+        if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsName = "ISEA3H";
+   else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsName = "ISEA9R";
+   else if(!strcmpi(argv[0], "i7h") || !strcmpi(argv[0], "isea7h")) dggrsName = "ISEA7H";
+   else if(!strcmpi(argv[0], "i4r") || !strcmpi(argv[0], "isea4r")) dggrsName = "ISEA4R";
+
+   else if(!strcmpi(argv[0], "r3h") || !strcmpi(argv[0], "rtea3h")) dggrsName = "RTEA3H";
+   else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsName = "RTEA9R";
+   else if(!strcmpi(argv[0], "r7h") || !strcmpi(argv[0], "rtea7h")) dggrsName = "RTEA7H";
+   else if(!strcmpi(argv[0], "r4r") || !strcmpi(argv[0], "rtea4r")) dggrsName = "RTEA4R";
+
+   else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsName = "IVEA3H";
+   else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsName = "IVEA9R";
+   else if(!strcmpi(argv[0], "v7h") || !strcmpi(argv[0], "ivea7h")) dggrsName = "IVEA7H";
+   else if(!strcmpi(argv[0], "v4r") || !strcmpi(argv[0], "ivea4r")) dggrsName = "IVEA4R";
+
+   else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsName = "GNOSISGlobalGrid";
+
+   else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsName = "rHEALPix";
+   else if(!strcmpi(argv[0], "hpx") || !strcmpi(argv[0], "HEALPix")) dggrsName = "HEALPix";
 
    if(!dggrsName && argc > 1)
    {
            if(!strcmpi(argv[1], "isea3h")) dggrsName = "ISEA3H";
       else if(!strcmpi(argv[1], "isea9r")) dggrsName = "ISEA9R";
+      else if(!strcmpi(argv[1], "isea7h")) dggrsName = "ISEA7H";
+      else if(!strcmpi(argv[1], "isea4r")) dggrsName = "ISEA4R";
+
+      else if(!strcmpi(argv[1], "rtea3h")) dggrsName = "RTEA3H";
+      else if(!strcmpi(argv[1], "rtea9r")) dggrsName = "RTEA9R";
+      else if(!strcmpi(argv[1], "rtea7h")) dggrsName = "RTEA7H";
+      else if(!strcmpi(argv[1], "rtea4r")) dggrsName = "RTEA4R";
+
+      else if(!strcmpi(argv[1], "ivea3h")) dggrsName = "IVEA3H";
+      else if(!strcmpi(argv[1], "ivea9r")) dggrsName = "IVEA9R";
+      else if(!strcmpi(argv[1], "ivea7h")) dggrsName = "IVEA7H";
+      else if(!strcmpi(argv[1], "ivea4r")) dggrsName = "IVEA4R";
+
       else if(!strcmpi(argv[1], "gnosis")) dggrsName = "GNOSISGlobalGrid";
+
+      else if(!strcmpi(argv[1], "rHEALPix")) dggrsName = "rHEALPix";
+      else if(!strcmpi(argv[1], "HEALPix")) dggrsName = "HEALPix";
       a++;
    }
 
@@ -214,7 +246,7 @@ int main(int argc, char * argv[])
       printLn(CO(String),
          $("Syntax:\n"
          "   info <dggrs> [zone] [options]\n"
-         "where dggrs is one of gnosis, isea3h or isea9r\n"), null);
+         "where dggrs is one of gnosis, isea(4r/9r/3h/7h), ivea(4r/9r/3h/7h), rtea(4r/9r/3h/7h), healpix, rhealpix\n"), null);
    deletei(app);
    return exitCode;
 }

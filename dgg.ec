@@ -123,7 +123,7 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "ggg") || !strcmpi(argv[0], "gnosis")) dggrsClass = class(GNOSISGlobalGrid), cmdArg = 1;
 
       else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsClass = class(rHEALPix), cmdArg = 1;
-      else if(!strcmpi(argv[0], "hlp") || !strcmpi(argv[0], "HEALPix")) dggrsClass = class(HEALPix), cmdArg = 1;
+      else if(!strcmpi(argv[0], "hpx") || !strcmpi(argv[0], "HEALPix")) dggrsClass = class(HEALPix), cmdArg = 1;
 
       for(a = 1; !syntaxError && a < argc; a++)
       {
