@@ -610,7 +610,7 @@ public class RhombicIcosahedral7H : DGGRS
       AVLTree<I7HZone> tsZones { };
       int level = 0;
       int root;
-      bool extentCheck = false; // TODO:
+      bool extentCheck = bbox != null && bbox.OnCompare(wholeWorld);
 
       for(root = 0; root < 12; root++)
          tsZones.Add({ 0, root, 0 });
@@ -627,7 +627,7 @@ public class RhombicIcosahedral7H : DGGRS
       //tsZones.Add(I7HZone::fromZoneID("BA-0-F"));
       //tsZones.Add(I7HZone::fromZoneID("BB-0-E"));
 
-      if(zoneLevel == 0 && bbox != null)
+      if(zoneLevel == 0 && extentCheck)
       {
          AVLTree<I7HZone> tmp { };
 
@@ -657,7 +657,7 @@ public class RhombicIcosahedral7H : DGGRS
             for(i = 0; i < n; i++)
             {
                I7HZone c = children[i];
-               if(bbox != null)
+               if(extentCheck)
                {
                   GeoExtent e;
                   if(!tmp.Find(c))
@@ -748,7 +748,7 @@ public class RhombicIcosahedral7H : DGGRS
          for(t : tsZones)
          {
             I7HZone zone = t;
-
+#if 0 // Currently already checked earlier...
             if(extentCheck)
             {
                // REVIEW: Computing the detailed wgs84Extent is slow as it uses refined vertices and involves a large amount of inverse projections.
@@ -766,6 +766,7 @@ public class RhombicIcosahedral7H : DGGRS
                if(!e.intersects(bbox))
                   continue;
             }
+#endif
             zones[zones.count++] = zone;
          }
          zones.Sort(true);
