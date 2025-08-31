@@ -476,6 +476,13 @@ public class RhombicIcosahedral3H : DGGRS
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
 
             getZoneWGS84Centroid(zone, centroid);
+            // REVIEW: Should centroid ever be outside -Pi..Pi?
+            if(centroid.lon < - Pi - 1E-9)
+               centroid.lon += 2*Pi;
+
+            if(centroid.lon > Pi + 1E-9)
+               centroid.lon -= 2*Pi;
+
             // wrap = (dLon < 0 || e.ll.lon > centroid.lon || dLon > Pi || (Radians)centroid.lon + 4*dLon > Pi || (Radians)centroid.lon - 4*dLon < -Pi);
             lonQuad = (int)(((Radians)centroid.lon + Pi) * (4 / (2*Pi)));
 
@@ -505,15 +512,7 @@ public class RhombicIcosahedral3H : DGGRS
                   if(pj.inverse(r[i], point, oddGrid))
                   {
                      if(wrap)
-                     {
-                        if(centroid.lon < - Pi - 1E-9)
-                           centroid.lon += 2*Pi;
-
-                        if(centroid.lon > Pi + 1E-9)
-                           centroid.lon -= 2*Pi;
-
                         point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
-                     }
                      ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
                         crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
                   }

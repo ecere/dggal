@@ -781,22 +781,23 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
    uint count = 0;
    CRSExtent e = zone.ri5x6Extent;
    Pointd dp[4] = { {e.tl.x, e.tl.y}, {e.tl.x, e.br.y}, {e.br.x, e.br.y}, {e.br.x, e.tl.y} };
-   Radians maxDLon = -99999, urLon = -MAXDOUBLE;
-   Radians minDLon =  99999, llLon =  MAXDOUBLE;
    GeoPoint centroid;
    int i;
    RI5x6Projection pj = dggrs.pj;
+   double poleOffset = 0.001 * pow(2, zone.level);
 
    dggrs.getZoneWGS84Centroid(zone, centroid);
+
+   // REVIEW: Should centroid ever be outside -Pi..Pi?
+   if(centroid.lon < - Pi - 1E-9)
+      centroid.lon += 2*Pi;
+   if(centroid.lon > Pi + 1E-9)
+      centroid.lon -= 2*Pi;
 
    for(i = 0; i < 4; i++)
    {
       const Pointd * p = &dp[i], * np = &dp[i == 3 ? 0 : i+1];
-      bool northPole = (fabs(p->y - 0) < 1E-11 && fabs(np->y - 0) < 1E-11) ||
-         (fabs(p->x - 5) < 1E-11 && fabs(np->x - 5) < 1E-11 && (p->y + 1E-11 < 5 || np->y + 1E-11 < 5));
-      bool southPole = !northPole &&
-                        ((fabs(p->y - 3) < 1E-11 && fabs(np->y - 3) < 1E-11 && (p->x + 1E-11 < 2 || np->x + 1E-11 < 2)) ||
-                         (fabs(p->x - 2) < 1E-11 && fabs(np->x - 2) < 1E-11 && (p->y - 1E-11 > 3 || np->y - 1E-11 > 3)));
+      const Pointd * pp = &dp[i == 0 ? 3 : i-1];
       int numAnchors = NUM_ISEA9R_ANCHORS;
       int j;
       double dx = np->x - p->x, dy = np->y - p->y;
@@ -805,65 +806,33 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
       {
          Pointd in { p->x + dx * j / numAnchors, p->y + dy * j / numAnchors };
          GeoPoint out;
-         bool crossingPole = (northPole || southPole) && j == numAnchors / 2;
-         #define CROSSING_POLE_DELTA   0.001
-         if(crossingPole)
+
+         if(pj.inverse(in, out, false))
          {
-            // Extra point for crossing the pole
-            Pointd in1 { in.x - dx * CROSSING_POLE_DELTA, in.y - dy * CROSSING_POLE_DELTA };
-            if(pj.inverse(in1, out, false))
+            if(fabs((double)out.lat) > 89.999999)
             {
-               Radians dLon = out.lon - centroid.lon;
-               if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
-               if(dLon <-Pi) dLon += 2*Pi, out.lon += 2*Pi;
-               if(dLon > maxDLon)
-                  maxDLon = dLon, urLon = out.lon;
-               if(dLon < minDLon)
-                  minDLon = dLon, llLon = out.lon;
-
-               outVertices[count++] = out;
+               double ddx1 = j ? -dx : pp->x - p->x;
+               double ddy1 = j ? -dy : pp->y - p->y;
+               double ddx2 =  dx, ddy2 =  dy;
+               Pointd in1 { in.x + ddx1 * poleOffset, in.y + ddy1 * poleOffset };
+               Pointd in2 { in.x + ddx2 * poleOffset, in.y + ddy2 * poleOffset };
+               GeoPoint out1, out2;
+               if(pj.inverse(in1, out1, true))
+                  outVertices[count++] = { Sgn(out1.lat) * 90, out1.lon };
+               if(pj.inverse(in2, out2, true))
+                  outVertices[count++] = { Sgn(out2.lat) * 90, out2.lon };
             }
-         }
-         // Don't include point on pole itself
-         if(!crossingPole && pj.inverse(in, out, false))
-         {
-            Radians dLon = out.lon - centroid.lon;
-            if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
-            if(dLon <-Pi) dLon += 2*Pi, out.lon += 2*Pi;
-            if(dLon > maxDLon)
-               maxDLon = dLon, urLon = out.lon;
-            if(dLon < minDLon)
-               minDLon = dLon, llLon = out.lon;
-
-            outVertices[count++] = out;
-         }
-
-         if(crossingPole)
-         {
-            // Extra point for crossing the pole
-            Pointd in2 { in.x + dx * CROSSING_POLE_DELTA, in.y + dy * CROSSING_POLE_DELTA };
-            if(pj.inverse(in2, out, false))
-            {
-               Radians dLon = out.lon - centroid.lon;
-               if(dLon > Pi) dLon -= 2*Pi, out.lon -= 2*Pi;
-               if(dLon <-Pi) dLon += 2*Pi, out.lon += 2*Pi;
-               if(dLon > maxDLon)
-                  maxDLon = dLon, urLon = out.lon;
-               if(dLon < minDLon)
-                  minDLon = dLon, llLon = out.lon;
-
+            else
                outVertices[count++] = out;
-            }
          }
       }
    }
 
    for(i = 0; i < count; i++)
-      if((Radians)outVertices[i].lon > (Radians)urLon + 1E-11)
-         outVertices[i].lon -= 2*Pi;
-      else if(outVertices[i].lon < (Radians)llLon - 1E-11)
-         outVertices[i].lon += 2*Pi;
-
+   {
+      GeoPoint * point = &outVertices[i];
+      point->lon = wrapLonAt(-1, point->lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
+   }
    return count;
 }
 

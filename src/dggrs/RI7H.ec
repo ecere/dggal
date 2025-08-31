@@ -489,6 +489,12 @@ public class RhombicIcosahedral7H : DGGRS
             ap./*size*/minAllocSize = r.count;
 
             getZoneWGS84Centroid(zone, centroid);
+            // REVIEW: Should centroid ever be outside -Pi..Pi?
+            if(centroid.lon < - Pi - 1E-9)
+               centroid.lon += 2*Pi;
+
+            if(centroid.lon > Pi + 1E-9)
+               centroid.lon -= 2*Pi;
 
             for(i = 0; i < r.count; i++)
             {
@@ -511,12 +517,6 @@ public class RhombicIcosahedral7H : DGGRS
                {
                   if(wrap)
                   {
-                     if(centroid.lon < - Pi - 1E-9)
-                        centroid.lon += 2*Pi;
-
-                     if(centroid.lon > Pi + 1E-9)
-                        centroid.lon -= 2*Pi;
-
                      point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
 
                      // REVIEW: Why isn't wrapLonAt() handling these cases?
@@ -1708,7 +1708,7 @@ private:
       }
    }
 
-   private static inline void addPointCheckingPole(bool crs84, Array<Pointd> points, const Pointd p)
+   private static inline void ::addPointCheckingPole(bool crs84, Array<Pointd> points, const Pointd p)
    {
       /*
       int c = points.count;
@@ -1740,7 +1740,7 @@ private:
          points.Add(p);
    }
 
-   void addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
+   void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
    {
       double dx = n.x - p.x, dy = n.y - p.y;
       int j;
