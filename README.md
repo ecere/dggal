@@ -22,7 +22,7 @@ DGGAL currently supports all nine DGGRSs described in [OGC API - DGGS Annex B](h
 ### Equal-Area DGGRSs based on Icosahedral Projections (aperture 3 and 7 Hexagonal, aperture 4 and 9 Axis-Aligned Rhombic)
 
 All of these Icosahedral DGGRSs achieve equal-area on the WGS84 ellipsoid, and are oriented with a first vertex of the icosahedron positioned at
-authalic latitude of _atan(φ)_ (where φ is the golden ratio), and longitude 11.20°E, with second vertex due North, resulting in only one
+authalic latitude of _arctan(φ)_ (where φ is the golden ratio), and longitude 11.20°E, with second vertex due North, resulting in only one
 vertex / pentagon on land. Each of the 12 pentagons occupies 5/6th the area of a hexagon at the same refinement level.
 
 _WARNING: The aperture 7 hexagonal grids are still experimental; sub-zones are not yet implemented for them._
