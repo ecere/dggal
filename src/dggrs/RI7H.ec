@@ -49,7 +49,7 @@ public class RhombicIcosahedral7H : DGGRS
       return (uint64)(10 * POW7(level) + 2);
    }
 
-   int getMaxDGGRSZoneLevel() { return 21; }
+   int getMaxDGGRSZoneLevel() { return 19; }
    int getRefinementRatio() { return 7; }
    int getMaxParents() { return 2; }
    int getMaxNeighbors() { return 6; }
@@ -103,7 +103,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    I7HZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
    {
-      if(level <= 21)
+      if(level <= 19)
       {
          switch(crs)
          {
@@ -203,7 +203,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getIndexMaxDepth()
    {
-      return 21;
+      return 19;
    }
 
    int64 getSubZoneIndex(I7HZone parent, I7HZone subZone)
@@ -243,7 +243,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    I7HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      if(level <= 21)
+      if(level <= 19)
       {
          Pointd v;
          pj.forward(centroid, v);
@@ -807,10 +807,12 @@ enum I7HNeighbor
 public class I7HZone : private DGGRSZone
 {
 public:
-   uint levelI49R:4:60;   //  4 bits  0..10: A-U (use 7H level)   (level 0: 1x1, level 1: 7x7, level 2: 49x49..., level 10: 282,475,249 x 282,475,249 = 79,792,266,297,612,001 zones)
-   uint64 rhombusIX:57:3; // 57 bits  0: North Pole, 1: South Pole, 2..79,792,266,297,612,002
+   uint levelI49R:4:58;   //  4 bits  0..9: (Text ID use A-T 7H level)
+                          // For each root rhombus: (level 0: 1x1, level 1: 7x7, level 2: 49x49..., level 9: 40,353,607 x 40,353,607 = 1,628,413,597,910,449 zones)
+   uint rootRhombus:4:54; // 0 .. 9; 10 and 11 for North and South poles
+   uint64 rhombusIX:51:3; // 51 bits  0..1,628,413,597,910,448
    uint subHex:3:0;       //  3 bits  0: A     -- even level
-                          //             B     -- odd level centroid child, C..H: Centroid child
+                          //             B     -- odd level centroid child, C..H: vertez child
 
 private:
    property int level
@@ -825,17 +827,8 @@ private:
          if(subHex > 1) // All vertex children are hexagons
             return 6;
          else
-         {
-            uint64 ix = rhombusIX;
-            if(ix == 0 || ix == 1) // North and South Poles
-               return 5;
-            else
-            {
-               // Top-left corner of root rhombuses are pentagons
-               uint64 p = POW7(levelI49R), rSize = p * p;
-               return ((ix - 2) % rSize) == 0 ? 5 : 6;
-            }
-         }
+            // North and South Poles, Top-left corner of root rhombuses are pentagons
+            return rhombusIX == 0 ? 5 : 6;
       }
    }
 
@@ -865,8 +858,7 @@ private:
       {
          int l49r = (levelChar - 'A') / 2;
          uint64 p = POW7(l49r), rSize = p * p;
-         uint64 rix = root == 10 ? 0 : root == 11 ? 1 : 2 + root * rSize + ix;
-         result = { l49r, rix, subHex - 'A' };
+         result = { l49r, root, ix, subHex - 'A' };
          if((result.subHex > 0) != ((levelChar - 'A') & 1) || ix >= rSize || root > 11)
             result = nullZone;
       }
@@ -1018,10 +1010,8 @@ private:
       else
       {
          uint level = 2 * levelI49R + (subHex > 0);
-         uint64 p = POW7(levelI49R), rSize = p * p;
-         uint64 rix = rhombusIX;
-         uint root = rix == 0 ? 10 : rix == 1 ? 11 : (uint)((rix - 2) / rSize);
-         uint64 ix = rix >= 2 ? (rix - 2) % rSize : 0;
+         uint root = rootRhombus;
+         uint64 ix = rhombusIX;
          sprintf(zoneID,
             __runtimePlatform == win32 ? "%c%X-%I64X-%c" : "%c%X-%llX-%c",
             'A' + level, root, ix, 'A' + subHex);
@@ -1039,7 +1029,7 @@ private:
          if(l9r || subHex)
          {
             if(subHex)
-               key = { l9r, rhombusIX, 0 };
+               key = { l9r, rootRhombus, rhombusIX, 0 };
             else
                key = I7HZone::fromCentroid((l9r * 2) - 1, centroid);
          }
@@ -1320,9 +1310,9 @@ private:
       south = (root & 1);
 
       if(!south && row == 0 && col == p)
-         cix = 0;
+         root = 0xA, cix = 0;
       else if(south && row == p && col == 0)
-         cix = 1;
+         root = 0xB, cix = 0;
       else
       {
          if(row < 0 || row >= p ||
@@ -1334,11 +1324,11 @@ private:
             return nullZone;
          }
          else
-            cix = 2 + root * (p * p) + row * p + col;
+            cix = row * p + col;
       }
 
       // REVIEW: Polar zones considerations?
-      return I7HZone { l9r, cix, 0 };
+      return I7HZone { l9r, root, cix, 0 };
    }
 
    I7HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
@@ -1401,18 +1391,18 @@ private:
             // Odd level -- currently using a rather brute-force approach
             I7HZone zone = nullZone;
             if(northPole)
-               zone = { l9r, 0, 1 };
+               zone = { l9r, 0xA, 0, 1 };
             else if(southPole)
-               zone = { l9r, 1, 1 };
+               zone = { l9r, 0xB, 0, 1 };
             else
             {
                I7HZone candidateParents[7];
                int i;
 
                if(north && row == 0 && col == p)
-                  candidateParents[0] = { l9r, 0, 0 };
+                  candidateParents[0] = { l9r, 0xA, 0, 0 };
                else if(south && row == p && col == 0)
-                  candidateParents[0] = { l9r, 1, 0 };
+                  candidateParents[0] = { l9r, 0xB, 0, 0 };
                else
                {
                   // candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
@@ -1543,9 +1533,9 @@ private:
             }
 
             if(north && col == p && row == 0)
-               cix = 0;
+               root = 0xA, cix = 0;
             else if(south && col == 0 && row == p)
-               cix = 1;
+               root = 0xB, cix = 0;
             else
             {
                // REVIEW: REVIEW / Share this logic with getPrimaryChildren(), possibly centroidChild?
@@ -1588,9 +1578,9 @@ private:
                   return nullZone;
                }
                else
-                  cix = 2 + root * (p * p) + row * p + col;
+                  cix = row * p + col;
             }
-            return I7HZone { l9r, cix, 0 };
+            return I7HZone { l9r, root, cix, 0 };
          }
       }
    }
@@ -1600,7 +1590,7 @@ private:
       Pointd c = centroid;
       uint l49R = levelI49R;
       uint64 p = POW7(l49R);
-      uint64 ix = rhombusIX;
+      uint root = rootRhombus;
       uint count = 0;
       double oonp = 1.0 / (7 * p);
 
@@ -1615,7 +1605,7 @@ private:
          double A =  7 / 3.0;
          double B = 14 / 3.0;
 
-         if(ix == 0) // North Pole
+         if(root == 0xA) // North Pole
          {
             Pointd b { 1 - oonp * A, 0 + oonp * A };
             vertices[count++] = { b.x + 0, b.y + 0 };
@@ -1624,7 +1614,7 @@ private:
             vertices[count++] = { b.x + 3, b.y + 3 };
             vertices[count++] = { b.x + 4, b.y + 4 };
          }
-         else if(ix == 1) // South Pole
+         else if(root == 0xB) // South Pole
          {
             Pointd b { 4 + oonp * A, 6 - oonp * A };
             vertices[count++] = { b.x - 0, b.y - 0 };
@@ -1654,9 +1644,9 @@ private:
          double B =  5 / 3.0;
          double C =  1 / 3.0;
 
-         if(ix < 2 && subHex == 1) // Polar pentagons
+         if(root > 9 && subHex == 1) // Polar pentagons
          {
-            if(ix == 0) // North pole
+            if(root == 0xA) // North pole
             {
                Pointd b { 1 - oonp * C, 0 + oonp * A };
 
@@ -1666,7 +1656,7 @@ private:
                vertices[count++] = { b.x + 3, b.y + 3 };
                vertices[count++] = { b.x + 4, b.y + 4 };
             }
-            else if(ix == 1) // South pole
+            else if(root == 0xB) // South pole
             {
                Pointd b { 4 + oonp * C, 6 - oonp * A };
 
@@ -1957,7 +1947,7 @@ private:
       Pointd c = centroid;
       uint l49R = levelI49R;
       uint64 p = POW7(l49R);
-      uint64 ix = rhombusIX;
+      uint root = rootRhombus;
       double oonp = 1.0 / (7 * p);
 
       if(c.y > 6 + 1E-9 || c.x > 5 + 1E-9)
@@ -1971,7 +1961,7 @@ private:
          double A =  7 / 3.0;
          double B = 14 / 3.0;
 
-         if(ix == 0) // North Pole
+         if(root == 0xA) // North Pole
          {
             Pointd a { 1 - oonp * B, 0 - oonp * A };
             Pointd b { 1 - oonp * A, 0 + oonp * A };
@@ -1997,7 +1987,7 @@ private:
                vertices.Add(ab);
             }
          }
-         else if(ix == 1) // South Pole
+         else if(root == 0xB) // South Pole
          {
             Pointd a { 4 + oonp * B, 6 + oonp * A };
             Pointd b { 4 + oonp * A, 6 - oonp * A };
@@ -2045,10 +2035,10 @@ private:
          double B =  5 / 3.0;
          double C =  1 / 3.0;
 
-         if(ix < 2 && subHex == 1) // Polar pentagons
+         if(root > 9 && subHex == 1) // Polar pentagons
          {
             double r = 1 / 5.0;
-            if(ix == 0) // North pole
+            if(root == 0xA) // North pole
             {
                Pointd a { 1 - oonp * B, 0 - oonp * C };
                Pointd b { 1 - oonp * C, 0 + oonp * A };
@@ -2073,7 +2063,7 @@ private:
                   vertices.Add(ab);
                }
             }
-            else if(ix == 1) // South pole
+            else if(root == 0xB) // South pole
             {
                Pointd a { 4 + oonp * B, 6 + oonp * C };
                Pointd b { 4 + oonp * C, 6 - oonp * A };
@@ -2125,32 +2115,31 @@ private:
             return nullZone;
          else
          {
+            uint root = rootRhombus;
             uint64 ix = rhombusIX;
 
             if(!subHex) // Odd level from even level
-               return I7HZone { levelI49R, ix, 1 };
+               return I7HZone { levelI49R, root, ix, 1 };
             else // Even level from odd level
             {
-               uint64 p = POW7(levelI49R), rSize = p * p;
-               uint64 cp = p * 7, cRSize = cp * cp;
-               uint64 cix;
+               uint64 p = POW7(levelI49R), cp = p * 7;
                int64 row, col;
                int cRhombus;
 
-               if(ix == 0)
+               if(root == 0xA)
                {
                   // North pole
                   if(subHex == 1)
-                     return I7HZone { levelI49R + 1, ix, 0 };
+                     return I7HZone { levelI49R + 1, 0xA, 0, 0 };
 
                   row = 1, col = cp - 2;
                   cRhombus = 2*(subHex - 2);
                }
-               else if(ix == 1)
+               else if(root == 0xB)
                {
                   // South pole
                   if(subHex == 1)
-                     return I7HZone { levelI49R + 1, ix, 0 };
+                     return I7HZone { levelI49R + 1, 0xB, 0, 0 };
 
                   row = cp - 1, col = 2;
                   cRhombus = 9 - 2*(subHex - 2);
@@ -2159,14 +2148,14 @@ private:
                {
                   // Regular case
                   uint sh = subHex;
-                  uint64 rix = (ix - 2) % rSize;
                   bool south;
-                  cRhombus = (int)((ix - 2) / rSize);
+
+                  cRhombus = root;
 
                   south = (cRhombus & 1);
-                  row = 7LL * (rix / p), col = 7LL * (rix % p);
+                  row = 7LL * (ix / p), col = 7LL * (ix % p);
 
-                  if(rix == 0 && south && sh >= 4)
+                  if(ix == 0 && south && sh >= 4)
                      sh++;
 
                   switch(sh)
@@ -2225,11 +2214,7 @@ private:
                else if(cRhombus > 9) cRhombus -= 10;
 
                if(row >= 0 && col >= 0 && row < cp && col < cp)
-               {
-                  cix = 2 + cRhombus * cRSize + row * cp + col;
-
-                  return I7HZone { levelI49R + 1, cix, 0 };
-               }
+                  return I7HZone { levelI49R + 1, cRhombus, (uint64)row * cp + col, 0 };
                return nullZone;
             }
          }
@@ -2327,9 +2312,8 @@ private:
    {
       int count = 0;
       uint l49r = levelI49R;
-      uint64 ix = this.rhombusIX;
-      uint64 p = POW7(l49r), rSize = p * p;
-      uint64 rix = ix >= 2 ? (ix - 2) % rSize : 0;
+      uint root = rootRhombus;
+      uint64 rix = rhombusIX;
 
       if(this == nullZone)
          return 0;
@@ -2337,53 +2321,54 @@ private:
       if(subHex == 0)
       {
          // Odd levels from even level
-         children[count++] = { l49r, ix, 1 };
-         children[count++] = { l49r, ix, 2 };
-         children[count++] = { l49r, ix, 3 };
-         children[count++] = { l49r, ix, 4 };
-         children[count++] = { l49r, ix, 5 };
-         children[count++] = { l49r, ix, 6 };
+         children[count++] = { l49r, root, rix, 1 };
+         children[count++] = { l49r, root, rix, 2 };
+         children[count++] = { l49r, root, rix, 3 };
+         children[count++] = { l49r, root, rix, 4 };
+         children[count++] = { l49r, root, rix, 5 };
+         children[count++] = { l49r, root, rix, 6 };
          if(rix)
-            children[count++] = { l49r, ix, 7 };
+            children[count++] = { l49r, root, rix, 7 };
       }
       else
       {
          // Even levels from odd level
          I7HZone cChild = centroidChild;
+         uint cRoot = cChild.rootRhombus;
          uint64 ccix = cChild.rhombusIX;
-         uint64 cp = p * 7, cRSize = cp * cp;
+         uint64 p = POW7(l49r), cp = p * 7;
 
          children[count++] = cChild;
 
-         if(ccix == 0)
+         if(cRoot == 0xA)
          {
             // The new centroid child is the North pole
-            children[count++] = { l49r + 1, 2 + 0 * cRSize + 0 * cp + cp - 1 };
-            children[count++] = { l49r + 1, 2 + 2 * cRSize + 0 * cp + cp - 1 };
-            children[count++] = { l49r + 1, 2 + 4 * cRSize + 0 * cp + cp - 1 };
-            children[count++] = { l49r + 1, 2 + 6 * cRSize + 0 * cp + cp - 1 };
-            children[count++] = { l49r + 1, 2 + 8 * cRSize + 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 0, 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 2, 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 4, 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 6, 0 * cp + cp - 1 };
+            children[count++] = { l49r + 1, 8, 0 * cp + cp - 1 };
          }
-         else if(ccix == 1)
+         else if(cRoot == 0xB)
          {
             // The new centroid child is the South pole
-            children[count++] = { l49r + 1, 2 + 9 * cRSize + (cp - 1) * cp + 0 };
-            children[count++] = { l49r + 1, 2 + 7 * cRSize + (cp - 1) * cp + 0 };
-            children[count++] = { l49r + 1, 2 + 5 * cRSize + (cp - 1) * cp + 0 };
-            children[count++] = { l49r + 1, 2 + 3 * cRSize + (cp - 1) * cp + 0 };
-            children[count++] = { l49r + 1, 2 + 1 * cRSize + (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 9, (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 7, (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 5, (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 3, (cp - 1) * cp + 0 };
+            children[count++] = { l49r + 1, 1, (cp - 1) * cp + 0 };
          }
          else
          {
-            int ccRhombus = (int)((ccix - 2) / cRSize);
-            uint64 crix = (ccix - 2) % cRSize;
+            int ccRhombus = cRoot;
+            uint64 crix = ccix;
             int64 crow = crix / cp;
             int64 ccol = crix % cp;
             int i;
             static const int cOffsets[6][2] = { // row, col offsets from centroid child
                { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, 0 }, { 1, 1 }, { 0, 1 }
             };
-            int nPoints = (subHex > 1) ? 6 : (ix == 0 || ix == 1 || rix == 0) ? 5 : 6;
+            int nPoints = (subHex > 1) ? 6 : (rix == 0) ? 5 : 6;
             bool south = (ccRhombus & 1);
 
             for(i = 0; i < 6; i++)
@@ -2455,8 +2440,8 @@ private:
 
                if(row >= 0 && col >= 0 && row < cp && col < cp)
                {
-                  cix = 2 + cRhombus * cRSize + row * cp + col;
-                  children[count++] = { l49r + 1, cix, 0 };
+                  cix = row * cp + col;
+                  children[count++] = { l49r + 1, cRhombus, cix, 0 };
                }
 #ifdef _DEBUG
                else
@@ -2496,17 +2481,15 @@ private:
       get
       {
          int l49r = levelI49R;
-         uint64 ix = this.rhombusIX;
-         uint64 p = POW7(l49r), rSize = p * p;
+         uint64 p = POW7(l49r);
          Pointd v;
          double oop = 1.0 / p;
-
-         int rhombus = ix < 2 ? 0 : (int)((ix - 2) / rSize);
-         uint64 rix = ix >= 2 ? (ix - 2) % rSize : 0;
-         bool south = ix == 1 || (rhombus & 1);
+         int root = rootRhombus;
+         uint64 rix = rhombusIX;
+         bool south = root & 1;
          int sh = subHex;
 
-         if(ix == 0) // North pole
+         if(root == 0xA) // North pole
          {
             v = { 1, 0 };
 
@@ -2516,7 +2499,7 @@ private:
                v.y += sh - 2 + 1 * oop/7;
             }
          }
-         else if(ix == 1) // South pole
+         else if(root == 0xB) // South pole
          {
             v = { 4, 6 };
 
@@ -2528,14 +2511,14 @@ private:
          }
          else
          {
-            int cx = (rhombus >> 1), cy = cx + (rhombus & 1);
+            int cx = (root >> 1), cy = cx + (root & 1);
             int64 row = rix / p, col = rix % p;
 
             v.x = cx + col * oop;
             v.y = cy + row * oop;
          }
 
-         if(subHex && ix >= 2)
+         if(subHex && root < 10)
          {
             // Odd level
             if(rix == 0 && south && sh >= 4)
