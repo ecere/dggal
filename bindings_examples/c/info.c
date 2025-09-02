@@ -18,7 +18,7 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, T(Map, String, constString) opt
    char zoneID[256];
    double area = DGGRS_getZoneArea(dggrs, zone), areaKM2 = area / 1000000;
    int depth = DGGRS_get64KDepth(dggrs);
-   DGGRSZone parents[3], neighbors[6], children[9];
+   DGGRSZone parents[3], neighbors[6], children[13];
    int nParents = DGGRS_getZoneParents(dggrs, zone, parents);
    int nbTypes[6];
    int nNeighbors = DGGRS_getZoneNeighbors(dggrs, zone, neighbors, nbTypes);
