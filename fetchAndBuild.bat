@@ -58,6 +58,20 @@ cd ..\..
 
 echo:
 echo **************************************
+echo *** DGGAL for C (function wrappers) **
+echo **************************************
+echo Building DGGAL for C (function wrappers)...
+cd bindings\c_fn
+mingw32-make
+echo Building DGGAL sample C (function wrappers) application...
+cd ..\..\bindings_examples\c_fn
+mingw32-make
+echo Execution test for DGGAL sample C (function wrappers) application:
+obj\release.win32\info ISEA3H A4-0-A
+cd ..\..
+
+echo:
+echo **************************************
 echo ************ DGGAL for C++ ***********
 echo **************************************
 echo Building DGGAL for C++...
