@@ -2570,7 +2570,6 @@ private:
 
    int64 getSubZonesCount(int rDepth)
    {
-      return 0;
       if(rDepth > 0)
       {
          int64 nHexSubZones = POW7(rDepth);

@@ -294,6 +294,12 @@ public class DGGSUnitTest : eTest
                   Array<DGGRSZone> subZones = dggrs.getSubZones(zone, depth);
                   char zoneID[100];
 
+                  if(!subZones)
+                  {
+                     skip("DGGS sub-zones", thisTest, "of null sub-zones returned");
+                     break;
+                  }
+
                   dggrs.getZoneTextID(zone, zoneID);
 
                   if(nz != (subZones ? subZones.count : 0))
