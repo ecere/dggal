@@ -292,7 +292,7 @@ impl DGGRS {
       {
          let c = dggal_sys::class_DGGRS;
          let vTbl = if self.imp != nullInst && (*self.imp)._vTbl != nullVTbl { (*self.imp)._vTbl } else { (*c)._vTbl };
-         let mut ch = [nullZone; 9]; // REVIEW: Any way to avoid this initialization?
+         let mut ch = [nullZone; 13]; // REVIEW: Any way to avoid this initialization?
          let cMethod: usize = std::mem::transmute(*vTbl.add(dggal_sys::DGGRS_getZoneChildren_vTblID as usize));
          if cMethod != std::mem::transmute(0usize) {
             let method : unsafe extern "C" fn(dggrs: dggal_sys::DGGRS, zone: dggal_sys::DGGRSZone, children: *mut dggal_sys::DGGRSZone) -> i32 = std::mem::transmute(cMethod);
