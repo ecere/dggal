@@ -2586,10 +2586,14 @@ private:
 
    I7HZone getFirstSubZone(int rDepth)
    {
+      // TOOD:
+      return nullZone;
+      /*
       Pointd firstCentroid;
 
       getFirstSubZoneCentroid(rDepth, firstCentroid);
       return fromCentroid(level + rDepth, firstCentroid);
+      */
    }
 
    void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid)
