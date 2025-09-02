@@ -331,11 +331,12 @@ public class HEALPix : DGGRS
       uint root;
       uint64 ix;
 
-      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%d-%I64X" : "%c%d-%llX", &levelChar, &root, &ix) == 3 &&
-      levelChar >= 'A' && levelChar <= 'Z')
+      if(sscanf(zoneID, __runtimePlatform == win32 ? "%c%X-%I64X" : "%c%X-%llX", &levelChar, &root, &ix) == 3 &&
+         levelChar >= 'A' && levelChar <= 'Z' && root <= 0xB)
       {
-         // TODO: Additional validation
-         result = { levelChar - 'A', root, ix };
+         int level = levelChar - 'A';
+         if(ix < (1LL << (level<<1)))
+            result = { level, root, ix };
       }
       return result;
    }
