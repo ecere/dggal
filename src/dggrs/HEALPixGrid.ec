@@ -677,6 +677,8 @@ public class HEALPix : DGGRS
 
       if(value.ll.lon < -180)
          value.ll.lon += 360;
+      if(value.ur.lon < -180)
+         value.ur.lon += 360;
 
       if(includesNorthPole)
       {
