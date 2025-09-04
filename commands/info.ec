@@ -1,6 +1,8 @@
 public import IMPORT_STATIC "ecrt"
 import IMPORT_STATIC "dggal"
 
+import "geom"  // For resolveCRSString()
+
 int displayInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> options)
 {
    if(zone != nullZone)
@@ -13,10 +15,12 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
 {
    int level = dggrs.getZoneLevel(zone);
    int nEdges = dggrs.countZoneEdges(zone);
-   GeoPoint centroid;
-   GeoExtent extent;
-   GeoPoint vertices[6];
-   int nVertices = dggrs.getZoneWGS84Vertices(zone, vertices);
+   GeoPoint geoCentroid;
+   GeoExtent geoExtent;
+   GeoPoint geoVertices[6];
+   Pointd vertices[6];
+   Pointd centroid;
+   CRSExtent extent;
    char zoneID[256];
    double area = dggrs.getZoneArea(zone);
    int depth = dggrs.get64KDepth();
@@ -29,9 +33,17 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
    DGGRSZone centroidChild = dggrs.getZoneCentroidChild(zone);
    bool isCentroidChild = dggrs.isZoneCentroidChild(zone);
    int i;
-   const String crs = "EPSG:4326";
    int64 nSubZones;
    const String depthOption = options ? options["depth"] : null;
+   const String crsOption = options ? options["crs"] : null;
+   CRS crs = resolveCRSString(crsOption);
+   const String crsString = crsOption ? crsOption : "EPSG:4326";
+   int nVertices;
+
+   if(crsOption)
+      nVertices = dggrs.getZoneCRSVertices(zone, crs, vertices);
+   else
+      nVertices = dggrs.getZoneWGS84Vertices(zone, geoVertices);
 
    if(depthOption)
    {
@@ -46,8 +58,17 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
 
    nSubZones = dggrs.countSubZones(zone, depth);
 
-   dggrs.getZoneWGS84Centroid(zone, centroid);
-   dggrs.getZoneWGS84Extent(zone, extent);
+   if(crsOption)
+   {
+      dggrs.getZoneCRSCentroid(zone, crs, centroid);
+      dggrs.getZoneCRSExtent(zone, crs, extent);
+   }
+   else
+   {
+      dggrs.getZoneWGS84Centroid(zone, geoCentroid);
+      dggrs.getZoneWGS84Extent(zone, geoExtent);
+   }
+
    dggrs.getZoneTextID(zone, zoneID);
 
    PrintLn($"Textual Zone ID: ", zoneID);
@@ -58,8 +79,16 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
    PrintLn($"Level ", level, $" zone (", nEdges, $" edges", isCentroidChild ? $", centroid child)" : ")");
    PrintLn(area, " m² (", area / 1000000, " km²)");
    PrintLn(nSubZones, $" sub-zones at depth ", depth);
-   PrintLn($"WGS84 Centroid (lat, lon): ", centroid.lat, ", ", centroid.lon);
-   PrintLn($"WGS84 Extent (lat, lon): { ", extent.ll.lat, ", ", extent.ll.lon, " }, { ", extent.ur.lat, ", ", extent.ur.lon, " }");
+   if(crsOption)
+   {
+      PrintLn($"Centroid: ", centroid.x, ", ", centroid.y);
+      PrintLn($"Extent: { top-left: { ", extent.tl.x, ", ", extent.tl.y, " }, bottom-right: { ", extent.br.x, ", ", extent.br.y, " } }");
+   }
+   else
+   {
+      PrintLn($"WGS84 Centroid (lat, lon): ", geoCentroid.lat, ", ", geoCentroid.lon);
+      PrintLn($"WGS84 Extent (lat, lon): { ", geoExtent.ll.lat, ", ", geoExtent.ll.lon, " }, { ", geoExtent.ur.lat, ", ", geoExtent.ur.lon, " }");
+   }
 
    PrintLn("");
    if(nParents)
@@ -100,10 +129,15 @@ static int zoneInfo(DGGRS dggrs, DGGRSZone zone, Map<String, const String> optio
    }
 
    PrintLn("");
-   PrintLn("[", crs, $"] Vertices (", nVertices, "):");
+   PrintLn("[", crsString, $"] Vertices (", nVertices, "):");
 
    for(i = 0; i < nVertices; i++)
-      PrintLn("   ", vertices[i].lat, ", ", vertices[i].lon);
+   {
+      if(crsOption)
+         PrintLn("   ", vertices[i].x, ", ", vertices[i].y);
+      else
+         PrintLn("   ", geoVertices[i].lat, ", ", geoVertices[i].lon);
+   }
    return 0;
 }
 
