@@ -74,6 +74,7 @@ _ECSOURCES = \
 	src/dggrs/IVEA4R.ec \
 	src/dggrs/ISEA4R.ec \
 	src/dggrs/RTEA4R.ec \
+	src/dggrs/ISEA3H_Spherical.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -234,6 +235,9 @@ $(OBJ)ISEA4R.sym: src/dggrs/ISEA4R.ec
 $(OBJ)RTEA4R.sym: src/dggrs/RTEA4R.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA4R.ec) -o $(call quote_path,$@)
 
+$(OBJ)ISEA3H_Spherical.sym: src/dggrs/ISEA3H_Spherical.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/ISEA3H_Spherical.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -338,6 +342,9 @@ $(OBJ)ISEA4R.c: src/dggrs/ISEA4R.ec $(OBJ)ISEA4R.sym | $(SYMBOLS)
 $(OBJ)RTEA4R.c: src/dggrs/RTEA4R.ec $(OBJ)RTEA4R.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA4R.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)ISEA3H_Spherical.c: src/dggrs/ISEA3H_Spherical.ec $(OBJ)ISEA3H_Spherical.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/ISEA3H_Spherical.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -441,6 +448,9 @@ $(OBJ)ISEA4R$(O): $(OBJ)ISEA4R.c
 
 $(OBJ)RTEA4R$(O): $(OBJ)RTEA4R.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA4R.c) -o $(call quote_path,$@)
+
+$(OBJ)ISEA3H_Spherical$(O): $(OBJ)ISEA3H_Spherical.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ISEA3H_Spherical.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)

@@ -14,7 +14,7 @@ import "Vector3D"
 
 define ANCHORS_5x6 = 33;
 
-static uint16 icoIndices[20][3] =
+/*static */uint16 icoIndices[20][3] =
 {
    // Top triangles
    { 0, 1, 2 },
@@ -246,7 +246,7 @@ public class RI5x6Projection
       return applyCoefficients(cp[0], phi);
    }
 
-   static void /*::*/getVertices(Vector3D * vertices /* [12] */)
+   /*static */void /*::*/getVertices(Vector3D * vertices /* [12] */)
    {
       // double a = edgeSize;
       Radians t = atan(0.5);
