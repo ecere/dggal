@@ -207,6 +207,33 @@ int main(int argc, char * argv[])
 
       displayInfo(dggrs, zone, depthOption);
 
+      // Compacted Zones Test
+      #if 0
+      DGGRS isea4r = DGGAL_DGGRS_new(dggal, "ISEA4R");
+      const char * zoneIDs[] = { "B5-0", "B5-1", "B5-2", "B5-3" };
+      unsigned int count = sizeof(zoneIDs) / sizeof(zoneIDs[0]);
+      Array_DGGRSZone a = DGGAL_Array_DGGRSZone_new(count);
+      DGGRSZone * zones = DGGAL_Array_DGGRSZone_getPointer(a);
+      int i;
+
+      for(i = 0; i < count; i++)
+         zones[i] = DGGAL_DGGRS_getZoneFromTextID(isea4r, zoneIDs[i]);
+
+      DGGAL_DGGRS_compactZones(isea4r, a);
+      zones = DGGAL_Array_DGGRSZone_getPointer(a);
+      count = DGGAL_Array_DGGRSZone_getCount(a);
+
+      printf("Compacted zones\n");
+      for(i = 0; i < count; i++)
+      {
+         char id[256];
+         DGGAL_DGGRS_getZoneTextID(isea4r, zones[i], id);
+         printf("   %s\n", id);
+      }
+      DGGAL_Array_DGGRSZone_delete(a);
+      DGGAL_DGGRS_delete(isea4r);
+      #endif
+
       DGGAL_DGGRS_delete(dggrs);
    }
    else

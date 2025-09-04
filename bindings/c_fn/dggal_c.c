@@ -1,5 +1,7 @@
 #include <dggal.h>
 
+static Class * class_Array_DGGRSZone;
+
 LIB_EXPORT CRSRegistry DGGAL_CRS(CRSRegistry registry, unsigned int code, int h)
 {
    return CRS(registry, code, h);
@@ -40,12 +42,20 @@ LIB_EXPORT void DGGAL_Array_Pointd_delete(T(Array, Pointd) self)
 }
 
 //    of DGGRSZone
+LIB_EXPORT T(Array, DGGRSZone) DGGAL_Array_DGGRSZone_new(uint size)
+{
+   T(Array, DGGRSZone) array = newi(Array, DGGRSZone);
+   if(array)
+      Array_set_size(array, size);
+   return array;
+}
+
 LIB_EXPORT int DGGAL_Array_DGGRSZone_getCount(const T(Array, DGGRSZone) self)
 {
    return Array_get_size(self);
 }
 
-LIB_EXPORT const DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const T(Array, DGGRSZone) self)
+LIB_EXPORT DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const T(Array, DGGRSZone) self)
 {
    return (DGGRSZone *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array;
 }
@@ -65,6 +75,8 @@ LIB_EXPORT Module DGGAL_init()
       mDGGAL = dggal_init(app);
       if(!mDGGAL)
          deletei(app);
+      else
+         class_Array_DGGRSZone = eC_findClass(app, "Array<DGGRSZone>");
    }
    return mDGGAL;
 }

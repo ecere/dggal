@@ -77,8 +77,9 @@ LIB_IMPORT void DGGAL_Array_Pointd_delete(Array_Pointd self);
 
 struct Array_DGGRSZone;
 typedef struct Array_DGGRSZone * Array_DGGRSZone;
+LIB_IMPORT Array_DGGRSZone DGGAL_Array_DGGRSZone_new(unsigned int size);
 LIB_IMPORT int DGGAL_Array_DGGRSZone_getCount(const Array_DGGRSZone self);
-LIB_IMPORT const DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const Array_DGGRSZone self);
+LIB_IMPORT DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const Array_DGGRSZone self);
 LIB_IMPORT void DGGAL_Array_DGGRSZone_delete(Array_DGGRSZone self);
 
 // DGGRS Instantiation -- Setup and re-use single instance per DGGRS (e.g., IVEA3H, HEALPix, GNOSISGlobalGrid)
