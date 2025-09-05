@@ -490,13 +490,21 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       double h, b[3];
        // The SDT triangle area is always 6 degrees
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
+      double dotAv, dotAp;
 
       c1.CrossProduct(A, v);
       c2.CrossProduct(B, C);
       p.CrossProduct(c1, c2);
       p.Normalize(p);
 
-      h = sqrt((1 - A.DotProduct(v)) / (1 - A.DotProduct(p)));
+      dotAv = A.DotProduct(v);
+      dotAp = A.DotProduct(p);
+
+      if(fabs(1 - dotAv) < 1E-14)
+         h = 0;
+      else
+         h = sqrt((1 - dotAv) / (1 - dotAp));
+
       b[0] = 1 - h;
       b[2] = h * sphericalTriArea(A, B, p) / areaABC;
       b[1] = h - b[2];
