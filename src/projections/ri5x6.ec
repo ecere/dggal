@@ -98,6 +98,10 @@ public class RI5x6Projection
    {
       int i;
 
+#if 0
+      test5x6();
+#endif
+
       vertex2Azimuth = 0;
       orientation = { /*(E + F) / 2 /* 90 - 58.2825255885389 = */31.7174744114611, -11.20 };
       getVertices(icoVertices);
@@ -1419,4 +1423,132 @@ void canonicalize5x6(const Pointd _src, Pointd out)
       out = { 0, src.y - 5 };
    else
       out = src;
+}
+
+
+void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
+{
+   Pointd c = o;
+
+   while(true)
+   {
+      int cx = (int)floor(c.x + 1E-11);
+      int cy = (int)floor(c.y + 1E-11);
+      int root = cx + cy;
+      int nx, ny;
+      double px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
+      double py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
+      int rotation = 0;
+
+      if(dx && dy)
+      {
+         double pkx = px / dx, pky = py / dy;
+         if(pkx < pky)
+            py = pkx * dy;
+         else if(pky < pkx)
+            px = pky * dx;
+      }
+
+      c.x += px;
+      c.y += py;
+
+      nx = (int)floor(c.x + 1E-11 * Sgn(px));
+      ny = (int)floor(c.y + 1E-11 * Sgn(py));
+
+      if(nx != cx || ny != cy)
+      {
+         if(!(root & 1))
+         {
+            // North
+            if(ny == cy && nx == cx + 1)   // Crossing interruption to the right
+            {
+               int iy = (int)(c.x - 1 + 1E-11);
+               c = { iy + 2 - (c.y - iy), c.x };
+               rotation = -1; // Clockwise rotation
+            }
+            else if(nx == cx && ny == cy - 1) // Crossing interruption to the left
+            {
+               int ix = (int)(c.y + 1E-11);
+               c = { c.y, ix - (c.x - ix) };
+               rotation = 1; // Counter-clockwise rotation
+            }
+         }
+         else
+         {
+            // South
+            if(nx == cx && ny == cy + 1) // Crossing interruption to the right
+            {
+               int ix = (int)(c.y - 2 + 1E-11);
+               c = { c.y - 1, ix + 3 - (c.x - ix) };
+               rotation = 1; // Counter-clockwise rotation
+            }
+            else if(ny == cy && nx == cx - 1) // Crossing interruption to the left
+            {
+               int iy = (int)(c.x + 1 + 1E-11);
+               c = { iy - 1 - (c.y - iy), c.x + 1 };
+               rotation = -1; // Clockwise rotation
+            }
+         }
+      }
+
+      dx -= px;
+      dy -= py;
+
+      if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
+         break;
+
+      // Apply rotation
+      if(rotation)
+      {
+         int i;
+         for(i = 0; i < nRotations; i++)
+         {
+            if(rotation == -1)
+            {
+               // 60 degrees clockwise rotation
+               double ndx = dx - dy;
+               dy = dx;
+               dx = ndx;
+            }
+            else
+            {
+               // 60 degrees counter-clockwise rotation
+               double ndy = dy - dx;
+               dx = dy;
+               dy = ndy;
+            }
+         }
+      }
+   }
+   v = c;
+}
+
+void test5x6()
+{
+   Pointd v;
+
+   move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1);
+   PrintLn(v); // Should be 1, 0.5 (or 1.5, 1)
+
+   move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1);
+   PrintLn(v); // Should be 1.66666666666667, 1.33333333333333
+
+   // Two rotations for scanlines past centroid on pentagons
+   move5x6(v, { 8/3.0, 7/3.0 }, 1/9.0, 0, 2); // Should be: 2.77777777777778, 2.33333333333333
+   PrintLn(v);
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2); // Should be: 2.8888888888889, 2.33333333333333
+   PrintLn(v);
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
+   PrintLn(v);
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2); // Should be: 3.66666666666667, 3.1111111111111
+   PrintLn(v);
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 5/9.0, 0, 2); // Should be: 3.66666666666667, 3.22222222222222
+   PrintLn(v);
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 6/9.0, 0, 2); // Should be: 3.66666666666667, 3.33333333333333
+   PrintLn(v);
 }

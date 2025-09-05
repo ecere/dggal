@@ -168,7 +168,6 @@ public class RhombicIcosahedral7H : DGGRS
    // Sub-zone Order
    I7HZone getFirstSubZone(I7HZone zone, int depth)
    {
-      // TODO:
       return zone.getFirstSubZone(depth);
    }
 
@@ -2586,19 +2585,67 @@ private:
 
    I7HZone getFirstSubZone(int rDepth)
    {
-      // TOOD:
-      return nullZone;
-      /*
       Pointd firstCentroid;
 
       getFirstSubZoneCentroid(rDepth, firstCentroid);
       return fromCentroid(level + rDepth, firstCentroid);
-      */
    }
 
    void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid)
    {
-      firstCentroid = { 0, 0 }; // TODO: getI3HFirstSubZoneCentroid(this, rDepth, firstCentroid);
+      // TODO: Correctly handling polar cases
+      Pointd vertices[6];
+      int n = getVertices(vertices);
+      int i, top = 0;
+      Pointd topIco;
+      Pointd * v;
+      double dx, dy;
+      int level = this.level;
+      int64 szp = POW7((level + 1 + rDepth) / 2);
+
+      RI5x6Projection::toIcosahedronNet(vertices[0], topIco);
+
+      for(i = 1; i < n; i++)
+      {
+         Pointd ico;
+         RI5x6Projection::toIcosahedronNet(vertices[i], ico);
+         if(ico.y > topIco.y)
+         {
+            topIco = ico;
+            top = i;
+         }
+      }
+      v = &vertices[top];
+
+      if(rDepth & 1) // Odd depth
+      {
+         // First sub-zone centroid is one sub-zone edge length away from sub-zone's vertex preceding shared vertex
+         if(level & 1)
+         {
+            dx = 2 / (3.0 * szp);
+            dy = 1 / (3.0 * szp);
+         }
+         else
+         {
+            dx = -4 / (3.0 * szp);
+            dy = -5 / (3.0 * szp);
+         }
+      }
+      else // Even depth
+      {
+         // First sub-zone centroid is two sub-zone edges length towards next vertex
+         if(level & 1)
+         {
+            dx = -10 / (3.0 * szp);
+            dy =  -2 / (3.0 * szp);
+         }
+         else
+         {
+            dx = -4 / (3.0 * szp);
+            dy = -2 / (3.0 * szp);
+         }
+      }
+      move5x6(firstCentroid, v, dx, dy, 1);
    }
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
