@@ -1497,6 +1497,11 @@ private:
          }
          else
          {
+            if(northPole)
+               return { l9r, 0xA, 0, 0 };
+            else if(southPole)
+               return { l9r, 0xB, 0, 0 };
+
             // Even level
             if(dx > 1 - dy)
             {

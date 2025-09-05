@@ -567,6 +567,37 @@ public class DGGSUnitTest : eTest
                   fail("DGGS parents", thisTest, "of non-reciprocal parents / children for zone");
             }
 
+            PrintLn("Testing reciprocity of level ", pLevel, " zone centroid / from centroid");
+
+            for(z : allZones)
+            {
+               DGGRSZone zone = z, r;
+               GeoPoint centroid;
+               Pointd crsCentroid;
+
+               dggrs.getZoneCRSCentroid(zone, 0, crsCentroid);
+               r = dggrs.getZoneFromCRSCentroid(pLevel, 0, crsCentroid);
+
+               if(r != zone)
+               {
+                  char zID[256];
+                  dggrs.getZoneTextID(zone, zID);
+                  PrintLn("Failed from CRS centroid test for zone ", zID);
+                  fail("DGGS zones from CRS centroid", thisTest, "of non-reciprocal centroid / zone");
+               }
+
+               dggrs.getZoneWGS84Centroid(zone, centroid);
+               r = dggrs.getZoneFromWGS84Centroid(pLevel, centroid);
+
+               if(r != zone)
+               {
+                  char zID[256];
+                  dggrs.getZoneTextID(zone, zID);
+                  PrintLn("Failed from WGS84 centroid test for zone ", zID);
+                  fail("DGGS zones from WGS84 centroid", thisTest, "of non-reciprocal centroid / zone");
+               }
+            }
+
             delete allZones;
          }
          else
@@ -593,5 +624,10 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA7H), 4, 0);
       testSubZones(class(HEALPix), 4, 3);
       testSubZones(class(ISEA4R), 4, 3);
+
+      testSubZones(class(IVEA3H), 4, 0);
+      testSubZones(class(IVEA7H), 4, 0);
+      testSubZones(class(RTEA7H), 4, 0);
+      testSubZones(class(RTEA3H), 4, 0);
    }
 }

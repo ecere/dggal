@@ -500,8 +500,32 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       dotAv = A.DotProduct(v);
       dotAp = A.DotProduct(p);
 
-      if(fabs(1 - dotAv) < 1E-14)
-         h = 0;
+      if(fabs(dotAv - dotAp) < 1E-14)
+      {
+         #define V_EPSILON 1E-7
+         if(fabs(v.x - A.x) < V_EPSILON && fabs(v.y - A.y) < V_EPSILON && fabs(v.z - A.z) < V_EPSILON)
+         {
+            out = pai;
+            return;
+         }
+         else if(fabs(v.x - B.x) < V_EPSILON && fabs(v.y - B.y) < V_EPSILON && fabs(v.z - B.z) < V_EPSILON)
+         {
+            out = pbi;
+            return;
+         }
+         else if(fabs(v.x - C.x) < V_EPSILON && fabs(v.y - C.y) < V_EPSILON && fabs(v.z - C.z) < V_EPSILON)
+         {
+            out = pci;
+            return;
+         }
+         else
+            h = 1;
+      }
+      else if(fabs(1 - dotAv) < 1E-7)
+      {
+         out = pai;
+         return;
+      }
       else
          h = sqrt((1 - dotAv) / (1 - dotAp));
 

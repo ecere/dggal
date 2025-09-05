@@ -1219,10 +1219,55 @@ private:
          uint root = cx + cy;
          uint64 x = (uint64)((c.x - cx) * p + 1E-6 /*11*/); // Row and Column within root rhombus
          uint64 y = (uint64)((c.y - cy) * p + 1E-6 /*11*/);
-         uint64 rix = y * p + x;  // Index within root rhombus
-         double xd = (c.x - cx) * p - x;
-         double yd = (c.y - cy) * p - y;
+         uint64 rix;
+         double xd, yd;
          uint sh;
+
+         // REVIEW: Valid scenarios where x == p or y == p are currently possible, yet the code further below assumed it was not
+         if(y == p) // REVIEW: IVEA3H B1-2-A
+         {
+            cy++;
+            root++;
+            y -= p;
+            c.y = cy + (double)y / p;
+         }
+         if(x == p) // REVIEW: IVEA3H B4-6-A
+         {
+            cx++;
+            root++;
+            if(root == 10)
+            {
+               cx -= 5;
+               cy -= 5;
+               root = 0;
+               c.y = cy + (double)y / p;
+            }
+
+            x -= p;
+            c.x = cx + (double)x / p;
+         }
+         if(cy - cx > 1 && !y) // REVIEW: IVEA3H B9-3-A, C9-12-A
+         {
+            cx++;
+            y = p - x;
+            x = 0;
+            root++;
+            c.y = cy + (double)y / p;
+            c.x = cx;
+         }
+         else if(cy < cx && !x) // REVIEW: RTEA3H B4-1-A
+         {
+            cy++;
+            x = p - y;
+            y = 0;
+            root++;
+            c.x = cx + (double)x / p;
+            c.y = cy;
+         }
+
+         rix = y * p + x;  // Index within root rhombus
+         xd = (c.x - cx) * p - x;
+         yd = (c.y - cy) * p - y;
 
          if(isNorthPole)
             sh = (level & 1) ? 1 : 0, root = 10, rix = 0;
