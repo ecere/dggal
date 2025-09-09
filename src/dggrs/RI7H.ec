@@ -2572,17 +2572,120 @@ private:
       }
    }
 
+   private static inline int64 ::triNumber(int64 n)
+   {
+      if (n <= 0) return 0;
+      return n * (n + 1) / 2;
+   }
+
+   private static inline int64 ::sumArithmeticSeries(int64 n, int64 firstTerm, int64 commonDiff)
+   {
+       if (n <= 0) return 0;
+       // return n * (2 * firstTerm + (n - 1) * commonDiff) / 2;
+       return n * firstTerm + commonDiff * triNumber(n - 1);
+   }
+
+   private static inline int64 ::computeAddedContrib(uint64 nScanlines, int zonesAdded, uint nTimesAdditionRepeated,
+      int scanlineGapBetweenRepetitions, int phaseOffsetFromFirstAddition)
+   {
+      int64 total = 0;
+
+      if(nScanlines)
+      {
+         int patternSize = nTimesAdditionRepeated + scanlineGapBetweenRepetitions;
+         int p;
+
+         for(p = 0; p < nTimesAdditionRepeated; p++)
+         {
+            int64 firstIncLine = (p - phaseOffsetFromFirstAddition + patternSize) % patternSize;
+            if(firstIncLine < nScanlines)
+            {
+               int64 n = (nScanlines - 1 - firstIncLine) / patternSize + 1;
+               int64 firstTerm = (int64)zonesAdded * (nScanlines - firstIncLine);
+               int64 commonDiff = -(int64)zonesAdded * patternSize;
+               total += sumArithmeticSeries(n, firstTerm, commonDiff);
+            }
+         }
+      }
+      return total;
+   }
+
+   private static inline int64 ::computeHexOddDepthSubZones(int rDepth)
+   {
+       int64 nInterSL = POW7((rDepth - 1) / 2);
+       int64 nCapSL = (int64)(ceil(nInterSL / 3.0) + 0.1);
+       int64 nMidSL = (int64)(ceil(nInterSL * 2 / 3.0) + 0.1);
+
+       // A..B
+       int64 abRight = computeAddedContrib(nCapSL - 1, 5, 1, 0, 0);
+       int64 abLeft = computeAddedContrib(nCapSL - 1, 1, 1, 3, 0);
+       int64 nZonesAB = nCapSL * 1 + abLeft + abRight;
+       int64 abLeftAddition = (nCapSL > 1 ? (nCapSL - 2) / 4 + 1 : 0);
+
+       // B..C
+       int64 bZonesPerSL = 1 + 5 * (nCapSL - 1) + abLeftAddition;
+       int64 bcLeft = computeAddedContrib(nInterSL, 1, 1, 3, (int)((nCapSL - 1) % 4));
+       int64 bcRight = 2 * nInterSL + computeAddedContrib(Max(0, nInterSL - 2), 1, 4, 1, 0);
+       int64 nZonesBC = nInterSL * bZonesPerSL + bcLeft + bcRight;
+
+       // C..D
+       int64 bcLeftInc = (nCapSL + nInterSL - 1 + 3) / 4 - abLeftAddition;
+       int64 bcRightInc = 2 + (nInterSL - 2)/5 * 4 + (nInterSL - 2) % 5;
+       int64 cZonesPerSL = bZonesPerSL + bcLeftInc + bcRightInc;
+       int64 cdLeft = -1 * nMidSL + computeAddedContrib(Max(0, nMidSL - 2), -1, 4, 1, 0);
+       int64 cdRight = computeAddedContrib(nMidSL, 1, 4, 1, Max(0, nInterSL - 2) % 5);
+       int64 nZonesCD = nMidSL * cZonesPerSL + cdLeft + cdRight;
+
+       return 2 * nZonesAB + 2 * nZonesBC + nZonesCD;
+   }
+
    int64 getSubZonesCount(int rDepth)
    {
       if(rDepth > 0)
       {
-         int64 nHexSubZones = POW7(rDepth);
+         int64 nHexSubZones;
 
          if(rDepth & 1)
-            nHexSubZones += POW6((rDepth + 1) / 2);
-         else
-            nHexSubZones += 6 * POW8((rDepth / 2) - 1);
+         {
+#if 0 // def _DEBUG
+            int64 nInterSL = (int64)(POW7((rDepth-1) / 2));
+            int64 nCapSL = (int64)(ceil(nInterSL / 3.0) + 0.5);
+            int64 nMidSL = (int64)(ceil(nInterSL * 2 / 3.0) + 0.5);
+            // int64 nScanlines = 2 * nCapSL + 2 * nInterSL + nMidSL;
+            int64 s;
+            int64 zonesPerSL = 1;
+            int64 leftACCounter = 0, leftCECounter = 0, rightBDCounter = 0;
+            int64 nZonesAB = 0, nZonesBC = 0, nZonesCD = 0;
 
+            for(s = 0; s < nCapSL; s++)
+            {
+               int64 left = (s > 0 && (leftACCounter++) % 4 == 0) ? 1 : 0;
+               int64 right = (s > 0) ? 5 : 0;
+               zonesPerSL += left + right;
+               nZonesAB += zonesPerSL;
+            }
+
+            for(s = 0; s < nInterSL; s++)
+            {
+               int64 left = ((leftACCounter++) % 4 == 0) ? 1 : 0;
+               int64 right = (s == 0) ? 2 : ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+               zonesPerSL += left + right;
+               nZonesBC += zonesPerSL;
+            }
+
+            for(s = 0; s < nMidSL; s++)
+            {
+               int64 left = (s == 0 || (leftCECounter++) % 5 != 0) ? -1 : 0;
+               int64 right = ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+               zonesPerSL += left + right;
+               nZonesCD += zonesPerSL;
+            }
+            nHexSubZones = 2 * nZonesAB + 2 * nZonesBC + nZonesCD;
+#endif
+            nHexSubZones = computeHexOddDepthSubZones(rDepth);
+         }
+         else
+            nHexSubZones = POW7(rDepth) + 6 * POW8((rDepth / 2) - 1);
          return (nHexSubZones * nPoints + 5) / 6;
       }
       return 1;
