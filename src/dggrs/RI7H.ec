@@ -2689,7 +2689,8 @@ private:
             nHexSubZones = POW7(rDepth) + 5 * POW7((rDepth-1)/2) + 1;
          }
          else
-            nHexSubZones = POW7(rDepth) + 6 * POW8((rDepth / 2) - 1);
+                                       // https://oeis.org/A024075
+            nHexSubZones = POW7(rDepth) + POW7(rDepth/2) - 1;
          return (nHexSubZones * nPoints + 5) / 6;
       }
       return 1;
