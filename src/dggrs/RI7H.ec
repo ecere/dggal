@@ -2572,6 +2572,7 @@ private:
       }
    }
 
+#if 0
    private static inline int64 ::triNumber(int64 n)
    {
       if (n <= 0) return 0;
@@ -2638,6 +2639,7 @@ private:
 
        return 2 * nZonesAB + 2 * nZonesBC + nZonesCD;
    }
+#endif
 
    int64 getSubZonesCount(int rDepth)
    {
@@ -2682,7 +2684,9 @@ private:
             }
             nHexSubZones = 2 * nZonesAB + 2 * nZonesBC + nZonesCD;
 #endif
-            nHexSubZones = computeHexOddDepthSubZones(rDepth);
+            // nHexSubZones = computeHexOddDepthSubZones(rDepth);
+            //                            https://oeis.org/A199422
+            nHexSubZones = POW7(rDepth) + 5 * POW7((rDepth-1)/2) + 1;
          }
          else
             nHexSubZones = POW7(rDepth) + 6 * POW8((rDepth / 2) - 1);
