@@ -72,6 +72,7 @@ public:
 
    virtual void getZoneCRSExtent(DGGRSZone zone, CRS crs, CRSExtent extent) { extent = { }; }
    virtual void getZoneWGS84Extent(DGGRSZone zone, GeoExtent extent) { extent.clear(); }
+   virtual void getZoneWGS84ExtentApproximate(DGGRSZone zone, GeoExtent extent) { getZoneWGS84Extent(zone, extent); }
 
    virtual int getZoneCRSVertices(DGGRSZone zone, CRS crs, Pointd * vertices) { return 0; }
    virtual int getZoneWGS84Vertices(DGGRSZone zone, GeoPoint * vertices) { return 0; }

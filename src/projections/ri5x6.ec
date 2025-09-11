@@ -599,7 +599,7 @@ public class RI5x6Projection
       }
    }
 
-   bool ::fromIcosahedronNet(const Pointd v, Pointd result)
+   public bool ::fromIcosahedronNet(const Pointd v, Pointd result)
    {
       result =
       {
@@ -609,7 +609,7 @@ public class RI5x6Projection
       return true;
    }
 
-   bool ::toIcosahedronNet(const Pointd v, Pointd result)
+   public bool ::toIcosahedronNet(const Pointd v, Pointd result)
    {
       result =
       {
@@ -1380,7 +1380,7 @@ void move5x6Vertex2(Pointd v, const Pointd srcC, double dx, double dy, bool cros
       v.x += 5, v.y += 5;
 }
 
-void canonicalize5x6(const Pointd _src, Pointd out)
+public void canonicalize5x6(const Pointd _src, Pointd out)
 {
    bool south = false, cross = false;
    bool np = false, sp = false;

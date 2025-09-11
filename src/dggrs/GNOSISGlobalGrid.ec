@@ -736,9 +736,9 @@ static uint listGGGZones(Array<GGGZone> zones, int level, const GeoExtent _exten
    return count;
 }
 
-static void compactGGGZones(Array<GGGZone> zones, int start, int maxLevel)
+public /*static */void compactGGGZones(Array<GGGZone> zones, int start, int maxLevel)
 {
-   HashTable<GGGZone> orig { initSize = zones.count - start};
+   HashTable<GGGZone> orig { initSize = zones.count - start };
    int l;
 
    for(l = maxLevel; l > 0; l--)

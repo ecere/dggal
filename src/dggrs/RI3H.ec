@@ -398,7 +398,7 @@ public class RhombicIcosahedral3H : DGGRS
       return (Array<GeoPoint>)getRefinedVertices(zone, { epsg, 4326 }, edgeRefinement, true);
    }
 
-   void getApproxWGS84Extent(I3HZone zone, GeoExtent extent)
+   void getZoneWGS84ExtentApproximate(I3HZone zone, GeoExtent extent)
    {
       uint root = zone.rootRhombus;
       int i;
@@ -472,7 +472,7 @@ public class RhombicIcosahedral3H : DGGRS
             int lonQuad;
             bool oddGrid = zone.subHex > 0;
 
-            //getApproxWGS84Extent(zone, e);
+            //getZoneWGS84ExtentApproximate(zone, e);
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
 
             getZoneWGS84Centroid(zone, centroid);
@@ -678,7 +678,7 @@ public class RhombicIcosahedral3H : DGGRS
                GeoExtent e;
 
                // REVIEW: Should we check 5x6 extent as well or instead of this approximate extent?
-               getApproxWGS84Extent(zone, e);
+               getZoneWGS84ExtentApproximate(zone, e);
                if(!e.intersects(bbox))
                   continue;
 
@@ -705,7 +705,7 @@ public class RhombicIcosahedral3H : DGGRS
 };
 
 
-enum I3HNeighbor
+public enum I3HNeighbor
 {
    // The names reflect the planar ISEA projection arrangement
    top,        // Odd level only, except when replacing topLeft/topRight in interruptions for even level
@@ -2297,4 +2297,34 @@ static Array<Pointd> getIcoNetRefinedVertices(I3HZone zone, int edgeRefinement) 
       rVertices = ap;
    }
    return rVertices;
+}
+
+public I3HZone I3HZoneFromI9R(I9RZone zone, char subHex)
+{
+   return I3HZone::fromI9R(zone.level, zone.row, zone.col, subHex, 0);
+}
+
+public I9RZone I9RZoneFromI3H(I3HZone zone)
+{
+   if(zone.rootRhombus < 10)
+   {
+      int row, col, level = iLRCFromLRtI((char)('A' + zone.levelI9R), zone.rootRhombus, zone.rhombusIX, &row, &col);
+      if(level != -1)
+         return { level, row, col };
+   }
+   else if(zone.rootRhombus == 10)
+   {
+      int level = zone.levelI9R;
+      uint64 p = (uint64)(pow(3, level) + 0.1);
+      uint row = 0, col = (uint)(p - 1);
+      return { level, row, col };
+   }
+   else if(zone.rootRhombus == 11)
+   {
+      int level = zone.levelI9R;
+      uint64 p = (uint64)(pow(3, level) + 0.1);
+      uint row = (uint)(6 * p - 1), col = (uint)(4 * p);
+      return { level, row, col };
+   }
+   return nullZone;
 }
