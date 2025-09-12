@@ -2763,7 +2763,129 @@ private:
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
-      return null; // TODO: getI7HSubZoneCentroids(this, rDepth);
+      int64 count = getSubZonesCount(rDepth);
+      Array<Pointd> centroids { size = (uint) count };
+
+      if(rDepth == 0)
+         centroids[0] = centroid;
+      else
+      {
+         int level = this.level;
+         bool oddAncestor = level & 1;
+         Pointd first;
+         int szLevel = level + rDepth;
+         int64 szp = POW7((szLevel + (oddAncestor^(rDepth&1)))/2);
+         double c2c = 1.0 / szp; // Centroid to centroid distance between sub-zones along 5x6 x and y axes
+         int64 cStart = 0;
+         int64 index = 0;
+         int64 s;
+         int64 zonesPerSL;
+         int64 nScanlines;
+         int64 left, right;
+         Pointd sc; // Start of scanline
+         int64 i;
+
+         // TODO: Handle pentagons / polar zones correctly
+         if(nPoints == 5) { delete centroids; return null; }
+
+         // TODO: Verify interrupted hexagons
+         getFirstSubZoneCentroid(rDepth, first);
+
+         if(rDepth & 1) // Odd depths
+         {
+            int64 nInterSL = (int64)(POW7((rDepth-1) / 2));
+            int64 nCapSL = (int64)(ceil(nInterSL / 3.0) + 0.5);
+            int64 nMidSL = (int64)(ceil(nInterSL * 2 / 3.0) + 0.5);
+            int64 B = nCapSL, C = B + nInterSL, D = C + nMidSL, E = D + nInterSL;
+            int64 leftACCounter = 0, leftCECounter = 0, rightBDCounter = 0, rightDFCounter = 0;
+
+            nScanlines = 2 * nCapSL + 2 * nInterSL + nMidSL;
+            zonesPerSL = 1;
+
+            for(s = 0; s < nScanlines; s++)
+            {
+               if(s < B)
+               {
+                  left = (s > 0 && (leftACCounter++) % 4 == 0) ? 1 : 0;
+                  right = (s > 0) ? 5 : 0;
+               }
+               else if(s < C)
+               {
+                  left = ((leftACCounter++) % 4 == 0) ? 1 : 0;
+                  right = (s == B) ? 2 : ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+               }
+               else if(s < D)
+               {
+                  left = (s == C || (leftCECounter++) % 5 != 0) ? -1 : 0;
+                  right = ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+               }
+               else if(s < E)
+               {
+                  left = ((leftCECounter++) % 5 != 0) ? -1 : 0;
+                  right = (s == D) ? 1 : ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+               }
+               else
+               {
+                  left = s == E ? -2 : -5;
+                  right = ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+               }
+
+               if(oddAncestor)
+               {
+                  cStart += left;
+                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1);
+               }
+               else
+               {
+                  cStart += right;
+                  move5x6(sc, first, s * c2c - cStart * c2c*3, s * c2c*3 - cStart * 2*c2c, 1);
+               }
+               zonesPerSL += left + right;
+
+               for(i = 0; i < zonesPerSL; i++)
+                  move5x6(centroids[(int)(index++)], sc, i * c2c * (oddAncestor ? 1 : 3), i * c2c * (oddAncestor ? 1 : 2), 1);
+            }
+         }
+         else // Even depths
+         {
+            int64 nCapSL = (POW7(rDepth/2) - 1) / 3;
+            int64 nMidSL = (2*POW7(rDepth/2) + 1)/3;
+            int64 B = nCapSL, C = B + nMidSL;
+
+            nScanlines = 2 * nCapSL + nMidSL;
+            zonesPerSL = 3;
+
+            for(s = 0; s < nScanlines; s++)
+            {
+               if(s < B)
+               {
+                  left = s > 0 ? 1 : 0;
+                  right = s > 0 ? 2 : 0;
+               }
+               else if(s < C)
+               {
+                  left = s == B || ((s - B) & 1) ? 0 : -1;
+                  right = (s == B) || ((s - B) & 1) ? 1 : 0;
+               }
+               else
+               {
+                  left = s == C ? -1 : -2;
+                  right = s == C ? 0 : -1;
+               }
+               cStart += left;
+
+               if(oddAncestor)
+                  move5x6(sc, first, -2*s * c2c - cStart * c2c*3, s * c2c - cStart * 2*c2c, 1);
+               else
+                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1);
+               zonesPerSL += left + right;
+
+               for(i = 0; i < zonesPerSL; i++)
+                  move5x6(centroids[(int)(index++)], sc, i * c2c * (oddAncestor ? 3 : 1), i * c2c * (oddAncestor ? 2 : 1), 1);
+            }
+         }
+      }
+      return centroids;
    }
 
    private /*static */bool orderZones(int zoneLevel, AVLTree<I7HZone> tsZones, Array<I7HZone> zones)

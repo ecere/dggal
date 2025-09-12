@@ -1452,8 +1452,8 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
       c.x += px;
       c.y += py;
 
-      nx = (int)floor(c.x + 1E-11 * Sgn(px));
-      ny = (int)floor(c.y + 1E-11 * Sgn(py));
+      nx = (int)floor(c.x + 1E-11 * Sgn(dx)); //px));
+      ny = (int)floor(c.y + 1E-11 * Sgn(dy)); //py));
 
       if(nx != cx || ny != cy)
       {
@@ -1472,6 +1472,15 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
                c = { c.y, ix - (c.x - ix) };
                rotation = 1; // Counter-clockwise rotation
             }
+            else
+            {
+               // REVIEW: Non-crossing internal rhombus edges?
+               c.x += dx - px;
+               c.y += dy - py;
+
+               px = dx;
+               py = dy;
+            }
          }
          else
          {
@@ -1487,6 +1496,15 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
                int iy = (int)(c.x + 1 + 1E-11);
                c = { iy - 1 - (c.y - iy), c.x + 1 };
                rotation = -1; // Clockwise rotation
+            }
+            else
+            {
+               // REVIEW: Non-crossing internal rhombus edges?
+               c.x += dx - px;
+               c.y += dy - py;
+
+               px = dx;
+               py = dy;
             }
          }
       }
