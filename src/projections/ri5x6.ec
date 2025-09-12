@@ -1430,10 +1430,14 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 {
    Pointd c = o;
 
+   if(c.x < 0 && c.y < 1 + 1E-11)
+      c.x += 5, c.y += 5;
+
    while(true)
    {
-      int cx = (int)floor(c.x + 1E-11);
-      int cy = (int)floor(c.y + 1E-11);
+      int cx = (int)floor(c.x + 1E-11 * Sgn(dx));
+      int cy = (int)floor(c.y + 1E-11 * Sgn(dy));
+
       int root = cx + cy;
       int nx, ny;
       double px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
@@ -1511,6 +1515,9 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 
       dx -= px;
       dy -= py;
+
+      if(c.x < 0 && c.y < 1 + 1E-11)
+         c.x += 5, c.y += 5;
 
       if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
          break;

@@ -2700,21 +2700,17 @@ private:
    {
       Pointd firstCentroid;
 
-      getFirstSubZoneCentroid(rDepth, firstCentroid);
+      getFirstSubZoneCentroid(rDepth, firstCentroid, null, null);
       return fromCentroid(level + rDepth, firstCentroid);
    }
 
-   void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid)
+   int getTopIcoVertex(Pointd v)
    {
-      // TODO: Correctly handling polar cases
       Pointd vertices[6];
       int n = getVertices(vertices);
       int i, top = 0;
       Pointd topIco;
-      Pointd * v;
-      double dx, dy;
-      int level = this.level;
-      int64 szp = POW7((level + 1 + rDepth) / 2);
+      bool equalTop = false;
 
       RI5x6Projection::toIcosahedronNet(vertices[0], topIco);
 
@@ -2722,13 +2718,35 @@ private:
       {
          Pointd ico;
          RI5x6Projection::toIcosahedronNet(vertices[i], ico);
-         if(ico.y > topIco.y)
+         if(ico.y > topIco.y + 1E-8)
          {
+            equalTop = false;
             topIco = ico;
             top = i;
          }
+         else if(ico.y >= topIco.y - 1E-8)
+         {
+            equalTop = true;
+            if(ico.x < topIco.x - 1E-8)
+            {
+               topIco = ico;
+               top = i;
+            }
+         }
       }
-      v = &vertices[top];
+      if(v != null)
+         v = vertices[top];
+      return equalTop ? 2 : 1;
+   }
+
+   void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid, double * sx, double * sy)
+   {
+      // TODO: Correctly handling polar cases
+      Pointd v;
+      int nTop = getTopIcoVertex(v);
+      int level = this.level;
+      int64 szp = POW7((level + 1 + rDepth) / 2);
+      double dx, dy;
 
       if(rDepth & 1) // Odd depth
       {
@@ -2751,6 +2769,20 @@ private:
          {
             dx = -10 / (3.0 * szp);
             dy =  -2 / (3.0 * szp);
+            if(nTop == 2)
+            {
+               // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
+               double ndy = dy - dx;
+               dx = dy;
+               dy = ndy;
+
+               if(sx && sy)
+               {
+                  ndy = *sy - *sx;
+                  *sx = *sy;
+                  *sy = ndy;
+               }
+            }
          }
          else
          {
@@ -2771,10 +2803,10 @@ private:
       else
       {
          int level = this.level;
-         bool oddAncestor = level & 1;
-         Pointd first;
          int szLevel = level + rDepth;
-         int64 szp = POW7((szLevel + (oddAncestor^(rDepth&1)))/2);
+         bool oddAncestor = level & 1, oddDepth = rDepth & 1, oddLevelSZ = szLevel & 1;
+         Pointd first;
+         int64 szp = POW7((szLevel + oddLevelSZ)/2);
          double c2c = 1.0 / szp; // Centroid to centroid distance between sub-zones along 5x6 x and y axes
          int64 cStart = 0;
          int64 index = 0;
@@ -2784,14 +2816,22 @@ private:
          int64 left, right;
          Pointd sc; // Start of scanline
          int64 i;
+         // Direction along scanlines:
+         double sx = c2c * (oddLevelSZ ? 3 : 1);
+         double sy = c2c * (oddLevelSZ ? 2 : 1);
+         // Direction to the next scanline (hexagon immediately to the left -- 120 degrees clockwise)
+         double nsx, nsy;
 
          // TODO: Handle pentagons / polar zones correctly
          if(nPoints == 5) { delete centroids; return null; }
 
          // TODO: Verify interrupted hexagons
-         getFirstSubZoneCentroid(rDepth, first);
+         getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
-         if(rDepth & 1) // Odd depths
+         // Rotate scanline direction 120 degrees clockwise to get direction to next scanline
+         nsy = sx - sy, nsx = -sy;
+
+         if(oddDepth)
          {
             int64 nInterSL = (int64)(POW7((rDepth-1) / 2));
             int64 nCapSL = (int64)(ceil(nInterSL / 3.0) + 0.5);
@@ -2804,8 +2844,7 @@ private:
 
             for(s = 0; s < nScanlines; s++)
             {
-               double sx = c2c * (oddAncestor ? 1 : 3);
-               double sy = c2c * (oddAncestor ? 1 : 2);
+               double tsx = sx, tsy = sy;
 
                if(s < B)
                {
@@ -2833,20 +2872,11 @@ private:
                   right = ((rightDFCounter++) % 4) == 0 ? -1 : 0;
                }
 
-               if(oddAncestor)
-               {
-                  cStart += left;
-                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1, &sx, &sy);
-               }
-               else
-               {
-                  cStart += right;
-                  move5x6(sc, first, s * c2c - cStart * c2c*3, s * c2c*3 - cStart * 2*c2c, 1, &sx, &sy);
-               }
+               cStart += oddAncestor ? left : right;
+               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy);
                zonesPerSL += left + right;
-
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * sx, i * sy, 1, null, null);
+                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null);
             }
          }
          else // Even depths
@@ -2860,8 +2890,7 @@ private:
 
             for(s = 0; s < nScanlines; s++)
             {
-               double sx = c2c * (oddAncestor ? 3 : 1);
-               double sy = c2c * (oddAncestor ? 2 : 1);
+               double tsx = sx, tsy = sy;
 
                if(s < B)
                {
@@ -2878,16 +2907,12 @@ private:
                   left = s == C ? -1 : -2;
                   right = s == C ? 0 : -1;
                }
+
                cStart += left;
-
-               if(oddAncestor)
-                  move5x6(sc, first, -2*s * c2c - cStart * c2c*3, s * c2c - cStart * 2*c2c, 1, &sx, &sy);
-               else
-                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1, &sx, &sy);
+               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy);
                zonesPerSL += left + right;
-
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * sx, i * sy, 1, null, null);
+                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null);
             }
          }
       }
