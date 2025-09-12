@@ -1426,7 +1426,7 @@ public void canonicalize5x6(const Pointd _src, Pointd out)
 }
 
 
-void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
+void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, double * adjX, double * adjY)
 {
    Pointd c = o;
 
@@ -1527,6 +1527,13 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
                double ndx = dx - dy;
                dy = dx;
                dx = ndx;
+
+               if(adjX && adjY)
+               {
+                  double nax = *adjX - *adjY;
+                  *adjY = *adjX;
+                  *adjX = nax;
+               }
             }
             else
             {
@@ -1534,6 +1541,13 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations)
                double ndy = dy - dx;
                dx = dy;
                dy = ndy;
+
+               if(adjX && adjY)
+               {
+                  double nay = *adjY - *adjX;
+                  *adjX = *adjY;
+                  *adjY = nay;
+               }
             }
          }
       }
@@ -1545,28 +1559,28 @@ void test5x6()
 {
    Pointd v;
 
-   move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1);
+   move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1, null, null);
    PrintLn(v); // Should be 1, 0.5 (or 1.5, 1)
 
-   move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1);
+   move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1, null, null);
    PrintLn(v); // Should be 1.66666666666667, 1.33333333333333
 
    // Two rotations for scanlines past centroid on pentagons
-   move5x6(v, { 8/3.0, 7/3.0 }, 1/9.0, 0, 2); // Should be: 2.77777777777778, 2.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 1/9.0, 0, 2, null, null); // Should be: 2.77777777777778, 2.33333333333333
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2); // Should be: 2.8888888888889, 2.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2, null, null); // Should be: 2.8888888888889, 2.33333333333333
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
+   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2); // Should be: 3.66666666666667, 3.1111111111111
+   move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.1111111111111
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 5/9.0, 0, 2); // Should be: 3.66666666666667, 3.22222222222222
+   move5x6(v, { 8/3.0, 7/3.0 }, 5/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.22222222222222
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 6/9.0, 0, 2); // Should be: 3.66666666666667, 3.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 6/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.33333333333333
    PrintLn(v);
 }

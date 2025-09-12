@@ -2758,7 +2758,7 @@ private:
             dy = -2 / (3.0 * szp);
          }
       }
-      move5x6(firstCentroid, v, dx, dy, 1);
+      move5x6(firstCentroid, v, dx, dy, 1, null, null);
    }
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
@@ -2804,6 +2804,9 @@ private:
 
             for(s = 0; s < nScanlines; s++)
             {
+               double sx = c2c * (oddAncestor ? 1 : 3);
+               double sy = c2c * (oddAncestor ? 1 : 2);
+
                if(s < B)
                {
                   left = (s > 0 && (leftACCounter++) % 4 == 0) ? 1 : 0;
@@ -2833,17 +2836,17 @@ private:
                if(oddAncestor)
                {
                   cStart += left;
-                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1);
+                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1, &sx, &sy);
                }
                else
                {
                   cStart += right;
-                  move5x6(sc, first, s * c2c - cStart * c2c*3, s * c2c*3 - cStart * 2*c2c, 1);
+                  move5x6(sc, first, s * c2c - cStart * c2c*3, s * c2c*3 - cStart * 2*c2c, 1, &sx, &sy);
                }
                zonesPerSL += left + right;
 
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * c2c * (oddAncestor ? 1 : 3), i * c2c * (oddAncestor ? 1 : 2), 1);
+                  move5x6(centroids[(int)(index++)], sc, i * sx, i * sy, 1, null, null);
             }
          }
          else // Even depths
@@ -2857,6 +2860,9 @@ private:
 
             for(s = 0; s < nScanlines; s++)
             {
+               double sx = c2c * (oddAncestor ? 3 : 1);
+               double sy = c2c * (oddAncestor ? 2 : 1);
+
                if(s < B)
                {
                   left = s > 0 ? 1 : 0;
@@ -2875,13 +2881,13 @@ private:
                cStart += left;
 
                if(oddAncestor)
-                  move5x6(sc, first, -2*s * c2c - cStart * c2c*3, s * c2c - cStart * 2*c2c, 1);
+                  move5x6(sc, first, -2*s * c2c - cStart * c2c*3, s * c2c - cStart * 2*c2c, 1, &sx, &sy);
                else
-                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1);
+                  move5x6(sc, first, -(s + cStart) * c2c, -cStart * c2c, 1, &sx, &sy);
                zonesPerSL += left + right;
 
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * c2c * (oddAncestor ? 3 : 1), i * c2c * (oddAncestor ? 2 : 1), 1);
+                  move5x6(centroids[(int)(index++)], sc, i * sx, i * sy, 1, null, null);
             }
          }
       }
