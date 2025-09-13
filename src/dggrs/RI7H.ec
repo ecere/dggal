@@ -2747,6 +2747,7 @@ private:
       int level = this.level;
       int64 szp = POW7((level + 1 + rDepth) / 2);
       double dx, dy;
+      int rotate = 0;
 
       if(rDepth & 1) // Odd depth
       {
@@ -2755,6 +2756,8 @@ private:
          {
             dx = 2 / (3.0 * szp);
             dy = 1 / (3.0 * szp);
+            if(nTop == 2)
+               rotate = 1;
          }
          else
          {
@@ -2770,19 +2773,7 @@ private:
             dx = -10 / (3.0 * szp);
             dy =  -2 / (3.0 * szp);
             if(nTop == 2)
-            {
-               // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
-               double ndy = dy - dx;
-               dx = dy;
-               dy = ndy;
-
-               if(sx && sy)
-               {
-                  ndy = *sy - *sx;
-                  *sx = *sy;
-                  *sy = ndy;
-               }
-            }
+               rotate = 1;
          }
          else
          {
@@ -2790,6 +2781,22 @@ private:
             dy = -2 / (3.0 * szp);
          }
       }
+
+      if(rotate == 1)
+      {
+         // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
+         double ndy = dy - dx;
+         dx = dy;
+         dy = ndy;
+
+         if(sx && sy)
+         {
+            ndy = *sy - *sx;
+            *sx = *sy;
+            *sy = ndy;
+         }
+      }
+
       move5x6(firstCentroid, v, dx, dy, 1, null, null);
    }
 

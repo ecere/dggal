@@ -1459,7 +1459,7 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
       nx = (int)floor(c.x + 1E-11 * Sgn(dx)); //px));
       ny = (int)floor(c.y + 1E-11 * Sgn(dy)); //py));
 
-      if(nx != cx || ny != cy)
+      if((nx != cx || ny != cy) && (nx > cx || fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
       {
          if(!(root & 1))
          {
@@ -1519,9 +1519,6 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
       if(c.x < 0 && c.y < 1 + 1E-11)
          c.x += 5, c.y += 5;
 
-      if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
-         break;
-
       // Apply rotation
       if(rotation)
       {
@@ -1558,6 +1555,9 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
             }
          }
       }
+
+      if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
+         break;
    }
    v = c;
 }
