@@ -2747,7 +2747,6 @@ private:
       int level = this.level;
       int64 szp = POW7((level + 1 + rDepth) / 2);
       double dx, dy;
-      int rotate = 0;
 
       if(rDepth & 1) // Odd depth
       {
@@ -2756,8 +2755,6 @@ private:
          {
             dx = 2 / (3.0 * szp);
             dy = 1 / (3.0 * szp);
-            if(nTop == 2)
-               rotate = 1;
          }
          else
          {
@@ -2772,8 +2769,6 @@ private:
          {
             dx = -10 / (3.0 * szp);
             dy =  -2 / (3.0 * szp);
-            if(nTop == 2)
-               rotate = 1;
          }
          else
          {
@@ -2782,7 +2777,7 @@ private:
          }
       }
 
-      if(rotate == 1)
+      if(nTop == 2 && ((level & 1) || v.x - v.y - 1E-11 > 0))
       {
          // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
          double ndy = dy - dx;
@@ -2835,8 +2830,11 @@ private:
          // TODO: Verify interrupted hexagons
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
-         // Rotate scanline direction 120 degrees clockwise to get direction to next scanline
-         nsy = sx - sy, nsx = -sy;
+         // Rotate scanline direction to get direction to next scanline
+         if(!oddAncestor && oddDepth)
+            nsy = sx, nsx = sx - sy;  // 60 degrees clockwise
+         else
+            nsy = sx - sy, nsx = -sy;  // 120 degrees clockwise
 
          if(oddDepth)
          {
