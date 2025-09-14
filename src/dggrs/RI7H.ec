@@ -25,8 +25,8 @@ I7H
    1:     72        7   GP(  2, 1)      3                        wD
    2:    492       49   GP(  7, 0)      1                      wrwD
    3:   3432      343   GP( 14, 7)      3                     wrwwD
-   4:  24012     2401   GP( 49, 0)      1                   wrwrwwD ?
-   5: 168072    16807   GP( 98,49)      3                  wrwrwwwD ?
+   4:  24012     2401   GP( 49, 0)      1                   wrwrwwD
+   5: 168072    16807   GP( 98,49)      3                  wrwrwwwD
 */
 
 static define POW_EPSILON = 0.1;
@@ -238,6 +238,58 @@ public class RhombicIcosahedral7H : DGGRS
          }
       }
       return subZone;
+   }
+
+   bool zoneHasSubZone(I7HZone hayStack, I7HZone needle)
+   {
+      bool result = false;
+      int zLevel = hayStack.level, szLevel = needle.level;
+      if(szLevel > zLevel)
+      {
+         Pointd v[6], c;
+         int n, i;
+
+         getZoneCRSCentroid(needle, 0, c);
+         n = needle.getVerticesDirections(v);
+
+         for(i = 0; i < n; i++)
+         {
+            DGGRSZone tz;
+            Pointd m;
+
+            /*
+            double dx = v[i].x, dy = v[i].y;
+            Pointd vc;
+            double dx = v[i].x - c.x;
+            double dy = v[i].y - c.y;
+            if(dx > 3 || dy > 3)
+               dx -= 5, dy -= 5;
+            else if(dx < -3 || dy <- 3)
+               dx += 5, dy += 5;
+
+            move5x6(vc, c, Sgn(dx) * 2E-11, Sgn(dy) * 2E-11, 1, null, null, true);
+
+            dx = v[i].x - vc.x;
+            dy = v[i].y - vc.y;
+
+            if(dx > 3 || dy > 3)
+               dx -= 5, dy -= 5;
+            else if(dx < -3 || dy <- 3)
+               dx += 5, dy += 5;
+
+            move5x6(m, v[i], -dx * 0.01, -dy * 0.01, 1, null, null, false);
+            */
+            move5x6(m, c, v[i].x * 0.99, v[i].y * 0.99, 1, null, null, false);
+
+            tz = getZoneFromCRSCentroid(zLevel, 0, m);
+            if(tz == hayStack)
+            {
+               result = true;
+               break;
+            }
+         }
+      }
+      return result;
    }
 
    I7HZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
@@ -1689,6 +1741,42 @@ private:
       return count;
    }
 
+   int getVerticesDirections(Pointd * v)
+   {
+      uint l49R = levelI49R;
+      uint64 p = POW7(l49R);
+      double oonp = 1.0 / (7 * p);
+
+      if(subHex == 0)
+      {
+         // Even level
+         double A =  7 / 3.0;
+         double B = 14 / 3.0;
+
+         v[0] = { - oonp * A, - oonp * B };
+         v[1] = { - oonp * B, - oonp * A };
+         v[2] = { - oonp * A, + oonp * A };
+         v[3] = { + oonp * A, + oonp * B };
+         v[4] = { + oonp * B, + oonp * A };
+         v[5] = { + oonp * A, - oonp * A };
+      }
+      else
+      {
+         // Odd level
+         double A =  4 / 3.0;
+         double B =  5 / 3.0;
+         double C =  1 / 3.0;
+
+         v[0] = { - oonp * A, - oonp * B };
+         v[1] = { - oonp * B, - oonp * C };
+         v[2] = { - oonp * C, + oonp * A };
+         v[3] = { + oonp * A, + oonp * B };
+         v[4] = { + oonp * B, + oonp * C };
+         v[5] = { + oonp * C, - oonp * A };
+      }
+      return 6; // REVIEW: Can we always return 6 directions for this purpose?
+   }
+
    private static inline void rotate5x6Offset(Pointd r, double dx, double dy, bool clockwise)
    {
       if(clockwise)
@@ -2711,32 +2799,50 @@ private:
       int i, top = 0;
       Pointd topIco;
       bool equalTop = false;
+      Pointd c = this.centroid;
+      bool north = c.x - c.y - 1E-11 > 0;
+      int level = this.level;
+      bool oddLevel = level & 1;
+      bool specialOddCase = false;
 
       RI5x6Projection::toIcosahedronNet(vertices[0], topIco);
 
       for(i = 1; i < n; i++)
       {
          Pointd ico;
+
          RI5x6Projection::toIcosahedronNet(vertices[i], ico);
-         if(ico.y > topIco.y + 1E-8)
+
+         if(ico.y > topIco.y + 1E-6)
          {
             equalTop = false;
             topIco = ico;
             top = i;
          }
-         else if(ico.y >= topIco.y - 1E-8)
+         else if(ico.y >= topIco.y - 1E-6)
          {
-            equalTop = true;
-            if(ico.x < topIco.x - 1E-8)
+            if(!oddLevel || north)
+               equalTop = true;
+            if(ico.x < topIco.x - 1E-8 && topIco.x - ico.x < 5*triWidthOver2)
             {
                topIco = ico;
                top = i;
             }
          }
       }
+
+      // First vertex can't be to the right of northern interruption
+      if(oddLevel && north &&
+         floor(vertices[top].y + 1E-11) > floor(vertices[(top+1) % n].y + 1E-11) &&
+         vertices[top].y - vertices[(top+1) % n].y < 3)
+      {
+         specialOddCase = true; // Special rotation case applies in this case...
+         top = (top + 1) %  n;
+      }
+
       if(v != null)
          v = vertices[top];
-      return equalTop ? 2 : 1;
+      return equalTop || specialOddCase ? 2 : 1;
    }
 
    void getFirstSubZoneCentroid(int rDepth, Pointd firstCentroid, double * sx, double * sy)
@@ -2792,7 +2898,7 @@ private:
          }
       }
 
-      move5x6(firstCentroid, v, dx, dy, 1, null, null);
+      move5x6(firstCentroid, v, dx, dy, 1, null, null, false);
    }
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
@@ -2878,10 +2984,11 @@ private:
                }
 
                cStart += oddAncestor ? left : right;
-               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy);
+               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
+
                zonesPerSL += left + right;
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null);
+                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null, true);
             }
          }
          else // Even depths
@@ -2914,10 +3021,10 @@ private:
                }
 
                cStart += left;
-               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy);
+               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
                zonesPerSL += left + right;
                for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null);
+                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null, true);
             }
          }
       }

@@ -294,15 +294,14 @@ public class DGGSUnitTest : eTest
                   Array<DGGRSZone> subZones = dggrs.getSubZones(zone, depth);
                   char zoneID[100];
 
-                  if(!subZones)
-                  {
-                     skip("DGGS sub-zones", thisTest, "of null sub-zones returned");
-                     break;
-                  }
-
                   dggrs.getZoneTextID(zone, zoneID);
 
-                  if(nz != (subZones ? subZones.count : 0))
+                  if(!subZones)
+                  {
+                     skip("DGGS sub-zones", zoneID /*thisTest*/, "of null sub-zones returned");
+                     //break;
+                  }
+                  else if(nz != (subZones ? subZones.count : 0))
                   {
                      PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone { ", zoneID, " }: "
                         "subZones count: ", subZones ? subZones.count : 0, ", expected: ", nz);
@@ -621,12 +620,12 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA9R), 2, 4);
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
-      testSubZones(class(ISEA7H), 4, 0);
+      testSubZones(class(ISEA7H), 3, 3); // Passing 4,4 ; 5, 3 for hexagons
       testSubZones(class(HEALPix), 4, 3);
       testSubZones(class(ISEA4R), 4, 3);
 
       testSubZones(class(IVEA3H), 4, 0);
-      testSubZones(class(IVEA7H), 4, 0);
+      testSubZones(class(IVEA7H), 4, 1);
       testSubZones(class(RTEA7H), 4, 0);
       testSubZones(class(RTEA3H), 4, 0);
    }

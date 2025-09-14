@@ -1426,23 +1426,44 @@ public void canonicalize5x6(const Pointd _src, Pointd out)
 }
 
 
-void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, double * adjX, double * adjY)
+void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, double * adjX, double * adjY, bool finalCross)
 {
    Pointd c = o;
 
    if(c.x < 0 && c.y < 1 + 1E-11)
       c.x += 5, c.y += 5;
-
    while(true)
    {
-      int cx = (int)floor(c.x + 1E-11 * Sgn(dx));
-      int cy = (int)floor(c.y + 1E-11 * Sgn(dy));
-
-      int root = cx + cy;
+      double cdx = c.x, cdy = c.y;
+      bool north = cdx - cdy - 1E-11 > 0;
+      int cx, cy;
+      int root;
       int nx, ny;
-      double px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
-      double py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
       int rotation = 0;
+      double px, py;
+
+      if(north)
+         cdx -= 1E-11, cdy += 1E-11;
+      else
+         cdx += 1E-11, cdy -= 1E-11;
+
+      if(cdx < 0 && cdy < 1 + 1E-11)
+      {
+         cdx += 5, cdy += 5;
+         c.x += 5, c.y += 5;
+      }
+      if(cdx > 5 && cdy > 5 - 1E-11)
+      {
+         cdx -= 5, cdy -= 5;
+         c.x -= 5, c.y -= 5;
+      }
+
+      cx = (int)floor(cdx);
+      cy = (int)floor(cdy);
+
+      root = cx + cy;
+      px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
+      py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
 
       if(dx && dy)
       {
@@ -1455,6 +1476,12 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 
       c.x += px;
       c.y += py;
+
+      if(!finalCross)
+      {
+         if(fabs(dx - px) < 1E-11 && fabs(dy - py) < 1E-11)
+            break;
+      }
 
       nx = (int)floor(c.x + 1E-11 * Sgn(dx)); //px));
       ny = (int)floor(c.y + 1E-11 * Sgn(dy)); //py));
@@ -1566,28 +1593,28 @@ void test5x6()
 {
    Pointd v;
 
-   move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1, null, null);
+   move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1, null, null, true);
    PrintLn(v); // Should be 1, 0.5 (or 1.5, 1)
 
-   move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1, null, null);
+   move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1, null, null, true);
    PrintLn(v); // Should be 1.66666666666667, 1.33333333333333
 
    // Two rotations for scanlines past centroid on pentagons
-   move5x6(v, { 8/3.0, 7/3.0 }, 1/9.0, 0, 2, null, null); // Should be: 2.77777777777778, 2.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 1/9.0, 0, 2, null, null, true); // Should be: 2.77777777777778, 2.33333333333333
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2, null, null); // Should be: 2.8888888888889, 2.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2, null, null, true); // Should be: 2.8888888888889, 2.33333333333333
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
+   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.1111111111111
+   move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3.1111111111111
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 5/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.22222222222222
+   move5x6(v, { 8/3.0, 7/3.0 }, 5/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3.22222222222222
    PrintLn(v);
 
-   move5x6(v, { 8/3.0, 7/3.0 }, 6/9.0, 0, 2, null, null); // Should be: 3.66666666666667, 3.33333333333333
+   move5x6(v, { 8/3.0, 7/3.0 }, 6/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3.33333333333333
    PrintLn(v);
 }

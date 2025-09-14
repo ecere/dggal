@@ -148,7 +148,7 @@ public:
       return subZone;
    }
 
-   /*virtual */bool zoneHasSubZone(DGGRSZone hayStack, DGGRSZone needle)
+   virtual bool zoneHasSubZone(DGGRSZone hayStack, DGGRSZone needle)
    {
       bool result = false;
       int zLevel = getZoneLevel(hayStack), szLevel = getZoneLevel(needle);
