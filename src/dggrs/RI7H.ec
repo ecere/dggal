@@ -920,21 +920,18 @@ private:
    {
       bool result = false;
       int i;
-      Array<Pointd> v5x6 = getBaseRefinedVertices(false, 1);
-      int n = v5x6 ? v5x6.count : 0;
+      Pointd v5x6[24];
+      int n = getBaseRefinedVerticesNoAlloc(false, 1, v5x6);
       CRSExtent bbox { };
       CRSExtent pBBOX { };
+
+      if(!n)
+         return false;
 
       pBBOX.tl.x = (int) (v.x + 1E-11);
       pBBOX.tl.y = (int) (v.y + 1E-11);
       pBBOX.br.x = pBBOX.tl.x + 1;
       pBBOX.br.y = pBBOX.tl.y + 1;
-
-      if(!n)
-      {
-         delete v5x6;
-         return false;
-      }
 
       bbox.br = { -100, -100 };
       bbox.tl = {  100,  100 };
@@ -979,7 +976,6 @@ private:
 #if 0 //def _DEBUG
          PrintLn("  Skipping this zone");
 #endif
-         delete v5x6;
          return false;
       }
 
@@ -1048,7 +1044,6 @@ private:
       if(result)
          PrintLn("  Zone Contains point!");
 #endif
-      delete v5x6;
       return result;
    }
 
@@ -1311,7 +1306,7 @@ private:
       }
    }
 
-   double ::pointLineSide(double x, double y, Pointd a, Pointd b)
+   private static inline double ::pointLineSide(double x, double y, Pointd a, Pointd b)
    {
       double dx = b.x - a.x, dy = b.y - a.y;
       double A = dy, B = -dx, C = a.y * dx - dy * a.x;
@@ -1793,38 +1788,6 @@ private:
       }
    }
 
-   private static inline void ::addPointCheckingPole(bool crs84, Array<Pointd> points, const Pointd p)
-   {
-      /*
-      int c = points.count;
-      if(c)
-      {
-         const Pointd * l = &points[c-1];
-         double dx = fabs(p.x - l->x), dy = fabs(p.y - l->y);
-         bool addExtra = crs84 && (
-            (fabs(p.x - 0.5) < dx && fabs(p.y - 0) < dx) ||
-            (fabs(p.x - 5) < dx && fabs(p.y - 4.5) < dy) ||
-            (fabs(p.x - 2) < dx && fabs(p.y - 3.5) < dy) ||
-            (fabs(p.x - 1.5) < dx && fabs(p.y - 3) < dy) ||
-            (fabs(l->x - 0.5) < dx && fabs(l->y - 0) < dx) ||
-            (fabs(l->x - 5) < dx && fabs(l->y - 4.5) < dy) ||
-            (fabs(l->x - 2) < dx && fabs(l->y - 3.5) < dy) ||
-            (fabs(l->x - 1.5) < dx && fabs(l->y - 3) < dy));
-         if(addExtra)
-         {
-            #define EXTRA_POLAR_POINTS  10
-            int i;
-            double dx = p.x - points[c-1].x, dy = p.y - points[c-1].y;
-            for(i = 1; i <= EXTRA_POLAR_POINTS; i++)
-               points.Add({ l->x + i * dx/EXTRA_POLAR_POINTS, l->y + i * dy/EXTRA_POLAR_POINTS });
-         }
-         else
-            points.Add(p);
-      }
-      else*/
-         points.Add(p);
-   }
-
    void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
    {
       double dx = n.x - p.x, dy = n.y - p.y;
@@ -1864,19 +1827,19 @@ private:
          for(j = 1; j < nDivisions; j += (interruptionNearPole && fabs(j - t) >= 20 ? 20 : 1))
          {
             if(j < t)
-               addPointCheckingPole(crs84, points, {
+               points.Add({
                   p.x + j * pi1.x / t,
                   p.y + j * pi1.y / t
                });
 
             if((j == (int)t || (j == 1 && !(int)t)))
             {
-               addPointCheckingPole(crs84, points, i1);
+               points.Add(i1);
                points.Add(i2);
             }
 
             if(j > t)
-               addPointCheckingPole(crs84, points, {
+               points.Add({
                   i2.x + (j - t) * i2n.x / (nDivisions - t),
                   i2.y + (j - t) * i2n.y / (nDivisions - t)
                });
@@ -1884,7 +1847,72 @@ private:
       }
       else
          for(j = 0; j < nDivisions; j++)
-            addPointCheckingPole(crs84, points, { p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
+            points.Add({ p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
+   }
+
+   void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
+   {
+      double dx = n.x - p.x, dy = n.y - p.y;
+      int j;
+      bool interruptionNearPole = crs84 && i1 != null && (
+         (fabs(i1.x - 0.5) < 1E-6 && fabs(i1.y - 0) < 1E-6) ||
+         (fabs(i1.x - 5) < 1E-6 && fabs(i1.y - 4.5) < 1E-6) ||
+         (fabs(i1.x - 2) < 1E-6 && fabs(i1.y - 3.5) < 1E-6) ||
+         (fabs(i1.x - 1.5) < 1E-6 && fabs(i1.y - 3) < 1E-6) ||
+         (fabs(i2.x - 0.5) < 1E-6 && fabs(i2.y - 0) < 1E-6) ||
+         (fabs(i2.x - 5) < 1E-6 && fabs(i2.y - 4.5) < 1E-6) ||
+         (fabs(i2.x - 2) < 1E-6 && fabs(i2.y - 3.5) < 1E-6) ||
+         (fabs(i2.x - 1.5) < 1E-6 && fabs(i2.y - 3) < 1E-6));
+
+      if(!nDivisions) nDivisions = 1;
+      if(interruptionNearPole)
+         nDivisions *= 20;
+
+      if(dx < -3)
+         dx += 5, dy += 5;
+
+      if(i1 != null)
+      {
+         Pointd pi1 { i1.x - p.x, i1.y - p.y };
+         Pointd i2n { n.x - i2.x, n.y - i2.y };
+         double l1 = sqrt(pi1.x * pi1.x + pi1.y * pi1.y);
+         double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
+         double length = l1 + l2;
+         double t = nDivisions * l1 / length;
+
+         points[(*count)++] = p;
+
+         if(nDivisions == 1)
+            if(!crs84)
+            {
+               points[(*count)++] = i1;
+               points[(*count)++] = i2;
+            }
+
+         for(j = 1; j < nDivisions; j += (interruptionNearPole && fabs(j - t) >= 20 ? 20 : 1))
+         {
+            if(j < t)
+               points[(*count)++] = {
+                  p.x + j * pi1.x / t,
+                  p.y + j * pi1.y / t
+               };
+
+            if((j == (int)t || (j == 1 && !(int)t)))
+            {
+               points[(*count)++] = i1;
+               points[(*count)++] = i2;
+            }
+
+            if(j > t)
+               points[(*count)++] = {
+                  i2.x + (j - t) * i2n.x / (nDivisions - t),
+                  i2.y + (j - t) * i2n.y / (nDivisions - t)
+               };
+         }
+      }
+      else
+         for(j = 0; j < nDivisions; j++)
+            points[(*count)++] = { p.x + j * dx / nDivisions, p.y + j * dy / nDivisions };
    }
 
    uint addNonPolarBaseVertices(Pointd c, const Pointd * v, Pointd * vertices)
@@ -2028,6 +2056,79 @@ private:
                vertices.Add(point);
             else
                addIntermediatePoints(vertices, point, n, nDivisions, null, null, crs84);
+         }
+         point = n;
+      }
+   }
+
+   void addNonPolarVerticesRefinedNoAlloc(Pointd c, const Pointd * v, Pointd * vertices, uint * nVertices, bool crs84, int nDivisions)
+   {
+      int start = 0, prev, i;
+      Pointd point, dir;
+      int nPoints = this.nPoints;
+
+      // Start with a point outside interruptions
+      for(i = 0; i < 6; i++)
+      {
+         Pointd t { c.x + v[i].x, c.y + v[i].y };
+         int tx = (int)floor(t.x + 1E-11);
+         if(!(t.y - tx > 2 || t.y < tx))
+         {
+            start = i;
+            break;
+         }
+      }
+
+      point = { c.x + v[start].x, c.y + v[start].y };
+      prev = (start + 5) % 6;
+      dir = { point.x - (c.x + v[prev].x), point.y - (c.y + v[prev].y) };
+      // REVIEW: Is the first point is added twice?
+      for(i = start + 1; i <= start + nPoints; i++)
+      {
+         bool north;
+         Pointd i1, i2, n, p = point;
+
+         rotate5x6Offset(dir, dir.x, dir.y, false);
+         n = { point.x + dir.x, point.y + dir.y };
+
+         if(p.x > 5 && p.y > 5)
+            p.x -= 5, p.y -= 5;
+         if(p.x < 0 || p.y < 0)
+            p.x += 5, p.y += 5;
+
+         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         {
+            bool crossingLeft;
+            Pointd d;
+
+            if(point.x - p.x > 4)
+            {
+               i1.x += 5, i1.y += 5;
+               i2.x += 5, i2.y += 5;
+            }
+            if(p.x - point.x > 4)
+            {
+               i1.x -= 5, i1.y -= 5;
+               i2.x -= 5, i2.y -= 5;
+            }
+            if(i2.y - i1.y > 4)
+               i2.x -= 5, i2.y -= 5;
+            if(i1.y - i2.y > 4)
+               i2.x += 5, i2.y += 5;
+
+            crossingLeft = north ? i2.x < i1.x : i2.x > i1.x;
+            rotate5x6Offset(d, dir.x - (i1.x - point.x), dir.y - (i1.y - point.y), !crossingLeft);
+            n = { i2.x + d.x, i2.y + d.y };
+            rotate5x6Offset(dir, dir.x, dir.y, !crossingLeft);
+
+            addIntermediatePointsNoAlloc(vertices, nVertices, point, n, nDivisions, i1, i2, crs84);
+         }
+         else
+         {
+            if(!nDivisions)
+               vertices[(*nVertices)++] = point;
+            else
+               addIntermediatePointsNoAlloc(vertices, nVertices, point, n, nDivisions, null, null, crs84);
          }
          point = n;
       }
@@ -2197,6 +2298,173 @@ private:
          }
       }
       return vertices;
+   }
+
+   uint getBaseRefinedVerticesNoAlloc(bool crs84, int nDivisions, Pointd * vertices)
+   {
+      uint nVertices = 0;
+      // Max(1, nDivisions) * 6
+      Pointd c = centroid;
+      uint l49R = levelI49R;
+      uint64 p = POW7(l49R);
+      uint root = rootRhombus;
+      double oonp = 1.0 / (7 * p);
+
+      if(c.y > 6 + 1E-9 || c.x > 5 + 1E-9)
+         c.x -= 5, c.y -= 5;
+      else if(c.x < 0)
+         c.x += 5, c.y += 5;
+
+      if(subHex == 0)
+      {
+         // Even level
+         double A =  7 / 3.0;
+         double B = 14 / 3.0;
+
+         if(root == 0xA) // North Pole
+         {
+            Pointd a { 1 - oonp * B, 0 - oonp * A };
+            Pointd b { 1 - oonp * A, 0 + oonp * A };
+            Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
+            Pointd d;
+
+            rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
+            d.x += b.x, d.y += b.y;
+
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 0, b.y + 0 }, { b.x + 1, b.y + 1 }, nDivisions, { d.x + 0, d.y + 0 }, { ab.x + 1, ab.y + 1 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 1, b.y + 1 }, { b.x + 2, b.y + 2 }, nDivisions, { d.x + 1, d.y + 1 }, { ab.x + 2, ab.y + 2 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 2, b.y + 2 }, { b.x + 3, b.y + 3 }, nDivisions, { d.x + 2, d.y + 2 }, { ab.x + 3, ab.y + 3 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 3, b.y + 3 }, { b.x + 4, b.y + 4 }, nDivisions, { d.x + 3, d.y + 3 }, { ab.x + 4, ab.y + 4 }, crs84);
+            if(crs84)
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 4, b.y + 4 }, { b.x + 0, b.y + 0 }, nDivisions, { d.x + 4, d.y + 4 }, { ab.x + 0, ab.y + 0 }, crs84);
+            else
+            {
+               vertices[nVertices++] = { b.x + 4, b.y + 4 };
+               vertices[nVertices++] = { d.x + 4, d.y + 4 };
+               // These are the "North" pole
+               vertices[nVertices++] = { 5, 4 };
+               vertices[nVertices++] = { 1, 0 };
+               vertices[nVertices++] = ab;
+            }
+         }
+         else if(root == 0xB) // South Pole
+         {
+            Pointd a { 4 + oonp * B, 6 + oonp * A };
+            Pointd b { 4 + oonp * A, 6 - oonp * A };
+            Pointd ab { (a.x + b.x) / 2, (a.y + b.y) / 2 };
+            Pointd d;
+
+            rotate5x6Offset(d, b.x - ab.x, b.y - ab.y, false);
+            d.x += b.x, d.y += b.y;
+
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 0, b.y - 0 }, { b.x - 1, b.y - 1 }, nDivisions, { d.x - 0, d.y - 0 }, { ab.x - 1, ab.y - 1 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 1, b.y - 1 }, { b.x - 2, b.y - 2 }, nDivisions, { d.x - 1, d.y - 1 }, { ab.x - 2, ab.y - 2 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 2, b.y - 2 }, { b.x - 3, b.y - 3 }, nDivisions, { d.x - 2, d.y - 2 }, { ab.x - 3, ab.y - 3 }, crs84);
+            addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 3, b.y - 3 }, { b.x - 4, b.y - 4 }, nDivisions, { d.x - 3, d.y - 3 }, { ab.x - 4, ab.y - 4 }, crs84);
+
+            if(crs84)
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 4, b.y - 4 }, { b.x - 0, b.y - 0 }, nDivisions, { d.x - 4, d.y - 4 }, { ab.x - 0, ab.y - 0 }, crs84);
+            else
+            {
+               vertices[nVertices++] = { b.x - 4, b.y - 4 };
+               vertices[nVertices++] = { d.x - 4, d.y - 4 };
+               // These are the "South" pole
+               vertices[nVertices++] = { 0, 2 };
+               vertices[nVertices++] = { 4, 6 };
+               vertices[nVertices++] = ab;
+            }
+         }
+         else
+         {
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * A };
+            v[2] = { - oonp * A, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * A };
+            v[5] = { + oonp * A, - oonp * A };
+
+            addNonPolarVerticesRefinedNoAlloc(c, v, vertices, &nVertices, crs84, nDivisions);
+         }
+      }
+      else
+      {
+         // Odd level
+         double A =  4 / 3.0;
+         double B =  5 / 3.0;
+         double C =  1 / 3.0;
+
+         if(root > 9 && subHex == 1) // Polar pentagons
+         {
+            double r = 1 / 5.0;
+            if(root == 0xA) // North pole
+            {
+               Pointd a { 1 - oonp * B, 0 - oonp * C };
+               Pointd b { 1 - oonp * C, 0 + oonp * A };
+               Pointd ab { a.x + (b.x - a.x) * r, a.y + (b.y - a.y) * r };
+               Pointd c { 1 + oonp * A, 0 + oonp * B };
+               Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
+
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 0, b.y + 0 }, { b.x + 1, b.y + 1 }, nDivisions, { d.x + 0, d.y + 0 }, { ab.x + 1, ab.y + 1 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 1, b.y + 1 }, { b.x + 2, b.y + 2 }, nDivisions, { d.x + 1, d.y + 1 }, { ab.x + 2, ab.y + 2 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 2, b.y + 2 }, { b.x + 3, b.y + 3 }, nDivisions, { d.x + 2, d.y + 2 }, { ab.x + 3, ab.y + 3 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 3, b.y + 3 }, { b.x + 4, b.y + 4 }, nDivisions, { d.x + 3, d.y + 3 }, { ab.x + 4, ab.y + 4 }, crs84);
+               if(crs84)
+                  addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x + 4, b.y + 4 }, { b.x + 0, b.y + 0 }, nDivisions, { d.x + 4, d.y + 4 }, { ab.x + 0, ab.y + 0 }, crs84);
+               else
+               {
+                  vertices[nVertices++] = { b.x + 4, b.y + 4 };
+                  // This extends to right border of last triangle
+                  vertices[nVertices++] = { d.x + 4, d.y + 4 };
+                  // These are the "North" pole
+                  vertices[nVertices++] = { 5, 4 };
+                  vertices[nVertices++] = { 1, 0 };
+                  vertices[nVertices++] = ab;
+               }
+            }
+            else if(root == 0xB) // South pole
+            {
+               Pointd a { 4 + oonp * B, 6 + oonp * C };
+               Pointd b { 4 + oonp * C, 6 - oonp * A };
+               Pointd ab { a.x + (b.x - a.x) * r, a.y + (b.y - a.y) * r };
+               Pointd c { 4 - oonp * A, 6 - oonp * B };
+               Pointd d { b.x + (c.x - b.x) * r, b.y + (c.y - b.y) * r };
+
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 0, b.y - 0 }, { b.x - 1, b.y - 1 }, nDivisions, { d.x - 0, d.y - 0 }, { ab.x - 1, ab.y - 1 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 1, b.y - 1 }, { b.x - 2, b.y - 2 }, nDivisions, { d.x - 1, d.y - 1 }, { ab.x - 2, ab.y - 2 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 2, b.y - 2 }, { b.x - 3, b.y - 3 }, nDivisions, { d.x - 2, d.y - 2 }, { ab.x - 3, ab.y - 3 }, crs84);
+               addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 3, b.y - 3 }, { b.x - 4, b.y - 4 }, nDivisions, { d.x - 3, d.y - 3 }, { ab.x - 4, ab.y - 4 }, crs84);
+               if(crs84)
+                  addIntermediatePointsNoAlloc(vertices, &nVertices, { b.x - 4, b.y - 4 }, { b.x - 0, b.y - 0 }, nDivisions, { d.x - 4, d.y - 4 }, { ab.x - 0, ab.y - 0 }, crs84);
+               else
+               {
+                  vertices[nVertices++] = { b.x - 4, b.y - 4 };
+                  // This extends to left wrapping point
+                  vertices[nVertices++] = { d.x - 4, d.y - 4 };
+                  // These are the "South" pole
+                  vertices[nVertices++] = { 0, 2 };
+                  vertices[nVertices++] = { 4, 6 };
+                  vertices[nVertices++] = ab;
+               }
+            }
+         }
+         else
+         {
+            // Odd level
+            Pointd v[6];
+
+            v[0] = { - oonp * A, - oonp * B };
+            v[1] = { - oonp * B, - oonp * C };
+            v[2] = { - oonp * C, + oonp * A };
+            v[3] = { + oonp * A, + oonp * B };
+            v[4] = { + oonp * B, + oonp * C };
+            v[5] = { + oonp * C, - oonp * A };
+
+            addNonPolarVerticesRefinedNoAlloc(c, v, vertices, &nVertices, crs84, nDivisions);
+         }
+      }
+      return nVertices;
    }
 
    property I7HZone centroidChild
