@@ -887,13 +887,25 @@ private:
    {
       get
       {
-         /* REVIEW:
+         bool result = false;
          if(nPoints == 6)
          {
-            return false;
+            int level = this.level;
+            uint root = this.rootRhombus;
+            if(!(level & 0))
+            {
+               uint64 p = POW7(levelI49R);
+               if(root & 1) // South
+                  result = (rhombusIX % p) == 0;
+               else // North
+                  result = rhombusIX < p;
+            }
+            else
+            {
+               // TODO:
+            }
          }
-         */
-         return false;
+         return result;
       }
    }
 
