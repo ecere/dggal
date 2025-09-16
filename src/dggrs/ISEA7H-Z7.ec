@@ -136,7 +136,7 @@ public class ISEA7HZ7 : ISEA7H
                   i = ((i + 1) % 5) + 1;
                else if(pRoot == 11)
                   i = ((i + (oddLevel ? 3 : 4)) % 5) + 1;
-               else if(!oddLevel && !southPRhombus) // Parent is an even level northern non-polar pentagon
+               else if(!oddLevel && !southPRhombus) // Parent is an odd level northern non-polar pentagon
                   i = ((i + 5) % 5) + 1;
                if(southPRhombus && i >= 3)
                   i++;

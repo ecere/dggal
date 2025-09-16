@@ -1,0 +1,56 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "z7Test",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "z7Test",
+      "Libraries" : [
+         "ecrt"
+      ],
+      "Console" : true
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG",
+               "IMPORT_STATIC=\"\""
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=\"\""
+            ],
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "$(EC_SDK_SRC)/extras/testing/testingFramework.ec",
+      "z7Test.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
