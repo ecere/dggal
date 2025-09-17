@@ -3,7 +3,7 @@ import "testingFramework"
 import IMPORT_STATIC "dggal"
 import IMPORT_STATIC "SFCollections"
 
-define testMaxLevel = 4;
+define testMaxLevel = 8;
 
 Array<const String> pointsFiles
 { [
@@ -11,9 +11,16 @@ Array<const String> pointsFiles
    "points7H-L1.geojson",
    "points7H-L2.geojson",
    "points7H-L3.geojson",
-   "points7H-L4.geojson" //,
-   // "points7H-L5.geojson"
+   "points7H-L4.geojson",
+   "points7H-L5.geojson",
+   "points7H-L6.geojson",
+   "points7H-L7-nz.geojson",
+   "points7H-L8-nz.geojson"
 ] };
+
+ISEA7H isea7h { };
+
+double authCP[2][AUTH_ORDER];
 
 public class DGGSUnitTest : eTest
 {
@@ -25,7 +32,10 @@ public class DGGSUnitTest : eTest
       if(f)
       {
          HashMap<int64, Map<String, FieldValue>> attribs { };
-         FeatureCollection<PointFeature> fc = (FeatureCollection<PointFeature>)loadGeoJSON(f, attribs, false);
+         FeatureCollection<PointFeature> fc;
+
+         PrintLn("Loading input file ", z7PointsGeoJSON);
+         fc = (FeatureCollection<PointFeature>)loadGeoJSON(f, attribs, false);
          if(fc)
          {
             int count = ((Array)fc).GetCount(), i;
@@ -39,7 +49,7 @@ public class DGGSUnitTest : eTest
                Map<String, FieldValue> attr = attribs[id];
                if(attr)
                {
-                  MapIterator<String, FieldValue> it { map = attr };
+                  HashMapIterator<String, FieldValue> it { map = (void *)attr };
                   if(it.Index("Name", false))
                   {
                      FieldValue * fv = (FieldValue *)(uintptr)it.GetData();
@@ -51,7 +61,12 @@ public class DGGSUnitTest : eTest
                            Array<GeoPoint> geom = (Array<GeoPoint>)pf->geometry;
                            if(geom && geom.count == 1)
                            {
-                              DGGRSZone zone = dggrs.getZoneFromWGS84Centroid(level, geom[0]);
+                              DGGRSZone zone;
+                              GeoPoint geodetic = geom[0];
+
+                              geodetic.lat = latAuthalicToGeodetic(authCP, geodetic.lat);
+
+                              zone = dggrs.getZoneFromWGS84Centroid(level, geodetic);
                               if(zone != nullZone)
                               {
                                  char dggalZ7[256];
@@ -60,6 +75,7 @@ public class DGGSUnitTest : eTest
                                  {
                                     PrintLn("DGGRID Z7 ID: ", z7ID, "; DGGAL Z7 ID: ", dggalZ7);
                                     fail("Z7", z7ID, "of Z7 identifier mismatch"), passed = false;
+                                    passed = false;
                                  }
                               }
                               else
@@ -80,6 +96,8 @@ public class DGGSUnitTest : eTest
             }
             if(passed)
                pass("Z7 Identifier checks", z7PointsGeoJSON);
+            else
+               fail("Z7", z7PointsGeoJSON, "of Z7 identifier mismatches");
 
             delete dggrs;
             delete fc;
@@ -103,7 +121,8 @@ public class DGGSUnitTest : eTest
       {
          char fn[MAX_LOCATION];
 
-         sprintf(fn, "%s/%s", inputPath, pointsFiles[i]);
+         strcpy(fn, inputPath);
+         PathCat(fn, pointsFiles[i]);
          if(!FileExists(fn).isFile)
          {
             PrintLn("Failure to open input points file: ", fn);
@@ -117,11 +136,14 @@ public class DGGSUnitTest : eTest
    {
       int i;
 
+      authalicSetup(wgs84Major, wgs84Minor, authCP);
+
       for(i = 0; i <= testMaxLevel; i++)
       {
          char fn[MAX_LOCATION];
 
-         sprintf(fn, "%s/%s", inputPath, pointsFiles[i]);
+         strcpy(fn, inputPath);
+         PathCat(fn, pointsFiles[i]);
          testZ7Indices(i, fn);
       }
 

@@ -4,14 +4,14 @@ private:
 // Authalic / Geodetic latitude conversion as defined by Charles Karney's "On auxiliary latitudes"
 // https://arxiv.org/pdf/2212.05818
 
-private /*static */define AUTH_ORDER = 6;
+public /*private static */define AUTH_ORDER = 6;
 
-/*private inline */Radians latGeodeticToAuthalic(const double cp[2][AUTH_ORDER], Radians phi)
+/*private inline */public Radians latGeodeticToAuthalic(const double cp[2][AUTH_ORDER], Radians phi)
 {
    return applyCoefficients(cp[0], phi);
 }
 
-/*static inline */Radians latAuthalicToGeodetic(const double cp[2][AUTH_ORDER], Radians phi)
+/*static inline */public Radians latAuthalicToGeodetic(const double cp[2][AUTH_ORDER], Radians phi)
 {
    return applyCoefficients(cp[1], phi);
 }
@@ -67,7 +67,7 @@ static void precomputeCoefficients(double a, double b, const double C[21], doubl
    return phi + /* sin(2*zeta) * u0 */ 2 * szeta * czeta * u0;
 }
 
-/*static */void authalicSetup(double a, double b, double cp[2][AUTH_ORDER])
+/*static */public void authalicSetup(double a, double b, double cp[2][AUTH_ORDER])
 {
    precomputeCoefficients(a, b, Cxiphi, cp[0]); // geodetic -> authalic
    precomputeCoefficients(a, b, Cphixi, cp[1]); // authalic -> geodetic
