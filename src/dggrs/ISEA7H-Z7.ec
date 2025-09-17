@@ -32,6 +32,8 @@ public class ISEA7HZ7 : ISEA7H
          bool oddLevel = l & 1;
          int i;
          bool southPRhombus = pRoot & 1;
+         bool edgeHexCentroidChildParent = !oddLevel &&
+            parent == parent.parent0.centroidChild && parent.parent0.isEdgeHex;
 
          if(oddLevel)
          {
@@ -71,6 +73,17 @@ public class ISEA7HZ7 : ISEA7H
                      offset += 5;
                }
             }
+            if(edgeHexCentroidChildParent)
+            {
+               I7HZone c[7];
+               parent.getPrimaryChildren(c);
+               if(c[2].rootRhombus != c[5].rootRhombus)
+               {
+                  i += southPRhombus ? 5 : 1;
+                  i = (i - 1) % 6 + 1;
+               }
+            }
+
             if(oddLevel && parent.isEdgeHex)
             {
                // This rule is necessary starting from Level 4
@@ -79,9 +92,39 @@ public class ISEA7HZ7 : ISEA7H
                else if(southPRhombus && i < 4)
                   offset++;
             }
+            else if(!oddLevel && parent.parent0.isEdgeHex)
+            {
+               I7HZone c[7], pc[7];
+               parent.parent0.getPrimaryChildren(pc);
+               parent.getPrimaryChildren(c);
+               if(southPRoot && pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus)
+               {
+                  if(i == 4 || i == 5)
+                     offset += 5;
+               }
+               else if(!southPRoot && pc[3] == parent) // Root rhombuses are the same in this case
+               {
+                  if(i == 1 || i == 2)
+                     offset += 5;
+               }
+            }
          }
          else if(oddLevel && parent.isEdgeHex && southPRhombus) // This rule is necessary starting from Level 4
             offset++;
+
+         if(edgeHexCentroidChildParent)
+         {
+            if(southPRoot)
+            {
+               if(i != 1 && i != 2)
+                  offset += 5;
+            }
+            else
+            {
+               if(i == 5 || i == 6)
+                  offset += 1;
+            }
+         }
 
          offset %= 6;
 
