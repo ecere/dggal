@@ -18,101 +18,117 @@ public class ISEA7HZ7 : ISEA7H
    }
 */
 
-   int getParentRotationOffset(I7HZone zone)
+   int getCorrectedChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
+   {
+      int i;
+      bool southPRhombus = parent.rootRhombus & 1;
+      bool oddLevel = zone.level & 1;
+
+      if(oddLevel)
+      {
+         i = zone.subHex - 1;
+         if(i && !southPRhombus && parent.isEdgeHex)
+            i = (i % 6) + 1; // Top-Left ends up being Left crossing interruption to the left in the north
+      }
+      else
+      {
+         I7HZone children[7];
+         int nc = parent.getPrimaryChildren(children);
+
+         for(i = 0; i < nc; i++)
+            if(children[i] == zone)
+               break;
+
+         if(i && parent.nPoints == 6 && parent == grandParent.centroidChild && grandParent.isEdgeHex)
+         { // This is the second 7H children ordering issue, but not reflected in the indexing (all -A for even levels)
+            I7HZone c[7];
+            parent.getPrimaryChildren(c);
+            if(c[2].rootRhombus != c[5].rootRhombus)
+               i = (i - 1 + (southPRhombus ? 5 : 1)) % 6 + 1;
+         }
+      }
+      return i;
+   }
+
+   int adjustZ7PentagonChildPosition(int i, int level, int pRoot)
+   {
+      if(i)
+      {
+         bool southPRhombus = pRoot & 1;
+         bool oddLevel = level & 1;
+
+         if(pRoot == 10) // North polar pentagons
+            i = ((i + 1) % 5) + 1;
+         else if(pRoot == 11) // South polar pentagons
+            i = ((i + (oddLevel ? 3 : 4)) % 5) + 1;
+         else if(!oddLevel && !southPRhombus) // Parent is an odd level northern non-polar pentagon
+            i = ((i + 5) % 5) + 1;
+         if(southPRhombus && i >= 3)
+            i++;
+      }
+      return i;
+   }
+
+   public int getParentRotationOffset(I7HZone zone)
+   {
+      I7HZone parents[19];
+      computeParents(zone, parents);
+      return getParentRotationOffsetInternal(zone, parents);
+   }
+
+   int getParentRotationOffsetInternal(I7HZone zone, const I7HZone * parents)
    {
       int offset = 0;
       int level = zone.level, l = level;
+      int pIndex = 0;
+      I7HZone parent = l > 0 ? parents[pIndex] : nullZone;
 
       while(l > 0)
       {
-         I7HZone parent = zone.parent0;
+         I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
          uint pRoot = parent.rootRhombus;
          uint pnPoints = parent.nPoints;
          bool southPRoot = pRoot & 1;
          bool oddLevel = l & 1;
-         int i;
          bool southPRhombus = pRoot & 1;
-         bool edgeHexCentroidChildParent = !oddLevel &&
-            parent == parent.parent0.centroidChild && parent.parent0.isEdgeHex;
-
-         if(oddLevel)
-         {
-            i = zone.subHex - 1;
-            if(i && !southPRoot && parent.isEdgeHex)
-               i = (i % 6) + 1; // Top-Left ends up being Left crossing interruption to the left in the north
-         }
-         else
-         {
-            I7HZone children[7];
-            int nc = parent.getPrimaryChildren(children);
-
-            for(i = 0; i < nc; i++)
-               if(children[i] == zone)
-                  break;
-         }
+         bool pEdgeHex = oddLevel && parent.isEdgeHex;
+         bool gpEdgeHex = !oddLevel && grandParent.isEdgeHex;
+         int i = getCorrectedChildPosition(parent, grandParent, zone);
 
          if(i)
          {
+            if(pnPoints == 5)
+               i = adjustZ7PentagonChildPosition(i, l, pRoot);
+
             if(pRoot >= 10)
             {
                if(pnPoints == 5)
-               {
-                  i = ((i + 1) % 5) + 1;
-                  if(oddLevel)
-                     offset += i + 3;
-                  else if(l >= 2)
-                  {
-                     offset += i + 2;
-                     if(pRoot == 11)
-                        offset += i == 5 ? 2 : 1;
-                  }
-               }
-               else if(!oddLevel && zone.isEdgeHex)
-               {
-                  if(!southPRhombus || zone != parent.centroidChild)
-                     offset += 5;
-               }
-            }
-            if(edgeHexCentroidChildParent)
-            {
-               I7HZone c[7];
-               parent.getPrimaryChildren(c);
-               if(c[2].rootRhombus != c[5].rootRhombus)
-               {
-                  i += southPRhombus ? 5 : 1;
-                  i = (i - 1) % 6 + 1;
-               }
+                  offset += i + (oddLevel ? (southPRhombus ? 0 : 3) : (southPRhombus ? 5 : 2));
+               else if(!oddLevel && zone.isEdgeHex && (!southPRhombus || zone != parent.centroidChild))
+                  offset += 5;
             }
 
-            if(oddLevel && parent.isEdgeHex)
+            if(pEdgeHex)
             {
                // This rule is necessary starting from Level 4
-               if(!southPRhombus && i >= 4)
-                  offset++;
-               else if(southPRhombus && i < 4)
+               if(southPRhombus ? (i < 4) : (i >= 4))
                   offset++;
             }
-            else if(!oddLevel && parent.parent0.isEdgeHex)
+            else if(gpEdgeHex)
             {
                I7HZone c[7], pc[7];
-               parent.parent0.getPrimaryChildren(pc);
+               grandParent.getPrimaryChildren(pc);
                parent.getPrimaryChildren(c);
-               if(southPRoot && pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus)
-               {
-                  if(i == 4 || i == 5)
-                     offset += 5;
-               }
-               else if(!southPRoot && pc[3] == parent) // Root rhombuses are the same in this case
-               {
-                  if(i == 1 || i == 2)
-                     offset += 5;
-               }
+               if(southPRoot ?
+                  (pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus && (i == 4 || i == 5)) :
+                  (pc[3] == parent) && (i == 1 || i == 2)) // Root rhombuses are the same for northern case
+                  offset += 5;
             }
          }
-         else if(oddLevel && parent.isEdgeHex && southPRhombus) // This rule is necessary starting from Level 4
+         else if(pEdgeHex && southPRhombus) // This rule is necessary starting from Level 4
             offset++;
 
-         if(edgeHexCentroidChildParent)
+         if(gpEdgeHex && parent == grandParent.centroidChild)
          {
             if(southPRoot)
             {
@@ -129,9 +145,23 @@ public class ISEA7HZ7 : ISEA7H
          offset %= 6;
 
          zone = parent;
+         parent = grandParent;
+         pIndex++;
          l--;
       }
       return offset;
+   }
+
+   int computeParents(I7HZone zone, I7HZone parents[19])
+   {
+      int level = zone.level, l = level, pIndex = 0;
+      while(l > 0)
+      {
+         parents[pIndex] = (l == level ? zone : parents[pIndex-1]).parent0;
+         pIndex++;
+         l--;
+      }
+      return pIndex;
    }
 
    void getZoneTextID(I7HZone z, String zoneID)
@@ -142,59 +172,23 @@ public class ISEA7HZ7 : ISEA7H
       int n;
       static const int cMap[7] = { 0, 3, 1, 5, 4, 6, 2 };
       static const int rootMap[12] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10, 0, 11 };
+      I7HZone parents[19], parent;
+      int pIndex = 0;
 
+      computeParents(zone, parents);
       zoneID[0] = 0;
+      parent = l > 0 ? parents[pIndex] : nullZone;
       while(l > 0)
       {
-         I7HZone parent = zone.parent0;
-         int i;
-         uint pRoot = parent.rootRhombus;
-         uint pnPoints = parent.nPoints;
-         bool southPRhombus = pRoot & 1;
-         bool oddLevel = l & 1;
-
-         if(oddLevel)
-         {
-            i = zone.subHex - 1;
-            if(i && !southPRhombus && parent.isEdgeHex)
-               i = (i % 6) + 1; // Top-Left ends up being Left crossing interruption to the left in the north
-         }
-         else
-         {
-            I7HZone children[7];
-            int nc = parent.getPrimaryChildren(children);
-
-            for(i = 0; i < nc; i++)
-               if(children[i] == zone)
-                  break;
-         }
+         I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
+         int i = getCorrectedChildPosition(parent, grandParent, zone);
 
          if(i)
          {
-            int offset = getParentRotationOffset(parent);
-
-            if(pnPoints == 5)
-            {
-               if(pRoot == 10)
-                  i = ((i + 1) % 5) + 1;
-               else if(pRoot == 11)
-                  i = ((i + (oddLevel ? 3 : 4)) % 5) + 1;
-               else if(!oddLevel && !southPRhombus) // Parent is an odd level northern non-polar pentagon
-                  i = ((i + 5) % 5) + 1;
-               if(southPRhombus && i >= 3)
-                  i++;
-            }
-            if(parent == parent.parent0.centroidChild && parent.parent0.isEdgeHex)
-            {
-               I7HZone c[7];
-               parent.getPrimaryChildren(c);
-               if(c[2].rootRhombus != c[5].rootRhombus)
-                  i += southPRhombus ? 5 : 1;
-            }
-
-            i += offset;
-
-            i = (i - 1) % 6 + 1;
+            int offset = getParentRotationOffsetInternal(parent, parents + pIndex + 1);
+            if(parent.nPoints == 5)
+               i = adjustZ7PentagonChildPosition(i, l, parent.rootRhombus);
+            i = ((i - 1) + offset) % 6 + 1;
          }
 
          n = cMap[i];
@@ -202,6 +196,8 @@ public class ISEA7HZ7 : ISEA7H
          strcpy(zoneID, tmp);
 
          zone = parent;
+         parent = grandParent;
+         pIndex++;
          l--;
       }
 

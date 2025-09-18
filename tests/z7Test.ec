@@ -18,8 +18,6 @@ Array<const String> pointsFiles
    "points7H-L8-nz.geojson"
 ] };
 
-ISEA7H isea7h { };
-
 double authCP[2][AUTH_ORDER];
 
 public class DGGSUnitTest : eTest
@@ -99,7 +97,6 @@ public class DGGSUnitTest : eTest
             else
                fail("Z7", z7PointsGeoJSON, "of Z7 identifier mismatches");
 
-            delete dggrs;
             delete fc;
          }
          else
@@ -111,6 +108,8 @@ public class DGGSUnitTest : eTest
       }
       else
          fail("Z7", z7PointsGeoJSON, "of failure to open input points file");
+
+      delete dggrs;
    }
 
    bool prepareTests()
