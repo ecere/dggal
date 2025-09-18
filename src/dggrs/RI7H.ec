@@ -1089,7 +1089,7 @@ private:
             if(subHex)
                key = { l9r, rootRhombus, rhombusIX, 0 };
             else
-               key = I7HZone::fromCentroid((l9r * 2) - 1, centroid);
+               key = I7HZone::fromEvenLevelPrimaryChild(this);
          }
          return key;
       }
@@ -1648,6 +1648,115 @@ private:
       }
    }
 
+   I7HZone ::fromEvenLevelPrimaryChild(I7HZone child)
+   {
+      int l9r = child.levelI49R - 1;
+      Pointd c = child.centroid;
+      uint64 p = POW7(l9r);
+      double oop =  1.0 / p;
+
+      if(child.subHex || l9r < 0) return nullZone; // Invalid usage
+
+      // bool isNorthPole = false, isSouthPole = false;
+      if(fabs(c.x - c.y - 1) < 1E-10)
+         ;//isNorthPole = true;
+      else if(fabs(c.y - c.x - 2) < 1E-10)
+         ;//isSouthPole = true;
+      else if(c.y < -1E-11 && c.x > -1E-11)
+         c.x -= c.y, c.y = 0;
+      else if((int)floor(c.x + 1E-11) > (int)floor(c.y + 1E-11))
+      {
+         // Over top dent to the right
+         int cy = Min(5, (int)floor(c.y + 1E-11));
+         c.x += (cy+1 - c.y), c.y = cy+1;
+      }
+      else if((int)floor(c.y + 1E-11) - (int)floor(c.x + 1E-11) > 1)
+      {
+         // Over bottom dent to the right -- REVIEW: This may no longer be necessary?
+         int cx = Min(4, (int)floor(c.x + 1E-11));
+         c.y += (cx+1 - c.x), c.x = cx+1;
+      }
+      else if(c.x < -1E-11 || c.y < -1E-11)
+         move5x6Vertex2(c, { 5, 5 }, c.x, c.y, false);
+
+      if(c.x > 5 - 1E-11 && c.y > 5 - 1E-11 &&  // This handles bottom right wrap e.g., A9-0E and A9-0-F
+         c.x + c.y > 5.0 + 5.0 - oop - 1E-11)
+         c.x -= 5, c.y -= 5;
+
+      {
+         int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
+         uint root = cx + cy;
+         double x = c.x - cx, y = c.y - cy;
+         int64 col = Max(0, (int64)(x * p + 0.5));
+         int64 row = Max(0, (int64)(y * p + 0.5));
+         bool south = c.y - c.x - 1E-11 > 1; // Not counting pentagons as south or north
+         bool north = c.x - c.y - 1E-11 > 0;
+         bool northPole = north && fabs(c.x - c.y - 1.0) < 1E-11;
+         bool southPole = south && fabs(c.y - c.x - 2.0) < 1E-11;
+         // Odd level -- currently using a rather brute-force approach
+         I7HZone zone = nullZone;
+         if(northPole)
+            zone = { l9r, 0xA, 0, 1 };
+         else if(southPole)
+            zone = { l9r, 0xB, 0, 1 };
+         else
+         {
+            int i;
+
+            for(i = 0; i < 7; i++)
+            {
+               I7HZone candidateParent, children[7];
+               int n, j;
+
+               switch(i)
+               {
+                  // Prime candidate
+                  case 0:
+                     if(north && row == 0 && col == p)
+                        candidateParent = { l9r, 0xA, 0, 0 };
+                     else if(south && row == p && col == 0)
+                        candidateParent = { l9r, 0xB, 0, 0 };
+                     else
+                        candidateParent = calcCandidateParent(l9r, root, row, col, 0, 0);
+                     break;
+                  // Top (2 potential children including 1 secondary child of prime candidate)
+                  case 1: candidateParent = calcCandidateParent(l9r, root, row, col, 0, -1); break;
+                  // Bottom (2 potential children including 1 secondary child of prime candidate)
+                  case 2: candidateParent = calcCandidateParent(l9r, root, row, col, 0, 1); break;
+                  // Right (2 potential children including 1 secondary child of prime candidate)
+                  case 3: candidateParent = calcCandidateParent(l9r, root, row, col, 1, 0); break;
+                  // Left (2 potential children including 1 secondary child of prime candidate)
+                  case 4: candidateParent = calcCandidateParent(l9r, root, row, col, -1, 0); break;
+                  // Top-Left (1 potential child including 1 secondary child of prime candidate)
+                  case 5: candidateParent = calcCandidateParent(l9r, root, row, col, -1, -1); break;
+                  // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
+                  case 6: candidateParent = calcCandidateParent(l9r, root, row, col, 1, 1); break;
+               }
+
+               n = candidateParent.getPrimaryChildren(children);
+
+               for(j = 0; j < n; j++)
+               {
+                  I7HZone grandChildren[7];
+                  int ngc = children[j].getPrimaryChildren(grandChildren), k;
+
+                  for(k = 0; k < ngc; k++)
+                     if(grandChildren[k] == child)
+                     {
+                        zone = children[j];
+                        break;
+                     }
+                  if(zone != nullZone)
+                     break;
+               }
+               if(zone != nullZone)
+                  break;
+            }
+         }
+         return zone;
+      }
+   }
+
    int getVertices(Pointd * vertices)
    {
       Pointd c = centroid;
@@ -1965,7 +2074,7 @@ private:
          if(p.x < 0 || p.y < 0)
             p.x += 5, p.y += 5;
 
-         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         if(crosses5x6InterruptionV2(p, dir.x, dir.y, i1, i2, &north))
          {
             bool crossingLeft;
             Pointd d;
@@ -2035,7 +2144,7 @@ private:
          if(p.x < 0 || p.y < 0)
             p.x += 5, p.y += 5;
 
-         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         if(crosses5x6InterruptionV2(p, dir.x, dir.y, i1, i2, &north))
          {
             bool crossingLeft;
             Pointd d;
@@ -2108,7 +2217,7 @@ private:
          if(p.x < 0 || p.y < 0)
             p.x += 5, p.y += 5;
 
-         if(crosses5x6Interruption(p, dir.x, dir.y, i1, i2, &north))
+         if(crosses5x6InterruptionV2(p, dir.x, dir.y, i1, i2, &north))
          {
             bool crossingLeft;
             Pointd d;

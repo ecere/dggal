@@ -1426,6 +1426,121 @@ public void canonicalize5x6(const Pointd _src, Pointd out)
 }
 
 
+#if !defined(__EMSCRIPTEN__)
+__attribute__ ((optimize("-fno-unsafe-math-optimizations")))
+#endif
+bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSrc, Pointd iDst, bool * inNorth)
+{
+   bool result = false;
+   Pointd c = cIn;
+
+   if(c.x < 0 && c.y < 1 + 1E-11)
+      c.x += 5, c.y += 5;
+
+   {
+      double cdx = c.x, cdy = c.y;
+      bool north = cdx - cdy - 1E-11 > 0;
+      int cx, cy;
+      int nx, ny;
+      double px, py;
+
+      if(north)
+         cdx -= 1E-11, cdy += 1E-11;
+      else
+         cdx += 1E-11, cdy -= 1E-11;
+
+      if(cdx < 0 && cdy < 1 + 1E-11)
+      {
+         cdx += 5, cdy += 5;
+         c.x += 5, c.y += 5;
+      }
+      if(cdx > 5 && cdy > 5 - 1E-11)
+      {
+         cdx -= 5, cdy -= 5;
+         c.x -= 5, c.y -= 5;
+      }
+
+      cx = (int)floor(cdx);
+      cy = (int)floor(cdy);
+
+      px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
+      py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
+
+      if(dx && dy)
+      {
+         double pkx = px / dx, pky = py / dy;
+         if(pkx < pky)
+            py = pkx * dy;
+         else if(pky < pkx)
+            px = pky * dx;
+      }
+
+      c.x += px;
+      c.y += py;
+
+      //if(!finalCross)
+      {
+         if(fabs(dx - px) < 1E-11 && fabs(dy - py) < 1E-11)
+            return false;
+      }
+
+      nx = (int)floor(c.x + 1E-11 * Sgn(dx));
+      ny = (int)floor(c.y + 1E-11 * Sgn(dy));
+
+      if((nx != cx || ny != cy) && (nx > cx || fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
+      {
+         int root = cx + cy;
+
+         if(!(root & 1))
+         {
+            // North
+            if(ny == cy && nx == cx + 1)   // Crossing interruption to the right
+            {
+               int iy = (int)(c.x - 1 + 1E-11);
+
+               iSrc = c;
+               iDst = { iy + 2 - (c.y - iy), c.x };
+               *inNorth = true;
+               result = true;
+            }
+            else if(nx == cx && ny == cy - 1) // Crossing interruption to the left
+            {
+               int ix = (int)(c.y + 1E-11);
+
+               iSrc = c;
+               iDst = { c.y, ix - (c.x - ix) };
+               *inNorth = true;
+               result = true;
+            }
+         }
+         else
+         {
+            // South
+            if(nx == cx && ny == cy + 1) // Crossing interruption to the right
+            {
+               int ix = (int)(c.y - 2 + 1E-11);
+               iSrc = c;
+               iDst = { c.y - 1, ix + 3 - (c.x - ix) };
+               *inNorth = false;
+               result = true;
+            }
+            else if(ny == cy && nx == cx - 1) // Crossing interruption to the left
+            {
+               int iy = (int)(c.x + 1 + 1E-11);
+               iSrc = c;
+               iDst = { iy - 1 - (c.y - iy), c.x + 1 };
+               *inNorth = false;
+               result = true;
+            }
+         }
+      }
+
+      if(result && iDst.x < 0 && iDst.y < 1 + 1E-11)
+         iDst.x += 5, iDst.y += 5;
+   }
+   return result;
+}
+
 void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, double * adjX, double * adjY, bool finalCross)
 {
    Pointd c = o;
@@ -1437,7 +1552,6 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
       double cdx = c.x, cdy = c.y;
       bool north = cdx - cdy - 1E-11 > 0;
       int cx, cy;
-      int root;
       int nx, ny;
       int rotation = 0;
       double px, py;
@@ -1461,7 +1575,6 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
       cx = (int)floor(cdx);
       cy = (int)floor(cdy);
 
-      root = cx + cy;
       px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
       py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
 
@@ -1488,6 +1601,8 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 
       if((nx != cx || ny != cy) && (nx > cx || fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
       {
+         int root = cx + cy;
+
          if(!(root & 1))
          {
             // North
