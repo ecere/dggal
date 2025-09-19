@@ -2638,6 +2638,8 @@ private:
 
                   if(ix == 0 && south && sh >= 4)
                      sh++;
+                  else if(sh >= 2 && !south && parent0.isEdgeHex)
+                     sh = (sh + 3) % 6 + 2;
 
                   switch(sh)
                   {
@@ -3004,6 +3006,8 @@ private:
             // Odd level
             if(rix == 0 && south && sh >= 4)
                sh++;
+            else if(sh >= 2 && !south && parent0.isEdgeHex)
+               sh = (sh + 3) % 6 + 2;
 
             oop /= 7;
 

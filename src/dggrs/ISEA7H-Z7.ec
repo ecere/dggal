@@ -25,11 +25,7 @@ public class ISEA7HZ7 : ISEA7H
       bool oddLevel = zone.level & 1;
 
       if(oddLevel)
-      {
          i = zone.subHex - 1;
-         if(i && !southPRhombus && parent.isEdgeHex)
-            i = (i % 6) + 1; // Top-Left ends up being Left crossing interruption to the left in the north
-      }
       else
       {
          I7HZone children[7];
@@ -121,7 +117,7 @@ public class ISEA7HZ7 : ISEA7H
                parent.getPrimaryChildren(c);
                if(southPRoot ?
                   (pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus && (i == 4 || i == 5)) :
-                  (pc[3] == parent) && (i == 1 || i == 2)) // Root rhombuses are the same for northern case
+                  ((pc[4] == parent)) && (i == 1 || i == 2)) // Root rhombuses are the same for northern case
                   offset += 5;
             }
          }
