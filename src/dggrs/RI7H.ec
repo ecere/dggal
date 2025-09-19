@@ -2853,10 +2853,16 @@ private:
             };
             int nPoints = (subHex > 1) ? 6 : (rix == 0) ? 5 : 6;
             bool south = (ccRhombus & 1);
+            bool edgeHexFix = false;
+
+            if(nPoints == 6 && subHex == 1 && parent0.isEdgeHex)
+               edgeHexFix = true;
 
             for(i = 0; i < 6; i++)
             {
-               int64 row = crow + cOffsets[i][0], col = ccol + cOffsets[i][1];
+               int ii = edgeHexFix ? (i + (south ? 1 : 5)) % 6 : i;
+               int64 row = crow + cOffsets[ii][0];
+               int64 col = ccol + cOffsets[ii][1];
                int cRhombus = ccRhombus;
                uint64 cix;
 

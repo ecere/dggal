@@ -18,35 +18,23 @@ public class ISEA7HZ7 : ISEA7H
    }
 */
 
-   int getCorrectedChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
+   static int getChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
    {
-      int i;
-      bool southPRhombus = parent.rootRhombus & 1;
-      bool oddLevel = zone.level & 1;
-
-      if(oddLevel)
-         i = zone.subHex - 1;
+      if(zone.level & 1)
+         return zone.subHex - 1;
       else
       {
          I7HZone children[7];
-         int nc = parent.getPrimaryChildren(children);
+         int nc = parent.getPrimaryChildren(children), i;
 
          for(i = 0; i < nc; i++)
             if(children[i] == zone)
                break;
-
-         if(i && parent.nPoints == 6 && parent == grandParent.centroidChild && grandParent.isEdgeHex)
-         { // This is the second 7H children ordering issue, but not reflected in the indexing (all -A for even levels)
-            I7HZone c[7];
-            parent.getPrimaryChildren(c);
-            if(c[2].rootRhombus != c[5].rootRhombus)
-               i = (i - 1 + (southPRhombus ? 5 : 1)) % 6 + 1;
-         }
+         return i;
       }
-      return i;
    }
 
-   int adjustZ7PentagonChildPosition(int i, int level, int pRoot)
+   static int adjustZ7PentagonChildPosition(int i, int level, int pRoot)
    {
       if(i)
       {
@@ -72,7 +60,7 @@ public class ISEA7HZ7 : ISEA7H
       return getParentRotationOffsetInternal(zone, parents);
    }
 
-   int getParentRotationOffsetInternal(I7HZone zone, const I7HZone * parents)
+   static int getParentRotationOffsetInternal(I7HZone zone, const I7HZone * parents)
    {
       int offset = 0;
       int level = zone.level, l = level;
@@ -89,7 +77,7 @@ public class ISEA7HZ7 : ISEA7H
          bool isEdgeHex = !oddLevel && zone.isEdgeHex;
          bool pEdgeHex = oddLevel && parent.isEdgeHex;
          bool gpEdgeHex = !oddLevel && grandParent.isEdgeHex;
-         int i = getCorrectedChildPosition(parent, grandParent, zone);
+         int i = getChildPosition(parent, grandParent, zone);
 
          if(i)
          {
@@ -155,7 +143,7 @@ public class ISEA7HZ7 : ISEA7H
       return offset;
    }
 
-   int computeParents(I7HZone zone, I7HZone parents[19])
+   static int computeParents(I7HZone zone, I7HZone parents[19])
    {
       int level = zone.level, l = level, pIndex = 0;
       while(l > 0)
@@ -184,7 +172,7 @@ public class ISEA7HZ7 : ISEA7H
       while(l > 0)
       {
          I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
-         int i = getCorrectedChildPosition(parent, grandParent, zone);
+         int i = getChildPosition(parent, grandParent, zone);
 
          if(i)
          {
