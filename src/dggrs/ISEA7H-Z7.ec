@@ -84,9 +84,9 @@ public class ISEA7HZ7 : ISEA7H
          I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
          uint pRoot = parent.rootRhombus;
          uint pnPoints = parent.nPoints;
-         bool southPRoot = pRoot & 1;
          bool oddLevel = l & 1;
          bool southPRhombus = pRoot & 1;
+         bool isEdgeHex = !oddLevel && zone.isEdgeHex;
          bool pEdgeHex = oddLevel && parent.isEdgeHex;
          bool gpEdgeHex = !oddLevel && grandParent.isEdgeHex;
          int i = getCorrectedChildPosition(parent, grandParent, zone);
@@ -100,41 +100,48 @@ public class ISEA7HZ7 : ISEA7H
             {
                if(pnPoints == 5)
                   offset += i + (oddLevel ? (southPRhombus ? 0 : 3) : (southPRhombus ? 5 : 2));
-               else if(!oddLevel && zone.isEdgeHex && (!southPRhombus || zone != parent.centroidChild))
+               else if(isEdgeHex && (!southPRhombus || zone != parent.centroidChild))
                   offset += 5;
             }
 
+            if(southPRhombus && isEdgeHex)
+               offset++;
             if(pEdgeHex)
             {
                // This rule is necessary starting from Level 4
-               if(southPRhombus ? (i < 4) : (i >= 4))
+               if(!southPRhombus && i >= 4)
                   offset++;
+               else if(southPRhombus && (i == 0 || (i >= 3 && i <= 5)))
+                  offset += 5;
             }
             else if(gpEdgeHex)
             {
                I7HZone c[7], pc[7];
                grandParent.getPrimaryChildren(pc);
                parent.getPrimaryChildren(c);
-               if(southPRoot ?
-                  (pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus && (i == 4 || i == 5)) :
-                  ((pc[4] == parent)) && (i == 1 || i == 2)) // Root rhombuses are the same for northern case
+               if(southPRhombus ?
+                  pc[1] == parent && c[2].rootRhombus != c[5].rootRhombus && (i == 4 || i == 5) :
+                  pc[4] == parent && (i == 1 || i == 2)) // Root rhombuses are the same for northern case
                   offset += 5;
-            }
-         }
-         else if(pEdgeHex && southPRhombus) // This rule is necessary starting from Level 4
-            offset++;
 
-         if(gpEdgeHex && parent == grandParent.centroidChild)
-         {
-            if(southPRoot)
-            {
-               if(i != 1 && i != 2)
-                  offset += 5;
-            }
-            else
-            {
-               if(i == 5 || i == 6)
-                  offset += 1;
+               if(parent == grandParent.centroidChild)
+               {
+                  if(southPRhombus)
+                  {
+                     if(i > 2)
+                        offset += 5;
+                  }
+                  else
+                  {
+                     if(i == 5 || i == 6)
+                        offset++;
+                  }
+               }
+               if(southPRhombus && isEdgeHex)
+               {
+                  if(i == 4 || i == 5)
+                     offset += 5;
+               }
             }
          }
 
