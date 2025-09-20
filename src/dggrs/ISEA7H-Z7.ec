@@ -4,93 +4,21 @@ private:
 #include <stdio.h>
 
 import "ISEA7H"
+import "IVEA7H"
+import "RTEA7H"
 
 static const int cMap   [7] = { 0, 3, 1, 5, 4, 6, 2 };
 static const int invCMap[7] = { 0, 2, 6, 1, 4, 3, 5 };
 static const int rootMap   [12] = { 1, 6, 2, 7, 3, 8, 4, 9, 5, 10, 0, 11 };
 static const int invRootMap[12] = { 10, 0, 2, 4, 6, 8, 1, 3, 5, 7, 9, 11 };
 
-public class ISEA7HZ7 : ISEA7H
+public class Z7Zone : private DGGRSZone
 {
-   equalArea = true;
+public:
+   uint rootRhombus:4:60;
+   uint64 ancestry:60:0;
 
-   ISEA7HZ7() { pj = ISEAProjection { }; incref pj; }
-   ~ISEA7HZ7() { delete pj; }
-
-   // For now using I7HZone for 64-bit integer...
-   DGGRSZone getZoneFromTextID(const String zoneID)
-   {
-      I7HZone zone = nullZone;
-      int len = zoneID ? strlen(zoneID) : 0;
-      if(len >= 2)
-      {
-         int root;
-         int r = sscanf(zoneID, "%2d", &root);
-
-         if(r && root >= 0 && root <= 11)
-         {
-            int i;
-            I7HZone parents[19];
-            int offset = 0;
-
-            zone = { 0, invRootMap[root], 0, 0 };
-
-            for(i = 2; i < len; i++)
-            {
-               char c = zoneID[i];
-               int level = i - 2;
-               int pStart = 18 - level;
-               int nPoints = zone.nPoints;
-
-               parents[pStart] = zone;
-
-               if(c < '0' || c > '6')
-               {
-                  zone = nullZone;
-                  break;
-               }
-               else
-               {
-                  int cix = invCMap[c - '0'];
-
-                  if(cix || i < len - 1)
-                     offset = (offset + getLevelRotationOffset(level,
-                        zone,
-                        level > 0 ? parents[pStart + 1] : nullZone,
-                        level > 1 ? parents[pStart + 2] : nullZone)
-                        ) % 6;
-                  if(cix)
-                  {
-                     cix = cix - 1 - offset;
-                     if(cix < 0)
-                        cix += 6;
-                     cix++;
-                     if(nPoints == 5)
-                        cix = deadjustZ7PentagonChildPosition(cix, level + 1, zone.rootRhombus);
-                  }
-
-                  if(!(level & 1))
-                     zone = { zone.levelI49R, zone.rootRhombus, zone.rhombusIX, 1 + cix };
-                  else
-                  {
-                     I7HZone children[7];
-                     int n = zone.getPrimaryChildren(children);
-                     if(cix < n)
-                        zone = children[cix];
-                     else
-                     {
-                        zone = nullZone;
-                        break;
-                     }
-                  }
-               }
-            }
-         }
-      }
-      return zone;
-   }
-
-   private static int getChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
+   private static int ::getChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
    {
       if(zone.level & 1)
          return zone.subHex - 1;
@@ -106,7 +34,7 @@ public class ISEA7HZ7 : ISEA7H
       }
    }
 
-   private static int adjustZ7PentagonChildPosition(int i, int level, int pRoot)
+   private static int ::adjustZ7PentagonChildPosition(int i, int level, int pRoot)
    {
       if(i)
       {
@@ -125,7 +53,7 @@ public class ISEA7HZ7 : ISEA7H
       return i;
    }
 
-   private static int deadjustZ7PentagonChildPosition(int i, int level, int pRoot)
+   private static int ::deadjustZ7PentagonChildPosition(int i, int level, int pRoot)
    {
       if(i)
       {
@@ -145,14 +73,14 @@ public class ISEA7HZ7 : ISEA7H
       return i;
    }
 
-   public int getParentRotationOffset(I7HZone zone)
+   public int ::getParentRotationOffset(I7HZone zone)
    {
       I7HZone parents[19];
       computeParents(zone, parents);
       return getParentRotationOffsetInternal(zone, parents);
    }
 
-   private static inline int getLevelRotationOffset(int l, I7HZone zone, I7HZone parent, I7HZone grandParent)
+   private static inline int ::getLevelRotationOffset(int l, I7HZone zone, I7HZone parent, I7HZone grandParent)
    {
       int offset = 0;
       uint pRoot = parent.rootRhombus;
@@ -220,7 +148,7 @@ public class ISEA7HZ7 : ISEA7H
       return offset;
    }
 
-   private static int getParentRotationOffsetInternal(I7HZone zone, const I7HZone * parents)
+   private static int ::getParentRotationOffsetInternal(I7HZone zone, const I7HZone * parents)
    {
       int offset = 0;
       int level = zone.level, l = level;
@@ -240,7 +168,7 @@ public class ISEA7HZ7 : ISEA7H
       return offset;
    }
 
-   private static int computeParents(I7HZone zone, I7HZone parents[19])
+   private static int ::computeParents(I7HZone zone, I7HZone parents[19])
    {
       int level = zone.level, l = level, pIndex = 0;
       while(l > 0)
@@ -252,21 +180,88 @@ public class ISEA7HZ7 : ISEA7H
       return pIndex;
    }
 
-   void getZoneTextID(I7HZone z, String zoneID)
+   public I7HZone to7H()
    {
-      if(z == nullZone)
-         strcpy(zoneID, "(null)");
-      else
+      I7HZone zone = nullZone;
+      if(this != nullZone && rootRhombus < 12)
       {
-         I7HZone zone = z;
+         int level;
+         I7HZone parents[19];
+         int offset = 0;
+         uint64 ancestry = this.ancestry;
+         int shift = 19 * 3;
+
+         zone = { 0, invRootMap[rootRhombus], 0, 0 };
+
+         for(level = 0; level < 20; level++, shift -= 3)
+         {
+            int pStart = 18 - level;
+            int nPoints = zone.nPoints;
+            int b = (int)((ancestry & (7LL << shift)) >> shift);
+
+            parents[pStart] = zone;
+
+            if(b == 7)
+               break;
+            else
+            {
+               int cix = invCMap[b];
+
+               if(cix || level < 19)
+                  offset = (offset + getLevelRotationOffset(level,
+                     zone,
+                     level > 0 ? parents[pStart + 1] : nullZone,
+                     level > 1 ? parents[pStart + 2] : nullZone)
+                     ) % 6;
+               if(cix)
+               {
+                  cix = cix - 1 - offset;
+                  if(cix < 0)
+                     cix += 6;
+                  cix++;
+                  if(nPoints == 5)
+                     cix = deadjustZ7PentagonChildPosition(cix, level + 1, zone.rootRhombus);
+               }
+
+               if(!(level & 1))
+                  zone = { zone.levelI49R, zone.rootRhombus, zone.rhombusIX, 1 + cix };
+               else if(level == 19)
+               {
+                  // 7H does not support level 20 zones
+                  zone = nullZone;
+                  break;
+               }
+               else
+               {
+                  I7HZone children[7];
+                  int n = zone.getPrimaryChildren(children);
+                  if(cix < n)
+                     zone = children[cix];
+                  else
+                  {
+                     zone = nullZone;
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return zone;
+   }
+
+   public Z7Zone ::from7H(I7HZone zone)
+   {
+      Z7Zone result = nullZone;
+      if(zone != nullZone)
+      {
          int level = zone.level, l = level;
-         char tmp[256];
          int n;
          I7HZone parents[19], parent;
          int pIndex = 0;
+         uint64 ancestry = 0;
+         int shift = 19 * 3;
 
          computeParents(zone, parents);
-         zoneID[0] = 0;
          parent = l > 0 ? parents[pIndex] : nullZone;
          while(l > 0)
          {
@@ -282,21 +277,152 @@ public class ISEA7HZ7 : ISEA7H
             }
 
             n = cMap[i];
-            sprintf(tmp, "%d%s", n, zoneID);
-            strcpy(zoneID, tmp);
+
+            ancestry |= ((int64)n << shift);
 
             zone = parent;
             parent = grandParent;
             pIndex++;
             l--;
+
+            shift -= 3;
          }
-
-         n = rootMap[zone.rootRhombus];
-
-         sprintf(tmp, "%02d%s", n, zoneID);
-
-
-         strcpy(zoneID, tmp);
+         while(shift > 0)
+         {
+            ancestry |= ((int64)7LL << shift);
+            shift -= 3;
+         }
+         result.rootRhombus = rootMap[zone.rootRhombus];
+         result.ancestry = ancestry;
       }
+      return result;
+   }
+
+   Z7Zone ::fromText(const String zoneID)
+   {
+      Z7Zone zone = nullZone;
+
+      int len = zoneID ? strlen(zoneID) : 0;
+      if(len >= 2 && len <= 22)
+      {
+         int root;
+         int r = sscanf(zoneID, "%2d", &root);
+
+         if(r && root >= 0 && root <= 11)
+         {
+            int i;
+            uint64 ancestry = 0;
+            int shift = 3 * 19;
+            zone = { root };
+            for(i = 2; i < len; i++)
+            {
+               char c = zoneID[i];
+               if(c < '0' || c > '6')
+               {
+                  zone = nullZone;
+                  break;
+               }
+               else
+                  ancestry |= (uint64)(c - '0') << shift;
+               shift -= 3;
+            }
+            while(shift > 0)
+            {
+               ancestry |= ((int64)7LL << shift);
+               shift -= 3;
+            }
+            if(zone != nullZone)
+               zone.ancestry = ancestry;
+         }
+      }
+      return zone;
+   }
+
+   property int level
+   {
+      get
+      {
+         if(this == nullZone)
+            return -1;
+         else
+         {
+            uint64 ancestry = this.ancestry;
+            int shift = 19 * 3;
+            int l;
+            int level = 0;
+
+            for(l = 0; l < 20; l++, shift -= 3)
+            {
+               int b = (int)((ancestry & (7LL << shift)) >> shift);
+               if(b == 7)
+                  break;
+               level++;
+            }
+            return level;
+         }
+      }
+   }
+
+   void getTextID(String zoneID)
+   {
+      if(this == nullZone)
+         strcpy(zoneID, "(null)");
+      else
+      {
+         uint64 ancestry = this.ancestry;
+         int shift = 19 * 3;
+         int level = this.level, l;
+
+         sprintf(zoneID, "%02d", rootRhombus);
+
+         for(l = 0; l < 20; l++, shift -= 3)
+         {
+            int b = (int)((ancestry & (7LL << shift)) >> shift);
+            if(b == 7)
+               break;
+            zoneID[2 + (level - 1 - l)] = (byte)('0' + b);
+         }
+         zoneID[level + 2] = 0;
+      }
+   }
+}
+
+// For now these DGGRSs are still using I7HZone for 64-bit integer DGGRSZone...
+public class ISEA7HZ7 : ISEA7H
+{
+   I7HZone getZoneFromTextID(const String zoneID)
+   {
+      return Z7Zone::fromText(zoneID).to7H();
+   }
+
+   void getZoneTextID(I7HZone zone, String zoneID)
+   {
+      Z7Zone::from7H(zone).getTextID(zoneID);
+   }
+}
+
+public class IVEA7HZ7 : IVEA7H
+{
+   I7HZone getZoneFromTextID(const String zoneID)
+   {
+      return Z7Zone::fromText(zoneID).to7H();
+   }
+
+   void getZoneTextID(I7HZone zone, String zoneID)
+   {
+      Z7Zone::from7H(zone).getTextID(zoneID);
+   }
+}
+
+public class RTEA7HZ7 : RTEA7H
+{
+   I7HZone getZoneFromTextID(const String zoneID)
+   {
+      return Z7Zone::fromText(zoneID).to7H();
+   }
+
+   void getZoneTextID(I7HZone zone, String zoneID)
+   {
+      Z7Zone::from7H(zone).getTextID(zoneID);
    }
 }
