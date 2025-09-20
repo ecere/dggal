@@ -1083,11 +1083,11 @@ private:
       get
       {
          I7HZone key = nullZone;
-         int l9r = levelI49R;
-         if(l9r || subHex)
+         int l49r = levelI49R;
+         if(l49r || subHex)
          {
             if(subHex)
-               key = { l9r, rootRhombus, rhombusIX, 0 };
+               key = { l49r, rootRhombus, rhombusIX, 0 };
             else
                key = I7HZone::fromEvenLevelPrimaryChild(this);
          }
@@ -1325,9 +1325,9 @@ private:
       return A * x + B * y + C;
    }
 
-   I7HZone ::calcCandidateParent(int l9r, int root, int64 row, int64 col, int addCol, int addRow)
+   I7HZone ::calcCandidateParent(int l49r, int root, int64 row, int64 col, int addCol, int addRow)
    {
-      uint64 p = POW7(l9r);
+      uint64 p = POW7(l49r);
       bool south = (root & 1);
       uint64 cix;
 
@@ -1386,14 +1386,14 @@ private:
       }
 
       // REVIEW: Polar zones considerations?
-      return I7HZone { l9r, root, cix, 0 };
+      return I7HZone { l49r, root, cix, 0 };
    }
 
    I7HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
    {
-      int l9r = level / 2;
+      int l49r = level / 2;
       Pointd c = centroid;
-      uint64 p = POW7(l9r);
+      uint64 p = POW7(l49r);
       double oop =  1.0 / p;
 
       // bool isNorthPole = false, isSouthPole = false;
@@ -1449,23 +1449,23 @@ private:
             // Odd level -- currently using a rather brute-force approach
             I7HZone zone = nullZone;
             if(northPole)
-               zone = { l9r, 0xA, 0, 1 };
+               zone = { l49r, 0xA, 0, 1 };
             else if(southPole)
-               zone = { l9r, 0xB, 0, 1 };
+               zone = { l49r, 0xB, 0, 1 };
             else
             {
                I7HZone candidateParents[7];
                int i;
 
                if(north && row == 0 && col == p)
-                  candidateParents[0] = { l9r, 0xA, 0, 0 };
+                  candidateParents[0] = { l49r, 0xA, 0, 0 };
                else if(south && row == p && col == 0)
-                  candidateParents[0] = { l9r, 0xB, 0, 0 };
+                  candidateParents[0] = { l49r, 0xB, 0, 0 };
                else
                {
-                  // candidateParents[0] = { l9r, 2 + root * (p * p) + row * p + col, 0 };
+                  // candidateParents[0] = { l49r, 2 + root * (p * p) + row * p + col, 0 };
 
-                  candidateParents[0] = calcCandidateParent(l9r, root, row, col, 0, 0);
+                  candidateParents[0] = calcCandidateParent(l49r, root, row, col, 0, 0);
                }
 
 #if 0 //def _DEBUG
@@ -1478,17 +1478,17 @@ private:
 #endif
 
                // Top (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
+               candidateParents[1] = calcCandidateParent(l49r, root, row, col, 0, -1);
                // Bottom (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[2] = calcCandidateParent(l9r, root, row, col, 0, 1);
+               candidateParents[2] = calcCandidateParent(l49r, root, row, col, 0, 1);
                // Right (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[3] = calcCandidateParent(l9r, root, row, col, 1, 0);
+               candidateParents[3] = calcCandidateParent(l49r, root, row, col, 1, 0);
                // Left (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[4] = calcCandidateParent(l9r, root, row, col, -1, 0);
+               candidateParents[4] = calcCandidateParent(l49r, root, row, col, -1, 0);
                // Top-Left (1 potential child including 1 secondary child of prime candidate)
-               candidateParents[5] = calcCandidateParent(l9r, root, row, col, -1, -1);
+               candidateParents[5] = calcCandidateParent(l49r, root, row, col, -1, -1);
                // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
-               candidateParents[6] = calcCandidateParent(l9r, root, row, col, 1, 1);
+               candidateParents[6] = calcCandidateParent(l49r, root, row, col, 1, 1);
 
                // int numMatches = 0;
                for(i = 0; i < 7; i++)
@@ -1501,7 +1501,7 @@ private:
                   if(candidateParents[i] != fromZoneID(pID))
                   {
                      PrintLn("ERROR: Invalid candidate parent zone: ", pID);
-                     candidateParents[1] = calcCandidateParent(l9r, root, row, col, 0, -1);
+                     candidateParents[1] = calcCandidateParent(l49r, root, row, col, 0, -1);
                   }
                   // PrintLn("Generating primary children for ", pID);
 #endif
@@ -1557,9 +1557,9 @@ private:
          else
          {
             if(northPole)
-               return { l9r, 0xA, 0, 0 };
+               return { l49r, 0xA, 0, 0 };
             else if(southPole)
-               return { l9r, 0xB, 0, 0 };
+               return { l49r, 0xB, 0, 0 };
 
             // Even level
             if(dx > 1 - dy)
@@ -1643,19 +1643,19 @@ private:
                else
                   cix = row * p + col;
             }
-            return I7HZone { l9r, root, cix, 0 };
+            return I7HZone { l49r, root, cix, 0 };
          }
       }
    }
 
    I7HZone ::fromEvenLevelPrimaryChild(I7HZone child)
    {
-      int l9r = child.levelI49R - 1;
+      int l49r = child.levelI49R - 1;
       Pointd c = child.centroid;
-      uint64 p = POW7(l9r);
+      uint64 p = POW7(l49r);
       double oop =  1.0 / p;
 
-      if(child.subHex || l9r < 0) return nullZone; // Invalid usage
+      if(child.subHex || l49r < 0) return nullZone; // Invalid usage
 
       // bool isNorthPole = false, isSouthPole = false;
       if(fabs(c.x - c.y - 1) < 1E-10)
@@ -1696,9 +1696,9 @@ private:
          // Odd level -- currently using a rather brute-force approach
          I7HZone zone = nullZone;
          if(northPole)
-            zone = { l9r, 0xA, 0, 1 };
+            zone = { l49r, 0xA, 0, 1 };
          else if(southPole)
-            zone = { l9r, 0xB, 0, 1 };
+            zone = { l49r, 0xB, 0, 1 };
          else
          {
             int i;
@@ -1713,24 +1713,24 @@ private:
                   // Prime candidate
                   case 0:
                      if(north && row == 0 && col == p)
-                        candidateParent = { l9r, 0xA, 0, 0 };
+                        candidateParent = { l49r, 0xA, 0, 0 };
                      else if(south && row == p && col == 0)
-                        candidateParent = { l9r, 0xB, 0, 0 };
+                        candidateParent = { l49r, 0xB, 0, 0 };
                      else
-                        candidateParent = calcCandidateParent(l9r, root, row, col, 0, 0);
+                        candidateParent = calcCandidateParent(l49r, root, row, col, 0, 0);
                      break;
                   // Top (2 potential children including 1 secondary child of prime candidate)
-                  case 1: candidateParent = calcCandidateParent(l9r, root, row, col, 0, -1); break;
+                  case 1: candidateParent = calcCandidateParent(l49r, root, row, col, 0, -1); break;
                   // Bottom (2 potential children including 1 secondary child of prime candidate)
-                  case 2: candidateParent = calcCandidateParent(l9r, root, row, col, 0, 1); break;
+                  case 2: candidateParent = calcCandidateParent(l49r, root, row, col, 0, 1); break;
                   // Right (2 potential children including 1 secondary child of prime candidate)
-                  case 3: candidateParent = calcCandidateParent(l9r, root, row, col, 1, 0); break;
+                  case 3: candidateParent = calcCandidateParent(l49r, root, row, col, 1, 0); break;
                   // Left (2 potential children including 1 secondary child of prime candidate)
-                  case 4: candidateParent = calcCandidateParent(l9r, root, row, col, -1, 0); break;
+                  case 4: candidateParent = calcCandidateParent(l49r, root, row, col, -1, 0); break;
                   // Top-Left (1 potential child including 1 secondary child of prime candidate)
-                  case 5: candidateParent = calcCandidateParent(l9r, root, row, col, -1, -1); break;
+                  case 5: candidateParent = calcCandidateParent(l49r, root, row, col, -1, -1); break;
                   // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
-                  case 6: candidateParent = calcCandidateParent(l9r, root, row, col, 1, 1); break;
+                  case 6: candidateParent = calcCandidateParent(l49r, root, row, col, 1, 1); break;
                }
 
                n = candidateParent.getPrimaryChildren(children);
