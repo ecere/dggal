@@ -290,7 +290,7 @@ public:
 
             shift -= 3;
          }
-         while(shift > 0)
+         while(shift >= 0)
          {
             ancestry |= ((int64)7LL << shift);
             shift -= 3;
@@ -329,7 +329,7 @@ public:
                   ancestry |= (uint64)(c - '0') << shift;
                shift -= 3;
             }
-            while(shift > 0)
+            while(shift >= 0)
             {
                ancestry |= ((int64)7LL << shift);
                shift -= 3;
