@@ -261,6 +261,9 @@ public:
          uint64 ancestry = 0;
          int shift = 19 * 3;
 
+         if(level > 19)
+            return nullZone; // I7HZone are only valid up to level 19
+
          computeParents(zone, parents);
          parent = l > 0 ? parents[pIndex] : nullZone;
          while(l > 0)

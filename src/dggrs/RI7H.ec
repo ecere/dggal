@@ -2798,7 +2798,7 @@ private:
       uint root = rootRhombus;
       uint64 rix = rhombusIX;
 
-      if(this == nullZone)
+      if(this == nullZone || l49r > 9 || (l49r == 9 && subHex))
          return 0;
 
       if(subHex == 0)
