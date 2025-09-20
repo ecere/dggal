@@ -1766,7 +1766,7 @@ static int64 generateOddParentEvenDepth(void * context, bool (* centroidCallback
    return keepGoing ? -1 : i;
 }
 
-static inline bool addCentroid(Array<Pointd> centroids, uint64 index, Pointd centroid)
+private static inline bool addCentroid(Array<Pointd> centroids, uint64 index, Pointd centroid)
 {
    centroids[(uint)index] = centroid;
    return true;

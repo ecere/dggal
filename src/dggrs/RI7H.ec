@@ -205,6 +205,24 @@ public class RhombicIcosahedral7H : DGGRS
       return 19;
    }
 
+   static bool ::findByIndex(Pointd centroid, int64 index, const Pointd c)
+   {
+      centroid = c;
+      return false;
+   }
+
+   static bool ::findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
+   {
+      Pointd centroid;
+
+      canonicalize5x6(c, centroid);
+      if(fabs(centroid.x - szCentroid.x) < 1E-11 &&
+         fabs(centroid.y - szCentroid.y) < 1E-11)
+         return false;
+      return true;
+      // return *zone != I7HZone::fromCentroid(zone->level, centroid);
+   }
+
    int64 getSubZoneIndex(I7HZone parent, I7HZone subZone)
    {
       int64 ix = -1;
@@ -217,7 +235,7 @@ public class RhombicIcosahedral7H : DGGRS
          Pointd zCentroid;
 
          canonicalize5x6(subZone.centroid, zCentroid);
-         ix = -1; // TODO: iterateI7HSubZones(parent, szLevel - level, &zCentroid, findSubZone, -1);
+         ix = parent.iterateI7HSubZones(szLevel - level, &zCentroid, findSubZone, -1);
       }
       return ix;
    }
@@ -231,10 +249,9 @@ public class RhombicIcosahedral7H : DGGRS
             return getFirstSubZone(parent, relativeDepth);
          else
          {
-            // TODO:
-            // Pointd centroid;
-            //iterateI7HSubZones(parent, relativeDepth, &centroid, findByIndex, index);
-            subZone = nullZone; //I7HZone::fromCentroid(parent.level + relativeDepth, centroid);
+            Pointd centroid;
+            parent.iterateI7HSubZones(relativeDepth, &centroid, findByIndex, index);
+            subZone = I7HZone::fromCentroid(parent.level + relativeDepth, centroid);
          }
       }
       return subZone;
@@ -3300,15 +3317,14 @@ private:
       move5x6(firstCentroid, v, dx, dy, 1, null, null, false);
    }
 
-   Array<Pointd> getSubZoneCentroids(int rDepth)
+   int64 iterateI7HSubZones(int rDepth, void * context,
+      bool (* centroidCallback)(void * context, uint64 index, const Pointd centroid), int64 searchIndex)
    {
-      int64 count = getSubZonesCount(rDepth);
-      Array<Pointd> centroids { size = (uint) count };
-
       if(rDepth == 0)
-         centroids[0] = centroid;
+         return centroidCallback(context, 0, centroid) ? -1 : 0;
       else
       {
+         bool keepGoing = true;
          int level = this.level;
          int szLevel = level + rDepth;
          bool oddAncestor = level & 1, oddDepth = rDepth & 1, oddLevelSZ = szLevel & 1;
@@ -3321,7 +3337,6 @@ private:
          int64 zonesPerSL;
          int64 nScanlines;
          int64 left, right;
-         Pointd sc; // Start of scanline
          int64 i;
          // Direction along scanlines:
          double sx = c2c * (oddLevelSZ ? 3 : 1);
@@ -3330,7 +3345,7 @@ private:
          double nsx, nsy;
 
          // TODO: Handle pentagons / polar zones correctly
-         if(nPoints == 5) { delete centroids; return null; }
+         if(nPoints == 5) return -1;
 
          // TODO: Verify interrupted hexagons
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
@@ -3352,7 +3367,7 @@ private:
             nScanlines = 2 * nCapSL + 2 * nInterSL + nMidSL;
             zonesPerSL = 1;
 
-            for(s = 0; s < nScanlines; s++)
+            for(s = 0; s < nScanlines && keepGoing; s++)
             {
                double tsx = sx, tsy = sy;
 
@@ -3383,11 +3398,36 @@ private:
                }
 
                cStart += oddAncestor ? left : right;
-               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
-
                zonesPerSL += left + right;
-               for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null, true);
+
+               if(searchIndex == -1 || (searchIndex >= index && searchIndex < index + zonesPerSL))
+               {
+                  Pointd sc; // Start of scanline
+
+                  if(searchIndex != -1)
+                  {
+                     i = (int)(searchIndex - index);
+                     index = searchIndex;
+                  }
+                  else
+                     i = 0;
+
+                  move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
+
+                  for(; i < zonesPerSL; i++)
+                  {
+                     Pointd centroid;
+                     move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
+                     keepGoing = centroidCallback(context, index, centroid);
+                     if(searchIndex != -1 || !keepGoing)
+                        break;
+                     index++;
+                  }
+                  if(!keepGoing)
+                     break;
+               }
+               else
+                  index += zonesPerSL;
             }
          }
          else // Even depths
@@ -3399,7 +3439,7 @@ private:
             nScanlines = 2 * nCapSL + nMidSL;
             zonesPerSL = 3;
 
-            for(s = 0; s < nScanlines; s++)
+            for(s = 0; s < nScanlines && keepGoing; s++)
             {
                double tsx = sx, tsy = sy;
 
@@ -3420,14 +3460,60 @@ private:
                }
 
                cStart += left;
-               move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
                zonesPerSL += left + right;
-               for(i = 0; i < zonesPerSL; i++)
-                  move5x6(centroids[(int)(index++)], sc, i * tsx, i * tsy, 1, null, null, true);
+
+               if(searchIndex == -1 || (searchIndex >= index && searchIndex < index + zonesPerSL))
+               {
+                  Pointd sc; // Start of scanline
+
+                  move5x6(sc, first, s * nsx - cStart * tsx, s * nsy - cStart * tsy, 1, &tsx, &tsy, true);
+
+                  if(searchIndex != -1)
+                  {
+                     i = searchIndex - index;
+                     index = searchIndex;
+                  }
+                  else
+                     i = 0;
+
+                  for(; i < zonesPerSL; i++)
+                  {
+                     Pointd centroid;
+                     move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
+                     keepGoing = centroidCallback(context, index, centroid);
+                     if(searchIndex != -1 || !keepGoing)
+                        break;
+                     index++;
+                  }
+               }
+               else
+                  index += zonesPerSL;
             }
          }
+         return keepGoing ? -1 : index;
       }
-      return centroids;
+   }
+
+   private static inline bool ::addCentroid(Array<Pointd> centroids, uint64 index, Pointd centroid)
+   {
+      centroids[(uint)index] = centroid;
+      return true;
+   }
+
+   Array<Pointd> getSubZoneCentroids(int rDepth)
+   {
+      uint64 nSubZones = getSubZonesCount(rDepth);
+      // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
+      if(nSubZones < 1LL<< (32-4) && (nPoints == 6 || !rDepth))
+      {
+         Array<Pointd> centroids { size = (uint)nSubZones };
+         if(rDepth > 0)
+            iterateI7HSubZones(rDepth, centroids, addCentroid, -1);
+         else
+            centroids[0] = centroid;
+         return centroids;
+      }
+      return null;
    }
 
    private /*static */bool orderZones(int zoneLevel, AVLTree<I7HZone> tsZones, Array<I7HZone> zones)
@@ -3566,26 +3652,6 @@ __attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int 
       }
    }
 }
-
-/* TODO:
-static bool findByIndex(Pointd centroid, int64 index, const Pointd c)
-{
-   centroid = c;
-   return false;
-}
-
-static bool findSubZone(const Pointd szCentroid, int64 index, const Pointd c)
-{
-   Pointd centroid;
-
-   canonicalize5x6(c, centroid);
-   if(fabs(centroid.x - szCentroid.x) < 1E-11 &&
-      fabs(centroid.y - szCentroid.y) < 1E-11)
-      return false;
-   return true;
-   // return *zone != I7HZone::fromCentroid(zone->level, centroid);
-}
-*/
 
 static void getIcoNetExtentFromVertices(I7HZone zone, CRSExtent value)
 {
