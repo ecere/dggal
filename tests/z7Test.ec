@@ -14,7 +14,7 @@ Array<const String> pointsFiles
    "points7H-L4.geojson",
    "points7H-L5.geojson",
    "points7H-L6.geojson",
-   "points7H-L7-nz.geojson",
+   "points7H-L7.geojson",
    "points7H-L8-nz.geojson"
 ] };
 
@@ -67,8 +67,16 @@ public class DGGSUnitTest : eTest
                               zone = dggrs.getZoneFromWGS84Centroid(level, geodetic);
                               if(zone != nullZone)
                               {
+                                 I7HZone i7;
+                                 Z7Zone z7;
                                  char dggalZ7[256];
                                  dggrs.getZoneTextID(zone, dggalZ7);
+
+                                 i7 = ((Z7Zone)zone).to7H();
+                                 z7 = Z7Zone::from7H(i7);
+                                 if(z7 != zone)
+                                    fail("Z7", z7ID, "of Z7 round-trip conversion error"), passed = false;
+
                                  if(strcmp(z7ID, dggalZ7))
                                  {
                                     PrintLn("DGGRID Z7 ID: ", z7ID, "; DGGAL Z7 ID: ", dggalZ7);

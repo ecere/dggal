@@ -95,7 +95,7 @@ private:
       }
    }
 
-   private static int ::getChildPosition(I7HZone parent, I7HZone grandParent, I7HZone zone)
+   private static int ::getChildPosition(I7HZone parent, I7HZone zone)
    {
       if(zone.level & 1)
          return zone.subHex - 1;
@@ -157,20 +157,22 @@ private:
       return getParentRotationOffsetInternal(zone, parents);
    }
 
-   private static inline int ::getLevelRotationOffset(int l, I7HZone zone, I7HZone parent, I7HZone grandParent)
+   private static inline int ::getLevelRotationOffset(int l, int i, I7HZone zone, I7HZone parent, I7HZone grandParent)
    {
       int offset = 0;
-      uint pRoot = parent.rootRhombus;
-      uint pnPoints = parent.nPoints;
-      bool oddLevel = l & 1;
-      bool southPRhombus = pRoot & 1;
-      bool isEdgeHex = !oddLevel && zone.isEdgeHex;
-      bool pEdgeHex = oddLevel && parent.isEdgeHex;
-      bool gpEdgeHex = !oddLevel && grandParent.isEdgeHex;
-      int i = getChildPosition(parent, grandParent, zone);
 
+      if(i == -1)
+         i = getChildPosition(parent, zone);
       if(i)
       {
+         uint pRoot = parent.rootRhombus;
+         uint pnPoints = parent.nPoints;
+         bool oddLevel = l & 1;
+         bool southPRhombus = pRoot & 1;
+         bool isEdgeHex = !oddLevel && zone.isEdgeHex;
+         bool pEdgeHex = oddLevel && parent.isEdgeHex;
+         bool gpEdgeHex = !oddLevel && grandParent.isEdgeHex;
+
          if(pnPoints == 5)
             i = adjustZ7PentagonChildPosition(i, l, pRoot);
 
@@ -235,7 +237,7 @@ private:
       while(l > 0)
       {
          I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
-         offset += getLevelRotationOffset(l, zone, parent, grandParent);
+         offset += getLevelRotationOffset(l, -1, zone, parent, grandParent);
          offset %= 6;
          zone = parent;
          parent = grandParent;
@@ -267,6 +269,7 @@ private:
          int offset = 0;
          uint64 ancestry = this.ancestry;
          int shift = 19 * 3;
+         int prevCIX = 0;
 
          if((this & 7) != 7)
             return nullZone; // I7HZone are only valid up to level 19
@@ -288,7 +291,7 @@ private:
                int cix = invCMap[b];
 
                if(cix || level < 19)
-                  offset = (offset + getLevelRotationOffset(level,
+                  offset = (offset + getLevelRotationOffset(level, prevCIX,
                      zone,
                      level > 0 ? parents[pStart + 1] : nullZone,
                      level > 1 ? parents[pStart + 2] : nullZone)
@@ -302,6 +305,7 @@ private:
                   if(nPoints == 5)
                      cix = deadjustZ7PentagonChildPosition(cix, level + 1, zone.rootRhombus);
                }
+               prevCIX = cix;
 
                if(!(level & 1))
                   zone = { zone.levelI49R, zone.rootRhombus, zone.rhombusIX, 1 + cix };
@@ -334,46 +338,40 @@ private:
       Z7Zone result = nullZone;
       if(zone != nullZone)
       {
-         int level = zone.level, l;
-         int n;
-         I7HZone parents[19], parent;
-         int pIndex = 0;
+         int level = zone.level;
+         I7HZone parents[19];
          uint64 ancestry = 0;
-         int shift;
-
-         for(shift = 0, l = 20; l > level; l--)
-         {
-            ancestry |= ((int64)7LL << shift);
-            shift += 3;
-         }
+         int shift, pIndex, l;
+         int offset = 0;
+         int prevI = 0;
 
          computeParents(zone, parents);
-         parent = l > 0 ? parents[pIndex] : nullZone;
-         while(l > 0)
+         for(l = 1, pIndex = level-1, shift = 3 * 19; l <= level; l++, pIndex--, shift -= 3)
          {
+            I7HZone z = l == level ? zone : parents[pIndex - 1];
+            I7HZone parent = parents[pIndex];
             I7HZone grandParent = l > 1 ? parents[pIndex + 1] : nullZone;
-            int i = getChildPosition(parent, grandParent, zone);
+            int i = getChildPosition(parent, z);
+
+            offset = (offset + getLevelRotationOffset(l-1, prevI, parent, grandParent, l > 2 ? parents[pIndex + 2] : nullZone)) % 6;
+            prevI = i;
 
             if(i)
             {
-               int offset = getParentRotationOffsetInternal(parent, parents + pIndex + 1);
+               //int fullOffset = getParentRotationOffsetInternal(parent, parents + pIndex + 1);
                if(parent.nPoints == 5)
                   i = adjustZ7PentagonChildPosition(i, l, parent.rootRhombus);
                i = ((i - 1) + offset) % 6 + 1;
             }
 
-            n = cMap[i];
-
-            ancestry |= ((int64)n << shift);
-
-            zone = parent;
-            parent = grandParent;
-            pIndex++;
-            l--;
-
-            shift += 3;
+            ancestry |= ((int64)cMap[i] << shift);
          }
-         result.rootPentagon = rootMap[zone.rootRhombus];
+         while(shift >= 0)
+         {
+            ancestry |= ((int64)7LL << shift);
+            shift -= 3;
+         }
+         result.rootPentagon = rootMap[(level == 0 ? zone : parents[level-1]).rootRhombus];
          result.ancestry = ancestry;
       }
       return result;
