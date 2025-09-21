@@ -24,7 +24,7 @@ public class DGGSUnitTest : eTest
 {
    void testZ7Indices(int level, const String z7PointsGeoJSON)
    {
-      DGGRS dggrs = ISEA7HZ7 { };
+      DGGRS dggrs = ISEA7H_Z7 { };
       bool passed = true;
       File f = FileOpen(z7PointsGeoJSON, read);
       if(f)
@@ -48,7 +48,7 @@ public class DGGSUnitTest : eTest
                if(attr)
                {
                   HashMapIterator<String, FieldValue> it { map = (void *)attr };
-                  if(it.Index("Name", false))
+                  if(it.Index("Name", false) || it.Index("name", false))
                   {
                      FieldValue * fv = (FieldValue *)(uintptr)it.GetData();
                      if(fv)
