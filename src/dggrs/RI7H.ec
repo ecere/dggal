@@ -31,12 +31,7 @@ I7H
 
 static define POW_EPSILON = 0.1;
 
-extern uint64 powersOf3[34]; // in RI3H.ec
-
-#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
-#define POW6(x) ((1LL << (x)) * POW3(x))
 #define POW7(x) ((x) < sizeof(powersOf7) / sizeof(powersOf7[0]) ? (uint64)powersOf7[x] : (uint64)(pow(7, x) + POW_EPSILON))
-#define POW8(x) (1LL << (3*(x)))
 
 public class RhombicIcosahedral7H : DGGRS
 {
@@ -117,7 +112,7 @@ public class RhombicIcosahedral7H : DGGRS
             }
             case CRS { epsg, 4326 }:
             case CRS { ogc, 84 }:
-               return (I7HZone)getZoneFromWGS84Centroid(level,
+               return (I7HZone)RhombicIcosahedral7H::getZoneFromWGS84Centroid(level,
                   crs == { ogc, 84 } ?
                      { centroid.y, centroid.x } :
                      { centroid.x, centroid.y });
@@ -298,7 +293,7 @@ public class RhombicIcosahedral7H : DGGRS
             */
             move5x6(m, c, v[i].x * 0.99, v[i].y * 0.99, 1, null, null, false);
 
-            tz = getZoneFromCRSCentroid(zLevel, 0, m);
+            tz = RhombicIcosahedral7H::getZoneFromCRSCentroid(zLevel, 0, m);
             if(tz == hayStack)
             {
                result = true;
@@ -759,7 +754,7 @@ public class RhombicIcosahedral7H : DGGRS
          if(fabs((Radians)bbox.ur.lat - (Radians)bbox.ll.lat) < 1E-11 &&
             fabs((Radians)bbox.ur.lon - (Radians)bbox.ll.lon) < 1E-11)
          {
-            DGGRSZone zone = getZoneFromWGS84Centroid(zoneLevel, bbox.ll);
+            DGGRSZone zone = RhombicIcosahedral7H::getZoneFromWGS84Centroid(zoneLevel, bbox.ll);
             if(zone != nullZone)
                zones = { [ zone ] };
             return zones;

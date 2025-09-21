@@ -188,7 +188,7 @@
                position = 1
             }}
          ],
-         returnValue = "The refinement level of a parent zone corresponding to tje specified scale denominator, relative depth and display resolution"
+         returnValue = "The refinement level of a parent zone corresponding to the specified scale denominator, relative depth and display resolution"
       }},
       {"getMaxChildren", {
          description = "Return the maximum number of children for this DGGRS",

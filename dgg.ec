@@ -23,8 +23,8 @@ static void showSyntax()
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
       "Supported DGGRSs:\n"
-      "   GNOSIS (Global Grid), ISEA(4R/9R/3H/7H*/7H-Z7), IVEA(4R/9R/3H/7H*/7H-Z7), RTEA(9R/4R/3H/7H/7H-Z7), rHEALPix (A9 50° E), HEALPix (A4 H=4, K=3)\n"
-      "      * 7H/7H-Z7 are still missing sub-zone support for pentagonal ancestors\n"
+      "   GNOSIS (Global Grid), ISEA(4R/9R/3H/7H*/7H_Z7), IVEA(4R/9R/3H/7H*/7H_Z7), RTEA(9R/4R/3H/7H/7H_Z7), rHEALPix (A9 50° E), HEALPix (A4 H=4, K=3)\n"
+      "      * 7H/7H_Z7 are still missing sub-zone support for pentagonal ancestors\n"
       "\n"
       "Commands:\n"
       "   info       [zone]\n"
@@ -105,19 +105,19 @@ class DGGAL : Application
            if(!strcmpi(argv[0], "i3h") || !strcmpi(argv[0], "isea3h")) dggrsClass = class(ISEA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "i9r") || !strcmpi(argv[0], "isea9r")) dggrsClass = class(ISEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "i7h") || !strcmpi(argv[0], "isea7h")) dggrsClass = class(ISEA7H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "iz7") || !strcmpi(argv[0], "isea7h-z7")) dggrsClass = class(ISEA7HZ7), cmdArg = 1;
+      else if(!strcmpi(argv[0], "iz7") || !strcmpi(argv[0], "isea7h_z7")) dggrsClass = class(ISEA7H_Z7), cmdArg = 1;
       else if(!strcmpi(argv[0], "i4r") || !strcmpi(argv[0], "isea4r")) dggrsClass = class(ISEA4R), cmdArg = 1;
 
       else if(!strcmpi(argv[0], "r3h") || !strcmpi(argv[0], "rtea3h")) dggrsClass = class(RTEA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "r9r") || !strcmpi(argv[0], "rtea9r")) dggrsClass = class(RTEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "r7h") || !strcmpi(argv[0], "rtea7h")) dggrsClass = class(RTEA7H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "rz7") || !strcmpi(argv[0], "rtea7h-z7")) dggrsClass = class(RTEA7HZ7), cmdArg = 1;
+      else if(!strcmpi(argv[0], "rz7") || !strcmpi(argv[0], "rtea7h_z7")) dggrsClass = class(RTEA7H_Z7), cmdArg = 1;
       else if(!strcmpi(argv[0], "r4r") || !strcmpi(argv[0], "rtea4r")) dggrsClass = class(RTEA4R), cmdArg = 1;
 
       else if(!strcmpi(argv[0], "v3h") || !strcmpi(argv[0], "ivea3h")) dggrsClass = class(IVEA3H), cmdArg = 1;
       else if(!strcmpi(argv[0], "v9r") || !strcmpi(argv[0], "ivea9r")) dggrsClass = class(IVEA9R), cmdArg = 1;
       else if(!strcmpi(argv[0], "v7h") || !strcmpi(argv[0], "ivea7h")) dggrsClass = class(IVEA7H), cmdArg = 1;
-      else if(!strcmpi(argv[0], "vz7") || !strcmpi(argv[0], "ivea7h-z7")) dggrsClass = class(IVEA7HZ7), cmdArg = 1;
+      else if(!strcmpi(argv[0], "vz7") || !strcmpi(argv[0], "ivea7h_z7")) dggrsClass = class(IVEA7H_Z7), cmdArg = 1;
       else if(!strcmpi(argv[0], "v4r") || !strcmpi(argv[0], "ivea4r")) dggrsClass = class(IVEA4R), cmdArg = 1;
 
       else if(!strcmpi(argv[0], "g3h") || !strcmpi(argv[0], "gpp3h"))  dggrsClass = class(GPP3H), cmdArg = 1;
@@ -157,19 +157,19 @@ class DGGAL : Application
                   else if(!strcmpi(arg, "ISEA3H"))   dggrsClass = class(ISEA3H);
                   else if(!strcmpi(arg, "ISEA9R"))   dggrsClass = class(ISEA9R);
                   else if(!strcmpi(arg, "ISEA7H"))   dggrsClass = class(ISEA7H);
-                  else if(!strcmpi(arg, "ISEA7H-Z7"))   dggrsClass = class(ISEA7HZ7);
+                  else if(!strcmpi(arg, "ISEA7H_Z7"))   dggrsClass = class(ISEA7H_Z7);
                   else if(!strcmpi(arg, "ISEA4R"))   dggrsClass = class(ISEA4R);
 
                   else if(!strcmpi(arg, "IVEA3H"))   dggrsClass = class(IVEA3H);
                   else if(!strcmpi(arg, "IVEA9R"))   dggrsClass = class(IVEA9R);
                   else if(!strcmpi(arg, "IVEA7H"))   dggrsClass = class(IVEA7H);
-                  else if(!strcmpi(arg, "IVEA7H-Z7"))   dggrsClass = class(IVEA7HZ7);
+                  else if(!strcmpi(arg, "IVEA7H_Z7"))   dggrsClass = class(IVEA7H_Z7);
                   else if(!strcmpi(arg, "IVEA4R"))   dggrsClass = class(IVEA4R);
 
                   else if(!strcmpi(arg, "RTEA3H"))   dggrsClass = class(RTEA3H);
                   else if(!strcmpi(arg, "RTEA9R"))   dggrsClass = class(RTEA9R);
                   else if(!strcmpi(arg, "RTEA7H"))   dggrsClass = class(RTEA7H);
-                  else if(!strcmpi(arg, "RTEA7H-Z7"))   dggrsClass = class(RTEA7HZ7);
+                  else if(!strcmpi(arg, "RTEA7H_Z7"))   dggrsClass = class(RTEA7H_Z7);
                   else if(!strcmpi(arg, "RTEA4R"))   dggrsClass = class(RTEA4R);
 
                   else if(!strcmpi(arg, "rHEALPix")) dggrsClass = class(rHEALPix);
