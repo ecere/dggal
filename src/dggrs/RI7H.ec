@@ -360,7 +360,7 @@ public class RhombicIcosahedral7H : DGGRS
          case CRS { ogc, 84 }:
          {
             GeoExtent geo;
-            getZoneWGS84Extent(zone, geo);
+            RhombicIcosahedral7H::getZoneWGS84Extent(zone, geo);
             extent.crs = crs;
             if(crs == { ogc, 84 })
             {
@@ -385,7 +385,7 @@ public class RhombicIcosahedral7H : DGGRS
       Array<GeoPoint> vertices = (Array<GeoPoint>)getRefinedVertices(zone, { epsg, 4326 }, 0, true);
       int nVertices = vertices ? vertices.count : 0;
 
-      getZoneWGS84Centroid(zone, centroid);
+      RhombicIcosahedral7H::getZoneWGS84Centroid(zone, centroid);
 
       extent.clear();
       for(i = 0; i < nVertices; i++)
@@ -478,7 +478,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    void getApproxWGS84Extent(I7HZone zone, GeoExtent extent)
    {
-      getZoneWGS84Extent(zone, extent);
+      RhombicIcosahedral7H::getZoneWGS84Extent(zone, extent);
       /*
       int sh = zone.subHex;
       int i;
@@ -488,7 +488,7 @@ public class RhombicIcosahedral7H : DGGRS
       int nVertices = zone.getVertices(vertices);
       bool oddGrid = zone.subHex > 2;
 
-      getZoneWGS84Centroid(zone, centroid);
+      RhombicIcosahedral7H::getZoneWGS84Centroid(zone, centroid);
 
       extent.clear();
       for(i = 0; i < nVertices; i++)
@@ -551,7 +551,7 @@ public class RhombicIcosahedral7H : DGGRS
 
             ap./*size*/minAllocSize = r.count;
 
-            getZoneWGS84Centroid(zone, centroid);
+            RhombicIcosahedral7H::getZoneWGS84Centroid(zone, centroid);
             // REVIEW: Should centroid ever be outside -Pi..Pi?
             if(centroid.lon < - Pi - 1E-9)
                centroid.lon += 2*Pi;
@@ -698,7 +698,7 @@ public class RhombicIcosahedral7H : DGGRS
          {
             I7HZone zone = (I7HZone)z;
             GeoExtent e;
-            getZoneWGS84Extent(zone, e);
+            RhombicIcosahedral7H::getZoneWGS84Extent(zone, e);
             if(e.intersects(bbox))
                tmp.Add(zone);
          }
@@ -725,7 +725,7 @@ public class RhombicIcosahedral7H : DGGRS
                   GeoExtent e;
                   if(!tmp.Find(c))
                   {
-                     getZoneWGS84Extent(c, e);
+                     RhombicIcosahedral7H::getZoneWGS84Extent(c, e);
                      if(!e.intersects(bbox))
                         continue;
                   }
@@ -825,7 +825,7 @@ public class RhombicIcosahedral7H : DGGRS
                   continue;
                */
 
-               getZoneWGS84Extent(zone, e);
+               RhombicIcosahedral7H::getZoneWGS84Extent(zone, e);
                if(!e.intersects(bbox))
                   continue;
             }
