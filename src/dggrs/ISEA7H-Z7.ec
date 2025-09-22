@@ -57,9 +57,9 @@ private:
             for(l = 0; l < 20; l++, shift -= 3)
             {
                int b = (int)((ancestry & (7LL << shift)) >> shift);
-               lastB = b;
                if(b == 7)
                   break;
+               lastB = b;
             }
             return lastB == 0;
          }
