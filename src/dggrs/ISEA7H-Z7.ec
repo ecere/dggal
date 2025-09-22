@@ -345,6 +345,8 @@ private:
          int offset = 0;
          int prevI = 0;
 
+         if(level > 19) return nullZone; // This should never happen
+
          computeParents(zone, parents);
          for(l = 1, pIndex = level-1, shift = 3 * 19; l <= level; l++, pIndex--, shift -= 3)
          {

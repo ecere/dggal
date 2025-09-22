@@ -238,11 +238,11 @@ public class RhombicIcosahedral7H : DGGRS
    DGGRSZone getSubZoneAtIndex(I7HZone parent, int relativeDepth, int64 index)
    {
       I7HZone subZone = nullZone;
-      if(index >= 0 && index < countSubZones(parent, relativeDepth))
+      if(index >= 0 && index < RhombicIcosahedral7H::countSubZones(parent, relativeDepth))
       {
          if(index == 0)
-            return getFirstSubZone(parent, relativeDepth);
-         else
+            return RhombicIcosahedral7H::getFirstSubZone(parent, relativeDepth);
+         else if(parent.level + relativeDepth <= 19)
          {
             Pointd centroid;
             parent.iterateI7HSubZones(relativeDepth, &centroid, findByIndex, index);
