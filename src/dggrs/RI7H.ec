@@ -261,7 +261,7 @@ public class RhombicIcosahedral7H : DGGRS
          Pointd v[6], c;
          int n, i;
 
-         getZoneCRSCentroid(needle, 0, c);
+         RhombicIcosahedral7H::getZoneCRSCentroid(needle, 0, c);
          n = needle.getVerticesDirections(v);
 
          for(i = 0; i < n; i++)
