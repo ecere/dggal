@@ -1095,13 +1095,16 @@ private:
       get
       {
          I7HZone key = nullZone;
-         int l49r = levelI49R;
-         if(l49r || subHex)
+         if(this != nullZone)
          {
-            if(subHex)
-               key = { l49r, rootRhombus, rhombusIX, 0 };
-            else
-               key = I7HZone::fromEvenLevelPrimaryChild(this);
+            int l49r = levelI49R;
+            if(l49r || subHex)
+            {
+               if(subHex)
+                  key = { l49r, rootRhombus, rhombusIX, 0 };
+               else
+                  key = I7HZone::fromEvenLevelPrimaryChild(this);
+            }
          }
          return key;
       }
@@ -2981,77 +2984,82 @@ private:
    {
       get
       {
-         int l49r = levelI49R;
-         uint64 p = POW7(l49r);
-         Pointd v;
-         double oop = 1.0 / p;
-         int root = rootRhombus;
-         uint64 rix = rhombusIX;
-         bool south = root & 1;
-         int sh = subHex;
-
-         if(root == 0xA) // North pole
-         {
-            v = { 1, 0 };
-
-            if(sh > 1)
-            {
-               v.x += sh - 2 - 2 * oop/7;
-               v.y += sh - 2 + 1 * oop/7;
-            }
-         }
-         else if(root == 0xB) // South pole
-         {
-            v = { 4, 6 };
-
-            if(sh > 1)
-            {
-               v.x -= sh - 2 - 2 * oop/7;
-               v.y -= sh - 2 + 1 * oop/7;
-            }
-         }
+         if(this == nullZone)
+            value = { -999, -999 };
          else
          {
-            int cx = (root >> 1), cy = cx + (root & 1);
-            int64 row = rix / p, col = rix % p;
+            int l49r = levelI49R;
+            uint64 p = POW7(l49r);
+            Pointd v;
+            double oop = 1.0 / p;
+            int root = rootRhombus;
+            uint64 rix = rhombusIX;
+            bool south = root & 1;
+            int sh = subHex;
 
-            v.x = cx + col * oop;
-            v.y = cy + row * oop;
-         }
-
-         if(subHex && root < 10)
-         {
-            // Odd level
-            if(rix == 0 && south && sh >= 4)
-               sh++;
-            else if(sh >= 2 && parent0.isEdgeHex)
-               sh = (sh + (south ? -1 : 3)) % 6 + 2;
-
-            oop /= 7;
-
-            switch(sh)
+            if(root == 0xA) // North pole
             {
-               case 1: value = v; break; // Centroid child
-               // NOTE: move5x6Vertex2() does not generate correct geometry at level 2
-               case 2: move5x6Vertex(value, v, - 1 * oop, - 3 * oop); break;
-               case 3: move5x6Vertex(value, v, - 3 * oop, - 2 * oop); break;
-               case 4: move5x6Vertex(value, v, - 2 * oop, + 1 * oop); break;
-               case 5: move5x6Vertex(value, v, + 1 * oop, + 3 * oop); break;
-               case 6: move5x6Vertex(value, v, + 3 * oop, + 2 * oop); break;
-               case 7: move5x6Vertex(value, v, + 2 * oop, - 1 * oop); break;
-            }
-         }
-         else  // Even level
-            value = v;
+               v = { 1, 0 };
 
-         if(fabs(value.y - 0) < 1E-6)
-            value.y = 0;
-         else if(fabs(value.x - 5) < 1E-6)
-            value.x = 5;
-         if(value.x > 5 - 1E-6 || value.y > 6 + 1E-6)
-            value.x -= 5, value.y -= 5;
-         if(value.x < 0 - 1E-6)
-            value.x += 5, value.y += 5;
+               if(sh > 1)
+               {
+                  v.x += sh - 2 - 2 * oop/7;
+                  v.y += sh - 2 + 1 * oop/7;
+               }
+            }
+            else if(root == 0xB) // South pole
+            {
+               v = { 4, 6 };
+
+               if(sh > 1)
+               {
+                  v.x -= sh - 2 - 2 * oop/7;
+                  v.y -= sh - 2 + 1 * oop/7;
+               }
+            }
+            else
+            {
+               int cx = (root >> 1), cy = cx + (root & 1);
+               int64 row = rix / p, col = rix % p;
+
+               v.x = cx + col * oop;
+               v.y = cy + row * oop;
+            }
+
+            if(subHex && root < 10)
+            {
+               // Odd level
+               if(rix == 0 && south && sh >= 4)
+                  sh++;
+               else if(sh >= 2 && parent0.isEdgeHex)
+                  sh = (sh + (south ? -1 : 3)) % 6 + 2;
+
+               oop /= 7;
+
+               switch(sh)
+               {
+                  case 1: value = v; break; // Centroid child
+                  // NOTE: move5x6Vertex2() does not generate correct geometry at level 2
+                  case 2: move5x6Vertex(value, v, - 1 * oop, - 3 * oop); break;
+                  case 3: move5x6Vertex(value, v, - 3 * oop, - 2 * oop); break;
+                  case 4: move5x6Vertex(value, v, - 2 * oop, + 1 * oop); break;
+                  case 5: move5x6Vertex(value, v, + 1 * oop, + 3 * oop); break;
+                  case 6: move5x6Vertex(value, v, + 3 * oop, + 2 * oop); break;
+                  case 7: move5x6Vertex(value, v, + 2 * oop, - 1 * oop); break;
+               }
+            }
+            else  // Even level
+               value = v;
+
+            if(fabs(value.y - 0) < 1E-6)
+               value.y = 0;
+            else if(fabs(value.x - 5) < 1E-6)
+               value.x = 5;
+            if(value.x > 5 - 1E-6 || value.y > 6 + 1E-6)
+               value.x -= 5, value.y -= 5;
+            if(value.x < 0 - 1E-6)
+               value.x += 5, value.y += 5;
+         }
       }
    }
 
