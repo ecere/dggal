@@ -628,6 +628,8 @@ public class DGGSUnitTest : eTest
       testSubZones(class(IVEA7H), 4, 1);
       testSubZones(class(RTEA7H), 4, 0);
       testSubZones(class(RTEA3H), 4, 0);
-      testSubZones(class(IVEA7HZ7), 4, 1);
+      testSubZones(class(ISEA7H_Z7), 4, 1);
+      testSubZones(class(IVEA7H_Z7), 4, 0);
+      testSubZones(class(RTEA7H_Z7), 4, 0);
    }
 }

@@ -414,7 +414,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    int getZoneCRSVertices(I7HZone zone, CRS crs, Pointd * vertices)
    {
-      uint count = zone.getVertices(vertices), i;
+      uint count = zone.getVertices(zone.levelI49R, zone.rootRhombus, zone.subHex, zone.centroid, zone.nPoints, vertices), i;
       int j;
 
       for(j = 0; j < count; j++)
@@ -451,7 +451,7 @@ public class RhombicIcosahedral7H : DGGRS
    int getZoneWGS84Vertices(I7HZone zone, GeoPoint * vertices)
    {
       Pointd v5x6[6];
-      uint count = zone.getVertices(v5x6), i;
+      uint count = zone.getVertices(zone.levelI49R, zone.rootRhombus, zone.subHex, zone.centroid, zone.nPoints, v5x6), i;
       bool oddGrid = zone.level & 1; // REVIEW:
       int j;
 
@@ -1112,17 +1112,35 @@ private:
 
    int getNeighbors(I7HZone neighbors[6], I7HNeighbor i7hNB[6])
    {
-      I7HZone children[7];
+      int nLevel = this.level;
       int numNeighbors = 0;
-      int nc = getPrimaryChildren(children);
+      Pointd c, cVerts[6];
+      int nv = 0;
 
-      if(nc)
+      if(nLevel <= 19)
       {
-         Pointd c = children[0].centroid;
-         Pointd cVerts[6];
-         int nv = children[0].getVertices(cVerts);
+         // This is conceptually the centroid child, but allows representation of Level 20 which I7HZone cannot represent
+         int root, cLevel49R, cSH;
+         c = centroid;
+         if(nLevel & 1)
+         {
+            int64 row, col;
+            root = getOddLevelCentroidChildRootRowCol(&row, &col, null);
+            cLevel49R = levelI49R + 1;
+            cSH = 0;
+         }
+         else
+         {
+            root = rootRhombus;
+            cLevel49R = levelI49R;
+            cSH = 1;
+         }
+         nv = I7HZone::getVertices(cLevel49R, root, cSH, c, nPoints, cVerts);
+      }
+
+      if(nv)
+      {
          int i;
-         int nLevel = this.level;
          int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
          bool north = c.x - c.y - 1E-11 > 0;
 
@@ -1246,18 +1264,16 @@ private:
             return 1;
          else
          {
-            // REVIEW: We should use the current zone's centroid -- not parent0's centroidChild's?
-            //         This was breaking for calculating C8-14-A 's second parent
-            Pointd cc = /*cChild.*/centroid;
+            Pointd c = centroid;
             int i;
             Pointd vertices[6];
 
-            int n = getVertices(vertices);
+            int n = getVertices(levelI49R, rootRhombus, subHex, c, nPoints, vertices);
             int pLevel = parent0.level;
 
             for(i = 0; i < n; i++)
             {
-               Pointd acc = cc;
+               Pointd acc = c;
                double dx = vertices[i].x - acc.x;
                double dy = vertices[i].y - acc.y;
                I7HZone z;
@@ -1286,7 +1302,7 @@ private:
                   {
                      double x, y;
                      Pointd ci;
-                     cross5x6Interruption(cc, ci, !north, true);
+                     cross5x6Interruption(c, ci, !north, true);
 
                      x = vertices[i].x - ci.x;
                      y = vertices[i].y - ci.y;
@@ -1772,12 +1788,10 @@ private:
       }
    }
 
-   int getVertices(Pointd * vertices)
+   int ::getVertices(uint l49R, uint root, uint subHex, const Pointd centroid, int nPoints, Pointd * vertices)
    {
       Pointd c = centroid;
-      uint l49R = levelI49R;
       uint64 p = POW7(l49R);
-      uint root = rootRhombus;
       uint count = 0;
       double oonp = 1.0 / (7 * p);
 
@@ -1821,7 +1835,7 @@ private:
             v[4] = { + oonp * B, + oonp * A };
             v[5] = { + oonp * A, - oonp * A };
 
-            count = addNonPolarBaseVertices(c, v, vertices);
+            count = addNonPolarBaseVertices(c, nPoints, v, vertices);
          }
       }
       else
@@ -1866,7 +1880,7 @@ private:
             v[4] = { + oonp * B, + oonp * C };
             v[5] = { + oonp * C, - oonp * A };
 
-            count = addNonPolarBaseVertices(c, v, vertices);
+            count = addNonPolarBaseVertices(c, nPoints, v, vertices);
          }
       }
       return count;
@@ -1908,7 +1922,7 @@ private:
       return 6; // REVIEW: Can we always return 6 directions for this purpose?
    }
 
-   private static inline void rotate5x6Offset(Pointd r, double dx, double dy, bool clockwise)
+   private static inline void ::rotate5x6Offset(Pointd r, double dx, double dy, bool clockwise)
    {
       if(clockwise)
       {
@@ -2051,11 +2065,10 @@ private:
             points[(*count)++] = { p.x + j * dx / nDivisions, p.y + j * dy / nDivisions };
    }
 
-   uint addNonPolarBaseVertices(Pointd c, const Pointd * v, Pointd * vertices)
+   uint ::addNonPolarBaseVertices(Pointd c, int nPoints, const Pointd * v, Pointd * vertices)
    {
       int start = 0, prev, i;
       Pointd point, dir;
-      int nPoints = this.nPoints;
       uint count = 0;
 
       // Start with a point outside interruptions
@@ -2603,11 +2616,121 @@ private:
       return nVertices;
    }
 
+   // Returns root rhombus
+   private static int getOddLevelCentroidChildRootRowCol(int64 * row, int64 * col, uint64 * cpPtr)
+   {
+      int cRhombus;
+      uint64 p = POW7(levelI49R), cp = p * 7;
+      uint root = rootRhombus;
+      uint64 ix = rhombusIX;
+
+      if(cpPtr) *cpPtr = cp;
+
+      if(root == 0xA)
+      {
+         // North pole
+         if(subHex == 1)
+         {
+            *row = 0, *col = 0;
+            return 0xA;
+         }
+
+         *row = 1, *col = cp - 2;
+         cRhombus = 2*(subHex - 2);
+      }
+      else if(root == 0xB)
+      {
+         // South pole
+         if(subHex == 1)
+         {
+            *row = 0;
+            *col = 0;
+            return 0xB;
+         }
+         *row = cp - 1, *col = 2;
+         cRhombus = 9 - 2*(subHex - 2);
+      }
+      else
+      {
+         // Regular case
+         uint sh = subHex;
+         bool south;
+
+         cRhombus = root;
+
+         south = (cRhombus & 1);
+         *row = 7LL * (ix / p), *col = 7LL * (ix % p);
+
+         if(ix == 0 && south && sh >= 4)
+            sh++;
+         else if(sh >= 2 && parent0.isEdgeHex)
+            sh = (sh + (south ? -1 : 3)) % 6 + 2;
+
+         switch(sh)
+         {
+            case 2: *row -= 3; *col -= 1; break;
+            case 3: *row -= 2; *col -= 3; break;
+            case 4: *row += 1; *col -= 2; break;
+            case 5: *row += 3; *col += 1; break;
+            case 6: *row += 2; *col += 3; break;
+            case 7: *row -= 1; *col += 2; break;
+         }
+
+         if(*col == (int64)cp && *row < (int64)cp && !south) // Cross at top-dent to the right
+         {
+            *col = cp-*row;
+            *row = 0;
+            cRhombus += 2;
+         }
+         else if(*row == (int64)cp && *col < (int64)cp && south) // Cross at bottom-dent to the right
+         {
+            *row = cp-*col;
+            *col = 0;
+            cRhombus += 2;
+         }
+         else if(*col > 0 && *col < (int64)cp && *row < 0 && !south) // Cross at top-dent to the left
+         {
+            int64 ncol = cp + *row;
+            int64 nrow = cp - *col;
+            *col = ncol;
+            *row += nrow;
+            cRhombus -= 2;
+         }
+         else if(*row > 0 && *row < (int64)cp && *col < 0 && south) // Cross at bottom-dent to the left
+         {
+            int64 nrow = cp + *col;
+            int64 ncol = cp - *row;
+            *row = nrow;
+            *col += ncol;
+            cRhombus -= 2;
+         }
+
+         if(*row < 0 && *col < 0)
+            *row += cp, *col += cp, cRhombus -= 2;
+         else if(*row < 0)
+            *row += cp, cRhombus -= 1;
+         else if(*col < 0)
+            *col += cp, cRhombus -= 1;
+         else if(*col >= cp && *row >= cp)
+            *row -= cp, *col -= cp, cRhombus += 2;
+         else if(*row >= cp)
+            *row -= cp, cRhombus += 1;
+         else if(*col >= cp)
+            *col -= cp, cRhombus += 1;
+      }
+      if(cRhombus < 0) cRhombus += 10;
+      else if(cRhombus > 9) cRhombus -= 10;
+
+      if(*row >= 0 && *col >= 0 && *row < cp && *col < cp)
+         return cRhombus;
+      return -1;
+   }
+
    property I7HZone centroidChild
    {
       get
       {
-         if(this == nullZone)
+         if(this == nullZone || (levelI49R == 9 && subHex))
             return nullZone;
          else
          {
@@ -2618,102 +2741,10 @@ private:
                return I7HZone { levelI49R, root, ix, 1 };
             else // Even level from odd level
             {
-               uint64 p = POW7(levelI49R), cp = p * 7;
                int64 row, col;
-               int cRhombus;
-
-               if(root == 0xA)
-               {
-                  // North pole
-                  if(subHex == 1)
-                     return I7HZone { levelI49R + 1, 0xA, 0, 0 };
-
-                  row = 1, col = cp - 2;
-                  cRhombus = 2*(subHex - 2);
-               }
-               else if(root == 0xB)
-               {
-                  // South pole
-                  if(subHex == 1)
-                     return I7HZone { levelI49R + 1, 0xB, 0, 0 };
-
-                  row = cp - 1, col = 2;
-                  cRhombus = 9 - 2*(subHex - 2);
-               }
-               else
-               {
-                  // Regular case
-                  uint sh = subHex;
-                  bool south;
-
-                  cRhombus = root;
-
-                  south = (cRhombus & 1);
-                  row = 7LL * (ix / p), col = 7LL * (ix % p);
-
-                  if(ix == 0 && south && sh >= 4)
-                     sh++;
-                  else if(sh >= 2 && parent0.isEdgeHex)
-                     sh = (sh + (south ? -1 : 3)) % 6 + 2;
-
-                  switch(sh)
-                  {
-                     case 2: row -= 3; col -= 1; break;
-                     case 3: row -= 2; col -= 3; break;
-                     case 4: row += 1; col -= 2; break;
-                     case 5: row += 3; col += 1; break;
-                     case 6: row += 2; col += 3; break;
-                     case 7: row -= 1; col += 2; break;
-                  }
-
-                  if(col == (int64)cp && row < (int64)cp && !south) // Cross at top-dent to the right
-                  {
-                     col = cp-row;
-                     row = 0;
-                     cRhombus += 2;
-                  }
-                  else if(row == (int64)cp && col < (int64)cp && south) // Cross at bottom-dent to the right
-                  {
-                     row = cp-col;
-                     col = 0;
-                     cRhombus += 2;
-                  }
-                  else if(col > 0 && col < (int64)cp && row < 0 && !south) // Cross at top-dent to the left
-                  {
-                     int64 ncol = cp + row;
-                     int64 nrow = cp - col;
-                     col = ncol;
-                     row += nrow;
-                     cRhombus -= 2;
-                  }
-                  else if(row > 0 && row < (int64)cp && col < 0 && south) // Cross at bottom-dent to the left
-                  {
-                     int64 nrow = cp + col;
-                     int64 ncol = cp - row;
-                     row = nrow;
-                     col += ncol;
-                     cRhombus -= 2;
-                  }
-
-                  if(row < 0 && col < 0)
-                     row += cp, col += cp, cRhombus -= 2;
-                  else if(row < 0)
-                     row += cp, cRhombus -= 1;
-                  else if(col < 0)
-                     col += cp, cRhombus -= 1;
-                  else if(col >= cp && row >= cp)
-                     row -= cp, col -= cp, cRhombus += 2;
-                  else if(row >= cp)
-                     row -= cp, cRhombus += 1;
-                  else if(col >= cp)
-                     col -= cp, cRhombus += 1;
-               }
-               if(cRhombus < 0) cRhombus += 10;
-               else if(cRhombus > 9) cRhombus -= 10;
-
-               if(row >= 0 && col >= 0 && row < cp && col < cp)
-                  return I7HZone { levelI49R + 1, cRhombus, (uint64)row * cp + col, 0 };
-               return nullZone;
+               uint64 cp;
+               int cRhombus = getOddLevelCentroidChildRootRowCol(&row, &col, &cp);
+               return cRhombus == -1 ? nullZone : I7HZone { levelI49R + 1, cRhombus, (uint64)row * cp + col, 0 };
             }
          }
       }
@@ -2726,7 +2757,7 @@ private:
       {
          Pointd c = children[0].centroid;
          Pointd cVerts[6];
-         int nv = children[0].getVertices(cVerts);
+         int nv = children[0].getVertices(children[0].levelI49R, children[0].rootRhombus, children[0].subHex, c, children[0].nPoints, cVerts);
          int i;
          int cLevel = children[0].level;
          bool north = c.x - c.y - 1E-11 > 0;
@@ -3214,11 +3245,11 @@ private:
    int getTopIcoVertex(Pointd v)
    {
       Pointd vertices[6];
-      int n = getVertices(vertices);
+      Pointd c = this.centroid;
+      int n = getVertices(levelI49R, rootRhombus, subHex, c, nPoints, vertices);
       int i, top = 0;
       Pointd topIco;
       bool equalTop = false;
-      Pointd c = this.centroid;
       bool north = c.x - c.y - 1E-11 > 0;
       int level = this.level;
       bool oddLevel = level & 1;
