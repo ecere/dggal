@@ -221,11 +221,11 @@ public class RhombicIcosahedral7H : DGGRS
    int64 getSubZoneIndex(I7HZone parent, I7HZone subZone)
    {
       int64 ix = -1;
-      int level = getZoneLevel(parent), szLevel = getZoneLevel(subZone);
+      int level = RhombicIcosahedral7H::getZoneLevel(parent), szLevel = RhombicIcosahedral7H::getZoneLevel(subZone);
 
       if(szLevel == level)
          ix = 0;
-      else if(szLevel > level && zoneHasSubZone(parent, subZone))
+      else if(szLevel > level && RhombicIcosahedral7H::zoneHasSubZone(parent, subZone))
       {
          Pointd zCentroid;
 
