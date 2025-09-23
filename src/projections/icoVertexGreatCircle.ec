@@ -219,10 +219,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                ap * B.y + bp * C.y,
                ap * B.z + bp * C.z
             };
-            double av = A.DotProduct(p), av2 = av * av;
-            double bv = 1 + h*h * (av - 1), bv2 = bv * bv;
-            double bvp = sqrt((1 - bv2) / (1 - av2));
+            double av = A.DotProduct(p);
+            double bv = 1 + h*h * (av - 1);
+            double bvp = h * sqrt((1 + bv) / (1 + av));
             double avp = bv - av * bvp;
+
             P =
             {
                avp * A.x + bvp * p.x,
@@ -272,7 +273,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       double xp = sqrt(bp.x * bp.x + bp.y * bp.y);
       double yp = sqrt(pdp.x * pdp.x + pdp.y * pdp.y);
       double xpOverxpPlusyp = xp / (xp + yp);
-      double cosXpY;
       // if(xpOverxpPlusyp < 0 || xpOverxpPlusyp > 1) Print("bug");
       // Area of spherical triangle: sum of angles - Pi
 
@@ -317,11 +317,12 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
       // Compute sides AD and BD
       if(fabs(rho - 0) < 1E-5) //1E-11) // problems near the poles with smaller epsilon
-         AD = 0, BD = AB, cosXpY = cosAB;
+         AD = 0, BD = AB;
       else if(fabs(rho - beta) < 1E-5) //1E-11) // problems near the poles with smaller epsilon
-         AD = AC, BD = BC, cosXpY = cos(BD);
+         AD = AC, BD = BC;
       else
       {
+         double cosXpY;
          if(radialVertex != rtea)
          {
             // Slightly simpler solution for alpha == 90 degrees
@@ -351,7 +352,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       */
 
       //  (x' / (x' + y')) ^ 2 = ( 1 - cos x ) / (1 - cos (x + y))
-      x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
+      // x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
+      // The half-angle formula avoids precision issues here as well:
+      x = 2 * asin(xpOverxpPlusyp * sin(BD));
 
       {
          // Compute D by SLERPing from A to C by AD
@@ -368,7 +371,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
          // Compute P by SLERPing from B to D by x
          if(fabs(x - 0) < 1E-9)
-            P = A;
+            P = B;
          else if(fabs(x - BD) < 1E-9)
             P = D;
          else
