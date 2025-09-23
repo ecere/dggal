@@ -3,9 +3,7 @@ private:
 
 #include <stdio.h>
 
-import "ISEA7H"
-import "IVEA7H"
-import "RTEA7H"
+import "RI7H"
 
 static const int cMap   [7] = { 0, 3, 1, 5, 4, 6, 2 };
 static const int invCMap[7] = { 0, 2, 6, 1, 4, 3, 5 };
@@ -19,6 +17,31 @@ public:
    uint64 ancestry:60:0;
 
 private:
+   property int level
+   {
+      get
+      {
+         if(this == nullZone)
+            return -1;
+         else
+         {
+            uint64 ancestry = this.ancestry;
+            int shift = 19 * 3;
+            int l;
+            int level = 0;
+
+            for(l = 0; l < 20; l++, shift -= 3)
+            {
+               int b = (int)((ancestry & (7LL << shift)) >> shift);
+               if(b == 7)
+                  break;
+               level++;
+            }
+            return level;
+         }
+      }
+   }
+
    property Z7Zone centroidChild
    {
       get
@@ -379,7 +402,7 @@ private:
       return result;
    }
 
-   public Z7Zone ::fromText(const String zoneID)
+   public Z7Zone ::fromTextID(const String zoneID)
    {
       Z7Zone zone = nullZone;
 
@@ -419,31 +442,6 @@ private:
       return zone;
    }
 
-   property int level
-   {
-      get
-      {
-         if(this == nullZone)
-            return -1;
-         else
-         {
-            uint64 ancestry = this.ancestry;
-            int shift = 19 * 3;
-            int l;
-            int level = 0;
-
-            for(l = 0; l < 20; l++, shift -= 3)
-            {
-               int b = (int)((ancestry & (7LL << shift)) >> shift);
-               if(b == 7)
-                  break;
-               level++;
-            }
-            return level;
-         }
-      }
-   }
-
    public void getTextID(String zoneID)
    {
       if(this == nullZone)
@@ -472,7 +470,8 @@ static define POW_EPSILON = 0.1;
 
 #define POW7(x) ((x) < sizeof(powersOf7) / sizeof(powersOf7[0]) ? (uint64)powersOf7[x] : (uint64)(pow(7, x) + POW_EPSILON))
 
-public class Z7 : RhombicIcosahedral7H
+// This DGGRS base class uses Z7Zone natively for DGGRSZone, at the cost of some performance impact
+public class RI7H_Z7 : RhombicIcosahedral7H
 {
    uint64 countSubZones(Z7Zone zone, int rDepth)
    {
@@ -555,7 +554,7 @@ public class Z7 : RhombicIcosahedral7H
 
    Z7Zone getZoneFromTextID(const String zoneID)
    {
-      return Z7Zone::fromText(zoneID);
+      return Z7Zone::fromTextID(zoneID);
    }
 
    Z7Zone getFirstSubZone(Z7Zone zone, int depth)
@@ -668,73 +667,3 @@ public class Z7 : RhombicIcosahedral7H
       return zones;
    }
 }
-
-#if 1
-// These DGGRSs natively use Z7Zone for DGGRSZone, at the cost of some performance impact
-
-public class ISEA7H_Z7 : Z7
-{
-   equalArea = true;
-
-   ISEA7H_Z7() { pj = ISEAProjection { }; incref pj; }
-   ~ISEA7H_Z7() { delete pj; }
-}
-
-public class IVEA7H_Z7 : Z7
-{
-   equalArea = true;
-
-   IVEA7H_Z7() { pj = SliceAndDiceGreatCircleIcosahedralProjection { }; incref pj; }
-   ~IVEA7H_Z7() { delete pj; }
-}
-
-public class RTEA7H_Z7 : Z7
-{
-   equalArea = true;
-
-   RTEA7H_Z7() { pj = RTEAProjection { }; incref pj; }
-   ~RTEA7H_Z7() { delete pj; }
-}
-
-#else
-
-// To still use using I7HZone for 64-bit integer DGGRSZone...
-public class ISEA7H_Z7 : ISEA7H
-{
-   I7HZone getZoneFromTextID(const String zoneID)
-   {
-      return Z7Zone::fromText(zoneID).to7H();
-   }
-
-   void getZoneTextID(I7HZone zone, String zoneID)
-   {
-      Z7Zone::from7H(zone).getTextID(zoneID);
-   }
-}
-
-public class IVEA7H_Z7 : IVEA7H
-{
-   I7HZone getZoneFromTextID(const String zoneID)
-   {
-      return Z7Zone::fromText(zoneID).to7H();
-   }
-
-   void getZoneTextID(I7HZone zone, String zoneID)
-   {
-      Z7Zone::from7H(zone).getTextID(zoneID);
-   }
-}
-
-public class RTEA7H_Z7 : RTEA7H
-{
-   I7HZone getZoneFromTextID(const String zoneID)
-   {
-      return Z7Zone::fromText(zoneID).to7H();
-   }
-
-   void getZoneTextID(I7HZone zone, String zoneID)
-   {
-      Z7Zone::from7H(zone).getTextID(zoneID);
-   }
-}
-#endif
