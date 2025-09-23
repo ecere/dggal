@@ -1995,6 +1995,8 @@ private:
                });
          }
       }
+      else if(nDivisions == 1)
+         points.Add(p);
       else
          for(j = 0; j < nDivisions; j++)
             points.Add({ p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
