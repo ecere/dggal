@@ -169,7 +169,11 @@ public class RI5x6Projection
 #endif
 
    // This spherical linear interpolation function assumes the distance between p0 and p1 is already known
-   private /*static inline */void ::slerpAngle(
+   private /*static inline */
+#if !defined(__EMSCRIPTEN__)
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
+#endif
+   void ::slerpAngle(
       Vector3D out, const Vector3D p0, const Vector3D p1,
       Radians distance, Radians movement)
    {

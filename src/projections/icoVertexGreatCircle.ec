@@ -94,6 +94,8 @@ import "Vector3D"
 // Define this to use the vectorial approach based on Brenton R S Recht's blog entry at
 // https://brsr.github.io/2021/08/31/snyder-equal-area.html
 // with further replacement of trigonometry by vector operation for the inverse as well
+// The spherical trigonometry approach will still be used as a fallback for degenerate cases
+// where the vectorial inverse cannot produce an accurate result.
  #define USE_VECTORS
 
 public enum VGCRadialVertex { isea, ivea, rtea };
@@ -125,7 +127,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          {
             case isea:
                va = 0, vb = 2, vc = 1;
-#ifndef USE_VECTORS
                alpha = Degrees { 90 };
                beta = Degrees { 60 };
                gamma = Degrees { 36 };
@@ -133,11 +134,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = atan(1/phi);
                BC = atan(2/(phi*phi));
                sinAlpha = 1, cosAlpha = 0;
-#endif
                break;
             case ivea:
                va = 0, vb = 1, vc = 2;
-#ifndef USE_VECTORS
                alpha = Degrees { 90 };
                beta = Degrees { 36 };
                gamma = Degrees { 60 };
@@ -145,11 +144,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = acos(sqrt((phi + 1)/3));
                BC = atan(2/(phi*phi));
                sinAlpha = 1, cosAlpha = 0;
-#endif
                break;
             case rtea:
                va = 1, vb = 0, vc = 2;
-#ifndef USE_VECTORS
                alpha = Degrees { 36 };
                beta = Degrees { 90 };
                gamma = Degrees { 60 };
@@ -157,30 +154,26 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AC = atan(2/(phi*phi));
                BC = acos(sqrt((phi + 1)/3));
                sinAlpha = sin(alpha), cosAlpha = cos(alpha);
-#endif
                break;
          }
          // poleFixIVEA = value == ivea;
-#ifndef USE_VECTORS
          cosAB = cos(AB), sinAB = sin(AB);
          tanHAB = tan(AB/2);
-#endif
       }
    }
 
-#ifndef USE_VECTORS
    Radians beta, gamma, alpha;
    Radians AB, AC, BC;
    double cosAB, sinAB, tanHAB;
    double sinAlpha, cosAlpha;
-#endif
    int va, vb, vc;
 
 #ifdef USE_VECTORS
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void inverseVector(const Pointd pi,
       const Pointd pai, const Pointd pbi, const Pointd pci,
       const Vector3D A, const Vector3D B, const Vector3D C,
-      Vector3D P)
+      Vector3D P, int subTri)
    {
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
       double b[3];
@@ -188,9 +181,13 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
       cartesianToBary(b, pi, pai, pbi, pci, -6);
 
-           if(b[0] > 1 - 1E-11) { P = A; return; }
-      else if(b[1] > 1 - 1E-11) { P = B; return; }
-      else if(b[2] > 1 - 1E-11) { P = C; return; }
+           if(b[0] > 1 - 1E-15) { P = A; return; }
+      else if(b[1] > 1 - 1E-15) { P = B; return; }
+      else if(b[2] > 1 - 1E-15) { P = C; return; }
+
+      if(b[0] < 1E-15) b[0] = 0;
+      if(b[1] < 1E-15) b[1] = 0;
+      if(b[2] < 1E-15) b[2] = 0;
 
       c1.CrossProduct(B, C);
 
@@ -206,19 +203,23 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          double f = S * V + CC * (c01 * c12 - c20);
          double g = CC * s12 * (1 + c01);
          double f2 = f * f, g2 = g * g, gf = g * f;
-         double oos12tf2pg2 = fabs(f2 + g2) > 1E-11 && fabs(s12) > 1E-11 ? 1.0 / (s12 * (f2 + g2)) : 0;
-         double ap = oos12tf2pg2 ? (s12 * (f2 - g2) - 2 * gf * c12) * oos12tf2pg2 : 1;
-         double bp = oos12tf2pg2 ? 2 * gf * oos12tf2pg2 : 0;
+         double term1 = s12 * (f2 - g2);
+         double term2 = 2 * gf * c12;
+         double divisor = s12 * (f2 + g2);
+         double diff = term1 - term2;
 
-         if(ap < 1E-05) ap = 0, bp = 1;
-
+         if((fabs(diff) > 1E-9 && fabs(divisor) > 1E-9))
          {
+            double oODivisor = 1.0 / divisor;
+            double ap = Max(0.0, (term1 - term2) * oODivisor);
+            double bp = Min(1.0, 2 * gf * oODivisor);
             Vector3D p
             {
                ap * B.x + bp * C.x,
                ap * B.y + bp * C.y,
                ap * B.z + bp * C.z
             };
+
             double av = A.DotProduct(p);
             double bv = 1 + h*h * (av - 1);
             double bvp = h * sqrt((1 + bv) / (1 + av));
@@ -230,6 +231,78 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                avp * A.y + bvp * p.y,
                avp * A.z + bvp * p.z
             };
+         }
+         else
+         {
+            // Fallback for the degenerate case where the optimized linear algebra version breaks down,
+            // first remapping the vertices to the expected order...
+            bool correctCVertex = (radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4);
+            // A / pB is the vertex from which great circles radiate (angle beta)
+            // pA (B or C) is vertex at angle alpha (90 degrees for ISEA and IVEA)
+            // pC (B or C) is vertex at angle gamma
+            const Vector3D * pA = correctCVertex ? B : C, * pB = A, * pC = correctCVertex ? C : B;
+            double upOverupPvp = b[correctCVertex ? 1 : 2] / (b[1] + b[2]);
+            double xpOverxpPlusyp = 1 - b[0];
+            Radians areaABC = beta + gamma + alpha - Pi;
+            Radians rhoPlusDelta = beta + gamma - upOverupPvp * (beta + gamma + alpha - Pi);
+            Radians areaABD = rhoPlusDelta + alpha - Pi;  // T-U = rho + delta + alpha - Pi
+            Radians S = (areaABD + Pi) / 2;
+            Radians x, delta, rho;
+            Radians AD, BD;
+            Vector3D D;
+
+            // rho is angle ABD
+            if(fabs(areaABD - 0) < 1E-11)
+               rho = 0;
+            else if(fabs(areaABD - areaABC) < 1E-11)
+               rho = beta;
+            else
+            {
+               rho = atan2(
+                  -cosAlpha         - cos(rhoPlusDelta),
+                  -sinAlpha * cosAB + sin(rhoPlusDelta)
+               );
+               rho = Max(0.0, Min(beta, rho));
+            }
+
+            // delta is angle ADB
+            delta = Min((double)Pi, Max(0.0, rhoPlusDelta - rho));
+            if(fabs(rho - 0) < 1E-5)
+               AD = 0, BD = AB;
+            else if(fabs(rho - beta) < 1E-5)
+               AD = AC, BD = BC;
+            else
+            {
+               if(radialVertex != rtea)
+               {
+                  double cosXpY = 1 / (tan(rho) * tan(delta));
+                  AD = 2 * atan2(tan((rhoPlusDelta - Pi/2) / 2), tanHAB);
+                  cosXpY = Max(-1.0, Min(1.0, cosXpY));
+                  BD = acos(cosXpY);
+               }
+               else
+               {
+                  double cosSmRho = cos(S - rho), cosSmDelta = cos(S - delta), cosSmAlpha = cos(S - alpha), cosS = cos(S);
+                  AD = 2 * atan2(sqrt(-cosS * cosSmRho),   sqrt( cosSmAlpha * cosSmDelta));
+                  BD = 2 * atan2(sqrt(-cosS * cosSmAlpha), sqrt( cosSmRho   * cosSmDelta));
+               }
+            }
+
+            x = 2 * asin(xpOverxpPlusyp * sin(BD/2));
+
+            if(fabs(AD - 0) < 1E-12)
+               D = *pA;
+            else if(fabs(AD - AC) < 1E-12)
+               D = *pC;
+            else
+               slerpAngle(D, *pA, *pC, AC, AD);
+
+            if(fabs(x - 0) < 1E-12)
+               P = *pB;
+            else if(fabs(x - BD) < 1E-12)
+               P = D;
+            else
+               slerpAngle(P, *pB, D, BD, x);
          }
       }
    }
@@ -285,7 +358,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       Radians x, delta, rho;
       Radians AD, BD;
 
-      if(fabs(div) < 1E-10) //12)
+      if(fabs(div) < 1E-10)
       {
          P = B;
          return;
@@ -316,32 +389,36 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       */
 
       // Compute sides AD and BD
-      if(fabs(rho - 0) < 1E-5) //1E-11) // problems near the poles with smaller epsilon
-         AD = 0, BD = AB;
-      else if(fabs(rho - beta) < 1E-5) //1E-11) // problems near the poles with smaller epsilon
-         AD = AC, BD = BC;
+      if(fabs(rho - 0) < 1E-5) // problems near the poles with smaller epsilon
+         AD = 0, BD = AB; //, cosXpY = cos(BD);
+      else if(fabs(rho - beta) < 1E-5) // problems near the poles with smaller epsilon
+         AD = AC, BD = BC; //, cosXpY = cos(BD);
       else
       {
-         double cosXpY;
          if(radialVertex != rtea)
          {
             // Slightly simpler solution for alpha == 90 degrees
-            cosXpY = 1 / (tan(rho) * tan(delta));
+            double cosXpY = 1 / (tan(rho) * tan(delta));
             AD = 2 * atan2(tan((rhoPlusDelta - Pi/2) / 2), tanHAB);
+            cosXpY = Max(-1.0, Min(1.0, cosXpY));
+            BD = acos(cosXpY);
          }
          else
          {
             // alpha is not 90 degrees for RTEA
-            double sinDelta = sin(delta), cosSmDelta = cos(S - delta);
-            cosXpY =  2 * cos(S - rho  ) * cosSmDelta / (sin(rho) * sinDelta) - 1;
-            AD = acos(2 * cos(S - alpha) * cosSmDelta / (sinAlpha * sinDelta) - 1);
+            // double sinDelta = sin(delta), cosSmDelta = cos(S - delta);
+            // double cosXpY =  2 * cos(S - rho  ) * cosSmDelta / (sin(rho) * sinDelta) - 1;
+            // AD = acos(2 * cos(S - alpha) * cosSmDelta / (sinAlpha * sinDelta) - 1);
+            // cosXpY = Max(-1.0, Min(1.0, cosXpY));
+            // BD = acos(cosXpY);
+            // BD = 2 * asin(sqrt(Max(0.0, 1 - (cos(S - rho) * cosSmDelta) / (sin(rho) * sinDelta))));
+            // AD = 2 * asin(sqrt(Max(0.0, 1 - (cos(S - alpha) * cosSmDelta) / (sinAlpha * sinDelta))));
 
-            // Also equivalent formulas:
-            // AD = 2 * atan2(sqrt(-cos(S) * cos(S - rho  )), sqrt( cos(S - alpha) * cos(S - delta)));
-            // BD = 2 * atan2(sqrt(-cos(S) * cos(S - alpha)), sqrt( cos(S - rho  ) * cos(S - delta)));
+            // These atan2 formulas are more stable:
+            double cosSmRho = cos(S - rho), cosSmDelta = cos(S - delta), cosSmAlpha = cos(S - alpha), cosS = cos(S);
+            AD = 2 * atan2(sqrt(-cosS * cosSmRho),   sqrt( cosSmAlpha * cosSmDelta));
+            BD = 2 * atan2(sqrt(-cosS * cosSmAlpha), sqrt( cosSmRho   * cosSmDelta));
          }
-         cosXpY = Max(-1.0, Min(1.0, cosXpY));
-         BD = acos(cosXpY);
       }
 
       /*
@@ -354,7 +431,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       //  (x' / (x' + y')) ^ 2 = ( 1 - cos x ) / (1 - cos (x + y))
       // x = acos(1 - xpOverxpPlusyp * xpOverxpPlusyp * (1 - cosXpY));
       // The half-angle formula avoids precision issues here as well:
-      x = 2 * asin(xpOverxpPlusyp * sin(BD));
+      x = 2 * asin(xpOverxpPlusyp * sin(BD/2));
 
       {
          // Compute D by SLERPing from A to C by AD
@@ -366,8 +443,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
             D = C;
          else
             slerpAngle(D, A, C, AC, AD);
-
-         //D.Normalize(D);
 
          // Compute P by SLERPing from B to D by x
          if(fabs(x - 0) < 1E-9)
@@ -476,7 +551,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
             b = va, c = vc;
          else
             b = vc, c = va;
-         inverseVector(v, p5x6[a], p5x6[b], p5x6[c], v3D[a], v3D[b], v3D[c], out);
+         inverseVector(v, p5x6[a], p5x6[b], p5x6[c], v3D[a], v3D[b], v3D[c], out, subTri);
       }
 #else
       inversePointInSDTTriangle(v, p5x6[va], p5x6[vb], p5x6[vc], v3D[va], v3D[vb], v3D[vc], out);
@@ -561,9 +636,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          double xpOverxpPlusyp;
          Pointd pdi;
 
-         if(fabs(rho - 0) < 1E-5) // 1E-11 // problems near the pole with smaller epsilon
+         if(fabs(rho - 0) < 1E-5) // problems near the pole with smaller epsilon
             cosXpY = cosAB;
-         else if(fabs(rho - beta) < 1E-5) // 1E-11 // problems near the pole with smaller epsilon
+         else if(fabs(rho - beta) < 1E-5) // problems near the pole with smaller epsilon
             cosXpY = cos(BC);
          else
          {
