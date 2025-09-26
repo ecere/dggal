@@ -505,9 +505,29 @@ public class RI5x6Projection
          result = { northPole ? 90 : -90, qOffset + lon1 + (add180 * 180) };
    }
 
-   public virtual bool inverse(const Pointd v, GeoPoint result, bool oddGrid)
+   public virtual bool inverse(const Pointd _v, GeoPoint result, bool oddGrid)
    {
-      int face = getFace(v);
+      int face;
+      Pointd v = _v;
+
+      if(v.x < 0 && v.y < 0)
+         v.x += 5, v.y += 5;
+      else if(v.x < 0 && v.y < 1)
+         v.x += 5, v.y += 5;
+      else if(v.x < 0 && v.y < 1 + 1E-10)
+         v.x += 5, v.y = 6;
+      else if(v.y < 0 && v.x < 0)
+         v.x += 5, v.y += 5;
+      else if(v.y < 0 && v.x < 1E-10)
+         v.x = 5, v.y += 5;
+      else if(v.x > 5 && v.y > 5)
+         v.x -= 5, v.y -= 5;
+      else if(v.x > 5 && v.y > 5 - 1E-10)
+         v.x -= 5, v.y = 0;
+      else if(v.y > 6 && v.x > 5 - 1E-10)
+         v.y -= 5, v.x = 0;
+
+      face = getFace(v);
       if(face != -1)
       {
          uint16 * indices = icoIndices[face];

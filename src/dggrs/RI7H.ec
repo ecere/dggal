@@ -562,19 +562,6 @@ public class RhombicIcosahedral7H : DGGRS
             for(i = 0; i < r.count; i++)
             {
                GeoPoint point;
-               // Imprecisions causes some failures... http://localhost:8080/ogcapi/collections/gebco/dggs/ISEA3H/zones/L0-2B3FA-G
-
-               if(r[i].x > 5 + 1E-6 && r[i].y > 5 + 1E-6)
-                  r[i].x -= 5, r[i].y -= 5;
-
-               if(r[i].y < 0 && fabs(r[i].y - 0) < 1E-6)
-                  r[i].y = 0;
-               else if(r[i].x > 5 && fabs(r[i].x - 5) < 1E-6)
-                  r[i].x = 5;
-               if(r[i].x > 5 + 1E-6 || r[i].y > 6 + 1E-6)
-                  r[i].x -= 5, r[i].y -= 5;
-               if(r[i].x < 0 - 1E-6)
-                  r[i].x += 5, r[i].y += 5;
 
                if(pj.inverse(r[i], point, oddGrid))
                {
