@@ -658,6 +658,15 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
       (fabs(i2.x - 5) < 1E-6 && fabs(i2.y - 4.5) < 1E-6) ||
       (fabs(i2.x - 2) < 1E-6 && fabs(i2.y - 3.5) < 1E-6) ||
       (fabs(i2.x - 1.5) < 1E-6 && fabs(i2.y - 3) < 1E-6));
+   if(n.x < 0.5 && p.x > 0.5 && p.y < 0.01 && n.y < 0.01)
+      interruptionNearPole = true;
+   else if(n.x > 4.99 && p.x > 4.99 && p.y > 4.5 && n.y < 4.5)
+      interruptionNearPole = true;
+   else if(n.x > 1.5 && p.x < 1.5 && p.y > 2.99 && n.y > 2.99)
+      interruptionNearPole = true;
+   else if(n.x < 2.01 && p.x < 2.01 && p.y < 3.5 && n.y > 3.5)
+      interruptionNearPole = true;
+
 
    if(!nDivisions) nDivisions = 1;
    if(interruptionNearPole)

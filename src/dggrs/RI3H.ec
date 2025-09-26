@@ -457,7 +457,7 @@ public class RhombicIcosahedral3H : DGGRS
       if(numPoints)
       {
          Array<Pointd> ap;
-         bool geodesic = false; //true;
+         //bool geodesic = false; //true;
          int level = zone.level;
          bool refine = crs84 || zone.subHex < 1;  // Only use refinement for ISEA for even levels -- REVIEW: When should we refine here?
          int i;
@@ -469,8 +469,9 @@ public class RhombicIcosahedral3H : DGGRS
             GeoPoint centroid;
             //Radians dLon;
             bool wrap = true;
-            int lonQuad;
+            //int lonQuad;
             bool oddGrid = zone.subHex > 0;
+            double poleOffset = 0.001 * (1LL << (level/2));
 
             //getZoneWGS84ExtentApproximate(zone, e);
             //dLon = (Radians)e.ur.lon - (Radians)e.ll.lon;
@@ -484,9 +485,9 @@ public class RhombicIcosahedral3H : DGGRS
                centroid.lon -= 2*Pi;
 
             // wrap = (dLon < 0 || e.ll.lon > centroid.lon || dLon > Pi || (Radians)centroid.lon + 4*dLon > Pi || (Radians)centroid.lon - 4*dLon < -Pi);
-            lonQuad = (int)(((Radians)centroid.lon + Pi) * (4 / (2*Pi)));
+            //lonQuad = (int)(((Radians)centroid.lon + Pi) * (4 / (2*Pi)));
 
-            if(geodesic)
+            /*if(geodesic)
             {
                ap.size = numPoints;
                for(i = 0; i < numPoints; i++)
@@ -499,7 +500,7 @@ public class RhombicIcosahedral3H : DGGRS
                      crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon };
                }
             }
-            else
+            else*/
             {
                int nDivisions = edgeRefinement ? edgeRefinement :
                   level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : 5; //level < 12 ? 2 : 1;
@@ -512,9 +513,132 @@ public class RhombicIcosahedral3H : DGGRS
                   if(pj.inverse(r[i], point, oddGrid))
                   {
                      if(wrap)
+                     {
                         point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
-                     ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
-                        crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
+
+                        // REVIEW: Why isn't wrapLonAt() handling these cases?
+                        if(oddGrid)
+                        {
+                           if(((double)point.lon - (double)centroid.lon) < -120)
+                              point.lon += 180;
+                           else if(((double)point.lon - (double)centroid.lon) > 120)
+                              point.lon -= 180;
+                        }
+                     }
+
+                     if(fabs((double)point.lat) > 89.999999)
+                     {
+                        /*
+                        const Pointd * prev = &r[i > 0 ? i - 1 : r.count - 1];
+                        const Pointd * next = &r[(i + 1) % r.count];
+                        double dx = next->x - prev->x;
+                        double dy = next->y - prev->y;
+
+                        double ddx1 = prev->x - r[i].x;
+                        double ddy1 = prev->y - r[i].y;
+                        double ddx2 = next->x - r[i].x, ddy2 =  next->y - r[i].y;
+
+                        if(ddx1 > 3) ddx1 -= 5;
+                        if(ddy1 > 3) ddy1 -= 5;
+                        if(ddx2 > 3) ddx2 -= 5;
+                        if(ddy2 > 3) ddy2 -= 5;
+
+                        if(ddx1 <-3) ddx1 += 5;
+                        if(ddy1 <-3) ddy1 += 5;
+                        if(ddx2 <-3) ddx2 += 5;
+                        if(ddy2 <-3) ddy2 += 5;
+                        */
+
+                        double ddx1, ddy1, ddx2, ddy2;
+                        double val = 0.00001;
+                        Pointd in1, in2;
+                        GeoPoint out1, out2;
+
+                        if(point.lat < 0)
+                        {
+                           if(r[i].y > 3)
+                           {
+                              ddx1 = 0.000 * poleOffset;
+                              ddy1 =-val * poleOffset;
+                              ddx2 = 0.000 * poleOffset;
+                              ddy2 = val * poleOffset;
+                           }
+                           else
+                           {
+                              ddx1 =-val * poleOffset;
+                              ddy1 = 0.000 * poleOffset;
+                              ddx2 = val * poleOffset;
+                              ddy2 = 0.000 * poleOffset;
+                           }
+                        }
+                        else
+                        {
+                           if(r[i].x < 1)
+                           {
+                              ddx1 = val * poleOffset;
+                              ddy1 = 0.000 * poleOffset;
+                              ddx2 =-val * poleOffset;
+                              ddy2 = 0.000 * poleOffset;
+                           }
+                           else
+                           {
+                              ddx1 = 0.000 * poleOffset;
+                              ddy1 = val * poleOffset;
+                              ddx2 = 0.000 * poleOffset;
+                              ddy2 =-val * poleOffset;
+                           }
+                        }
+
+                        in1 = { r[i].x + ddx1 * poleOffset, r[i].y + ddy1 * poleOffset };
+                        in2 = { r[i].x + ddx2 * poleOffset, r[i].y + ddy2 * poleOffset };
+                        if(pj.inverse(in1, out1, true))
+                        {
+                           point = { Sgn(out1.lat) * 90, out1.lon };
+                           //point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
+
+                           //if(oddGrid)
+                           {
+                              if(((double)point.lon - (double)centroid.lon) < -95)
+                                 point.lon += 180;
+                              else if(((double)point.lon - (double)centroid.lon) > 95)
+                                 point.lon -= 180;
+                           }
+
+                           ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
+                              crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
+
+                           if(ap.count >= 2 &&
+                              fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
+                              fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)
+                              ap.size--; // We rely on both interruptions during interpolation, but they map to the same CRS84 point
+                        }
+
+
+                        if(pj.inverse(in2, out2, true))
+                        {
+                           point = { Sgn(out2.lat) * 90, out2.lon };
+                           //point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
+
+                           //if(oddGrid)
+                           {
+                              if(((double)point.lon - (double)centroid.lon) < -95)
+                                 point.lon += 180;
+                              else if(((double)point.lon - (double)centroid.lon) > 95)
+                                 point.lon -= 180;
+                           }
+
+                           ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
+                              crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
+
+                           if(ap.count >= 2 &&
+                              fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
+                              fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)
+                              ap.size--; // We rely on both interruptions during interpolation, but they map to the same CRS84 point
+                        }
+                     }
+                     else
+                        ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
+                           crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
                      if(ap.count >= 2 &&
                         fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
                         fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)

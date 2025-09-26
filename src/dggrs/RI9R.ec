@@ -8,6 +8,10 @@ import "ri5x6"
 
 #include <stdio.h>
 
+#define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
+
+extern uint64 powersOf3[34]; // in RI3H.ec
+
 static define POW_EPSILON = 0.1;
 
 define I9R_MAX_VERTICES = 200; // * 1024;
@@ -112,7 +116,7 @@ public class RhombicIcosahedral9R : DGGRS
    {
       CRSExtent e = parent.ri5x6Extent;
       double dx, dy;
-      double d = 2 * pow(3, depth);
+      double d = 2 * POW3(depth);
 
       dx = (e.br.x - e.tl.x) / d, dy = (e.br.y - e.tl.y) / d;
       return I9RZone::fromCRSExtent(e.tl, { e.tl.x + dx, e.tl.y + dy }, parent.level + depth );
@@ -148,7 +152,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
-      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
+      uint64 p = POW3(level);
       uint64 numCols = 5*p, numRows = 6*p;
       AVLTree<I9RZone> zonesTree { };
       Array<I9RZone> zones { };
@@ -496,7 +500,7 @@ private:
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
-      uint64 s = (int64)(pow(3, rDepth) + POW_EPSILON), nSubZones = s * s;
+      uint64 s = POW3(rDepth), nSubZones = s * s;
       if(nSubZones < 1LL<<31)
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
@@ -522,7 +526,7 @@ private:
    {
       get
       {
-         double z = 1.0 / pow(3, level);
+         double z = 1.0 / POW3(level);
          value.tl = { col * z, row * z };
          value.br = { value.tl.x + z, value.tl.y + z };
          value.crs = { ogc, 153456 };
@@ -533,7 +537,7 @@ private:
    {
       get
       {
-         double z = 1.0 / pow(3, level);
+         double z = 1.0 / POW3(level);
          value = { (col + 0.5) * z, (row + 0.5) * z };
       }
    }
@@ -545,7 +549,7 @@ private:
    {
       int level = this.level;
       uint row = this.row, col = this.col;
-      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
+      uint64 p = POW3(level);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int root = rowOP + colOP;
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
@@ -557,7 +561,7 @@ private:
 
    I9RZone ::fromCRSExtent(const Pointd topLeft, const Pointd bottomRight, int level)
    {
-      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
+      uint64 p = POW3(level);
       int64 numRows = 6 * p, numCols = 5 * p;
       Pointd mid
       {
@@ -619,20 +623,20 @@ private:
    {
       uint l = level;
       int row = this.row, col = this.col;
-      int p = (int)(pow(3, l) + POW_EPSILON);
-      uint numRows = 6 * p, numCols = 5 * p;
-      int colOP = col / p, rowOP = row / p;
-      int topDelta = (row - 1) / p - colOP;
-      int leftDelta = rowOP - (col - 1) / p;
-      int bottomDelta = (row + 1) / p - colOP;
-      int rightDelta = rowOP - (col + 1) / p;
+      int64 p = (int64)POW3(l);
+      uint numRows = (uint)(6 * p), numCols = (uint)(5 * p);
+      int colOP = (int)(col / p), rowOP = (int)(row / p);
+      int topDelta = (int)((row - 1) / p - colOP);
+      int leftDelta = (int)(rowOP - (col - 1) / p);
+      int bottomDelta = (int)((row + 1) / p - colOP);
+      int rightDelta = (int)(rowOP - (col + 1) / p);
 
       // Top
       if(row == 0 || (topDelta && topDelta != 1))
       {
          // Crossing over top interruption to the left
-         int r = (rowOP ? rowOP - 1 : 4) * p + p - 1 - (col - colOP * p);
-         int c = (rowOP ? colOP - 1 : 4) * p + p - 1;
+         int r = (int)((rowOP ? rowOP - 1 : 4) * p + p - 1 - (col - colOP * p));
+         int c = (int)((rowOP ? colOP - 1 : 4) * p + p - 1);
          neighbors[0] = I9RZone { l, r, c };
       }
       else
@@ -645,14 +649,14 @@ private:
          if((leftDelta && leftDelta != 1) || (col == 0 && rowOP > colOP))
          {
             // Crossing over bottom interruption to the left
-            r = (colOP ? rowOP - 1 : 5) * p + p - 1;
-            c = (colOP ? colOP - 1 : 4) * p + p - 1 - (row - rowOP * p);
+            r = (int)((colOP ? rowOP - 1 : 5) * p + p - 1);
+            c = (int)((colOP ? colOP - 1 : 4) * p + p - 1 - (row - rowOP * p));
          }
          else
          {
             // Wrapping to the left
-            r = row + 5 * p;
-            c = col - 1 + 5 * p;
+            r = (int)(row + 5 * p);
+            c = (int)(col - 1 + 5 * p);
          }
          neighbors[1] = I9RZone { l, r, c };
       }
@@ -666,14 +670,14 @@ private:
          if((rightDelta && rightDelta != 1) || (col == numCols-1 && rowOP == colOP))
          {
             // Crossing over top interruption to the right
-            r = (colOP < 4 ? rowOP + 1 : 0) * p + 0;
-            c = (colOP < 4 ? colOP + 1 : 0) * p + p - 1 - (row - rowOP * p);
+            r = (int)((colOP < 4 ? rowOP + 1 : 0) * p + 0);
+            c = (int)((colOP < 4 ? colOP + 1 : 0) * p + p - 1 - (row - rowOP * p));
          }
          else
          {
             // Wrapping to the right
-            r = row - 5 * p;
-            c = col + 1 - 5 * p;
+            r = (int)(row - 5 * p);
+            c = (int)(col + 1 - 5 * p);
          }
          neighbors[2] = I9RZone { l, r, c };
       }
@@ -684,8 +688,8 @@ private:
       if(row == numRows-1 || (bottomDelta && bottomDelta != 1))
       {
          // Crossing over bottom interruption to the right
-         int r = (rowOP < 5 ? rowOP + 1 : 1) * p + p - 1 - (col - colOP * p);
-         int c = (rowOP < 5 ? colOP + 1 : 0) * p + 0;
+         int r = (int)((rowOP < 5 ? rowOP + 1 : 1) * p + p - 1 - (col - colOP * p));
+         int c = (int)((rowOP < 5 ? colOP + 1 : 0) * p + 0);
          neighbors[3] = I9RZone { l, r, c };
       }
       else
@@ -703,7 +707,7 @@ int iLRCFromLRtI(char levelChar, int root, uint64 ix, int * row, int * col)
 
    if(level >= 0 && level <= 16 && root >= 0 && root <= 9)
    {
-      uint64 p = (uint64)(pow(3, level) + POW_EPSILON);
+      uint64 p = POW3(level);
       if(ix >= 0 && ix < p * p)
       {
          int rowOP = (root + 1) >> 1, colOP = root >> 1;
