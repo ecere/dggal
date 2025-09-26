@@ -536,8 +536,8 @@ public class RhombicIcosahedral7H : DGGRS
       bool crs84 = crs == CRS { ogc, 84 } || crs == CRS { epsg, 4326 };
       int level = zone.level;
       // * 1024 results in level 2 zones areas accurate to 0.01 km^2
-      int nDivisions = edgeRefinement ? edgeRefinement :
-         level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
+      int nDivisions = edgeRefinement ? edgeRefinement :                         // ISEA / RTEA have strong distortion in some areas where refinements matter
+         level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 12 : 12; //level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
       Array<Pointd> r = zone.getBaseRefinedVertices(crs84, nDivisions);
       if(r)
       {

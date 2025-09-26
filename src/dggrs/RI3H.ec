@@ -502,7 +502,7 @@ public class RhombicIcosahedral3H : DGGRS
             else
             {
                int nDivisions = edgeRefinement ? edgeRefinement :
-                  level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : level < 12 ? 2 : 1;
+                  level < 3 ? 20 : level < 5 ? 15 : level < 8 ? 10 : level < 10 ? 8 : level < 11 ? 5 : 5; //level < 12 ? 2 : 1;
                Array<Pointd> r = refine5x6(numPoints, vertices, /*1024 * */ nDivisions, true); // * 1024 results in level 2 zones areas accurate to 0.01 km^2
                ap./*size*/minAllocSize = r.count;
                for(i = 0; i < r.count; i++)
