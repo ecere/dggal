@@ -336,13 +336,19 @@ public class rHEALPix : DGGRS
       }
    }
 
-   Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
+   Array<DGGRSZone> listZones(int level, const GeoExtent bboxArg)
    {
       AVLTree<RHPZone> zonesTree { };
       Array<RHPZone> zones { };
       Radians bound = pj.latAuthalicToGeodetic(asin(2/3.0));
       GeoExtent equatorial, north, south;
       int r, c;
+      GeoExtent bbox;
+
+      if(bboxArg != null)
+         bbox = bboxArg;
+      else
+         bbox = wholeWorld;
 
       equatorial.clip(bbox, { { -bound, -180 }, { bound, 180 } });
       north.clip(bbox, { { bound, -180 }, { 90, 180 } });

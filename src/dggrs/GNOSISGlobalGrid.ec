@@ -661,16 +661,23 @@ private static uint addGGGRow(Array<GGGZone> tiles, int level, GeoExtent origExt
    return count;
 }
 
-static uint listGGGZones(Array<GGGZone> zones, int level, const GeoExtent _extent, uint max)
+static uint listGGGZones(Array<GGGZone> zones, int level, const GeoExtent extentArg, uint max)
 {
    uint count = 0;
    Radians dLat = firstZoomLevelRadians / (1 << level);
-   GeoExtent snapped
+   int rowCount;
+   GeoExtent _extent, snapped;
+
+   if(extentArg != null)
+      _extent = extentArg;
+   else
+      _extent = wholeWorld;
+
+   snapped =
    {
       ll.lat = floorDelta(Max((Radians)_extent.ll.lat + 0.00001*dLat, -Pi/2), dLat),
       ur.lat = ceilDelta (Min((Radians)_extent.ur.lat - 0.00001*dLat,  Pi/2), dLat)
    };
-   int rowCount;
 
    if(snapped.ur.lat <= snapped.ll.lat && _extent.ur.lat > _extent.ll.lat)
       // Correct polar tile snapping that might result in a null extent
