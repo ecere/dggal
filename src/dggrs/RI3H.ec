@@ -1737,24 +1737,24 @@ private:
             }
             else // Regular A
             {
-               move5x6Vertex(vertices[numPoints++], tl,  2*d/3,    d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               move5x6Vertex(vertices[numPoints++], tl,    d/3,  2*d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               move5x6Vertex(vertices[numPoints++], tl, -  d/3,    d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               move5x6Vertex(vertices[numPoints++], tl, -2*d/3, -  d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               move5x6Vertex(vertices[numPoints++], tl, -  d/3, -2*d/3);
                if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
                   vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
                move5x6Vertex(vertices[numPoints++], tl,    d/3, -  d/3);
                if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
                   vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -  d/3, -2*d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -2*d/3, -  d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl, -  d/3,    d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,    d/3,  2*d/3);
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+               move5x6Vertex(vertices[numPoints++], tl,  2*d/3,    d/3);
             }
             break;
          case 1: // Odd level -- type B
@@ -1806,55 +1806,63 @@ private:
             }
             else
             {
-               if(crs84)
-               {
-                  move5x6Vertex(vertices[numPoints++], tl, d/3,0);
-                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               }
-               else
-               {
-                  move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
-                  move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
-               }
-               move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
-               if(crs84)
-               {
-                  move5x6Vertex(vertices[numPoints++], tl, 0, d/3);
-                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               }
-               else
-               {
-                  move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
-                  move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
-               }
-               move5x6Vertex(vertices[numPoints++], tl,-d/3,    0);
                if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
                   vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
-               move5x6Vertex(vertices[numPoints++], tl,-d/3,-d/3);
-               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
-                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+
                move5x6Vertex(vertices[numPoints++], tl,    0,-d/3);
+
                if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
                   vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+
+               move5x6Vertex(vertices[numPoints++], tl,-d/3,-d/3);
+
+               if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                  vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+
+               move5x6Vertex(vertices[numPoints++], tl,-d/3,    0);
+
+               if(crs84)
+               {
+                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+                  move5x6Vertex(vertices[numPoints++], tl, 0, d/3);
+               }
+               else
+               {
+                  move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
+                  move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
+               }
+
+               move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
+
+               if(crs84)
+               {
+                  if(crs84 && (vertices[numPoints-1].y < 0 || vertices[numPoints-1].x < 0))
+                     vertices[numPoints-1].x += 5, vertices[numPoints-1].y += 5; // REVIEW: Can we always do this in move5x6Vertex()?
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,0);
+               }
+               else
+               {
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
+               }
             }
             break;
          case 2:  // Odd level -- type C
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,2E-11);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2E-11);
-            move5x6Vertex(vertices[numPoints++], tl,    d,  d/3);
-            move5x6Vertex(vertices[numPoints++], tl,    d,2*d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl,  d/3,  d/3);
+            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
+            move5x6Vertex(vertices[numPoints++], tl,    d,2*d/3);
+            move5x6Vertex(vertices[numPoints++], tl,    d,  d/3);
+            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2E-11);
+            move5x6Vertex(vertices[numPoints++], tl,  d/3,2E-11);
             break;
          case 3:  // Odd level -- type D
-            move5x6Vertex(vertices[numPoints++], tl,2E-11,   d/3);
-            move5x6Vertex(vertices[numPoints++], tl, d/3,   d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,    d);
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,    d);
             move5x6Vertex(vertices[numPoints++], tl,2E-11,2*d/3);
+            move5x6Vertex(vertices[numPoints++], tl,  d/3,    d);
+            move5x6Vertex(vertices[numPoints++], tl,2*d/3,    d);
+            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
+            move5x6Vertex(vertices[numPoints++], tl, d/3,   d/3);
+            move5x6Vertex(vertices[numPoints++], tl,2E-11,   d/3);
             break;
          default:
             result = false;
