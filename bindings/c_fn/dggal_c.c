@@ -17,7 +17,7 @@ LIB_EXPORT int DGGAL_Array_GeoPoint_getCount(const T(Array, GeoPoint) self)
 
 LIB_EXPORT const GeoPoint * DGGAL_Array_GeoPoint_getPointer(const T(Array, GeoPoint) self)
 {
-   return (GeoPoint *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array;
+   return self ? (GeoPoint *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array : null;
 }
 
 LIB_EXPORT void DGGAL_Array_GeoPoint_delete(T(Array, GeoPoint) self)
@@ -33,7 +33,7 @@ LIB_EXPORT int DGGAL_Array_Pointd_getCount(const T(Array, Pointd) self)
 
 LIB_EXPORT const Pointd * DGGAL_Array_Pointd_getPointer(const T(Array, Pointd) self)
 {
-   return (Pointd *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array;
+   return self ? (Pointd *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array : null;
 }
 
 LIB_EXPORT void DGGAL_Array_Pointd_delete(T(Array, Pointd) self)
@@ -57,7 +57,7 @@ LIB_EXPORT int DGGAL_Array_DGGRSZone_getCount(const T(Array, DGGRSZone) self)
 
 LIB_EXPORT DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const T(Array, DGGRSZone) self)
 {
-   return (DGGRSZone *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array;
+   return self ? (DGGRSZone *)((struct CM(Array) *)(((byte *)self) + CO(Array)->offset))->array : null;
 }
 
 LIB_EXPORT void DGGAL_Array_DGGRSZone_delete(T(Array, DGGRSZone) self)
