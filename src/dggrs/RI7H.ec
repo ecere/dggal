@@ -598,6 +598,10 @@ public class RhombicIcosahedral7H : DGGRS
                      fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
                      fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)
                      ap.size--; // We rely on both interruptions during interpolation, but they map to the same CRS84 point
+                  if(ap.count >= 2 && i == r.count - 1 &&
+                     fabs(ap[0].x - ap[ap.count-1].x) < 1E-11 &&
+                     fabs(ap[0].y - ap[ap.count-1].y) < 1E-11)
+                     ap.size--;
                }
 #ifdef _DEBUG
                else
@@ -1936,135 +1940,6 @@ private:
          r.x = dy;
          r.y = dy - dx;
       }
-   }
-
-   void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
-   {
-      double dx = n.x - p.x, dy = n.y - p.y;
-      int j;
-      bool interruptionNearPole = crs84 && i1 != null && (
-         (fabs(i1.x - 0.5) < 1E-6 && fabs(i1.y - 0) < 1E-6) ||
-         (fabs(i1.x - 5) < 1E-6 && fabs(i1.y - 4.5) < 1E-6) ||
-         (fabs(i1.x - 2) < 1E-6 && fabs(i1.y - 3.5) < 1E-6) ||
-         (fabs(i1.x - 1.5) < 1E-6 && fabs(i1.y - 3) < 1E-6) ||
-         (fabs(i2.x - 0.5) < 1E-6 && fabs(i2.y - 0) < 1E-6) ||
-         (fabs(i2.x - 5) < 1E-6 && fabs(i2.y - 4.5) < 1E-6) ||
-         (fabs(i2.x - 2) < 1E-6 && fabs(i2.y - 3.5) < 1E-6) ||
-         (fabs(i2.x - 1.5) < 1E-6 && fabs(i2.y - 3) < 1E-6));
-
-      if(!nDivisions) nDivisions = 1;
-      if(interruptionNearPole)
-         nDivisions *= 20;
-
-      if(dx < -3)
-         dx += 5, dy += 5;
-
-      if(i1 != null)
-      {
-         Pointd pi1 { i1.x - p.x, i1.y - p.y };
-         Pointd i2n { n.x - i2.x, n.y - i2.y };
-         double l1 = sqrt(pi1.x * pi1.x + pi1.y * pi1.y);
-         double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
-         double length = l1 + l2;
-         double t = nDivisions * l1 / length;
-
-         points.Add(p);
-
-         if(nDivisions == 1)
-            if(!crs84)
-               points.Add(i1), points.Add(i2);
-
-         for(j = 1; j < nDivisions; j += (interruptionNearPole && fabs(j - t) >= 20 ? 20 : 1))
-         {
-            if(j < t)
-               points.Add({
-                  p.x + j * pi1.x / t,
-                  p.y + j * pi1.y / t
-               });
-
-            if((j == (int)t || (j == 1 && !(int)t)))
-            {
-               points.Add(i1);
-               points.Add(i2);
-            }
-
-            if(j > t)
-               points.Add({
-                  i2.x + (j - t) * i2n.x / (nDivisions - t),
-                  i2.y + (j - t) * i2n.y / (nDivisions - t)
-               });
-         }
-      }
-      else if(nDivisions == 1)
-         points.Add(p);
-      else
-         for(j = 0; j < nDivisions; j++)
-            points.Add({ p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
-   }
-
-   void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
-   {
-      double dx = n.x - p.x, dy = n.y - p.y;
-      int j;
-      bool interruptionNearPole = crs84 && i1 != null && (
-         (fabs(i1.x - 0.5) < 1E-6 && fabs(i1.y - 0) < 1E-6) ||
-         (fabs(i1.x - 5) < 1E-6 && fabs(i1.y - 4.5) < 1E-6) ||
-         (fabs(i1.x - 2) < 1E-6 && fabs(i1.y - 3.5) < 1E-6) ||
-         (fabs(i1.x - 1.5) < 1E-6 && fabs(i1.y - 3) < 1E-6) ||
-         (fabs(i2.x - 0.5) < 1E-6 && fabs(i2.y - 0) < 1E-6) ||
-         (fabs(i2.x - 5) < 1E-6 && fabs(i2.y - 4.5) < 1E-6) ||
-         (fabs(i2.x - 2) < 1E-6 && fabs(i2.y - 3.5) < 1E-6) ||
-         (fabs(i2.x - 1.5) < 1E-6 && fabs(i2.y - 3) < 1E-6));
-
-      if(!nDivisions) nDivisions = 1;
-      if(interruptionNearPole)
-         nDivisions *= 20;
-
-      if(dx < -3)
-         dx += 5, dy += 5;
-
-      if(i1 != null)
-      {
-         Pointd pi1 { i1.x - p.x, i1.y - p.y };
-         Pointd i2n { n.x - i2.x, n.y - i2.y };
-         double l1 = sqrt(pi1.x * pi1.x + pi1.y * pi1.y);
-         double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
-         double length = l1 + l2;
-         double t = nDivisions * l1 / length;
-
-         points[(*count)++] = p;
-
-         if(nDivisions == 1)
-            if(!crs84)
-            {
-               points[(*count)++] = i1;
-               points[(*count)++] = i2;
-            }
-
-         for(j = 1; j < nDivisions; j += (interruptionNearPole && fabs(j - t) >= 20 ? 20 : 1))
-         {
-            if(j < t)
-               points[(*count)++] = {
-                  p.x + j * pi1.x / t,
-                  p.y + j * pi1.y / t
-               };
-
-            if((j == (int)t || (j == 1 && !(int)t)))
-            {
-               points[(*count)++] = i1;
-               points[(*count)++] = i2;
-            }
-
-            if(j > t)
-               points[(*count)++] = {
-                  i2.x + (j - t) * i2n.x / (nDivisions - t),
-                  i2.y + (j - t) * i2n.y / (nDivisions - t)
-               };
-         }
-      }
-      else
-         for(j = 0; j < nDivisions; j++)
-            points[(*count)++] = { p.x + j * dx / nDivisions, p.y + j * dy / nDivisions };
    }
 
    uint ::addNonPolarBaseVertices(Pointd c, int nPoints, const Pointd * v, Pointd * vertices)

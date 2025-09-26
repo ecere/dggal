@@ -267,9 +267,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
             // delta is angle ADB
             delta = Min((double)Pi, Max(0.0, rhoPlusDelta - rho));
-            if(fabs(rho - 0) < 1E-5)
+            if(fabs(rho - 0) < 1E-11)
                AD = 0, BD = AB;
-            else if(fabs(rho - beta) < 1E-5)
+            else if(fabs(rho - beta) < 1E-11)
                AD = AC, BD = BC;
             else
             {
@@ -389,9 +389,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       */
 
       // Compute sides AD and BD
-      if(fabs(rho - 0) < 1E-5) // problems near the poles with smaller epsilon
+      if(fabs(rho - 0) < 1E-11)
          AD = 0, BD = AB; //, cosXpY = cos(BD);
-      else if(fabs(rho - beta) < 1E-5) // problems near the poles with smaller epsilon
+      else if(fabs(rho - beta) < 1E-11)
          AD = AC, BD = BC; //, cosXpY = cos(BD);
       else
       {
@@ -437,17 +437,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          // Compute D by SLERPing from A to C by AD
          Vector3D D;
 
-         if(fabs(AD - 0) < 1E-9)
+         if(fabs(AD - 0) < 1E-11)
             D = A;
-         else if(fabs(AD - AC) < 1E-9)
+         else if(fabs(AD - AC) < 1E-11)
             D = C;
          else
             slerpAngle(D, A, C, AC, AD);
 
          // Compute P by SLERPing from B to D by x
-         if(fabs(x - 0) < 1E-9)
+         if(fabs(x - 0) < 1E-11)
             P = B;
-         else if(fabs(x - BD) < 1E-9)
+         else if(fabs(x - BD) < 1E-11)
             P = D;
          else
             slerpAngle(P, B, D, BD, x);
@@ -636,9 +636,9 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          double xpOverxpPlusyp;
          Pointd pdi;
 
-         if(fabs(rho - 0) < 1E-5) // problems near the pole with smaller epsilon
+         if(fabs(rho - 0) < 1E-11)
             cosXpY = cosAB;
-         else if(fabs(rho - beta) < 1E-5) // problems near the pole with smaller epsilon
+         else if(fabs(rho - beta) < 1E-11)
             cosXpY = cos(BC);
          else
          {

@@ -515,6 +515,14 @@ public class RhombicIcosahedral3H : DGGRS
                         point.lon = wrapLonAt(-1, point.lon, centroid.lon - Degrees { 0.05 }) + centroid.lon - Degrees { 0.05 }; // REVIEW: wrapLonAt() doesn't add back centroid.lon ?
                      ap.Add(useGeoPoint ? { (Radians) point.lat, (Radians) point.lon } :
                         crs == { ogc, 84 } ? { point.lon, point.lat } : { point.lat, point.lon });
+                     if(ap.count >= 2 &&
+                        fabs(ap[ap.count-1].x - ap[ap.count-2].x) < 1E-11 &&
+                        fabs(ap[ap.count-1].y - ap[ap.count-2].y) < 1E-11)
+                        ap.size--; // We rely on both interruptions during interpolation, but they map to the same CRS84 point
+                     if(ap.count >= 2 && i == r.count - 1 &&
+                        fabs(ap[0].x - ap[ap.count-1].x) < 1E-11 &&
+                        fabs(ap[0].y - ap[ap.count-1].y) < 1E-11)
+                        ap.size--;
                   }
                }
                ap.minAllocSize = 0;
