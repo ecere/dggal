@@ -241,7 +241,8 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
             // pA (B or C) is vertex at angle alpha (90 degrees for ISEA and IVEA)
             // pC (B or C) is vertex at angle gamma
             const Vector3D * pA = correctCVertex ? B : C, * pB = A, * pC = correctCVertex ? C : B;
-            double upOverupPvp = b[correctCVertex ? 1 : 2] / (b[1] + b[2]);
+            double b1pb2 = b[1] + b[2];
+            double upOverupPvp = b1pb2 < 1E-11 ? 0 : b[correctCVertex ? 1 : 2] / b1pb2;
             double xpOverxpPlusyp = 1 - b[0];
             Radians areaABC = beta + gamma + alpha - Pi;
             Radians rhoPlusDelta = beta + gamma - upOverupPvp * (beta + gamma + alpha - Pi);
@@ -437,17 +438,17 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          // Compute D by SLERPing from A to C by AD
          Vector3D D;
 
-         if(fabs(AD - 0) < 1E-11)
+         if(fabs(AD - 0) < 1E-12)
             D = A;
-         else if(fabs(AD - AC) < 1E-11)
+         else if(fabs(AD - AC) < 1E-12)
             D = C;
          else
             slerpAngle(D, A, C, AC, AD);
 
          // Compute P by SLERPing from B to D by x
-         if(fabs(x - 0) < 1E-11)
+         if(fabs(x - 0) < 1E-12)
             P = B;
-         else if(fabs(x - BD) < 1E-11)
+         else if(fabs(x - BD) < 1E-12)
             P = D;
          else
             slerpAngle(P, B, D, BD, x);
