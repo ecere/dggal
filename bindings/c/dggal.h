@@ -10,7 +10,13 @@
 #if !defined(__DGGAL_H__)
 #define __DGGAL_H__
 
-#define CPP11 (defined(__cplusplus) && __cplusplus >= 201103L)
+#ifndef CPP11
+#if defined(__cplusplus) && __cplusplus >= 201103L
+#define CPP11 1
+#else
+#define CPP11 0
+#endif
+#endif
 
 #ifdef __cplusplus
 
@@ -45,8 +51,6 @@ extern "C" {
 // namespace /////////////// //////////////////////////////////////////////////////////////////// ////////////////////////////////
 
 
-
-
 // start -- moved backwards outputs
 typedef uint64 C(CRS);
 struct C(CRSExtent)
@@ -77,6 +81,9 @@ typedef C(Instance) C(DGGSJSONShape);
 typedef struct C(GeoExtent) C(GeoExtent);
 typedef struct C(GeoPoint) C(GeoPoint);
 typedef C(Instance) C(HEALPixProjection);
+typedef uint64 C(I3HZone);
+typedef uint64 C(I7HZone);
+typedef uint64 C(I9RZone);
 typedef C(Instance) C(JSONSchema);
 #if CPP11
 enum C(JSONSchemaType) : int
@@ -97,13 +104,17 @@ enum C(JSONSchemaType)
 
 typedef struct C(Plane) C(Plane);
 typedef struct C(Quaternion) C(Quaternion);
+typedef C(DGGRS) C(RhombicIcosahedral7H);
+typedef C(RhombicIcosahedral7H) C(RI7H_Z7);
 typedef C(DGGRS) C(RhombicIcosahedral3H);
 typedef C(DGGRS) C(RhombicIcosahedral4R);
-typedef C(DGGRS) C(RhombicIcosahedral7H);
 typedef C(DGGRS) C(RhombicIcosahedral9R);
 typedef C(RI5x6Projection) C(SliceAndDiceGreatCircleIcosahedralProjection);
 typedef struct C(Vector3D) C(Vector3D);
+typedef uint64 C(Z7Zone);
 // end -- moved backwards outputs
+#define AUTH_ORDER (6)
+
 #define nullZone (0xFFFFFFFFFFFFFFFFLL)
 
 #define wgs84InvFlattening (298.257223563)
@@ -134,24 +145,41 @@ typedef C(RhombicIcosahedral3H) C(GPP3H);
 typedef C(BarycentricSphericalTriAreaProjection) C(GoldbergPolyhedraProjection);
 typedef C(DGGRS) C(HEALPix);
 typedef uint64 C(HPZone);
-typedef uint64 C(I3HZone);
+#if CPP11
+enum C(I3HNeighbor) : int
+#else
+typedef int C(I3HNeighbor);
+enum C(I3HNeighbor)
+#endif
+{
+   I3HNeighbor_top = 0x0,
+   I3HNeighbor_bottom = 0x1,
+   I3HNeighbor_left = 0x2,
+   I3HNeighbor_right = 0x3,
+   I3HNeighbor_topLeft = 0x4,
+   I3HNeighbor_topRight = 0x5,
+   I3HNeighbor_bottomLeft = 0x6,
+   I3HNeighbor_bottomRight = 0x7
+};
+
 typedef uint64 C(I4RZone);
-typedef uint64 C(I7HZone);
-typedef uint64 C(I9RZone);
 typedef C(RhombicIcosahedral3H) C(ISEA3H);
 typedef C(RhombicIcosahedral4R) C(ISEA4R);
 typedef C(RhombicIcosahedral7H) C(ISEA7H);
+typedef C(RI7H_Z7) C(ISEA7H_Z7);
 typedef C(RhombicIcosahedral9R) C(ISEA9R);
 typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(ISEAProjection);
 typedef C(RhombicIcosahedral3H) C(IVEA3H);
 typedef C(RhombicIcosahedral4R) C(IVEA4R);
 typedef C(RhombicIcosahedral7H) C(IVEA7H);
+typedef C(RI7H_Z7) C(IVEA7H_Z7);
 typedef C(RhombicIcosahedral9R) C(IVEA9R);
 typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(IVEAProjection);
 typedef uint64 C(RHPZone);
 typedef C(RhombicIcosahedral3H) C(RTEA3H);
 typedef C(RhombicIcosahedral4R) C(RTEA4R);
 typedef C(RhombicIcosahedral7H) C(RTEA7H);
+typedef C(RI7H_Z7) C(RTEA7H_Z7);
 typedef C(RhombicIcosahedral9R) C(RTEA9R);
 typedef C(SliceAndDiceGreatCircleIcosahedralProjection) C(RTEAProjection);
 #if CPP11
@@ -494,6 +522,14 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getZoneWGS84Extent);
       __i _ARG zone _ARG extent)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getZoneWGS84Extent);
 
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate);
+// void DGGRS_getZoneWGS84ExtentApproximate(C(DGGRS) __i, C(DGGRSZone) zone, C(GeoExtent) * extent);
+#define DGGRS_getZoneWGS84ExtentApproximate(__i, zone, extent) \
+   VMETHOD(CO(DGGRS), DGGRS, getZoneWGS84ExtentApproximate, __i, void, \
+      C(DGGRS) _ARG C(DGGRSZone) _ARG C(GeoExtent) *, \
+      __i _ARG zone _ARG extent)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, getZoneWGS84ExtentApproximate);
+
 extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, getZoneWGS84Vertices);
 // int DGGRS_getZoneWGS84Vertices(C(DGGRS) __i, C(DGGRSZone) zone, C(GeoPoint) * vertices);
 #define DGGRS_getZoneWGS84Vertices(__i, zone, vertices) \
@@ -528,7 +564,13 @@ extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, listZones);
       __i _ARG level _ARG bbox)
 extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, listZones);
 
-extern THIS_LIB_IMPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
+extern THIS_LIB_IMPORT int M_VTBLID(DGGRS, zoneHasSubZone);
+// C(bool) DGGRS_zoneHasSubZone(C(DGGRS) __i, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
+#define DGGRS_zoneHasSubZone(__i, hayStack, needle) \
+   VMETHOD(CO(DGGRS), DGGRS, zoneHasSubZone, __i, C(bool), \
+      C(DGGRS) _ARG C(DGGRSZone) _ARG C(DGGRSZone), \
+      __i _ARG hayStack _ARG needle)
+extern THIS_LIB_IMPORT C(Method) * METHOD(DGGRS, zoneHasSubZone);
 
 #define DGGRSZONE_level_SHIFT                            59
 #define DGGRSZONE_level_MASK                             0xF800000000000000LL
@@ -686,19 +728,23 @@ extern THIS_LIB_IMPORT C(Method) * METHOD(HEALPixProjection, inverse);
 #define I4RZONE(level, row, col)                                 (((((C(I4RZone))(level)) << I4RZONE_level_SHIFT) | ((C(I4RZone))(row)) << I4RZONE_row_SHIFT) | ((C(I4RZone))(col)) << I4RZONE_col_SHIFT)
 
 
-#define I7HZONE_levelI49R_SHIFT                          60
-#define I7HZONE_levelI49R_MASK                           0xF000000000000000LL
+#define I7HZONE_levelI49R_SHIFT                          58
+#define I7HZONE_levelI49R_MASK                           0x3C00000000000000LL
 #define I7HZONE_levelI49R(x)                             ((((C(I7HZone))(x)) & I7HZONE_levelI49R_MASK) >> I7HZONE_levelI49R_SHIFT)
 #define I7HZONE_SET_levelI49R(x, levelI49R)                      (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_levelI49R_MASK)) | (((C(I7HZone))(levelI49R)) << I7HZONE_levelI49R_SHIFT)
+#define I7HZONE_rootRhombus_SHIFT                        54
+#define I7HZONE_rootRhombus_MASK                         0x3C0000000000000LL
+#define I7HZONE_rootRhombus(x)                           ((((C(I7HZone))(x)) & I7HZONE_rootRhombus_MASK) >> I7HZONE_rootRhombus_SHIFT)
+#define I7HZONE_SET_rootRhombus(x, rootRhombus)                    (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_rootRhombus_MASK)) | (((C(I7HZone))(rootRhombus)) << I7HZONE_rootRhombus_SHIFT)
 #define I7HZONE_rhombusIX_SHIFT                          3
-#define I7HZONE_rhombusIX_MASK                           0xFFFFFFFFFFFFFF8LL
+#define I7HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
 #define I7HZONE_rhombusIX(x)                             ((((C(I7HZone))(x)) & I7HZONE_rhombusIX_MASK) >> I7HZONE_rhombusIX_SHIFT)
 #define I7HZONE_SET_rhombusIX(x, rhombusIX)                      (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_rhombusIX_MASK)) | (((C(I7HZone))(rhombusIX)) << I7HZONE_rhombusIX_SHIFT)
 #define I7HZONE_subHex_SHIFT                             0
 #define I7HZONE_subHex_MASK                              0x7
 #define I7HZONE_subHex(x)                                ((((C(I7HZone))(x)) & I7HZONE_subHex_MASK) >> I7HZONE_subHex_SHIFT)
 #define I7HZONE_SET_subHex(x, subHex)                         (x) = ((C(I7HZone))(x) & ~((C(I7HZone))I7HZONE_subHex_MASK)) | (((C(I7HZone))(subHex)) << I7HZONE_subHex_SHIFT)
-#define I7HZONE(levelI49R, rhombusIX, subHex)                                 (((((C(I7HZone))(levelI49R)) << I7HZONE_levelI49R_SHIFT) | ((C(I7HZone))(rhombusIX)) << I7HZONE_rhombusIX_SHIFT) | ((C(I7HZone))(subHex)) << I7HZONE_subHex_SHIFT)
+#define I7HZONE(levelI49R, rootRhombus, rhombusIX, subHex)                               ((((((C(I7HZone))(levelI49R)) << I7HZONE_levelI49R_SHIFT) | ((C(I7HZone))(rootRhombus)) << I7HZONE_rootRhombus_SHIFT) | ((C(I7HZone))(rhombusIX)) << I7HZONE_rhombusIX_SHIFT) | ((C(I7HZone))(subHex)) << I7HZONE_subHex_SHIFT)
 
 
 #define I9RZONE_level_SHIFT                              59
@@ -850,13 +896,17 @@ extern THIS_LIB_IMPORT int M_VTBLID(RI5x6Projection, forward);
       __i _ARG p _ARG v)
 extern THIS_LIB_IMPORT C(Method) * METHOD(RI5x6Projection, forward);
 
+extern THIS_LIB_IMPORT C(bool) (* RI5x6Projection_fromIcosahedronNet)(const C(Pointd) * v, C(Pointd) * result);
+
 extern THIS_LIB_IMPORT int M_VTBLID(RI5x6Projection, inverse);
-// C(bool) RI5x6Projection_inverse(C(RI5x6Projection) __i, const C(Pointd) * v, C(GeoPoint) * result, C(bool) oddGrid);
-#define RI5x6Projection_inverse(__i, v, result, oddGrid) \
+// C(bool) RI5x6Projection_inverse(C(RI5x6Projection) __i, const C(Pointd) * _v, C(GeoPoint) * result, C(bool) oddGrid);
+#define RI5x6Projection_inverse(__i, _v, result, oddGrid) \
    VMETHOD(CO(RI5x6Projection), RI5x6Projection, inverse, __i, C(bool), \
       C(RI5x6Projection) _ARG const C(Pointd) * _ARG C(GeoPoint) * _ARG C(bool), \
-      __i _ARG v _ARG result _ARG oddGrid)
+      __i _ARG _v _ARG result _ARG oddGrid)
 extern THIS_LIB_IMPORT C(Method) * METHOD(RI5x6Projection, inverse);
+
+extern THIS_LIB_IMPORT C(bool) (* RI5x6Projection_toIcosahedronNet)(const C(Pointd) * v, C(Pointd) * result);
 
 extern THIS_LIB_IMPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 
@@ -871,6 +921,34 @@ extern THIS_LIB_IMPORT void (* Vector3D_subtract)(C(Vector3D) * __this, const C(
 extern THIS_LIB_IMPORT C(Property) * PROPERTY(Vector3D, length);
 extern THIS_LIB_IMPORT double (* Vector3D_get_length)(const C(Vector3D) * v);
 
+#define Z7ZONE_rootPentagon_SHIFT                        60
+#define Z7ZONE_rootPentagon_MASK                         0xF000000000000000LL
+#define Z7ZONE_rootPentagon(x)                           ((((C(Z7Zone))(x)) & Z7ZONE_rootPentagon_MASK) >> Z7ZONE_rootPentagon_SHIFT)
+#define Z7ZONE_SET_rootPentagon(x, rootPentagon)                    (x) = ((C(Z7Zone))(x) & ~((C(Z7Zone))Z7ZONE_rootPentagon_MASK)) | (((C(Z7Zone))(rootPentagon)) << Z7ZONE_rootPentagon_SHIFT)
+#define Z7ZONE_ancestry_SHIFT                            0
+#define Z7ZONE_ancestry_MASK                             0xFFFFFFFFFFFFFFFLL
+#define Z7ZONE_ancestry(x)                               ((((C(Z7Zone))(x)) & Z7ZONE_ancestry_MASK) >> Z7ZONE_ancestry_SHIFT)
+#define Z7ZONE_SET_ancestry(x, ancestry)                        (x) = ((C(Z7Zone))(x) & ~((C(Z7Zone))Z7ZONE_ancestry_MASK)) | (((C(Z7Zone))(ancestry)) << Z7ZONE_ancestry_SHIFT)
+#define Z7ZONE(rootPentagon, ancestry)                                    ((((C(Z7Zone))(rootPentagon)) << Z7ZONE_rootPentagon_SHIFT) | ((C(Z7Zone))(ancestry)) << Z7ZONE_ancestry_SHIFT)
+
+
+extern THIS_LIB_IMPORT C(Z7Zone) (* Z7Zone_from7H)(C(I7HZone) zone);
+
+extern THIS_LIB_IMPORT C(Z7Zone) (* Z7Zone_fromTextID)(constString zoneID);
+
+extern THIS_LIB_IMPORT int (* Z7Zone_getParentRotationOffset)(C(I7HZone) zone);
+
+extern THIS_LIB_IMPORT void (* Z7Zone_getTextID)(C(Z7Zone) __this, C(String) zoneID);
+
+extern THIS_LIB_IMPORT C(I7HZone) (* Z7Zone_to7H)(C(Z7Zone) __this);
+
+extern THIS_LIB_IMPORT C(I3HZone) (* F(i3HZoneFromI9R))(C(I9RZone) zone, char subHex);
+extern THIS_LIB_IMPORT C(I9RZone) (* F(i9RZoneFromI3H))(C(I3HZone) zone);
+extern THIS_LIB_IMPORT void (* F(authalicSetup))(double a, double b, double cp[2][6]);
+extern THIS_LIB_IMPORT void (* F(canonicalize5x6))(const C(Pointd) * _src, C(Pointd) * out);
+extern THIS_LIB_IMPORT void (* F(compactGGGZones))(C(Array) zones, int start, int maxLevel);
+extern THIS_LIB_IMPORT C(Angle) (* F(latAuthalicToGeodetic))(const double cp[2][6], C(Angle) phi);
+extern THIS_LIB_IMPORT C(Angle) (* F(latGeodeticToAuthalic))(const double cp[2][6], C(Angle) phi);
 extern THIS_LIB_IMPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 extern THIS_LIB_IMPORT C(Class) * CO(BCTA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(BarycentricSphericalTriAreaProjection);
@@ -893,6 +971,7 @@ extern THIS_LIB_IMPORT C(Class) * CO(GoldbergPolyhedraProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(HEALPix);
 extern THIS_LIB_IMPORT C(Class) * CO(HEALPixProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(HPZone);
+extern THIS_LIB_IMPORT C(Class) * CO(I3HNeighbor);
 extern THIS_LIB_IMPORT C(Class) * CO(I3HZone);
 extern THIS_LIB_IMPORT C(Class) * CO(I4RZone);
 extern THIS_LIB_IMPORT C(Class) * CO(I7HZone);
@@ -900,11 +979,13 @@ extern THIS_LIB_IMPORT C(Class) * CO(I9RZone);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA4R);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA7H);
+extern THIS_LIB_IMPORT C(Class) * CO(ISEA7H_Z7);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEA9R);
 extern THIS_LIB_IMPORT C(Class) * CO(ISEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA4R);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA7H);
+extern THIS_LIB_IMPORT C(Class) * CO(IVEA7H_Z7);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEA9R);
 extern THIS_LIB_IMPORT C(Class) * CO(IVEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(JSONSchema);
@@ -913,9 +994,11 @@ extern THIS_LIB_IMPORT C(Class) * CO(Plane);
 extern THIS_LIB_IMPORT C(Class) * CO(Quaternion);
 extern THIS_LIB_IMPORT C(Class) * CO(RHPZone);
 extern THIS_LIB_IMPORT C(Class) * CO(RI5x6Projection);
+extern THIS_LIB_IMPORT C(Class) * CO(RI7H_Z7);
 extern THIS_LIB_IMPORT C(Class) * CO(RTEA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(RTEA4R);
 extern THIS_LIB_IMPORT C(Class) * CO(RTEA7H);
+extern THIS_LIB_IMPORT C(Class) * CO(RTEA7H_Z7);
 extern THIS_LIB_IMPORT C(Class) * CO(RTEA9R);
 extern THIS_LIB_IMPORT C(Class) * CO(RTEAProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral3H);
@@ -925,6 +1008,7 @@ extern THIS_LIB_IMPORT C(Class) * CO(RhombicIcosahedral9R);
 extern THIS_LIB_IMPORT C(Class) * CO(SliceAndDiceGreatCircleIcosahedralProjection);
 extern THIS_LIB_IMPORT C(Class) * CO(VGCRadialVertex);
 extern THIS_LIB_IMPORT C(Class) * CO(Vector3D);
+extern THIS_LIB_IMPORT C(Class) * CO(Z7Zone);
 extern THIS_LIB_IMPORT C(Class) * CO(rHEALPix);
 extern THIS_LIB_IMPORT C(Class) * CO(rHEALPixProjection);
 

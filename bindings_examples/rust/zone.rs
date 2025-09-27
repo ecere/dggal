@@ -78,14 +78,17 @@ fn main()
    else if arg0.eq_ignore_ascii_case("i9r") { dggrs_name = &"ISEA9R"; }
    else if arg0.eq_ignore_ascii_case("i3h") { dggrs_name = &"ISEA3H"; }
    else if arg0.eq_ignore_ascii_case("i7h") { dggrs_name = &"ISEA7H"; }
+   else if arg0.eq_ignore_ascii_case("iz7") { dggrs_name = &"ISEA7H_Z7"; }
    else if arg0.eq_ignore_ascii_case("v4r") { dggrs_name = &"IVEA4R"; }
    else if arg0.eq_ignore_ascii_case("v9r") { dggrs_name = &"IVEA9R"; }
    else if arg0.eq_ignore_ascii_case("v3h") { dggrs_name = &"IVEA3H"; }
    else if arg0.eq_ignore_ascii_case("v7h") { dggrs_name = &"IVEA7H"; }
+   else if arg0.eq_ignore_ascii_case("vz7") { dggrs_name = &"IVEA7H_Z7"; }
    else if arg0.eq_ignore_ascii_case("r4r") { dggrs_name = &"RTEA4R"; }
    else if arg0.eq_ignore_ascii_case("r9r") { dggrs_name = &"RTEA9R"; }
    else if arg0.eq_ignore_ascii_case("r3h") { dggrs_name = &"RTEA3H"; }
    else if arg0.eq_ignore_ascii_case("r7h") { dggrs_name = &"RTEA7H"; }
+   else if arg0.eq_ignore_ascii_case("rz7") { dggrs_name = &"RTEA7H_Z7"; }
    else if arg0.eq_ignore_ascii_case("rhp") { dggrs_name = &"rHEALPix"; }
    else if arg0.eq_ignore_ascii_case("hpx") { dggrs_name = &"HEALPix"; }
    else if arg0.eq_ignore_ascii_case("ggg") { dggrs_name = &"GNOSISGlobalGrid"; }
@@ -96,14 +99,17 @@ fn main()
       else if arg1.eq_ignore_ascii_case("isea9r") { dggrs_name = &"ISEA9R"; }
       else if arg1.eq_ignore_ascii_case("isea3h") { dggrs_name = &"ISEA3H"; }
       else if arg1.eq_ignore_ascii_case("isea7h") { dggrs_name = &"ISEA7H"; }
+      else if arg1.eq_ignore_ascii_case("isea7h_z7") { dggrs_name = &"ISEA7H_Z7"; }
       else if arg1.eq_ignore_ascii_case("ivea4r") { dggrs_name = &"IVEA4R"; }
       else if arg1.eq_ignore_ascii_case("ivea9r") { dggrs_name = &"IVEA9R"; }
       else if arg1.eq_ignore_ascii_case("ivea3h") { dggrs_name = &"IVEA3H"; }
       else if arg1.eq_ignore_ascii_case("ivea7h") { dggrs_name = &"IVEA7H"; }
+      else if arg1.eq_ignore_ascii_case("ivea7h_z7") { dggrs_name = &"IVEA7H_Z7"; }
       else if arg1.eq_ignore_ascii_case("rtea4r") { dggrs_name = &"RTEA4R"; }
       else if arg1.eq_ignore_ascii_case("rtea9r") { dggrs_name = &"RTEA9R"; }
       else if arg1.eq_ignore_ascii_case("rtea3h") { dggrs_name = &"RTEA3H"; }
       else if arg1.eq_ignore_ascii_case("rtea7h") { dggrs_name = &"RTEA7H"; }
+      else if arg1.eq_ignore_ascii_case("rtea7h_z7") { dggrs_name = &"RTEA7H_Z7"; }
       else if arg1.eq_ignore_ascii_case("rHEALPIx") { dggrs_name = &"rHEALPix"; }
       else if arg1.eq_ignore_ascii_case("HEALPIx") { dggrs_name = &"HEALPix"; }
       else if arg1.eq_ignore_ascii_case("gnosis") { dggrs_name = &"GNOSISGlobalGrid"; }
@@ -163,7 +169,7 @@ fn main()
    if show_syntax {
       println!("Syntax:");
       println!("   zone <dggrs> <lat,lon> <level> [options]");
-      println!("where dggrs is one of gnosis, isea(4r/9r/3h/7h), ivea(4r/9r/3h/7h), rtea(4r/9r/3h/7h), HEALPix, rHEALPix");
+      println!("where dggrs is one of gnosis, isea(4r/9r/3h/7h/7h_z7), ivea(4r/9r/3h/7h/7h_z7), rtea(4r/9r/3h/7h/7h_z7), HEALPix, rHEALPix");
    }
 
    exit(exit_code)

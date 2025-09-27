@@ -32,6 +32,7 @@ class GoldbergPolyhedraProjection;
 class HEALPix;
 class HEALPixProjection;
 class HPZone;
+enum class I3HNeighbor : int;
 class I3HZone;
 class I4RZone;
 class I7HZone;
@@ -39,11 +40,13 @@ class I9RZone;
 class ISEA3H;
 class ISEA4R;
 class ISEA7H;
+class ISEA7H_Z7;
 class ISEA9R;
 class ISEAProjection;
 class IVEA3H;
 class IVEA4R;
 class IVEA7H;
+class IVEA7H_Z7;
 class IVEA9R;
 class IVEAProjection;
 class JSONSchema;
@@ -52,9 +55,11 @@ struct Plane;
 struct Quaternion;
 class RHPZone;
 class RI5x6Projection;
+class RI7H_Z7;
 class RTEA3H;
 class RTEA4R;
 class RTEA7H;
+class RTEA7H_Z7;
 class RTEA9R;
 class RTEAProjection;
 class RhombicIcosahedral3H;
@@ -64,14 +69,15 @@ class RhombicIcosahedral9R;
 class SliceAndDiceGreatCircleIcosahedralProjection;
 enum class VGCRadialVertex : int;
 struct Vector3D;
+class Z7Zone;
 class rHEALPix;
 class rHEALPixProjection;
 
 int dggal_cpp_init(const Module & module);
 
 
-#define REG_RI5x6Projection_forward(m, c) REGVMETHOD(RI5x6Projection, forward, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const GeoPoint & p, /*1Ab*/Pointd & v),                           c, (/*4Im*/p, /*4Im*/v))
-#define REG_RI5x6Projection_inverse(m, c) REGVMETHOD(RI5x6Projection, inverse, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const Pointd & v, /*1Ab*/GeoPoint & result, /*1Ab*/bool oddGrid), c, (/*4Im*/v, /*4Im*/result, /*4Hm*/(bool)oddGrid))
+#define REG_RI5x6Projection_forward(m, c) REGVMETHOD(RI5x6Projection, forward, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const GeoPoint & p, /*1Ab*/Pointd & v),                            c, (/*4Im*/p, /*4Im*/v))
+#define REG_RI5x6Projection_inverse(m, c) REGVMETHOD(RI5x6Projection, inverse, c::m, (/*1Ab*/RI5x6Projection & self, /*1Ab*/const Pointd & _v, /*1Ab*/GeoPoint & result, /*1Ab*/bool oddGrid), c, (/*4Im*/_v, /*4Im*/result, /*4Hm*/(bool)oddGrid))
 
 #define REG_RI5x6Projection(c) \
       RI5x6Projection::class_registration(_cpp_class); \
@@ -82,15 +88,15 @@ int dggal_cpp_init(const Module & module);
    VIRTUAL_METHOD_PROTO(forward, forward, c, RI5x6Projection, \
       bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v); \
    VIRTUAL_METHOD_PROTO(inverse, inverse, c, RI5x6Projection, \
-      bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid);
+      bool, c & _ARG, , /*6Fj*/const Pointd & _v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid);
 
 #define RI5X6PROJECTION_VIRTUAL_METHODS(c) \
 VIRTUAL_METHOD(forward, forward, c, RI5x6Projection, \
    bool, c & _ARG, , /*6Fj*/const GeoPoint & p _ARG /*6Fj*/Pointd & v, \
    return (bool)RI5x6Projection_forward(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&p.impl, /*7Al*/&v.impl);); \
 VIRTUAL_METHOD(inverse, inverse, c, RI5x6Projection, \
-   bool, c & _ARG, , /*6Fj*/const Pointd & v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid, \
-   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid););
+   bool, c & _ARG, , /*6Fj*/const Pointd & _v _ARG /*6Fj*/GeoPoint & result _ARG /*6Fj*/bool oddGrid, \
+   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&_v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid););
 
 class RI5x6Projection : public Instance
 {
@@ -247,6 +253,10 @@ public:
 
    inline void extent5x6FromWGS84(/*1Ab*/const GeoExtent & wgs84Extent, /*1Ab*/Pointd & topLeft, /*1Ab*/Pointd & bottomRight); // RI5x6Projection_extent5x6FromWGS84
    inline void extent5x6FromWGS84(/*1Ac*/const GeoExtent * wgs84Extent, /*1Ac*/Pointd * topLeft, /*1Ac*/Pointd * bottomRight); // RI5x6Projection_extent5x6FromWGS84
+   static inline C(bool) fromIcosahedronNet(/*1Ab*/const Pointd & v, /*1Ab*/Pointd & result); // RI5x6Projection_fromIcosahedronNet
+   static inline C(bool) fromIcosahedronNet(/*1Ac*/const Pointd * v, /*1Ac*/Pointd * result); // RI5x6Projection_fromIcosahedronNet
+   static inline C(bool) toIcosahedronNet(/*1Ab*/const Pointd & v, /*1Ab*/Pointd & result); // RI5x6Projection_toIcosahedronNet
+   static inline C(bool) toIcosahedronNet(/*1Ac*/const Pointd * v, /*1Ac*/Pointd * result); // RI5x6Projection_toIcosahedronNet
 
    struct RI5x6Projection_forward_Functor
    {
@@ -260,9 +270,9 @@ public:
    struct RI5x6Projection_inverse_Functor
    {
       [[no_unique_address]] int _[0];
-      typedef bool (* FunctionType)(RI5x6Projection & , /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+      typedef bool (* FunctionType)(RI5x6Projection & , /*6Fj*/const Pointd & _v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
       inline FunctionType operator= (FunctionType func);
-      inline bool operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
+      inline bool operator()( /*6Fj*/const Pointd & _v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid);
    } inverse;
    // inline static void register_inverse(CPPClass & cl, RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType func)
 
@@ -454,43 +464,45 @@ public:
    bool operator !=(C(DGGRSZone) value) const { return impl != value; }
 };
 
-#define REG_DGGRS_compactZones(m, c)                REGVMETHOD(DGGRS, compactZones,                c::m, (/*1Ab*/DGGRS & self, /*1Ab*/TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> & zones),           c, (/*4Im*/zones))
-#define REG_DGGRS_countSubZones(m, c)               REGVMETHOD(DGGRS, countSubZones,               c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int depth),                                  c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/depth))
-#define REG_DGGRS_countZoneEdges(m, c)              REGVMETHOD(DGGRS, countZoneEdges,              c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_countZones(m, c)                  REGVMETHOD(DGGRS, countZones,                  c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level),                                                         c, (/*4Im*/level))
-#define REG_DGGRS_getFirstSubZone(m, c)             REGVMETHOD(DGGRS, getFirstSubZone,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int relativeDepth),                          c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/relativeDepth))
-#define REG_DGGRS_getIndexMaxDepth(m, c)            REGVMETHOD(DGGRS, getIndexMaxDepth,            c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getMaxChildren(m, c)              REGVMETHOD(DGGRS, getMaxChildren,              c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getMaxDGGRSZoneLevel(m, c)        REGVMETHOD(DGGRS, getMaxDGGRSZoneLevel,        c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getMaxNeighbors(m, c)             REGVMETHOD(DGGRS, getMaxNeighbors,             c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getMaxParents(m, c)               REGVMETHOD(DGGRS, getMaxParents,               c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getRefinementRatio(m, c)          REGVMETHOD(DGGRS, getRefinementRatio,          c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
-#define REG_DGGRS_getSubZoneAtIndex(m, c)           REGVMETHOD(DGGRS, getSubZoneAtIndex,           c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth, /*1Ab*/int64 index),    c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth, /*4Im*/index))
-#define REG_DGGRS_getSubZoneCRSCentroids(m, c)      REGVMETHOD(DGGRS, getSubZoneCRSCentroids,      c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/CRS_ crs, /*1Ab*/int relativeDepth),        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(CRS_)crs, /*4Im*/relativeDepth))
-#define REG_DGGRS_getSubZoneIndex(m, c)             REGVMETHOD(DGGRS, getSubZoneIndex,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone subZone),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(DGGRSZone)subZone))
-#define REG_DGGRS_getSubZoneWGS84Centroids(m, c)    REGVMETHOD(DGGRS, getSubZoneWGS84Centroids,    c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
-#define REG_DGGRS_getSubZones(m, c)                 REGVMETHOD(DGGRS, getSubZones,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
-#define REG_DGGRS_getZoneArea(m, c)                 REGVMETHOD(DGGRS, getZoneArea,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_getZoneCRSCentroid(m, c)          REGVMETHOD(DGGRS, getZoneCRSCentroid,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS_ crs, /*1Ab*/Pointd & centroid),          c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS_)crs, /*4Im*/centroid))
-#define REG_DGGRS_getZoneCRSExtent(m, c)            REGVMETHOD(DGGRS, getZoneCRSExtent,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS_ crs, /*1Ab*/CRSExtent & extent),         c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS_)crs, /*4Im*/extent))
-#define REG_DGGRS_getZoneCRSVertices(m, c)          REGVMETHOD(DGGRS, getZoneCRSVertices,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS_ crs, /*1Ab*/Pointd * vertices),          c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS_)crs, /*4Hm*/(Pointd *)vertices))
-#define REG_DGGRS_getZoneCentroidChild(m, c)        REGVMETHOD(DGGRS, getZoneCentroidChild,        c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_getZoneCentroidParent(m, c)       REGVMETHOD(DGGRS, getZoneCentroidParent,       c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_getZoneChildren(m, c)             REGVMETHOD(DGGRS, getZoneChildren,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * children),                       c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)children))
-#define REG_DGGRS_getZoneFromCRSCentroid(m, c)      REGVMETHOD(DGGRS, getZoneFromCRSCentroid,      c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/CRS_ crs, /*1Ab*/const Pointd & centroid),         c, (/*4Im*/level, /*4Hm*/(CRS_)crs, /*4Im*/centroid))
-#define REG_DGGRS_getZoneFromTextID(m, c)           REGVMETHOD(DGGRS, getZoneFromTextID,           c::m, (/*1Ab*/DGGRS & self, constString zoneID),                                                       c, (/*4Im*/zoneID))
-#define REG_DGGRS_getZoneFromWGS84Centroid(m, c)    REGVMETHOD(DGGRS, getZoneFromWGS84Centroid,    c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/const GeoPoint & centroid),                       c, (/*4Im*/level, /*4Im*/centroid))
-#define REG_DGGRS_getZoneLevel(m, c)                REGVMETHOD(DGGRS, getZoneLevel,                c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_getZoneNeighbors(m, c)            REGVMETHOD(DGGRS, getZoneNeighbors,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * neighbors, /*1Ab*/int * nbType), c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)neighbors, /*4Im*/nbType))
-#define REG_DGGRS_getZoneParents(m, c)              REGVMETHOD(DGGRS, getZoneParents,              c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * parents),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)parents))
-#define REG_DGGRS_getZoneRefinedCRSVertices(m, c)   REGVMETHOD(DGGRS, getZoneRefinedCRSVertices,   c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS_ crs, /*1Ab*/int edgeRefinement),         c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS_)crs, /*4Im*/edgeRefinement))
-#define REG_DGGRS_getZoneRefinedWGS84Vertices(m, c) REGVMETHOD(DGGRS, getZoneRefinedWGS84Vertices, c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int edgeRefinement),                         c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/edgeRefinement))
-#define REG_DGGRS_getZoneTextID(m, c)               REGVMETHOD(DGGRS, getZoneTextID,               c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, C(String) zoneID),                                  c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/zoneID))
-#define REG_DGGRS_getZoneWGS84Centroid(m, c)        REGVMETHOD(DGGRS, getZoneWGS84Centroid,        c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoPoint & centroid),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/centroid))
-#define REG_DGGRS_getZoneWGS84Extent(m, c)          REGVMETHOD(DGGRS, getZoneWGS84Extent,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoExtent & extent),                         c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/extent))
-#define REG_DGGRS_getZoneWGS84Vertices(m, c)        REGVMETHOD(DGGRS, getZoneWGS84Vertices,        c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoPoint * vertices),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(GeoPoint *)vertices))
-#define REG_DGGRS_isZoneCentroidChild(m, c)         REGVMETHOD(DGGRS, isZoneCentroidChild,         c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
-#define REG_DGGRS_listZones(m, c)                   REGVMETHOD(DGGRS, listZones,                   c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/const GeoExtent & bbox),                          c, (/*4Im*/level, /*4Im*/bbox))
+#define REG_DGGRS_compactZones(m, c)                  REGVMETHOD(DGGRS, compactZones,                  c::m, (/*1Ab*/DGGRS & self, /*1Ab*/TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> & zones),           c, (/*4Im*/zones))
+#define REG_DGGRS_countSubZones(m, c)                 REGVMETHOD(DGGRS, countSubZones,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int depth),                                  c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/depth))
+#define REG_DGGRS_countZoneEdges(m, c)                REGVMETHOD(DGGRS, countZoneEdges,                c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_countZones(m, c)                    REGVMETHOD(DGGRS, countZones,                    c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level),                                                         c, (/*4Im*/level))
+#define REG_DGGRS_getFirstSubZone(m, c)               REGVMETHOD(DGGRS, getFirstSubZone,               c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int relativeDepth),                          c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/relativeDepth))
+#define REG_DGGRS_getIndexMaxDepth(m, c)              REGVMETHOD(DGGRS, getIndexMaxDepth,              c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxChildren(m, c)                REGVMETHOD(DGGRS, getMaxChildren,                c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxDGGRSZoneLevel(m, c)          REGVMETHOD(DGGRS, getMaxDGGRSZoneLevel,          c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxNeighbors(m, c)               REGVMETHOD(DGGRS, getMaxNeighbors,               c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getMaxParents(m, c)                 REGVMETHOD(DGGRS, getMaxParents,                 c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getRefinementRatio(m, c)            REGVMETHOD(DGGRS, getRefinementRatio,            c::m, (/*1Ab*/DGGRS & self),                                                                           c, ())
+#define REG_DGGRS_getSubZoneAtIndex(m, c)             REGVMETHOD(DGGRS, getSubZoneAtIndex,             c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth, /*1Ab*/int64 index),    c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth, /*4Im*/index))
+#define REG_DGGRS_getSubZoneCRSCentroids(m, c)        REGVMETHOD(DGGRS, getSubZoneCRSCentroids,        c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/CRS crs, /*1Ab*/int relativeDepth),        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(CRS)crs, /*4Im*/relativeDepth))
+#define REG_DGGRS_getSubZoneIndex(m, c)               REGVMETHOD(DGGRS, getSubZoneIndex,               c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone subZone),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Hm*/(DGGRSZone)subZone))
+#define REG_DGGRS_getSubZoneWGS84Centroids(m, c)      REGVMETHOD(DGGRS, getSubZoneWGS84Centroids,      c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
+#define REG_DGGRS_getSubZones(m, c)                   REGVMETHOD(DGGRS, getSubZones,                   c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone parent, /*1Ab*/int relativeDepth),                        c, (/*4Hm*/(DGGRSZone)parent, /*4Im*/relativeDepth))
+#define REG_DGGRS_getZoneArea(m, c)                   REGVMETHOD(DGGRS, getZoneArea,                   c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_getZoneCRSCentroid(m, c)            REGVMETHOD(DGGRS, getZoneCRSCentroid,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/Pointd & centroid),          c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Im*/centroid))
+#define REG_DGGRS_getZoneCRSExtent(m, c)              REGVMETHOD(DGGRS, getZoneCRSExtent,              c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/CRSExtent & extent),         c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Im*/extent))
+#define REG_DGGRS_getZoneCRSVertices(m, c)            REGVMETHOD(DGGRS, getZoneCRSVertices,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/Pointd * vertices),          c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Hm*/(Pointd *)vertices))
+#define REG_DGGRS_getZoneCentroidChild(m, c)          REGVMETHOD(DGGRS, getZoneCentroidChild,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_getZoneCentroidParent(m, c)         REGVMETHOD(DGGRS, getZoneCentroidParent,         c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_getZoneChildren(m, c)               REGVMETHOD(DGGRS, getZoneChildren,               c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * children),                       c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)children))
+#define REG_DGGRS_getZoneFromCRSCentroid(m, c)        REGVMETHOD(DGGRS, getZoneFromCRSCentroid,        c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/CRS crs, /*1Ab*/const Pointd & centroid),         c, (/*4Im*/level, /*4Hm*/(CRS)crs, /*4Im*/centroid))
+#define REG_DGGRS_getZoneFromTextID(m, c)             REGVMETHOD(DGGRS, getZoneFromTextID,             c::m, (/*1Ab*/DGGRS & self, constString zoneID),                                                       c, (/*4Im*/zoneID))
+#define REG_DGGRS_getZoneFromWGS84Centroid(m, c)      REGVMETHOD(DGGRS, getZoneFromWGS84Centroid,      c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/const GeoPoint & centroid),                       c, (/*4Im*/level, /*4Im*/centroid))
+#define REG_DGGRS_getZoneLevel(m, c)                  REGVMETHOD(DGGRS, getZoneLevel,                  c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_getZoneNeighbors(m, c)              REGVMETHOD(DGGRS, getZoneNeighbors,              c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * neighbors, /*1Ab*/int * nbType), c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)neighbors, /*4Im*/nbType))
+#define REG_DGGRS_getZoneParents(m, c)                REGVMETHOD(DGGRS, getZoneParents,                c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/DGGRSZone * parents),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(DGGRSZone *)parents))
+#define REG_DGGRS_getZoneRefinedCRSVertices(m, c)     REGVMETHOD(DGGRS, getZoneRefinedCRSVertices,     c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/CRS crs, /*1Ab*/int edgeRefinement),         c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(CRS)crs, /*4Im*/edgeRefinement))
+#define REG_DGGRS_getZoneRefinedWGS84Vertices(m, c)   REGVMETHOD(DGGRS, getZoneRefinedWGS84Vertices,   c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/int edgeRefinement),                         c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/edgeRefinement))
+#define REG_DGGRS_getZoneTextID(m, c)                 REGVMETHOD(DGGRS, getZoneTextID,                 c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, C(String) zoneID),                                  c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/zoneID))
+#define REG_DGGRS_getZoneWGS84Centroid(m, c)          REGVMETHOD(DGGRS, getZoneWGS84Centroid,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoPoint & centroid),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/centroid))
+#define REG_DGGRS_getZoneWGS84Extent(m, c)            REGVMETHOD(DGGRS, getZoneWGS84Extent,            c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoExtent & extent),                         c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/extent))
+#define REG_DGGRS_getZoneWGS84ExtentApproximate(m, c) REGVMETHOD(DGGRS, getZoneWGS84ExtentApproximate, c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoExtent & extent),                         c, (/*4Hm*/(DGGRSZone)zone, /*4Im*/extent))
+#define REG_DGGRS_getZoneWGS84Vertices(m, c)          REGVMETHOD(DGGRS, getZoneWGS84Vertices,          c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone, /*1Ab*/GeoPoint * vertices),                        c, (/*4Hm*/(DGGRSZone)zone, /*4Hm*/(GeoPoint *)vertices))
+#define REG_DGGRS_isZoneCentroidChild(m, c)           REGVMETHOD(DGGRS, isZoneCentroidChild,           c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone zone),                                                    c, (/*4Hm*/(DGGRSZone)zone))
+#define REG_DGGRS_listZones(m, c)                     REGVMETHOD(DGGRS, listZones,                     c::m, (/*1Ab*/DGGRS & self, /*1Ab*/int level, /*1Ab*/const GeoExtent & bbox),                          c, (/*4Im*/level, /*4Im*/bbox))
+#define REG_DGGRS_zoneHasSubZone(m, c)                REGVMETHOD(DGGRS, zoneHasSubZone,                c::m, (/*1Ab*/DGGRS & self, /*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle),                       c, (/*4Hm*/(DGGRSZone)hayStack, /*4Hm*/(DGGRSZone)needle))
 
 #define REG_DGGRS(c) \
       DGGRS::class_registration(_cpp_class); \
@@ -528,9 +540,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define DGGRS_VIRTUAL_METHODS_PROTO(c) \
    VIRTUAL_METHOD_PROTO(compactZones, compactZones, c, DGGRS, \
@@ -601,12 +615,16 @@ public:
       void, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoPoint & centroid); \
    VIRTUAL_METHOD_PROTO(getZoneWGS84Extent, getZoneWGS84Extent, c, DGGRS, \
       void, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoExtent & extent); \
+   VIRTUAL_METHOD_PROTO(getZoneWGS84ExtentApproximate, getZoneWGS84ExtentApproximate, c, DGGRS, \
+      void, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoExtent & extent); \
    VIRTUAL_METHOD_PROTO(getZoneWGS84Vertices, getZoneWGS84Vertices, c, DGGRS, \
       int, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoPoint * vertices); \
    VIRTUAL_METHOD_PROTO(isZoneCentroidChild, isZoneCentroidChild, c, DGGRS, \
       bool, c & _ARG, , /*6Fj*/DGGRSZone zone); \
    VIRTUAL_METHOD_PROTO(listZones, listZones, c, DGGRS, \
-      TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>, c & _ARG, , /*6Fj*/int level _ARG /*6Fj*/const GeoExtent & bbox);
+      TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>, c & _ARG, , /*6Fj*/int level _ARG /*6Fj*/const GeoExtent & bbox); \
+   VIRTUAL_METHOD_PROTO(zoneHasSubZone, zoneHasSubZone, c, DGGRS, \
+      bool, c & _ARG, , /*6Fj*/DGGRSZone hayStack _ARG /*6Fj*/DGGRSZone needle);
 
 #define DGGRS_VIRTUAL_METHODS(c) \
 VIRTUAL_METHOD(compactZones, compactZones, c, DGGRS, \
@@ -716,6 +734,9 @@ VIRTUAL_METHOD(getZoneWGS84Centroid, getZoneWGS84Centroid, c, DGGRS, \
 VIRTUAL_METHOD(getZoneWGS84Extent, getZoneWGS84Extent, c, DGGRS, \
    void, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoExtent & extent, \
    DGGRS_getZoneWGS84Extent(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone, /*7Al*/&extent.impl);); \
+VIRTUAL_METHOD(getZoneWGS84ExtentApproximate, getZoneWGS84ExtentApproximate, c, DGGRS, \
+   void, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoExtent & extent, \
+   DGGRS_getZoneWGS84ExtentApproximate(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone, /*7Al*/&extent.impl);); \
 VIRTUAL_METHOD(getZoneWGS84Vertices, getZoneWGS84Vertices, c, DGGRS, \
    int, c & _ARG, , /*6Fj*/DGGRSZone zone _ARG /*6Fj*/GeoPoint * vertices, \
    return DGGRS_getZoneWGS84Vertices(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone, /*7Al*/(C(GeoPoint) *)vertices);); \
@@ -725,7 +746,10 @@ VIRTUAL_METHOD(isZoneCentroidChild, isZoneCentroidChild, c, DGGRS, \
 VIRTUAL_METHOD(listZones, listZones, c, DGGRS, \
    TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>, c & _ARG, , /*6Fj*/int level _ARG /*6Fj*/const GeoExtent & bbox, \
    C(Array) retArray = DGGRS_listZones(self ? self->impl : (C(DGGRS))null, /*7Al*/level, /*7Al*/&bbox.impl); \
-      return TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>(retArray););
+      return TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)>(retArray);); \
+VIRTUAL_METHOD(zoneHasSubZone, zoneHasSubZone, c, DGGRS, \
+   bool, c & _ARG, , /*6Fj*/DGGRSZone hayStack _ARG /*6Fj*/DGGRSZone needle, \
+   return (bool)DGGRS_zoneHasSubZone(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))hayStack, /*7Al*/(C(DGGRSZone))needle););
 
 class DGGRS : public Instance
 {
@@ -899,7 +923,6 @@ public:
    inline C(bool) isZoneDescendantOf(/*1Ab*/DGGRSZone descendant, /*1Ab*/DGGRSZone ancestor, /*1Ab*/int maxDepth); // DGGRS_isZoneDescendantOf
    inline C(bool) isZoneImmediateChildOf(/*1Ab*/DGGRSZone child, /*1Ab*/DGGRSZone parent); // DGGRS_isZoneImmediateChildOf
    inline C(bool) isZoneImmediateParentOf(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone child); // DGGRS_isZoneImmediateParentOf
-   inline C(bool) zoneHasSubZone(/*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle); // DGGRS_zoneHasSubZone
 
    struct DGGRS_compactZones_Functor
    {
@@ -1207,6 +1230,15 @@ public:
    } getZoneWGS84Extent;
    // inline static void register_getZoneWGS84Extent(CPPClass & cl, DGGRS::DGGRS_getZoneWGS84Extent_Functor::FunctionType func)
 
+   struct DGGRS_getZoneWGS84ExtentApproximate_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(DGGRS & , /*6Fj*/DGGRSZone zone, /*6Fj*/GeoExtent & extent);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()( /*6Fj*/DGGRSZone zone, /*6Fj*/GeoExtent & extent);
+   } getZoneWGS84ExtentApproximate;
+   // inline static void register_getZoneWGS84ExtentApproximate(CPPClass & cl, DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType func)
+
    struct DGGRS_getZoneWGS84Vertices_Functor
    {
       [[no_unique_address]] int _[0];
@@ -1233,6 +1265,15 @@ public:
       inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> operator()( /*6Fj*/int level, /*6Fj*/const GeoExtent & bbox);
    } listZones;
    // inline static void register_listZones(CPPClass & cl, DGGRS::DGGRS_listZones_Functor::FunctionType func)
+
+   struct DGGRS_zoneHasSubZone_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(DGGRS & , /*6Fj*/DGGRSZone hayStack, /*6Fj*/DGGRSZone needle);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()( /*6Fj*/DGGRSZone hayStack, /*6Fj*/DGGRSZone needle);
+   } zoneHasSubZone;
+   // inline static void register_zoneHasSubZone(CPPClass & cl, DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType func)
 
    static void class_registration(CPPClass & _cpp_class);
 };
@@ -1434,6 +1475,412 @@ public:
 };
 
 
+#define REG_RhombicIcosahedral7H(c) \
+      RhombicIcosahedral7H::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
+
+#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS_PROTO(c) \
+
+#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS(c) \
+
+class RhombicIcosahedral7H : public DGGRS
+{
+public:
+   inline RhombicIcosahedral7H(RhombicIcosahedral7H && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RhombicIcosahedral7H & operator= (RhombicIcosahedral7H && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RhombicIcosahedral7H() : RhombicIcosahedral7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RhombicIcosahedral7H> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RhombicIcosahedral7H * inst = new RhombicIcosahedral7H(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RhombicIcosahedral7H * inst = (RhombicIcosahedral7H *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RhombicIcosahedral7H & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RhombicIcosahedral7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
+#define REG_RI7H_Z7(c) \
+      RI7H_Z7::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
+
+#define RI7H_Z7_VIRTUAL_METHODS_PROTO(c) \
+
+#define RI7H_Z7_VIRTUAL_METHODS(c) \
+
+class RI7H_Z7 : public RhombicIcosahedral7H
+{
+public:
+   inline RI7H_Z7(RI7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RI7H_Z7 & operator= (RI7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RI7H_Z7() : RI7H_Z7((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RI7H_Z7> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RI7H_Z7 * inst = new RI7H_Z7(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RI7H_Z7 * inst = (RI7H_Z7 *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RI7H_Z7 & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RI7H_Z7(C(Instance) _impl, CPPClass & cl = _cpp_class) : RhombicIcosahedral7H(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_RhombicIcosahedral3H(c) \
       RhombicIcosahedral3H::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -1470,9 +1917,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RHOMBICICOSAHEDRAL3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -1671,9 +2120,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RHOMBICICOSAHEDRAL4R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -1836,207 +2287,6 @@ public:
 };
 
 
-#define REG_RhombicIcosahedral7H(c) \
-      RhombicIcosahedral7H::class_registration(_cpp_class); \
-      REG_DGGRS_compactZones(compactZones, c); \
-      REG_DGGRS_countSubZones(countSubZones, c); \
-      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
-      REG_DGGRS_countZones(countZones, c); \
-      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
-      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
-      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
-      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
-      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
-      REG_DGGRS_getMaxParents(getMaxParents, c); \
-      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
-      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
-      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
-      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
-      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
-      REG_DGGRS_getSubZones(getSubZones, c); \
-      REG_DGGRS_getZoneArea(getZoneArea, c); \
-      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
-      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
-      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
-      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
-      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
-      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
-      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
-      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
-      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
-      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
-      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
-      REG_DGGRS_getZoneParents(getZoneParents, c); \
-      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
-      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
-      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
-      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
-      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
-      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
-      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
-
-#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS_PROTO(c) \
-
-#define RHOMBICICOSAHEDRAL7H_VIRTUAL_METHODS(c) \
-
-class RhombicIcosahedral7H : public DGGRS
-{
-public:
-   inline RhombicIcosahedral7H(RhombicIcosahedral7H && i)
-   {
-      Instance * self = (Instance *)this;
-      self->impl = i.impl;
-      self->vTbl = i.vTbl;
-      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
-      i.impl = null;
-      i.vTbl = null;
-   }
-   inline RhombicIcosahedral7H & operator= (RhombicIcosahedral7H && i)
-   {
-      Instance * self = (Instance *)this;
-      if(self->impl)
-      {
-         C(Instance) impl = self->impl;
-         int refCount = impl->_refCount;
-         Instance_decRef(impl);
-         if(refCount > 1)
-         {
-            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
-            if(inst && *inst == self)
-               *inst = null;
-         }
-      }
-      self->impl = i.impl;
-      self->vTbl = i.vTbl;
-      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
-      i.impl = null;
-      i.vTbl = null;
-      return *this;
-   }
-   RhombicIcosahedral7H() : RhombicIcosahedral7H((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
-   struct Instance_onCompare_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
-      inline FunctionType operator= (FunctionType func);
-      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
-   } onCompare;
-   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
-
-   struct Instance_onCopy_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
-      inline FunctionType operator= (FunctionType func);
-      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
-   } onCopy;
-   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
-
-   struct Instance_onDisplay_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
-      inline FunctionType operator= (FunctionType func);
-      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
-   } onDisplay;
-   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
-
-   struct Instance_onEdit_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
-      inline FunctionType operator= (FunctionType func);
-      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
-   } onEdit;
-   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
-
-   struct Instance_onFree_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef void (* FunctionType)(Instance &);
-      inline FunctionType operator= (FunctionType func);
-      inline void operator()(/*6Bk*/Instance & o_ );
-   } onFree;
-   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
-
-   struct Instance_onGetDataFromString_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
-      inline FunctionType operator= (FunctionType func);
-      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
-   } onGetDataFromString;
-   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
-
-   struct Instance_onGetString_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
-      inline FunctionType operator= (FunctionType func);
-      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
-   } onGetString;
-   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
-
-   struct Instance_onSaveEdit_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
-      inline FunctionType operator= (FunctionType func);
-      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
-   } onSaveEdit;
-   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
-
-   struct Instance_onSerialize_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
-      inline FunctionType operator= (FunctionType func);
-      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
-   } onSerialize;
-   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
-
-   struct Instance_onUnserialize_Functor
-   {
-      [[no_unique_address]] int _[0];
-      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
-      inline FunctionType operator= (FunctionType func);
-      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
-   } onUnserialize;
-   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
-
-   static TCPPClass<RhombicIcosahedral7H> _cpp_class;
-   static C(bool) constructor(C(Instance) i, C(bool) alloc)
-   {
-      if(alloc && !INSTANCEL(i, i->_class))
-      {
-         RhombicIcosahedral7H * inst = new RhombicIcosahedral7H(i, _cpp_class);
-         if(inst)
-         {
-            /* printf("Must free!\n");*/
-            inst->mustFree = true;
-         }
-         return inst != null;
-      }
-      return true;
-   }
-   static void destructor(C(Instance) i)
-   {
-      RhombicIcosahedral7H * inst = (RhombicIcosahedral7H *)INSTANCEL(i, i->_class);
-      if(inst)
-      {
-         if(_cpp_class.destructor)
-            ((void (*)(RhombicIcosahedral7H & self))_cpp_class.destructor)(*inst);
-         if(inst->mustFree)
-            delete inst;
-      }
-   }
-   explicit inline RhombicIcosahedral7H(C(Instance) _impl, CPPClass & cl = _cpp_class) : DGGRS(_impl, cl) { }
-
-   static void class_registration(CPPClass & _cpp_class);
-};
-
-
 #define REG_RhombicIcosahedral9R(c) \
       RhombicIcosahedral9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -2073,9 +2323,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RHOMBICICOSAHEDRAL9R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -2440,9 +2692,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define BCTA3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -3797,9 +4051,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define GNOSISGLOBALGRID_VIRTUAL_METHODS_PROTO(c) \
 
@@ -3998,9 +4254,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define GPP3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -4444,9 +4702,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define HEALPIX_VIRTUAL_METHODS_PROTO(c) \
 
@@ -4648,6 +4908,18 @@ public:
    } subIndex;
 };
 
+enum class I3HNeighbor : int
+{
+   top = I3HNeighbor_top,
+   bottom = I3HNeighbor_bottom,
+   left = I3HNeighbor_left,
+   right = I3HNeighbor_right,
+   topLeft = I3HNeighbor_topLeft,
+   topRight = I3HNeighbor_topRight,
+   bottomLeft = I3HNeighbor_bottomLeft,
+   bottomRight = I3HNeighbor_bottomRight
+};
+
 class I3HZone : public DGGRSZone
 {
 public:
@@ -4741,9 +5013,9 @@ class I7HZone : public DGGRSZone
 public:
    constexpr I7HZone() : DGGRSZone() { }
    I7HZone(C(I7HZone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
-   I7HZone(uint levelI49R, uint64 rhombusIX, uint subHex)
+   I7HZone(uint levelI49R, uint rootRhombus, uint64 rhombusIX, uint subHex)
    {
-      impl = I7HZONE(levelI49R, rhombusIX, subHex);
+      impl = I7HZONE(levelI49R, rootRhombus, rhombusIX, subHex);
    }
    operator C(I7HZone)() { return impl; }
    I7HZone & operator =(C(I7HZone) impl) { impl = impl; return *this; }
@@ -4758,6 +5030,14 @@ public:
       /*regSet*/inline I7HZone::levelI49R_Prop & operator= (I7HZone::levelI49R_Prop & prop);
       /*regGet*/inline operator /*0I*/uint () const;
    } levelI49R;
+   struct rootRhombus_Prop
+   {
+      constexpr rootRhombus_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline I7HZone::rootRhombus_Prop & operator= (I7HZone::rootRhombus_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } rootRhombus;
    struct rhombusIX_Prop
    {
       constexpr rhombusIX_Prop() :_() { };
@@ -4853,9 +5133,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define ISEA3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -5054,9 +5336,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define ISEA4R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -5255,9 +5539,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define ISEA7H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -5420,6 +5706,209 @@ public:
 };
 
 
+#define REG_ISEA7H_Z7(c) \
+      ISEA7H_Z7::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
+
+#define ISEA7H_Z7_VIRTUAL_METHODS_PROTO(c) \
+
+#define ISEA7H_Z7_VIRTUAL_METHODS(c) \
+
+class ISEA7H_Z7 : public RI7H_Z7
+{
+public:
+   inline ISEA7H_Z7(ISEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline ISEA7H_Z7 & operator= (ISEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   ISEA7H_Z7() : ISEA7H_Z7((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<ISEA7H_Z7> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         ISEA7H_Z7 * inst = new ISEA7H_Z7(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      ISEA7H_Z7 * inst = (ISEA7H_Z7 *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(ISEA7H_Z7 & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline ISEA7H_Z7(C(Instance) _impl, CPPClass & cl = _cpp_class) : RI7H_Z7(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_ISEA9R(c) \
       ISEA9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -5456,9 +5945,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define ISEA9R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -5823,9 +6314,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define IVEA3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -6024,9 +6517,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define IVEA4R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -6225,9 +6720,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define IVEA7H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -6390,6 +6887,209 @@ public:
 };
 
 
+#define REG_IVEA7H_Z7(c) \
+      IVEA7H_Z7::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
+
+#define IVEA7H_Z7_VIRTUAL_METHODS_PROTO(c) \
+
+#define IVEA7H_Z7_VIRTUAL_METHODS(c) \
+
+class IVEA7H_Z7 : public RI7H_Z7
+{
+public:
+   inline IVEA7H_Z7(IVEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline IVEA7H_Z7 & operator= (IVEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   IVEA7H_Z7() : IVEA7H_Z7((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<IVEA7H_Z7> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         IVEA7H_Z7 * inst = new IVEA7H_Z7(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      IVEA7H_Z7 * inst = (IVEA7H_Z7 *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(IVEA7H_Z7 & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline IVEA7H_Z7(C(Instance) _impl, CPPClass & cl = _cpp_class) : RI7H_Z7(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_IVEA9R(c) \
       IVEA9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -6426,9 +7126,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define IVEA9R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -7436,9 +8138,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RTEA3H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -7637,9 +8341,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RTEA4R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -7838,9 +8544,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RTEA7H_VIRTUAL_METHODS_PROTO(c) \
 
@@ -8003,6 +8711,209 @@ public:
 };
 
 
+#define REG_RTEA7H_Z7(c) \
+      RTEA7H_Z7::class_registration(_cpp_class); \
+      REG_DGGRS_compactZones(compactZones, c); \
+      REG_DGGRS_countSubZones(countSubZones, c); \
+      REG_DGGRS_countZoneEdges(countZoneEdges, c); \
+      REG_DGGRS_countZones(countZones, c); \
+      REG_DGGRS_getFirstSubZone(getFirstSubZone, c); \
+      REG_DGGRS_getIndexMaxDepth(getIndexMaxDepth, c); \
+      REG_DGGRS_getMaxChildren(getMaxChildren, c); \
+      REG_DGGRS_getMaxDGGRSZoneLevel(getMaxDGGRSZoneLevel, c); \
+      REG_DGGRS_getMaxNeighbors(getMaxNeighbors, c); \
+      REG_DGGRS_getMaxParents(getMaxParents, c); \
+      REG_DGGRS_getRefinementRatio(getRefinementRatio, c); \
+      REG_DGGRS_getSubZoneAtIndex(getSubZoneAtIndex, c); \
+      REG_DGGRS_getSubZoneCRSCentroids(getSubZoneCRSCentroids, c); \
+      REG_DGGRS_getSubZoneIndex(getSubZoneIndex, c); \
+      REG_DGGRS_getSubZoneWGS84Centroids(getSubZoneWGS84Centroids, c); \
+      REG_DGGRS_getSubZones(getSubZones, c); \
+      REG_DGGRS_getZoneArea(getZoneArea, c); \
+      REG_DGGRS_getZoneCRSCentroid(getZoneCRSCentroid, c); \
+      REG_DGGRS_getZoneCRSExtent(getZoneCRSExtent, c); \
+      REG_DGGRS_getZoneCRSVertices(getZoneCRSVertices, c); \
+      REG_DGGRS_getZoneCentroidChild(getZoneCentroidChild, c); \
+      REG_DGGRS_getZoneCentroidParent(getZoneCentroidParent, c); \
+      REG_DGGRS_getZoneChildren(getZoneChildren, c); \
+      REG_DGGRS_getZoneFromCRSCentroid(getZoneFromCRSCentroid, c); \
+      REG_DGGRS_getZoneFromTextID(getZoneFromTextID, c); \
+      REG_DGGRS_getZoneFromWGS84Centroid(getZoneFromWGS84Centroid, c); \
+      REG_DGGRS_getZoneLevel(getZoneLevel, c); \
+      REG_DGGRS_getZoneNeighbors(getZoneNeighbors, c); \
+      REG_DGGRS_getZoneParents(getZoneParents, c); \
+      REG_DGGRS_getZoneRefinedCRSVertices(getZoneRefinedCRSVertices, c); \
+      REG_DGGRS_getZoneRefinedWGS84Vertices(getZoneRefinedWGS84Vertices, c); \
+      REG_DGGRS_getZoneTextID(getZoneTextID, c); \
+      REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
+      REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
+      REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
+      REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
+
+#define RTEA7H_Z7_VIRTUAL_METHODS_PROTO(c) \
+
+#define RTEA7H_Z7_VIRTUAL_METHODS(c) \
+
+class RTEA7H_Z7 : public RI7H_Z7
+{
+public:
+   inline RTEA7H_Z7(RTEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+   }
+   inline RTEA7H_Z7 & operator= (RTEA7H_Z7 && i)
+   {
+      Instance * self = (Instance *)this;
+      if(self->impl)
+      {
+         C(Instance) impl = self->impl;
+         int refCount = impl->_refCount;
+         Instance_decRef(impl);
+         if(refCount > 1)
+         {
+            Instance ** inst = (Instance **)&INSTANCEL(impl, impl->_class);
+            if(inst && *inst == self)
+               *inst = null;
+         }
+      }
+      self->impl = i.impl;
+      self->vTbl = i.vTbl;
+      self->mustFree = i.mustFree; /* checking: should this be in all these instances? */
+      i.impl = null;
+      i.vTbl = null;
+      return *this;
+   }
+   RTEA7H_Z7() : RTEA7H_Z7((C(Instance))Instance_newEx(_cpp_class.impl, false), _cpp_class) { }
+   struct Instance_onCompare_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef int (* FunctionType)(Instance & , /*6Bj*/Instance & object);
+      inline FunctionType operator= (FunctionType func);
+      inline int operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & object);
+   } onCompare;
+   // inline static void register_onCompare(CPPClass & cl, Instance::Instance_onCompare_Functor::FunctionType func)
+
+   struct Instance_onCopy_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Bj*/Instance & newData);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Bj*/Instance & newData);
+   } onCopy;
+   // inline static void register_onCopy(CPPClass & cl, Instance::Instance_onCopy_Functor::FunctionType func)
+
+   struct Instance_onDisplay_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & surface, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int width, /*6Fj*/void * fieldData, /*6Fj*/int alignment, /*6Fj*/uint displayFlags);
+   } onDisplay;
+   // inline static void register_onDisplay(CPPClass & cl, Instance::Instance_onDisplay_Functor::FunctionType func)
+
+   struct Instance_onEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef Instance & (* FunctionType)(Instance & , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+      inline FunctionType operator= (FunctionType func);
+      inline Instance & operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & dataBox, /*6Fj*/Instance & obsolete, /*6Fj*/int x, /*6Fj*/int y, /*6Fj*/int w, /*6Fj*/int h, /*6Fj*/void * userData);
+   } onEdit;
+   // inline static void register_onEdit(CPPClass & cl, Instance::Instance_onEdit_Functor::FunctionType func)
+
+   struct Instance_onFree_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance &);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ );
+   } onFree;
+   // inline static void register_onFree(CPPClass & cl, Instance::Instance_onFree_Functor::FunctionType func)
+
+   struct Instance_onGetDataFromString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/const char * string);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/const char * string);
+   } onGetDataFromString;
+   // inline static void register_onGetDataFromString(CPPClass & cl, Instance::Instance_onGetDataFromString_Functor::FunctionType func)
+
+   struct Instance_onGetString_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef const char * (* FunctionType)(Instance & , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+      inline FunctionType operator= (FunctionType func);
+      inline const char * operator()(/*6Bk*/Instance & o_ , /*6Fj*/char * tempString, /*6Fj*/void * reserved, /*6Fj*/ObjectNotationType * onType);
+   } onGetString;
+   // inline static void register_onGetString(CPPClass & cl, Instance::Instance_onGetString_Functor::FunctionType func)
+
+   struct Instance_onSaveEdit_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef bool (* FunctionType)(Instance & , /*6Fj*/Instance & window, /*6Fj*/void * object);
+      inline FunctionType operator= (FunctionType func);
+      inline bool operator()(/*6Bk*/Instance & o_ , /*6Fj*/Instance & window, /*6Fj*/void * object);
+   } onSaveEdit;
+   // inline static void register_onSaveEdit(CPPClass & cl, Instance::Instance_onSaveEdit_Functor::FunctionType func)
+
+   struct Instance_onSerialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onSerialize;
+   // inline static void register_onSerialize(CPPClass & cl, Instance::Instance_onSerialize_Functor::FunctionType func)
+
+   struct Instance_onUnserialize_Functor
+   {
+      [[no_unique_address]] int _[0];
+      typedef void (* FunctionType)(Instance & , /*6Fj*/IOChannel & channel);
+      inline FunctionType operator= (FunctionType func);
+      inline void operator()(/*6Bk*/Instance & o_ , /*6Fj*/IOChannel & channel);
+   } onUnserialize;
+   // inline static void register_onUnserialize(CPPClass & cl, Instance::Instance_onUnserialize_Functor::FunctionType func)
+
+   static TCPPClass<RTEA7H_Z7> _cpp_class;
+   static C(bool) constructor(C(Instance) i, C(bool) alloc)
+   {
+      if(alloc && !INSTANCEL(i, i->_class))
+      {
+         RTEA7H_Z7 * inst = new RTEA7H_Z7(i, _cpp_class);
+         if(inst)
+         {
+            /* printf("Must free!\n");*/
+            inst->mustFree = true;
+         }
+         return inst != null;
+      }
+      return true;
+   }
+   static void destructor(C(Instance) i)
+   {
+      RTEA7H_Z7 * inst = (RTEA7H_Z7 *)INSTANCEL(i, i->_class);
+      if(inst)
+      {
+         if(_cpp_class.destructor)
+            ((void (*)(RTEA7H_Z7 & self))_cpp_class.destructor)(*inst);
+         if(inst->mustFree)
+            delete inst;
+      }
+   }
+   explicit inline RTEA7H_Z7(C(Instance) _impl, CPPClass & cl = _cpp_class) : RI7H_Z7(_impl, cl) { }
+
+   static void class_registration(CPPClass & _cpp_class);
+};
+
+
 #define REG_RTEA9R(c) \
       RTEA9R::class_registration(_cpp_class); \
       REG_DGGRS_compactZones(compactZones, c); \
@@ -8039,9 +8950,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RTEA9R_VIRTUAL_METHODS_PROTO(c) \
 
@@ -8429,6 +9342,44 @@ public:
    } z;
 };
 
+class Z7Zone : public DGGRSZone
+{
+public:
+   constexpr Z7Zone() : DGGRSZone() { }
+   Z7Zone(C(Z7Zone) impl) : DGGRSZone((C(DGGRSZone))impl) { }
+   Z7Zone(uint rootPentagon, uint64 ancestry)
+   {
+      impl = Z7ZONE(rootPentagon, ancestry);
+   }
+   operator C(Z7Zone)() { return impl; }
+   Z7Zone & operator =(C(Z7Zone) impl) { impl = impl; return *this; }
+   bool operator ==(const Z7Zone & value) const { return impl == value.impl; }
+   bool operator !=(const Z7Zone & value) const { return impl != value.impl; }
+
+   static inline C(Z7Zone) from7H(/*1Ab*/I7HZone zone); // Z7Zone_from7H
+   static inline C(Z7Zone) fromTextID(constString zoneID); // Z7Zone_fromTextID
+   static inline int getParentRotationOffset(/*1Ab*/I7HZone zone); // Z7Zone_getParentRotationOffset
+   inline void getTextID(C(String) zoneID); // Z7Zone_getTextID
+   inline C(I7HZone) to7H(); // Z7Zone_to7H
+
+   struct rootPentagon_Prop
+   {
+      constexpr rootPentagon_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint operator= (/*0H*/uint v);
+      /*regSet*/inline Z7Zone::rootPentagon_Prop & operator= (Z7Zone::rootPentagon_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint () const;
+   } rootPentagon;
+   struct ancestry_Prop
+   {
+      constexpr ancestry_Prop() :_() { };
+      [[no_unique_address]] int _[0];
+      /*nstSet*/inline /*0H*/uint64 operator= (/*0H*/uint64 v);
+      /*regSet*/inline Z7Zone::ancestry_Prop & operator= (Z7Zone::ancestry_Prop & prop);
+      /*regGet*/inline operator /*0I*/uint64 () const;
+   } ancestry;
+};
+
 
 #define REG_rHEALPix(c) \
       rHEALPix::class_registration(_cpp_class); \
@@ -8466,9 +9417,11 @@ public:
       REG_DGGRS_getZoneTextID(getZoneTextID, c); \
       REG_DGGRS_getZoneWGS84Centroid(getZoneWGS84Centroid, c); \
       REG_DGGRS_getZoneWGS84Extent(getZoneWGS84Extent, c); \
+      REG_DGGRS_getZoneWGS84ExtentApproximate(getZoneWGS84ExtentApproximate, c); \
       REG_DGGRS_getZoneWGS84Vertices(getZoneWGS84Vertices, c); \
       REG_DGGRS_isZoneCentroidChild(isZoneCentroidChild, c); \
-      REG_DGGRS_listZones(listZones, c);
+      REG_DGGRS_listZones(listZones, c); \
+      REG_DGGRS_zoneHasSubZone(zoneHasSubZone, c);
 
 #define RHEALPIX_VIRTUAL_METHODS_PROTO(c) \
 
@@ -9718,6 +10671,28 @@ inline void DGGRS::DGGRS_getZoneWGS84Extent_Functor::operator()( /*6Fj*/DGGRSZon
 //    ((DGGRS::DGGRS_getZoneWGS84Extent_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getZoneWGS84Extent)] = func;
 // }
 
+inline DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, getZoneWGS84ExtentApproximate);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate)] = func;
+   return func;
+}
+inline void DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::operator()( /*6Fj*/DGGRSZone zone, /*6Fj*/GeoExtent & extent)
+{
+   SELF(DGGRS, getZoneWGS84ExtentApproximate);
+   DGGRS_getZoneWGS84ExtentApproximate(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))zone, /*7Al*/&extent.impl);
+}
+// inline void DGGRS::register_getZoneWGS84ExtentApproximate(CPPClass & cl, DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate)] = func;
+// }
+
 inline DGGRS::DGGRS_getZoneWGS84Vertices_Functor::FunctionType DGGRS::DGGRS_getZoneWGS84Vertices_Functor::operator= (FunctionType func)
 {
    SELF(DGGRS, getZoneWGS84Vertices);
@@ -9783,6 +10758,28 @@ inline TArray<C(DGGRSZone) _ARG int _ARG C(DGGRSZone)> DGGRS::DGGRS_listZones_Fu
 // inline void DGGRS::register_listZones(CPPClass & cl, DGGRS::DGGRS_listZones_Functor::FunctionType func)
 // {
 //    ((DGGRS::DGGRS_listZones_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, listZones)] = func;
+// }
+
+inline DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType DGGRS::DGGRS_zoneHasSubZone_Functor::operator= (FunctionType func)
+{
+   SELF(DGGRS, zoneHasSubZone);
+   if(self->vTbl == DGGRS::_cpp_class.vTbl)
+   {
+      uint size = DGGRS::_cpp_class.impl->vTblSize;
+      self->vTbl = (void (**)())newt(DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType, size);
+      memcpy(self->vTbl, DGGRS::_cpp_class.vTbl, sizeof(DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType) * size);
+   }
+   ((DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType *)self->vTbl)[M_VTBLID(DGGRS, zoneHasSubZone)] = func;
+   return func;
+}
+inline bool DGGRS::DGGRS_zoneHasSubZone_Functor::operator()( /*6Fj*/DGGRSZone hayStack, /*6Fj*/DGGRSZone needle)
+{
+   SELF(DGGRS, zoneHasSubZone);
+   return (bool)DGGRS_zoneHasSubZone(self ? self->impl : (C(DGGRS))null, /*7Al*/(C(DGGRSZone))hayStack, /*7Al*/(C(DGGRSZone))needle);
+}
+// inline void DGGRS::register_zoneHasSubZone(CPPClass & cl, DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType func)
+// {
+//    ((DGGRS::DGGRS_zoneHasSubZone_Functor::FunctionType *)cl.vTbl)[M_VTBLID(DGGRS, zoneHasSubZone)] = func;
 // }
 
 
@@ -9861,10 +10858,6 @@ inline C(bool) DGGRS::isZoneImmediateChildOf(/*1Ab*/DGGRSZone child, /*1Ab*/DGGR
 inline C(bool) DGGRS::isZoneImmediateParentOf(/*1Ab*/DGGRSZone parent, /*1Ab*/DGGRSZone child)
 {
    return DGGRS_isZoneImmediateParentOf(impl, /*5Ee*/(C(DGGRSZone))parent.impl, /*5Ee*/(C(DGGRSZone))child.impl);
-}
-inline C(bool) DGGRS::zoneHasSubZone(/*1Ab*/DGGRSZone hayStack, /*1Ab*/DGGRSZone needle)
-{
-   return DGGRS_zoneHasSubZone(impl, /*5Ee*/(C(DGGRSZone))hayStack.impl, /*5Ee*/(C(DGGRSZone))needle.impl);
 }
 
 
@@ -11058,6 +12051,29 @@ inline bool HEALPixProjection::HEALPixProjection_inverse_Functor::operator()( /*
 {
    SELF(I7HZone, levelI49R);
    return I7HZONE_levelI49R(self->impl);
+}
+
+// member accessors: I7HZone::rootRhombus
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint I7HZone::rootRhombus_Prop::operator= (/*0H*/uint v)
+{
+   SELF(I7HZone, rootRhombus);
+   I7HZONE_SET_rootRhombus(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline I7HZone::rootRhombus_Prop & I7HZone::rootRhombus_Prop::operator= (I7HZone::rootRhombus_Prop & prop)
+{
+   SELF(I7HZone, rootRhombus);
+   /*0H*/uint v = prop;
+   I7HZONE_SET_rootRhombus(self->impl, v);
+   return prop;
+}
+/*regGet*/inline I7HZone::rootRhombus_Prop::operator /*0I*/uint () const
+{
+   SELF(I7HZone, rootRhombus);
+   return I7HZONE_rootRhombus(self->impl);
 }
 
 // member accessors: I7HZone::rhombusIX
@@ -12417,10 +13433,10 @@ inline RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType RI5x6Proje
    ((RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType *)self->vTbl)[M_VTBLID(RI5x6Projection, inverse)] = func;
    return func;
 }
-inline bool RI5x6Projection::RI5x6Projection_inverse_Functor::operator()( /*6Fj*/const Pointd & v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid)
+inline bool RI5x6Projection::RI5x6Projection_inverse_Functor::operator()( /*6Fj*/const Pointd & _v, /*6Fj*/GeoPoint & result, /*6Fj*/bool oddGrid)
 {
    SELF(RI5x6Projection, inverse);
-   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid);
+   return (bool)RI5x6Projection_inverse(self ? self->impl : (C(RI5x6Projection))null, /*7Al*/&_v.impl, /*7Al*/&result.impl, /*7Al*/(C(bool))oddGrid);
 }
 // inline void RI5x6Projection::register_inverse(CPPClass & cl, RI5x6Projection::RI5x6Projection_inverse_Functor::FunctionType func)
 // {
@@ -12436,6 +13452,24 @@ inline void RI5x6Projection::extent5x6FromWGS84(/*1Ac*/const GeoExtent * wgs84Ex
 {
    RI5x6Projection_extent5x6FromWGS84(impl, /*5Cf*/(C(GeoExtent) *)wgs84Extent, /*5Cf*/(C(Pointd) *)topLeft, /*5Cf*/(C(Pointd) *)bottomRight);
 }
+inline C(bool) RI5x6Projection::fromIcosahedronNet(/*1Ab*/const Pointd & v, /*1Ab*/Pointd & result)
+{
+   return RI5x6Projection_fromIcosahedronNet(/*5De*/&v.impl, /*5De*/&result.impl);
+}
+inline C(bool) RI5x6Projection::fromIcosahedronNet(/*1Ac*/const Pointd * v, /*1Ac*/Pointd * result)
+{
+   return RI5x6Projection_fromIcosahedronNet(/*5Cf*/(C(Pointd) *)v, /*5Cf*/(C(Pointd) *)result);
+}
+inline C(bool) RI5x6Projection::toIcosahedronNet(/*1Ab*/const Pointd & v, /*1Ab*/Pointd & result)
+{
+   return RI5x6Projection_toIcosahedronNet(/*5De*/&v.impl, /*5De*/&result.impl);
+}
+inline C(bool) RI5x6Projection::toIcosahedronNet(/*1Ac*/const Pointd * v, /*1Ac*/Pointd * result)
+{
+   return RI5x6Projection_toIcosahedronNet(/*5Cf*/(C(Pointd) *)v, /*5Cf*/(C(Pointd) *)result);
+}
+
+
 
 
 
@@ -12577,6 +13611,114 @@ inline void Vector3D::subtract(/*1Ac*/const Vector3D * vector1, /*1Ac*/const Vec
 }
 
 
+inline C(Z7Zone) Z7Zone::from7H(/*1Ab*/I7HZone zone)
+{
+   return Z7Zone_from7H(/*5Ee*/(C(I7HZone))zone.impl);
+}
+inline C(Z7Zone) Z7Zone::fromTextID(constString zoneID)
+{
+   return Z7Zone_fromTextID(/*5Ge*/zoneID);
+}
+inline int Z7Zone::getParentRotationOffset(/*1Ab*/I7HZone zone)
+{
+   return Z7Zone_getParentRotationOffset(/*5Ee*/(C(I7HZone))zone.impl);
+}
+inline void Z7Zone::getTextID(C(String) zoneID)
+{
+   Z7Zone_getTextID(impl, /*5Ge*/zoneID);
+}
+inline C(I7HZone) Z7Zone::to7H()
+{
+   return Z7Zone_to7H(impl);
+}
+
+
+// member accessors: Z7Zone::rootPentagon
+// (bits::uint)
+
+/*nstSet*/inline /*0H*/uint Z7Zone::rootPentagon_Prop::operator= (/*0H*/uint v)
+{
+   SELF(Z7Zone, rootPentagon);
+   Z7ZONE_SET_rootPentagon(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline Z7Zone::rootPentagon_Prop & Z7Zone::rootPentagon_Prop::operator= (Z7Zone::rootPentagon_Prop & prop)
+{
+   SELF(Z7Zone, rootPentagon);
+   /*0H*/uint v = prop;
+   Z7ZONE_SET_rootPentagon(self->impl, v);
+   return prop;
+}
+/*regGet*/inline Z7Zone::rootPentagon_Prop::operator /*0I*/uint () const
+{
+   SELF(Z7Zone, rootPentagon);
+   return Z7ZONE_rootPentagon(self->impl);
+}
+
+// member accessors: Z7Zone::ancestry
+// (bits::uint64)
+
+/*nstSet*/inline /*0H*/uint64 Z7Zone::ancestry_Prop::operator= (/*0H*/uint64 v)
+{
+   SELF(Z7Zone, ancestry);
+   Z7ZONE_SET_ancestry(self->impl, v);
+   return v;
+}
+
+/*regSet*/inline Z7Zone::ancestry_Prop & Z7Zone::ancestry_Prop::operator= (Z7Zone::ancestry_Prop & prop)
+{
+   SELF(Z7Zone, ancestry);
+   /*0H*/uint64 v = prop;
+   Z7ZONE_SET_ancestry(self->impl, v);
+   return prop;
+}
+/*regGet*/inline Z7Zone::ancestry_Prop::operator /*0I*/uint64 () const
+{
+   SELF(Z7Zone, ancestry);
+   return Z7ZONE_ancestry(self->impl);
+}
+
+
+// function: i3HZoneFromI9R
+inline C(I3HZone) i3HZoneFromI9R(/*1Ab*/I9RZone zone, /*1Ab*/char subHex)
+{
+   return F(i3HZoneFromI9R)(/*5Ee*/(C(I9RZone))zone.impl, /*5Ge*/subHex);
+}
+// function: i9RZoneFromI3H
+inline C(I9RZone) i9RZoneFromI3H(/*1Ab*/I3HZone zone)
+{
+   return F(i9RZoneFromI3H)(/*5Ee*/(C(I3HZone))zone.impl);
+}
+// function: authalicSetup
+inline void authalicSetup(/*1Ab*/double a, /*1Ab*/double b, /*1Ab*/double cp[2][AUTH_ORDER])
+{
+   F(authalicSetup)(/*5Ge*/a, /*5Ge*/b, /*5Ge*/cp);
+}
+// function: canonicalize5x6
+inline void canonicalize5x6(/*1Ab*/const Pointd & _src, /*1Ab*/Pointd & out)
+{
+   F(canonicalize5x6)(/*5De*/&_src.impl, /*5De*/&out.impl);
+}
+inline void canonicalize5x6(/*1Ac*/const Pointd * _src, /*1Ac*/Pointd * out)
+{
+   F(canonicalize5x6)(/*5Cf*/(C(Pointd) *)_src, /*5Cf*/(C(Pointd) *)out);
+}
+// function: compactGGGZones
+inline void compactGGGZones(/*1Ab*/TArray<C(GGGZone) _ARG int _ARG C(GGGZone)> & zones, /*1Ab*/int start, /*1Ab*/int maxLevel)
+{
+   F(compactGGGZones)(/*5De*/((Instance&&)zones).impl, /*5Ge*/start, /*5Ge*/maxLevel);
+}
+// function: latAuthalicToGeodetic
+inline C(Angle) latAuthalicToGeodetic(/*1Ab*/const double cp[2][AUTH_ORDER], /*1Ab*/Angle phi)
+{
+   return F(latAuthalicToGeodetic)(/*5Ge*/cp, /*5Ee*/(C(Angle))phi.impl);
+}
+// function: latGeodeticToAuthalic
+inline C(Angle) latGeodeticToAuthalic(/*1Ab*/const double cp[2][AUTH_ORDER], /*1Ab*/Angle phi)
+{
+   return F(latGeodeticToAuthalic)(/*5Ge*/cp, /*5Ee*/(C(Angle))phi.impl);
+}
 // function: readDGGSJSON
 inline DGGSJSON readDGGSJSON(/*1Ab*/File & f)
 {

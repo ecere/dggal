@@ -16,18 +16,22 @@ TCPPClass<HEALPixProjection> HEALPixProjection::_cpp_class;
 TCPPClass<ISEA3H> ISEA3H::_cpp_class;
 TCPPClass<ISEA4R> ISEA4R::_cpp_class;
 TCPPClass<ISEA7H> ISEA7H::_cpp_class;
+TCPPClass<ISEA7H_Z7> ISEA7H_Z7::_cpp_class;
 TCPPClass<ISEA9R> ISEA9R::_cpp_class;
 TCPPClass<ISEAProjection> ISEAProjection::_cpp_class;
 TCPPClass<IVEA3H> IVEA3H::_cpp_class;
 TCPPClass<IVEA4R> IVEA4R::_cpp_class;
 TCPPClass<IVEA7H> IVEA7H::_cpp_class;
+TCPPClass<IVEA7H_Z7> IVEA7H_Z7::_cpp_class;
 TCPPClass<IVEA9R> IVEA9R::_cpp_class;
 TCPPClass<IVEAProjection> IVEAProjection::_cpp_class;
 TCPPClass<JSONSchema> JSONSchema::_cpp_class;
 TCPPClass<RI5x6Projection> RI5x6Projection::_cpp_class;
+TCPPClass<RI7H_Z7> RI7H_Z7::_cpp_class;
 TCPPClass<RTEA3H> RTEA3H::_cpp_class;
 TCPPClass<RTEA4R> RTEA4R::_cpp_class;
 TCPPClass<RTEA7H> RTEA7H::_cpp_class;
+TCPPClass<RTEA7H_Z7> RTEA7H_Z7::_cpp_class;
 TCPPClass<RTEA9R> RTEA9R::_cpp_class;
 TCPPClass<RTEAProjection> RTEAProjection::_cpp_class;
 TCPPClass<RhombicIcosahedral3H> RhombicIcosahedral3H::_cpp_class;
@@ -197,6 +201,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) ISEA7H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   ISEA7H_Z7::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "ISEA7H_Z7", "ISEA7H_Z7",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) ISEA7H_Z7::constructor,
+               (void(*)(void *)) ISEA7H_Z7::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    ISEA9R::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -242,6 +255,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) IVEA7H::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   IVEA7H_Z7::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "IVEA7H_Z7", "IVEA7H_Z7",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) IVEA7H_Z7::constructor,
+               (void(*)(void *)) IVEA7H_Z7::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    IVEA9R::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -278,6 +300,15 @@ int dggal_cpp_init(const Module & module)
                (void(*)(void *)) RI5x6Projection::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
+   RI7H_Z7::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RI7H_Z7", "RI7H_Z7",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RI7H_Z7::constructor,
+               (void(*)(void *)) RI7H_Z7::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
    RTEA3H::_cpp_class.setup(
          (XClass *)eC_registerClass(
                ClassType_normalClass,
@@ -303,6 +334,15 @@ int dggal_cpp_init(const Module & module)
                sizeof(Instance *), 0,
                (C(bool) (*)(void *)) RTEA7H::constructor,
                (void(*)(void *)) RTEA7H::destructor,
+               (module).impl,
+               AccessMode_privateAccess, AccessMode_publicAccess));
+   RTEA7H_Z7::_cpp_class.setup(
+         (XClass *)eC_registerClass(
+               ClassType_normalClass,
+               "CPP" "RTEA7H_Z7", "RTEA7H_Z7",
+               sizeof(Instance *), 0,
+               (C(bool) (*)(void *)) RTEA7H_Z7::constructor,
+               (void(*)(void *)) RTEA7H_Z7::destructor,
                (module).impl,
                AccessMode_privateAccess, AccessMode_publicAccess));
    RTEA9R::_cpp_class.setup(
@@ -1169,6 +1209,28 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
       });
 
 
+      addMethod(_cpp_class.impl, "getZoneWGS84ExtentApproximate", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) zone, /*1Aa*/C(GeoExtent) * extent)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate);
+         DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_getZoneWGS84ExtentApproximate_Functor::FunctionType) i->vTbl[vid];
+            fn(*i, /*3Hd*/(DGGRSZone)zone, /*3Id*/*(GeoExtent *)extent);
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((void (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) zone, /*1Aa*/C(GeoExtent) * extent))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate)]);
+            if(method) return method (o_, zone, extent);
+         }
+         return ;
+      });
+
+
       addMethod(_cpp_class.impl, "getZoneWGS84Vertices", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) zone, /*1Aa*/C(GeoPoint) * vertices)
       {
          XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
@@ -1232,6 +1294,28 @@ void DGGRS::class_registration(CPPClass & _cpp_class)
             if(method) return method (o_, level, bbox);
          }
          return (C(Array))null;
+      });
+
+
+      addMethod(_cpp_class.impl, "zoneHasSubZone", (void *) +[](/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) hayStack, /*1Aa*/C(DGGRSZone) needle)
+      {
+         XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
+         // 'cp1' is empty
+         DGGRS * i = (o_) ? (DGGRS *)INSTANCEL(o_, cl) : null;
+         int vid = M_VTBLID(DGGRS, zoneHasSubZone);
+         DGGRS_zoneHasSubZone_Functor::FunctionType fn;
+         if(i && i->vTbl && i->vTbl[vid])
+         {
+            fn = (DGGRS_zoneHasSubZone_Functor::FunctionType) i->vTbl[vid];
+            C(bool) ret = (C(bool))fn(*i, /*3Hd*/(DGGRSZone)hayStack, /*3Hd*/(DGGRSZone)needle); return ret;
+         }
+         // 'cp2' is empty
+         else
+         {
+            auto method = ((C(bool) (*) (/*1Aa*/C(DGGRS) o_, /*1Aa*/C(DGGRSZone) hayStack, /*1Aa*/C(DGGRSZone) needle))(CO(DGGRS)->_vTbl)[M_VTBLID(DGGRS, zoneHasSubZone)]);
+            if(method) return method (o_, hayStack, needle);
+         }
+         return (C(bool))1;
       });
 
 
@@ -1320,6 +1404,9 @@ void ISEA4R::class_registration(CPPClass & _cpp_class)
 void ISEA7H::class_registration(CPPClass & _cpp_class)
 {
 }
+void ISEA7H_Z7::class_registration(CPPClass & _cpp_class)
+{
+}
 void ISEA9R::class_registration(CPPClass & _cpp_class)
 {
 }
@@ -1333,6 +1420,9 @@ void IVEA4R::class_registration(CPPClass & _cpp_class)
 {
 }
 void IVEA7H::class_registration(CPPClass & _cpp_class)
+{
+}
+void IVEA7H_Z7::class_registration(CPPClass & _cpp_class)
 {
 }
 void IVEA9R::class_registration(CPPClass & _cpp_class)
@@ -1369,7 +1459,7 @@ void RI5x6Projection::class_registration(CPPClass & _cpp_class)
       });
 
 
-      addMethod(_cpp_class.impl, "inverse", (void *) +[](/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid)
+      addMethod(_cpp_class.impl, "inverse", (void *) +[](/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * _v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid)
       {
          XClass * cl = (o_) ? (XClass *)(o_)->_class : null;
          // 'cp1' is empty
@@ -1379,18 +1469,21 @@ void RI5x6Projection::class_registration(CPPClass & _cpp_class)
          if(i && i->vTbl && i->vTbl[vid])
          {
             fn = (RI5x6Projection_inverse_Functor::FunctionType) i->vTbl[vid];
-            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(Pointd *)v, /*3Id*/*(GeoPoint *)result, /*3Hd*/(bool)oddGrid); return ret;
+            C(bool) ret = (C(bool))fn(*i, /*3Id*/*(Pointd *)_v, /*3Id*/*(GeoPoint *)result, /*3Hd*/(bool)oddGrid); return ret;
          }
          // 'cp2' is empty
          else
          {
-            auto method = ((C(bool) (*) (/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid))(CO(RI5x6Projection)->_vTbl)[M_VTBLID(RI5x6Projection, inverse)]);
-            if(method) return method (o_, v, result, oddGrid);
+            auto method = ((C(bool) (*) (/*1Aa*/C(RI5x6Projection) o_, /*1Aa*/const C(Pointd) * _v, /*1Aa*/C(GeoPoint) * result, /*1Aa*/C(bool) oddGrid))(CO(RI5x6Projection)->_vTbl)[M_VTBLID(RI5x6Projection, inverse)]);
+            if(method) return method (o_, _v, result, oddGrid);
          }
          return (C(bool))1;
       });
 
 
+}
+void RI7H_Z7::class_registration(CPPClass & _cpp_class)
+{
 }
 void RTEA3H::class_registration(CPPClass & _cpp_class)
 {
@@ -1399,6 +1492,9 @@ void RTEA4R::class_registration(CPPClass & _cpp_class)
 {
 }
 void RTEA7H::class_registration(CPPClass & _cpp_class)
+{
+}
+void RTEA7H_Z7::class_registration(CPPClass & _cpp_class)
 {
 }
 void RTEA9R::class_registration(CPPClass & _cpp_class)

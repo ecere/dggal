@@ -5,6 +5,7 @@ struct eC_CRSExtent
    eC_Pointd tl;
    eC_Pointd br;
 };
+
 struct eC_GeoPoint
 {
    eC_Angle lat;
@@ -27,6 +28,9 @@ typedef eC_Instance eC_DGGSJSONShape;
 typedef struct eC_GeoExtent eC_GeoExtent;
 typedef struct eC_GeoPoint eC_GeoPoint;
 typedef eC_Instance eC_HEALPixProjection;
+typedef uint64 eC_I3HZone;
+typedef uint64 eC_I7HZone;
+typedef uint64 eC_I9RZone;
 typedef eC_Instance eC_JSONSchema;
 typedef int eC_JSONSchemaType;
 enum
@@ -43,12 +47,16 @@ enum
 
 typedef struct eC_Plane eC_Plane;
 typedef struct eC_Quaternion eC_Quaternion;
+typedef eC_DGGRS eC_RhombicIcosahedral7H;
+typedef eC_RhombicIcosahedral7H eC_RI7H_Z7;
 typedef eC_DGGRS eC_RhombicIcosahedral3H;
 typedef eC_DGGRS eC_RhombicIcosahedral4R;
-typedef eC_DGGRS eC_RhombicIcosahedral7H;
 typedef eC_DGGRS eC_RhombicIcosahedral9R;
 typedef eC_RI5x6Projection eC_SliceAndDiceGreatCircleIcosahedralProjection;
 typedef struct eC_Vector3D eC_Vector3D;
+typedef uint64 eC_Z7Zone;
+#define AUTH_ORDER 6
+
 static const uint64 nullZone;
 
 static const double wgs84InvFlattening;
@@ -71,24 +79,37 @@ typedef eC_RhombicIcosahedral3H eC_GPP3H;
 typedef eC_BarycentricSphericalTriAreaProjection eC_GoldbergPolyhedraProjection;
 typedef eC_DGGRS eC_HEALPix;
 typedef uint64 eC_HPZone;
-typedef uint64 eC_I3HZone;
+typedef int eC_I3HNeighbor;
+enum
+{
+   I3HNeighbor_top = 0x0,
+   I3HNeighbor_bottom = 0x1,
+   I3HNeighbor_left = 0x2,
+   I3HNeighbor_right = 0x3,
+   I3HNeighbor_topLeft = 0x4,
+   I3HNeighbor_topRight = 0x5,
+   I3HNeighbor_bottomLeft = 0x6,
+   I3HNeighbor_bottomRight = 0x7
+};
+
 typedef uint64 eC_I4RZone;
-typedef uint64 eC_I7HZone;
-typedef uint64 eC_I9RZone;
 typedef eC_RhombicIcosahedral3H eC_ISEA3H;
 typedef eC_RhombicIcosahedral4R eC_ISEA4R;
 typedef eC_RhombicIcosahedral7H eC_ISEA7H;
+typedef eC_RI7H_Z7 eC_ISEA7H_Z7;
 typedef eC_RhombicIcosahedral9R eC_ISEA9R;
 typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_ISEAProjection;
 typedef eC_RhombicIcosahedral3H eC_IVEA3H;
 typedef eC_RhombicIcosahedral4R eC_IVEA4R;
 typedef eC_RhombicIcosahedral7H eC_IVEA7H;
+typedef eC_RI7H_Z7 eC_IVEA7H_Z7;
 typedef eC_RhombicIcosahedral9R eC_IVEA9R;
 typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_IVEAProjection;
 typedef uint64 eC_RHPZone;
 typedef eC_RhombicIcosahedral3H eC_RTEA3H;
 typedef eC_RhombicIcosahedral4R eC_RTEA4R;
 typedef eC_RhombicIcosahedral7H eC_RTEA7H;
+typedef eC_RI7H_Z7 eC_RTEA7H_Z7;
 typedef eC_RhombicIcosahedral9R eC_RTEA9R;
 typedef eC_SliceAndDiceGreatCircleIcosahedralProjection eC_RTEAProjection;
 typedef int eC_VGCRadialVertex;
@@ -284,6 +305,10 @@ extern int DGGRS_getZoneWGS84Extent_vTblID;
 void DGGRS_getZoneWGS84Extent(eC_DGGRS __i, eC_DGGRSZone zone, eC_GeoExtent * extent);
 extern eC_Method * method_DGGRS_getZoneWGS84Extent;
 
+extern int DGGRS_getZoneWGS84ExtentApproximate_vTblID;
+void DGGRS_getZoneWGS84ExtentApproximate(eC_DGGRS __i, eC_DGGRSZone zone, eC_GeoExtent * extent);
+extern eC_Method * method_DGGRS_getZoneWGS84ExtentApproximate;
+
 extern int DGGRS_getZoneWGS84Vertices_vTblID;
 int DGGRS_getZoneWGS84Vertices(eC_DGGRS __i, eC_DGGRSZone zone, eC_GeoPoint * vertices);
 extern eC_Method * method_DGGRS_getZoneWGS84Vertices;
@@ -306,7 +331,9 @@ extern int DGGRS_listZones_vTblID;
 eC_Array DGGRS_listZones(eC_DGGRS __i, int level, const eC_GeoExtent * bbox);
 extern eC_Method * method_DGGRS_listZones;
 
-extern eC_bool (* DGGRS_zoneHasSubZone)(eC_DGGRS __this, eC_DGGRSZone hayStack, eC_DGGRSZone needle);
+extern int DGGRS_zoneHasSubZone_vTblID;
+eC_bool DGGRS_zoneHasSubZone(eC_DGGRS __i, eC_DGGRSZone hayStack, eC_DGGRSZone needle);
+extern eC_Method * method_DGGRS_zoneHasSubZone;
 
 #define DGGRSZONE_level_SHIFT                            59
 #define DGGRSZONE_level_MASK                             0xF800000000000000LL
@@ -419,10 +446,12 @@ extern eC_Method * method_HEALPixProjection_inverse;
 #define I4RZONE_col_MASK                                 0x3FFFFFFF
 
 
-#define I7HZONE_levelI49R_SHIFT                          60
-#define I7HZONE_levelI49R_MASK                           0xF000000000000000LL
+#define I7HZONE_levelI49R_SHIFT                          58
+#define I7HZONE_levelI49R_MASK                           0x3C00000000000000LL
+#define I7HZONE_rootRhombus_SHIFT                        54
+#define I7HZONE_rootRhombus_MASK                         0x3C0000000000000LL
 #define I7HZONE_rhombusIX_SHIFT                          3
-#define I7HZONE_rhombusIX_MASK                           0xFFFFFFFFFFFFFF8LL
+#define I7HZONE_rhombusIX_MASK                           0x3FFFFFFFFFFFF8LL
 #define I7HZONE_subHex_SHIFT                             0
 #define I7HZONE_subHex_MASK                              0x7
 
@@ -558,9 +587,13 @@ extern int RI5x6Projection_forward_vTblID;
 eC_bool RI5x6Projection_forward(eC_RI5x6Projection __i, const eC_GeoPoint * p, eC_Pointd * v);
 extern eC_Method * method_RI5x6Projection_forward;
 
+extern eC_bool (* RI5x6Projection_fromIcosahedronNet)(const eC_Pointd * v, eC_Pointd * result);
+
 extern int RI5x6Projection_inverse_vTblID;
-eC_bool RI5x6Projection_inverse(eC_RI5x6Projection __i, const eC_Pointd * v, eC_GeoPoint * result, eC_bool oddGrid);
+eC_bool RI5x6Projection_inverse(eC_RI5x6Projection __i, const eC_Pointd * _v, eC_GeoPoint * result, eC_bool oddGrid);
 extern eC_Method * method_RI5x6Projection_inverse;
+
+extern eC_bool (* RI5x6Projection_toIcosahedronNet)(const eC_Pointd * v, eC_Pointd * result);
 
 extern void (* Vector3D_crossProduct)(eC_Vector3D * __this, const eC_Vector3D * vector1, const eC_Vector3D * vector2);
 
@@ -575,6 +608,29 @@ extern void (* Vector3D_subtract)(eC_Vector3D * __this, const eC_Vector3D * vect
 extern eC_Property * property_Vector3D_length;
 extern double (* Vector3D_get_length)(const eC_Vector3D * v);
 
+#define Z7ZONE_rootPentagon_SHIFT                        60
+#define Z7ZONE_rootPentagon_MASK                         0xF000000000000000LL
+#define Z7ZONE_ancestry_SHIFT                            0
+#define Z7ZONE_ancestry_MASK                             0xFFFFFFFFFFFFFFFLL
+
+
+extern eC_Z7Zone (* Z7Zone_from7H)(eC_I7HZone zone);
+
+extern eC_Z7Zone (* Z7Zone_fromTextID)(constString zoneID);
+
+extern int (* Z7Zone_getParentRotationOffset)(eC_I7HZone zone);
+
+extern void (* Z7Zone_getTextID)(eC_Z7Zone __this, eC_String zoneID);
+
+extern eC_I7HZone (* Z7Zone_to7H)(eC_Z7Zone __this);
+
+extern eC_I3HZone (* eC_i3HZoneFromI9R)(eC_I9RZone zone, char subHex);
+extern eC_I9RZone (* eC_i9RZoneFromI3H)(eC_I3HZone zone);
+extern void (* eC_authalicSetup)(double a, double b, double cp[][]);
+extern void (* eC_canonicalize5x6)(const eC_Pointd * _src, eC_Pointd * out);
+extern void (* eC_compactGGGZones)(eC_Array zones, int start, int maxLevel);
+extern eC_Angle (* eC_latAuthalicToGeodetic)(const double cp[][], eC_Angle phi);
+extern eC_Angle (* eC_latGeodeticToAuthalic)(const double cp[][], eC_Angle phi);
 extern eC_DGGSJSON (* eC_readDGGSJSON)(eC_File f);
 extern eC_Class * class_BCTA3H;
 extern eC_Class * class_BarycentricSphericalTriAreaProjection;
@@ -597,6 +653,7 @@ extern eC_Class * class_GoldbergPolyhedraProjection;
 extern eC_Class * class_HEALPix;
 extern eC_Class * class_HEALPixProjection;
 extern eC_Class * class_HPZone;
+extern eC_Class * class_I3HNeighbor;
 extern eC_Class * class_I3HZone;
 extern eC_Class * class_I4RZone;
 extern eC_Class * class_I7HZone;
@@ -604,11 +661,13 @@ extern eC_Class * class_I9RZone;
 extern eC_Class * class_ISEA3H;
 extern eC_Class * class_ISEA4R;
 extern eC_Class * class_ISEA7H;
+extern eC_Class * class_ISEA7H_Z7;
 extern eC_Class * class_ISEA9R;
 extern eC_Class * class_ISEAProjection;
 extern eC_Class * class_IVEA3H;
 extern eC_Class * class_IVEA4R;
 extern eC_Class * class_IVEA7H;
+extern eC_Class * class_IVEA7H_Z7;
 extern eC_Class * class_IVEA9R;
 extern eC_Class * class_IVEAProjection;
 extern eC_Class * class_JSONSchema;
@@ -617,9 +676,11 @@ extern eC_Class * class_Plane;
 extern eC_Class * class_Quaternion;
 extern eC_Class * class_RHPZone;
 extern eC_Class * class_RI5x6Projection;
+extern eC_Class * class_RI7H_Z7;
 extern eC_Class * class_RTEA3H;
 extern eC_Class * class_RTEA4R;
 extern eC_Class * class_RTEA7H;
+extern eC_Class * class_RTEA7H_Z7;
 extern eC_Class * class_RTEA9R;
 extern eC_Class * class_RTEAProjection;
 extern eC_Class * class_RhombicIcosahedral3H;
@@ -629,6 +690,7 @@ extern eC_Class * class_RhombicIcosahedral9R;
 extern eC_Class * class_SliceAndDiceGreatCircleIcosahedralProjection;
 extern eC_Class * class_VGCRadialVertex;
 extern eC_Class * class_Vector3D;
+extern eC_Class * class_Z7Zone;
 extern eC_Class * class_rHEALPix;
 extern eC_Class * class_rHEALPixProjection;
 

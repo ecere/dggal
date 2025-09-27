@@ -19,14 +19,17 @@ def convertToGeoJSON(inputFile, options):
          elif not strnicmp(dggrsID, "ISEA4R", 6): dggrsClass = ISEA4R
          elif not strnicmp(dggrsID, "ISEA9R", 6): dggrsClass = ISEA9R
          elif not strnicmp(dggrsID, "ISEA3H", 6): dggrsClass = ISEA3H
+         elif not strnicmp(dggrsID, "ISEA7H_Z7", 9): dggrsClass = ISEA7H_Z7
          elif not strnicmp(dggrsID, "ISEA7H", 6): dggrsClass = ISEA7H
          elif not strnicmp(dggrsID, "IVEA4R", 6): dggrsClass = IVEA4R
          elif not strnicmp(dggrsID, "IVEA9R", 6): dggrsClass = IVEA9R
          elif not strnicmp(dggrsID, "IVEA3H", 6): dggrsClass = IVEA3H
+         elif not strnicmp(dggrsID, "IVEA7H_Z7", 9): dggrsClass = IVEA7H_Z7
          elif not strnicmp(dggrsID, "IVEA7H", 6): dggrsClass = IVEA7H
          elif not strnicmp(dggrsID, "RTEA4R", 6): dggrsClass = RTEA4R
          elif not strnicmp(dggrsID, "RTEA9R", 6): dggrsClass = RTEA9R
          elif not strnicmp(dggrsID, "RTEA3H", 6): dggrsClass = RTEA3H
+         elif not strnicmp(dggrsID, "RTEA7H_Z7", 9): dggrsClass = RTEA7H_Z7
          elif not strnicmp(dggrsID, "RTEA7H", 6): dggrsClass = RTEA7H
          elif not strnicmp(dggrsID, "HEALPix", 7): dggrsClass = HEALPix
          elif not strnicmp(dggrsID, "rHEALPix", 8): dggrsClass = rHEALPix
@@ -94,7 +97,8 @@ def convertToGeoJSON(inputFile, options):
 
 # TODO: Parse arguments
 
-input = "A4-0-A.json"
+#input = "A4-0-A.json"
+input = "gebco-Z7-023-d6.json"
 options = { }
 #options['crs'] = 'isea'
 

@@ -2,11 +2,25 @@
 
 #if defined(EC_STATIC)
 // REVIEW: Clashes between function pointers and functions building statically?
+#define i3HZoneFromI9R fnptr_i3HZoneFromI9R
+#define i9RZoneFromI3H fnptr_i9RZoneFromI3H
+#define authalicSetup fnptr_authalicSetup
+#define canonicalize5x6 fnptr_canonicalize5x6
+#define compactGGGZones fnptr_compactGGGZones
+#define latAuthalicToGeodetic fnptr_latAuthalicToGeodetic
+#define latGeodeticToAuthalic fnptr_latGeodeticToAuthalic
 #define readDGGSJSON fnptr_readDGGSJSON
 #endif
 
 // Global Functions Pointers
 
+LIB_EXPORT C(GlobalFunction) * FUNCTION(i3HZoneFromI9R);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(i9RZoneFromI3H);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(authalicSetup);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(canonicalize5x6);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(compactGGGZones);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(latAuthalicToGeodetic);
+LIB_EXPORT C(GlobalFunction) * FUNCTION(latGeodeticToAuthalic);
 LIB_EXPORT C(GlobalFunction) * FUNCTION(readDGGSJSON);
 
 
@@ -60,6 +74,7 @@ LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneRefinedWGS84Vertices);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneTextID);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneWGS84Centroid);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneWGS84Extent);
+LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneWGS84ExtentApproximate);
 LIB_EXPORT C(Method) * METHOD(DGGRS, getZoneWGS84Vertices);
 LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneAncestorOf);
 LIB_EXPORT C(Method) * METHOD(DGGRS, isZoneCentroidChild);
@@ -85,13 +100,21 @@ LIB_EXPORT C(Method) * METHOD(Quaternion, yawPitch);
 
 LIB_EXPORT C(Method) * METHOD(RI5x6Projection, extent5x6FromWGS84);
 LIB_EXPORT C(Method) * METHOD(RI5x6Projection, forward);
+LIB_EXPORT C(Method) * METHOD(RI5x6Projection, fromIcosahedronNet);
 LIB_EXPORT C(Method) * METHOD(RI5x6Projection, inverse);
+LIB_EXPORT C(Method) * METHOD(RI5x6Projection, toIcosahedronNet);
 
 LIB_EXPORT C(Method) * METHOD(Vector3D, crossProduct);
 LIB_EXPORT C(Method) * METHOD(Vector3D, dotProduct);
 LIB_EXPORT C(Method) * METHOD(Vector3D, multQuaternion);
 LIB_EXPORT C(Method) * METHOD(Vector3D, normalize);
 LIB_EXPORT C(Method) * METHOD(Vector3D, subtract);
+
+LIB_EXPORT C(Method) * METHOD(Z7Zone, from7H);
+LIB_EXPORT C(Method) * METHOD(Z7Zone, fromTextID);
+LIB_EXPORT C(Method) * METHOD(Z7Zone, getParentRotationOffset);
+LIB_EXPORT C(Method) * METHOD(Z7Zone, getTextID);
+LIB_EXPORT C(Method) * METHOD(Z7Zone, to7H);
 
 
 
@@ -116,7 +139,6 @@ LIB_EXPORT C(bool) (* DGGRS_isZoneContainedIn)(C(DGGRS) __this, C(DGGRSZone) nee
 LIB_EXPORT C(bool) (* DGGRS_isZoneDescendantOf)(C(DGGRS) __this, C(DGGRSZone) descendant, C(DGGRSZone) ancestor, int maxDepth);
 LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateChildOf)(C(DGGRS) __this, C(DGGRSZone) child, C(DGGRSZone) parent);
 LIB_EXPORT C(bool) (* DGGRS_isZoneImmediateParentOf)(C(DGGRS) __this, C(DGGRSZone) parent, C(DGGRSZone) child);
-LIB_EXPORT C(bool) (* DGGRS_zoneHasSubZone)(C(DGGRS) __this, C(DGGRSZone) hayStack, C(DGGRSZone) needle);
 
 LIB_EXPORT void (* GeoExtent_clear)(C(GeoExtent) * __this);
 LIB_EXPORT C(bool) (* GeoExtent_clip)(C(GeoExtent) * __this, const C(GeoExtent) * e, const C(GeoExtent) * clipExtent);
@@ -130,12 +152,20 @@ LIB_EXPORT void (* Plane_fromPoints)(C(Plane) * __this, const C(Vector3D) * v1, 
 LIB_EXPORT void (* Quaternion_yawPitch)(C(Quaternion) * __this, C(Angle) yaw, C(Angle) pitch);
 
 LIB_EXPORT void (* RI5x6Projection_extent5x6FromWGS84)(C(RI5x6Projection) __this, const C(GeoExtent) * wgs84Extent, C(Pointd) * topLeft, C(Pointd) * bottomRight);
+LIB_EXPORT C(bool) (* RI5x6Projection_fromIcosahedronNet)(const C(Pointd) * v, C(Pointd) * result);
+LIB_EXPORT C(bool) (* RI5x6Projection_toIcosahedronNet)(const C(Pointd) * v, C(Pointd) * result);
 
 LIB_EXPORT void (* Vector3D_crossProduct)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
 LIB_EXPORT double (* Vector3D_dotProduct)(C(Vector3D) * __this, const C(Vector3D) * vector2);
 LIB_EXPORT void (* Vector3D_multQuaternion)(C(Vector3D) * __this, const C(Vector3D) * s, const C(Quaternion) * quat);
 LIB_EXPORT void (* Vector3D_normalize)(C(Vector3D) * __this, const C(Vector3D) * source);
 LIB_EXPORT void (* Vector3D_subtract)(C(Vector3D) * __this, const C(Vector3D) * vector1, const C(Vector3D) * vector2);
+
+LIB_EXPORT C(Z7Zone) (* Z7Zone_from7H)(C(I7HZone) zone);
+LIB_EXPORT C(Z7Zone) (* Z7Zone_fromTextID)(constString zoneID);
+LIB_EXPORT int (* Z7Zone_getParentRotationOffset)(C(I7HZone) zone);
+LIB_EXPORT void (* Z7Zone_getTextID)(C(Z7Zone) __this, C(String) zoneID);
+LIB_EXPORT C(I7HZone) (* Z7Zone_to7H)(C(Z7Zone) __this);
 
 
 
@@ -204,8 +234,10 @@ LIB_EXPORT C(Class) * CO(I4RZone);
 LIB_EXPORT C(Class) * CO(I7HZone);
 LIB_EXPORT C(Class) * CO(I9RZone);
 LIB_EXPORT C(Class) * CO(RHPZone);
+LIB_EXPORT C(Class) * CO(Z7Zone);
 // enumClass
 LIB_EXPORT C(Class) * CO(CRSRegistry);
+LIB_EXPORT C(Class) * CO(I3HNeighbor);
 LIB_EXPORT C(Class) * CO(JSONSchemaType);
 LIB_EXPORT C(Class) * CO(VGCRadialVertex);
 // unitClass
@@ -235,18 +267,22 @@ LIB_EXPORT C(Class) * CO(HEALPixProjection);
 LIB_EXPORT C(Class) * CO(ISEA3H);
 LIB_EXPORT C(Class) * CO(ISEA4R);
 LIB_EXPORT C(Class) * CO(ISEA7H);
+LIB_EXPORT C(Class) * CO(ISEA7H_Z7);
 LIB_EXPORT C(Class) * CO(ISEA9R);
 LIB_EXPORT C(Class) * CO(ISEAProjection);
 LIB_EXPORT C(Class) * CO(IVEA3H);
 LIB_EXPORT C(Class) * CO(IVEA4R);
 LIB_EXPORT C(Class) * CO(IVEA7H);
+LIB_EXPORT C(Class) * CO(IVEA7H_Z7);
 LIB_EXPORT C(Class) * CO(IVEA9R);
 LIB_EXPORT C(Class) * CO(IVEAProjection);
 LIB_EXPORT C(Class) * CO(JSONSchema);
 LIB_EXPORT C(Class) * CO(RI5x6Projection);
+LIB_EXPORT C(Class) * CO(RI7H_Z7);
 LIB_EXPORT C(Class) * CO(RTEA3H);
 LIB_EXPORT C(Class) * CO(RTEA4R);
 LIB_EXPORT C(Class) * CO(RTEA7H);
+LIB_EXPORT C(Class) * CO(RTEA7H_Z7);
 LIB_EXPORT C(Class) * CO(RTEA9R);
 LIB_EXPORT C(Class) * CO(RTEAProjection);
 LIB_EXPORT C(Class) * CO(RhombicIcosahedral3H);
@@ -295,9 +331,11 @@ LIB_EXPORT int M_VTBLID(DGGRS, getZoneRefinedWGS84Vertices);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneTextID);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneWGS84Centroid);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneWGS84Extent);
+LIB_EXPORT int M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate);
 LIB_EXPORT int M_VTBLID(DGGRS, getZoneWGS84Vertices);
 LIB_EXPORT int M_VTBLID(DGGRS, isZoneCentroidChild);
 LIB_EXPORT int M_VTBLID(DGGRS, listZones);
+LIB_EXPORT int M_VTBLID(DGGRS, zoneHasSubZone);
 
 LIB_EXPORT int M_VTBLID(HEALPixProjection, forward);
 LIB_EXPORT int M_VTBLID(HEALPixProjection, inverse);
@@ -313,6 +351,13 @@ unsigned int __eCDll_Unload_dggal(C(Module) * module);
 
 // Global Functions
 
+LIB_EXPORT C(I3HZone) (* F(i3HZoneFromI9R))(C(I9RZone) zone, char subHex);
+LIB_EXPORT C(I9RZone) (* F(i9RZoneFromI3H))(C(I3HZone) zone);
+LIB_EXPORT void (* F(authalicSetup))(double a, double b, double cp[2][6]);
+LIB_EXPORT void (* F(canonicalize5x6))(const C(Pointd) * _src, C(Pointd) * out);
+LIB_EXPORT void (* F(compactGGGZones))(C(Array) zones, int start, int maxLevel);
+LIB_EXPORT C(Angle) (* F(latAuthalicToGeodetic))(const double cp[2][6], C(Angle) phi);
+LIB_EXPORT C(Angle) (* F(latGeodeticToAuthalic))(const double cp[2][6], C(Angle) phi);
 LIB_EXPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 
 
@@ -529,6 +574,10 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(DGGRS, getZoneWGS84Extent))
             M_VTBLID(DGGRS, getZoneWGS84Extent) = METHOD(DGGRS, getZoneWGS84Extent)->vid;
 
+         METHOD(DGGRS, getZoneWGS84ExtentApproximate) = Class_findMethod(CO(DGGRS), "getZoneWGS84ExtentApproximate", module);
+         if(METHOD(DGGRS, getZoneWGS84ExtentApproximate))
+            M_VTBLID(DGGRS, getZoneWGS84ExtentApproximate) = METHOD(DGGRS, getZoneWGS84ExtentApproximate)->vid;
+
          METHOD(DGGRS, getZoneWGS84Vertices) = Class_findMethod(CO(DGGRS), "getZoneWGS84Vertices", module);
          if(METHOD(DGGRS, getZoneWGS84Vertices))
             M_VTBLID(DGGRS, getZoneWGS84Vertices) = METHOD(DGGRS, getZoneWGS84Vertices)->vid;
@@ -563,7 +612,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
 
          METHOD(DGGRS, zoneHasSubZone) = Class_findMethod(CO(DGGRS), "zoneHasSubZone", module);
          if(METHOD(DGGRS, zoneHasSubZone))
-            DGGRS_zoneHasSubZone = (C(bool) (*)(C(DGGRS), C(DGGRSZone), C(DGGRSZone)))METHOD(DGGRS, zoneHasSubZone)->function;
+            M_VTBLID(DGGRS, zoneHasSubZone) = METHOD(DGGRS, zoneHasSubZone)->vid;
       }
       CO(DGGRSZone) = eC_findClass(module, "DGGRSZone");
       CO(DGGSJSON) = eC_findClass(module, "DGGSJSON");
@@ -620,6 +669,7 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
             M_VTBLID(HEALPixProjection, inverse) = METHOD(HEALPixProjection, inverse)->vid;
       }
       CO(HPZone) = eC_findClass(module, "HPZone");
+      CO(I3HNeighbor) = eC_findClass(module, "I3HNeighbor");
       CO(I3HZone) = eC_findClass(module, "I3HZone");
       CO(I4RZone) = eC_findClass(module, "I4RZone");
       CO(I7HZone) = eC_findClass(module, "I7HZone");
@@ -627,11 +677,13 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
       CO(ISEA3H) = eC_findClass(module, "ISEA3H");
       CO(ISEA4R) = eC_findClass(module, "ISEA4R");
       CO(ISEA7H) = eC_findClass(module, "ISEA7H");
+      CO(ISEA7H_Z7) = eC_findClass(module, "ISEA7H_Z7");
       CO(ISEA9R) = eC_findClass(module, "ISEA9R");
       CO(ISEAProjection) = eC_findClass(module, "ISEAProjection");
       CO(IVEA3H) = eC_findClass(module, "IVEA3H");
       CO(IVEA4R) = eC_findClass(module, "IVEA4R");
       CO(IVEA7H) = eC_findClass(module, "IVEA7H");
+      CO(IVEA7H_Z7) = eC_findClass(module, "IVEA7H_Z7");
       CO(IVEA9R) = eC_findClass(module, "IVEA9R");
       CO(IVEAProjection) = eC_findClass(module, "IVEAProjection");
       CO(JSONSchema) = eC_findClass(module, "JSONSchema");
@@ -728,13 +780,23 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(METHOD(RI5x6Projection, forward))
             M_VTBLID(RI5x6Projection, forward) = METHOD(RI5x6Projection, forward)->vid;
 
+         METHOD(RI5x6Projection, fromIcosahedronNet) = Class_findMethod(CO(RI5x6Projection), "fromIcosahedronNet", module);
+         if(METHOD(RI5x6Projection, fromIcosahedronNet))
+            RI5x6Projection_fromIcosahedronNet = (C(bool) (*)(const C(Pointd) *, C(Pointd) *))METHOD(RI5x6Projection, fromIcosahedronNet)->function;
+
          METHOD(RI5x6Projection, inverse) = Class_findMethod(CO(RI5x6Projection), "inverse", module);
          if(METHOD(RI5x6Projection, inverse))
             M_VTBLID(RI5x6Projection, inverse) = METHOD(RI5x6Projection, inverse)->vid;
+
+         METHOD(RI5x6Projection, toIcosahedronNet) = Class_findMethod(CO(RI5x6Projection), "toIcosahedronNet", module);
+         if(METHOD(RI5x6Projection, toIcosahedronNet))
+            RI5x6Projection_toIcosahedronNet = (C(bool) (*)(const C(Pointd) *, C(Pointd) *))METHOD(RI5x6Projection, toIcosahedronNet)->function;
       }
+      CO(RI7H_Z7) = eC_findClass(module, "RI7H_Z7");
       CO(RTEA3H) = eC_findClass(module, "RTEA3H");
       CO(RTEA4R) = eC_findClass(module, "RTEA4R");
       CO(RTEA7H) = eC_findClass(module, "RTEA7H");
+      CO(RTEA7H_Z7) = eC_findClass(module, "RTEA7H_Z7");
       CO(RTEA9R) = eC_findClass(module, "RTEA9R");
       CO(RTEAProjection) = eC_findClass(module, "RTEAProjection");
       CO(RhombicIcosahedral3H) = eC_findClass(module, "RhombicIcosahedral3H");
@@ -770,12 +832,63 @@ LIB_EXPORT C(Module) dggal_init(C(Module) fromModule)
          if(PROPERTY(Vector3D, length))
             Vector3D_get_length = (void *)PROPERTY(Vector3D, length)->Get;
       }
+      CO(Z7Zone) = eC_findClass(module, "Z7Zone");
+      if(CO(Z7Zone))
+      {
+         METHOD(Z7Zone, from7H) = Class_findMethod(CO(Z7Zone), "from7H", module);
+         if(METHOD(Z7Zone, from7H))
+            Z7Zone_from7H = (C(Z7Zone) (*)(C(I7HZone)))METHOD(Z7Zone, from7H)->function;
+
+         METHOD(Z7Zone, fromTextID) = Class_findMethod(CO(Z7Zone), "fromTextID", module);
+         if(METHOD(Z7Zone, fromTextID))
+            Z7Zone_fromTextID = (C(Z7Zone) (*)(constString))METHOD(Z7Zone, fromTextID)->function;
+
+         METHOD(Z7Zone, getParentRotationOffset) = Class_findMethod(CO(Z7Zone), "getParentRotationOffset", module);
+         if(METHOD(Z7Zone, getParentRotationOffset))
+            Z7Zone_getParentRotationOffset = (int (*)(C(I7HZone)))METHOD(Z7Zone, getParentRotationOffset)->function;
+
+         METHOD(Z7Zone, getTextID) = Class_findMethod(CO(Z7Zone), "getTextID", module);
+         if(METHOD(Z7Zone, getTextID))
+            Z7Zone_getTextID = (void (*)(C(Z7Zone), C(String)))METHOD(Z7Zone, getTextID)->function;
+
+         METHOD(Z7Zone, to7H) = Class_findMethod(CO(Z7Zone), "to7H", module);
+         if(METHOD(Z7Zone, to7H))
+            Z7Zone_to7H = (C(I7HZone) (*)(C(Z7Zone)))METHOD(Z7Zone, to7H)->function;
+      }
       CO(rHEALPix) = eC_findClass(module, "rHEALPix");
       CO(rHEALPixProjection) = eC_findClass(module, "rHEALPixProjection");
 
 
 
          // Set up all the function pointers, ...
+
+      FUNCTION(i3HZoneFromI9R) = eC_findFunction(module, "I3HZoneFromI9R");
+      if(FUNCTION(i3HZoneFromI9R))
+         F(i3HZoneFromI9R) = (void *)FUNCTION(i3HZoneFromI9R)->function;
+
+      FUNCTION(i9RZoneFromI3H) = eC_findFunction(module, "I9RZoneFromI3H");
+      if(FUNCTION(i9RZoneFromI3H))
+         F(i9RZoneFromI3H) = (void *)FUNCTION(i9RZoneFromI3H)->function;
+
+      FUNCTION(authalicSetup) = eC_findFunction(module, "authalicSetup");
+      if(FUNCTION(authalicSetup))
+         F(authalicSetup) = (void *)FUNCTION(authalicSetup)->function;
+
+      FUNCTION(canonicalize5x6) = eC_findFunction(module, "canonicalize5x6");
+      if(FUNCTION(canonicalize5x6))
+         F(canonicalize5x6) = (void *)FUNCTION(canonicalize5x6)->function;
+
+      FUNCTION(compactGGGZones) = eC_findFunction(module, "compactGGGZones");
+      if(FUNCTION(compactGGGZones))
+         F(compactGGGZones) = (void *)FUNCTION(compactGGGZones)->function;
+
+      FUNCTION(latAuthalicToGeodetic) = eC_findFunction(module, "latAuthalicToGeodetic");
+      if(FUNCTION(latAuthalicToGeodetic))
+         F(latAuthalicToGeodetic) = (void *)FUNCTION(latAuthalicToGeodetic)->function;
+
+      FUNCTION(latGeodeticToAuthalic) = eC_findFunction(module, "latGeodeticToAuthalic");
+      if(FUNCTION(latGeodeticToAuthalic))
+         F(latGeodeticToAuthalic) = (void *)FUNCTION(latGeodeticToAuthalic)->function;
 
       FUNCTION(readDGGSJSON) = eC_findFunction(module, "readDGGSJSON");
       if(FUNCTION(readDGGSJSON))

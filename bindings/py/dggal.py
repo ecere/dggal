@@ -7,9 +7,9 @@ def cb_RI5x6Projection_forward(__e, p, v):
    return ri5x6projection.fn_RI5x6Projection_forward(ri5x6projection, GeoPoint(impl = p), Pointd(impl = v))
 
 @ffi.callback("eC_bool(eC_RI5x6Projection, const eC_Pointd *, eC_GeoPoint *, eC_bool)")
-def cb_RI5x6Projection_inverse(__e, v, result, oddGrid):
+def cb_RI5x6Projection_inverse(__e, _v, result, oddGrid):
    ri5x6projection = pyOrNewObject(RI5x6Projection, __e)
-   return ri5x6projection.fn_RI5x6Projection_inverse(ri5x6projection, Pointd(impl = v), GeoPoint(impl = result), oddGrid)
+   return ri5x6projection.fn_RI5x6Projection_inverse(ri5x6projection, Pointd(impl = _v), GeoPoint(impl = result), oddGrid)
 
 class RI5x6Projection(Instance):
    class_members = [
@@ -42,8 +42,15 @@ class RI5x6Projection(Instance):
       self.fn_RI5x6Projection_forward = value
       lib.Instance_setMethod(self.impl, "forward".encode('u8'), cb_RI5x6Projection_forward)
 
-   def fn_unset_RI5x6Projection_inverse(self, v, result, oddGrid):
-      return lib.RI5x6Projection_inverse(self.impl, ffi.NULL if v is None else v.impl, ffi.NULL if result is None else result.impl, oddGrid)
+   def fromIcosahedronNet(v = None, result = None):
+      if v is not None and not isinstance(v, Pointd): v = Pointd(v)
+      v = ffi.NULL if v is None else v.impl
+      if result is not None and not isinstance(result, Pointd): result = Pointd(result)
+      result = ffi.NULL if result is None else result.impl
+      return lib.RI5x6Projection_fromIcosahedronNet(ffi.cast("eC_Pointd *", v), ffi.cast("eC_Pointd *", result))
+
+   def fn_unset_RI5x6Projection_inverse(self, _v, result, oddGrid):
+      return lib.RI5x6Projection_inverse(self.impl, ffi.NULL if _v is None else _v.impl, ffi.NULL if result is None else result.impl, oddGrid)
 
    @property
    def inverse(self):
@@ -53,6 +60,13 @@ class RI5x6Projection(Instance):
    def inverse(self, value):
       self.fn_RI5x6Projection_inverse = value
       lib.Instance_setMethod(self.impl, "inverse".encode('u8'), cb_RI5x6Projection_inverse)
+
+   def toIcosahedronNet(v = None, result = None):
+      if v is not None and not isinstance(v, Pointd): v = Pointd(v)
+      v = ffi.NULL if v is None else v.impl
+      if result is not None and not isinstance(result, Pointd): result = Pointd(result)
+      result = ffi.NULL if result is None else result.impl
+      return lib.RI5x6Projection_toIcosahedronNet(ffi.cast("eC_Pointd *", v), ffi.cast("eC_Pointd *", result))
 
 class BarycentricSphericalTriAreaProjection(RI5x6Projection):
    class_members = []
@@ -287,6 +301,11 @@ def cb_DGGRS_getZoneWGS84Extent(__e, zone, extent):
    dggrs = pyOrNewObject(DGGRS, __e)
    dggrs.fn_DGGRS_getZoneWGS84Extent(dggrs, DGGRSZone(impl = zone), GeoExtent(impl = extent))
 
+@ffi.callback("void(eC_DGGRS, eC_DGGRSZone, eC_GeoExtent *)")
+def cb_DGGRS_getZoneWGS84ExtentApproximate(__e, zone, extent):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   dggrs.fn_DGGRS_getZoneWGS84ExtentApproximate(dggrs, DGGRSZone(impl = zone), GeoExtent(impl = extent))
+
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_GeoPoint *)")
 def cb_DGGRS_getZoneWGS84Vertices(__e, zone, vertices):
    dggrs = pyOrNewObject(DGGRS, __e)
@@ -301,6 +320,11 @@ def cb_DGGRS_isZoneCentroidChild(__e, zone):
 def cb_DGGRS_listZones(__e, level, bbox):
    dggrs = pyOrNewObject(DGGRS, __e)
    return dggrs.fn_DGGRS_listZones(dggrs, level, GeoExtent(impl = bbox))
+
+@ffi.callback("eC_bool(eC_DGGRS, eC_DGGRSZone, eC_DGGRSZone)")
+def cb_DGGRS_zoneHasSubZone(__e, hayStack, needle):
+   dggrs = pyOrNewObject(DGGRS, __e)
+   return dggrs.fn_DGGRS_zoneHasSubZone(dggrs, DGGRSZone(impl = hayStack), DGGRSZone(impl = needle))
 
 class DGGRS(Instance):
    class_members = [
@@ -338,9 +362,11 @@ class DGGRS(Instance):
                       'getZoneTextID',
                       'getZoneWGS84Centroid',
                       'getZoneWGS84Extent',
+                      'getZoneWGS84ExtentApproximate',
                       'getZoneWGS84Vertices',
                       'isZoneCentroidChild',
                       'listZones',
+                      'zoneHasSubZone',
                    ]
 
    def init_args(self, args, kwArgs): init_args(DGGRS, self, args, kwArgs)
@@ -847,6 +873,18 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneWGS84Extent = value
       lib.Instance_setMethod(self.impl, "getZoneWGS84Extent".encode('u8'), cb_DGGRS_getZoneWGS84Extent)
 
+   def fn_unset_DGGRS_getZoneWGS84ExtentApproximate(self, zone, extent):
+      return lib.DGGRS_getZoneWGS84ExtentApproximate(self.impl, zone, ffi.NULL if extent is None else extent.impl)
+
+   @property
+   def getZoneWGS84ExtentApproximate(self):
+      if hasattr(self, 'fn_DGGRS_getZoneWGS84ExtentApproximate'): return self.fn_DGGRS_getZoneWGS84ExtentApproximate
+      else: return self.fn_unset_DGGRS_getZoneWGS84ExtentApproximate
+   @getZoneWGS84ExtentApproximate.setter
+   def getZoneWGS84ExtentApproximate(self, value):
+      self.fn_DGGRS_getZoneWGS84ExtentApproximate = value
+      lib.Instance_setMethod(self.impl, "getZoneWGS84ExtentApproximate".encode('u8'), cb_DGGRS_getZoneWGS84ExtentApproximate)
+
    def fn_unset_DGGRS_getZoneWGS84Vertices(self, zone, vertices):
       return lib.DGGRS_getZoneWGS84Vertices(self.impl, zone, vertices)
 
@@ -918,12 +956,21 @@ class DGGRS(Instance):
       self.fn_DGGRS_listZones = value
       lib.Instance_setMethod(self.impl, "listZones".encode('u8'), cb_DGGRS_listZones)
 
-   def zoneHasSubZone(self, hayStack, needle):
+   def fn_unset_DGGRS_zoneHasSubZone(self, hayStack, needle):
       if hayStack is not None and not isinstance(hayStack, DGGRSZone): hayStack = DGGRSZone(hayStack)
       if hayStack is None: hayStack = ffi.NULL
       if needle is not None and not isinstance(needle, DGGRSZone): needle = DGGRSZone(needle)
       if needle is None: needle = ffi.NULL
       return lib.DGGRS_zoneHasSubZone(self.impl, hayStack, needle)
+
+   @property
+   def zoneHasSubZone(self):
+      if hasattr(self, 'fn_DGGRS_zoneHasSubZone'): return self.fn_DGGRS_zoneHasSubZone
+      else: return self.fn_unset_DGGRS_zoneHasSubZone
+   @zoneHasSubZone.setter
+   def zoneHasSubZone(self, value):
+      self.fn_DGGRS_zoneHasSubZone = value
+      lib.Instance_setMethod(self.impl, "zoneHasSubZone".encode('u8'), cb_DGGRS_zoneHasSubZone)
 
 class DGGRSZone(pyBaseClass):pass
 
@@ -1042,6 +1089,20 @@ class HEALPixProjection(Instance):
       self.fn_HEALPixProjection_inverse = value
       lib.Instance_setMethod(self.impl, "inverse".encode('u8'), cb_HEALPixProjection_inverse)
 
+class RhombicIcosahedral7H(DGGRS):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class RI7H_Z7(RhombicIcosahedral7H):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RI7H_Z7, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class RhombicIcosahedral3H(DGGRS):
    class_members = []
 
@@ -1053,13 +1114,6 @@ class RhombicIcosahedral4R(DGGRS):
    class_members = []
 
    def init_args(self, args, kwArgs): init_args(RhombicIcosahedral4R, self, args, kwArgs)
-   def __init__(self, *args, **kwArgs):
-      self.init_args(list(args), kwArgs)
-
-class RhombicIcosahedral7H(DGGRS):
-   class_members = []
-
-   def init_args(self, args, kwArgs): init_args(RhombicIcosahedral7H, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
@@ -1218,7 +1272,7 @@ class DGGSJSON(Instance):
    def depths(self, value): IPTR(lib, ffi, self, DGGSJSON).depths = value.impl
 
    @property
-   def representedValue(self): return String(IPTR(lib, ffi, self, DGGSJSON).dggrs)
+   def representedValue(self): return String(IPTR(lib, ffi, self, DGGSJSON).representedValue)
    @representedValue.setter
    def representedValue(self, value):
       if isinstance(value, str): value = ffi.new("char[]", value.encode('u8'))
@@ -1494,6 +1548,16 @@ class HPZone(DGGRSZone):
    @subIndex.setter
    def subIndex(self, value): self.impl = ((self.impl) & ~(lib.HPZONE_subIndex_MASK)) | (((value)) << lib.HPZONE_subIndex_SHIFT)
 
+class I3HNeighbor:
+   top         = lib.I3HNeighbor_top
+   bottom      = lib.I3HNeighbor_bottom
+   left        = lib.I3HNeighbor_left
+   right       = lib.I3HNeighbor_right
+   topLeft     = lib.I3HNeighbor_topLeft
+   topRight    = lib.I3HNeighbor_topRight
+   bottomLeft  = lib.I3HNeighbor_bottomLeft
+   bottomRight = lib.I3HNeighbor_bottomRight
+
 class I3HZone(DGGRSZone):
    def __init__(self, levelI9R = 0, rootRhombus = 0, rhombusIX = 0, subHex = 0, impl = None):
       if impl is not None:
@@ -1568,7 +1632,7 @@ class I4RZone(DGGRSZone):
    def col(self, value): self.impl = ((self.impl) & ~(lib.I4RZONE_col_MASK)) | (((value)) << lib.I4RZONE_col_SHIFT)
 
 class I7HZone(DGGRSZone):
-   def __init__(self, levelI49R = 0, rhombusIX = 0, subHex = 0, impl = None):
+   def __init__(self, levelI49R = 0, rootRhombus = 0, rhombusIX = 0, subHex = 0, impl = None):
       if impl is not None:
          self.impl = impl
       elif isinstance(levelI49R, I7HZone):
@@ -1578,17 +1642,24 @@ class I7HZone(DGGRSZone):
             __tuple = levelI49R
             levelI49R = 0
             if len(__tuple) > 0: levelI49R = __tuple[0]
-            if len(__tuple) > 1: rhombusIX = __tuple[1]
-            if len(__tuple) > 2: subHex = __tuple[2]
+            if len(__tuple) > 1: rootRhombus = __tuple[1]
+            if len(__tuple) > 2: rhombusIX = __tuple[2]
+            if len(__tuple) > 3: subHex = __tuple[3]
          self.impl = (
-            (levelI49R << lib.I7HZONE_levelI49R_SHIFT) |
-            (rhombusIX << lib.I7HZONE_rhombusIX_SHIFT) |
-            (subHex    << lib.I7HZONE_subHex_SHIFT)    )
+            (levelI49R   << lib.I7HZONE_levelI49R_SHIFT)   |
+            (rootRhombus << lib.I7HZONE_rootRhombus_SHIFT) |
+            (rhombusIX   << lib.I7HZONE_rhombusIX_SHIFT)   |
+            (subHex      << lib.I7HZONE_subHex_SHIFT)      )
 
    @property
    def levelI49R(self): return ((((self.impl)) & lib.I7HZONE_levelI49R_MASK) >> lib.I7HZONE_levelI49R_SHIFT)
    @levelI49R.setter
    def levelI49R(self, value): self.impl = ((self.impl) & ~(lib.I7HZONE_levelI49R_MASK)) | (((value)) << lib.I7HZONE_levelI49R_SHIFT)
+
+   @property
+   def rootRhombus(self): return ((((self.impl)) & lib.I7HZONE_rootRhombus_MASK) >> lib.I7HZONE_rootRhombus_SHIFT)
+   @rootRhombus.setter
+   def rootRhombus(self, value): self.impl = ((self.impl) & ~(lib.I7HZONE_rootRhombus_MASK)) | (((value)) << lib.I7HZONE_rootRhombus_SHIFT)
 
    @property
    def rhombusIX(self): return ((((self.impl)) & lib.I7HZONE_rhombusIX_MASK) >> lib.I7HZONE_rhombusIX_SHIFT)
@@ -1654,6 +1725,13 @@ class ISEA7H(RhombicIcosahedral7H):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class ISEA7H_Z7(RI7H_Z7):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(ISEA7H_Z7, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class ISEA9R(RhombicIcosahedral9R):
    class_members = []
 
@@ -1686,6 +1764,13 @@ class IVEA7H(RhombicIcosahedral7H):
    class_members = []
 
    def init_args(self, args, kwArgs): init_args(IVEA7H, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
+class IVEA7H_Z7(RI7H_Z7):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(IVEA7H_Z7, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
@@ -2188,6 +2273,13 @@ class RTEA7H(RhombicIcosahedral7H):
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
 
+class RTEA7H_Z7(RI7H_Z7):
+   class_members = []
+
+   def init_args(self, args, kwArgs): init_args(RTEA7H_Z7, self, args, kwArgs)
+   def __init__(self, *args, **kwArgs):
+      self.init_args(list(args), kwArgs)
+
 class RTEA9R(RhombicIcosahedral9R):
    class_members = []
 
@@ -2269,6 +2361,55 @@ class Vector3D(Struct):
       vector2 = ffi.NULL if vector2 is None else vector2.impl
       lib.Vector3D_subtract(ffi.cast("eC_Vector3D *", self.impl), ffi.cast("eC_Vector3D *", vector1), ffi.cast("eC_Vector3D *", vector2))
 
+class Z7Zone(DGGRSZone):
+   def __init__(self, rootPentagon = 0, ancestry = 0, impl = None):
+      if impl is not None:
+         self.impl = impl
+      elif isinstance(rootPentagon, Z7Zone):
+         self.impl = rootPentagon.impl
+      else:
+         if isinstance(rootPentagon, tuple):
+            __tuple = rootPentagon
+            rootPentagon = 0
+            if len(__tuple) > 0: rootPentagon = __tuple[0]
+            if len(__tuple) > 1: ancestry = __tuple[1]
+         self.impl = (
+            (rootPentagon << lib.Z7ZONE_rootPentagon_SHIFT) |
+            (ancestry     << lib.Z7ZONE_ancestry_SHIFT)     )
+
+   @property
+   def rootPentagon(self): return ((((self.impl)) & lib.Z7ZONE_rootPentagon_MASK) >> lib.Z7ZONE_rootPentagon_SHIFT)
+   @rootPentagon.setter
+   def rootPentagon(self, value): self.impl = ((self.impl) & ~(lib.Z7ZONE_rootPentagon_MASK)) | (((value)) << lib.Z7ZONE_rootPentagon_SHIFT)
+
+   @property
+   def ancestry(self): return ((((self.impl)) & lib.Z7ZONE_ancestry_MASK) >> lib.Z7ZONE_ancestry_SHIFT)
+   @ancestry.setter
+   def ancestry(self, value): self.impl = ((self.impl) & ~(lib.Z7ZONE_ancestry_MASK)) | (((value)) << lib.Z7ZONE_ancestry_SHIFT)
+
+   def from7H(zone):
+      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(zone)
+      if zone is None: zone = ffi.NULL
+      return Z7Zone(impl = lib.Z7Zone_from7H(zone))
+
+   def fromTextID(zoneID = None):
+      if isinstance(zoneID, str): zoneID = ffi.new("char[]", zoneID.encode('u8'))
+      elif zoneID is None: zoneID = ffi.NULL
+      return Z7Zone(impl = lib.Z7Zone_fromTextID(zoneID))
+
+   def getParentRotationOffset(zone):
+      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(zone)
+      if zone is None: zone = ffi.NULL
+      return lib.Z7Zone_getParentRotationOffset(zone)
+
+   def getTextID(self, zoneID = None):
+      if isinstance(zoneID, str): zoneID = ffi.new("char[]", zoneID.encode('u8'))
+      elif zoneID is None: zoneID = ffi.NULL
+      lib.Z7Zone_getTextID(self.impl, zoneID)
+
+   def to7H(self):
+      return I7HZone(impl = lib.Z7Zone_to7H(self.impl))
+
 class rHEALPix(DGGRS):
    class_members = []
 
@@ -2282,6 +2423,39 @@ class rHEALPixProjection(HEALPixProjection):
    def init_args(self, args, kwArgs): init_args(rHEALPixProjection, self, args, kwArgs)
    def __init__(self, *args, **kwArgs):
       self.init_args(list(args), kwArgs)
+
+def i3HZoneFromI9R(zone, subHex):
+   if zone is not None and not isinstance(zone, I9RZone): zone = I9RZone(zone)
+   if zone is None: zone = ffi.NULL
+   return I3HZone(impl = lib.eC_i3HZoneFromI9R(zone, subHex))
+
+def i9RZoneFromI3H(zone):
+   if zone is not None and not isinstance(zone, I3HZone): zone = I3HZone(zone)
+   if zone is None: zone = ffi.NULL
+   return I9RZone(impl = lib.eC_i9RZoneFromI3H(zone))
+
+def authalicSetup(a, b, cp):
+   lib.eC_authalicSetup(a, b, cp)
+
+def canonicalize5x6(_src = None, out = None):
+   if _src is not None and not isinstance(_src, Pointd): _src = Pointd(_src)
+   _src = ffi.NULL if _src is None else _src.impl
+   if out is not None and not isinstance(out, Pointd): out = Pointd(out)
+   out = ffi.NULL if out is None else out.impl
+   lib.eC_canonicalize5x6(ffi.cast("eC_Pointd *", _src), ffi.cast("eC_Pointd *", out))
+
+def compactGGGZones(zones, start, maxLevel):
+   lib.eC_compactGGGZones(Array.impl, start, maxLevel)
+
+def latAuthalicToGeodetic(cp, phi):
+   if phi is not None and not isinstance(phi, Angle): phi = Radians(phi)
+   if phi is None: phi = ffi.NULL
+   return Radians(impl = lib.eC_latAuthalicToGeodetic(cp, phi.impl))
+
+def latGeodeticToAuthalic(cp, phi):
+   if phi is not None and not isinstance(phi, Angle): phi = Radians(phi)
+   if phi is None: phi = ffi.NULL
+   return Radians(impl = lib.eC_latGeodeticToAuthalic(cp, phi.impl))
 
 def readDGGSJSON(f = None):
    if f is not None and not isinstance(f, File): f = File(f)
@@ -2307,18 +2481,22 @@ def pydggal_setup(app):
    app.registerClass(ISEA3H, True)
    app.registerClass(ISEA4R, True)
    app.registerClass(ISEA7H, True)
+   app.registerClass(ISEA7H_Z7, True)
    app.registerClass(ISEA9R, True)
    app.registerClass(ISEAProjection, True)
    app.registerClass(IVEA3H, True)
    app.registerClass(IVEA4R, True)
    app.registerClass(IVEA7H, True)
+   app.registerClass(IVEA7H_Z7, True)
    app.registerClass(IVEA9R, True)
    app.registerClass(IVEAProjection, True)
    app.registerClass(JSONSchema, True)
    app.registerClass(RI5x6Projection, True)
+   app.registerClass(RI7H_Z7, True)
    app.registerClass(RTEA3H, True)
    app.registerClass(RTEA4R, True)
    app.registerClass(RTEA7H, True)
+   app.registerClass(RTEA7H_Z7, True)
    app.registerClass(RTEA9R, True)
    app.registerClass(RTEAProjection, True)
    app.registerClass(RhombicIcosahedral3H, True)
