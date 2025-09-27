@@ -108,7 +108,7 @@
                "Folder" : "dggsJSON",
                "Files" : [
                   "dggsJSON.ec",
-                  "JSONSchema.ec"
+                  "$(EC_SDK_SRC)/extras/JSONSchema.ec"
                ]
             },
             {

@@ -84,7 +84,7 @@ _ECSOURCES = \
 	src/projections/icoVertexGreatCircle.ec \
 	src/projections/rHEALPix.ec \
 	src/dggsJSON/dggsJSON.ec \
-	src/dggsJSON/JSONSchema.ec \
+	$(EC_SDK_SRC)/extras/JSONSchema.ec \
 	src/ecere3D/Plane.ec \
 	src/ecere3D/Vector3D.ec \
 	src/ecere3D/Quaternion.ec \
@@ -312,8 +312,8 @@ $(OBJ)rHEALPix.sym: src/projections/rHEALPix.ec
 $(OBJ)dggsJSON.sym: src/dggsJSON/dggsJSON.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@)
 
-$(OBJ)JSONSchema.sym: src/dggsJSON/JSONSchema.ec
-	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/JSONSchema.ec) -o $(call quote_path,$@)
+$(OBJ)JSONSchema.sym: $(EC_SDK_SRC)/extras/JSONSchema.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$(EC_SDK_SRC)/extras/JSONSchema.ec) -o $(call quote_path,$@)
 
 $(OBJ)Plane.sym: src/ecere3D/Plane.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@)
@@ -428,8 +428,8 @@ $(OBJ)rHEALPix.c: src/projections/rHEALPix.ec $(OBJ)rHEALPix.sym | $(SYMBOLS)
 $(OBJ)dggsJSON.c: src/dggsJSON/dggsJSON.ec $(OBJ)dggsJSON.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
-$(OBJ)JSONSchema.c: src/dggsJSON/JSONSchema.ec $(OBJ)JSONSchema.sym | $(SYMBOLS)
-	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/JSONSchema.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+$(OBJ)JSONSchema.c: $(EC_SDK_SRC)/extras/JSONSchema.ec $(OBJ)JSONSchema.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(EC_SDK_SRC)/extras/JSONSchema.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Plane.c: src/ecere3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/ecere3D/Plane.ec) -o $(call quote_path,$@) -symbols $(OBJ)
