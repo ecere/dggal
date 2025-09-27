@@ -1113,7 +1113,7 @@ const _: () = {
 }
 /*unsafe*/ extern "C" {
     pub static mut RI5x6Projection_fromIcosahedronNet:
-        ::std::option::Option<unsafe extern "C" fn(v: *const Pointd, result: *mut Pointd) -> bool_>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(v: *const Pointd, result: *mut Pointd) -> bool_>;
 }
 /*unsafe*/ extern "C" {
     pub static mut RI5x6Projection_inverse_vTblID: ::std::os::raw::c_int;
@@ -1166,57 +1166,57 @@ const _: () = {
 }
 /*unsafe*/ extern "C" {
     pub static mut Z7Zone_from7H:
-        ::std::option::Option<unsafe extern "C" fn(zone: I7HZone) -> Z7Zone>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(zone: I7HZone) -> Z7Zone>;
 }
 /*unsafe*/ extern "C" {
     pub static mut Z7Zone_fromTextID:
-        ::std::option::Option<unsafe extern "C" fn(zoneID: constString) -> Z7Zone>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(zoneID: constString) -> Z7Zone>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Z7Zone_getParentRotationOffset:
-        ::std::option::Option<unsafe extern "C" fn(zone: I7HZone) -> ::std::os::raw::c_int>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(zone: I7HZone) -> ::std::os::raw::c_int>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Z7Zone_getTextID:
-        ::std::option::Option<unsafe extern "C" fn(__this: Z7Zone, zoneID: String)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: Z7Zone, zoneID: String)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut Z7Zone_to7H:
-        ::std::option::Option<unsafe extern "C" fn(__this: Z7Zone) -> I7HZone>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(__this: Z7Zone) -> I7HZone>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut i3HZoneFromI9R: ::std::option::Option<
-        unsafe extern "C" fn(zone: I9RZone, subHex: ::std::os::raw::c_char) -> I3HZone,
+        /*unsafe*/ extern "C" fn(zone: I9RZone, subHex: ::std::os::raw::c_char) -> I3HZone,
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut i9RZoneFromI3H:
-        ::std::option::Option<unsafe extern "C" fn(zone: I3HZone) -> I9RZone>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(zone: I3HZone) -> I9RZone>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut authalicSetup:
-        ::std::option::Option<unsafe extern "C" fn(a: f64, b: f64, cp: *mut [f64; 6usize])>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(a: f64, b: f64, cp: *mut [f64; 6usize])>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut canonicalize5x6:
-        ::std::option::Option<unsafe extern "C" fn(_src: *const Pointd, out: *mut Pointd)>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(_src: *const Pointd, out: *mut Pointd)>;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut compactGGGZones: ::std::option::Option<
-        unsafe extern "C" fn(
+        /*unsafe*/ extern "C" fn(
             zones: Array,
             start: ::std::os::raw::c_int,
             maxLevel: ::std::os::raw::c_int,
         ),
     >;
 }
-unsafe extern "C" {
+/*unsafe*/ extern "C" {
     pub static mut latAuthalicToGeodetic:
-        ::std::option::Option<unsafe extern "C" fn(cp: *const [f64; 6usize], phi: Angle) -> Angle>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(cp: *const [f64; 6usize], phi: Angle) -> Angle>;
 }
 /*unsafe*/ extern "C" {
     pub static mut latGeodeticToAuthalic:
-        ::std::option::Option<unsafe extern "C" fn(cp: *const [f64; 6usize], phi: Angle) -> Angle>;
+        ::std::option::Option</*unsafe*/ extern "C" fn(cp: *const [f64; 6usize], phi: Angle) -> Angle>;
 }
 /*unsafe*/ extern "C" {
     pub static mut fnptr_readDGGSJSON: ::std::option::Option</*unsafe*/ extern "C" fn(f: File) -> DGGSJSON>;
