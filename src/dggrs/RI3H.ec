@@ -860,6 +860,20 @@ public:
    uint subHex:2:0;       // 0 for even level; 1..3 for odd level
 
 private:
+
+   int OnCompare(I3HZone b)
+   {
+      if(this == b)
+         return 0;
+      else
+      {
+         uint l = level, bl = b.level;
+         if(l < bl) return -1;
+         else if(l > bl) return 1;
+         else return this < b ? -1 : 1;
+      }
+   }
+
    property int level
    {
       get { return levelI9R * 2 + (subHex > 0); }

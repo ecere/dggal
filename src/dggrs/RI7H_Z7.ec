@@ -16,6 +16,19 @@ public:
    uint rootPentagon:4:60;
    uint64 ancestry:60:0;
 
+   int OnCompare(Z7Zone b)
+   {
+      if(this == b)
+         return 0;
+      else
+      {
+         uint l = this.level, bl = b.level;
+         if(l < bl) return -1;
+         else if(l > bl) return 1;
+         else return this < b ? -1 : 1;
+      }
+   }
+
 private:
    property int level
    {
@@ -660,9 +673,21 @@ public class RI7H_Z7 : RhombicIcosahedral7H
       Array<DGGRSZone> zones = RhombicIcosahedral7H::listZones(zoneLevel, bbox);
       if(zones)
       {
+         Array<Z7Zone> z7Zones { size = zones.count };
          int i;
+
          for(i = 0; i < zones.count; i++)
-            zones[i] = Z7Zone::from7H((I7HZone)zones[i]);
+            z7Zones[i] = Z7Zone::from7H((I7HZone)zones[i]);
+
+         delete zones;
+         zones = (Array<DGGRSZone>)z7Zones;
+
+         // NOTE: zones will still be sorted based on I7HZone::OnCompare() (by levels first) unless the array returned is sorted again
+
+         // NOTE: We could just update the type information, but that would require
+         //       a new eC function to do this correctly by updating the Class::count of alive instances for the old and new classes,
+         //       while locking the memory mutex or using atomics.
+         // zones._class = class(Array<Z7Zone>);
       }
       return zones;
    }

@@ -660,7 +660,7 @@ public class RhombicIcosahedral7H : DGGRS
 
    static Array<DGGRSZone> listZones(int zoneLevel, const GeoExtent bbox)
    {
-      Array<DGGRSZone> zones = null;
+      Array<I7HZone> zones = null;
       AVLTree<I7HZone> tsZones { };
       int level = 0;
       int root;
@@ -747,7 +747,7 @@ public class RhombicIcosahedral7H : DGGRS
          {
             DGGRSZone zone = RhombicIcosahedral7H::getZoneFromWGS84Centroid(zoneLevel, bbox.ll);
             if(zone != nullZone)
-               zones = { [ zone ] };
+               zones = Array<I7HZone> { [ zone ] };
             return zones;
          }
 
@@ -798,7 +798,7 @@ public class RhombicIcosahedral7H : DGGRS
 
       if(tsZones.count)
       {
-         zones = { minAllocSize = tsZones.count };
+         zones = Array<I7HZone> { minAllocSize = tsZones.count };
          for(t : tsZones)
          {
             I7HZone zone = t;
@@ -827,7 +827,7 @@ public class RhombicIcosahedral7H : DGGRS
       }
 
       delete tsZones;
-      return zones;
+      return (Array<DGGRSZone>)zones;
    }
 }
 
@@ -867,6 +867,20 @@ public:
    uint64 rhombusIX:51:3; // 51 bits  0..1,628,413,597,910,448
    uint subHex:3:0;       //  3 bits  0: A     -- even level
                           //             B     -- odd level centroid child, C..H: vertez child
+
+   int OnCompare(I7HZone b)
+   {
+      if(this == b)
+         return 0;
+      else
+      {
+         uint l = level, bl = b.level;
+         if(l < bl) return -1;
+         else if(l > bl) return 1;
+         else
+            return this < b ? -1 : 1;
+      }
+   }
 
 private:
    property int level
