@@ -128,10 +128,13 @@ public class RhombicIcosahedral7H : DGGRS
 
    I7HZone getZoneCentroidParent(I7HZone zone)
    {
-      // TODO: (low importance)
-      // NOTE: In 7H, some parents are centroid children themselves, but not all zones have a
-      //       centroid parent
-      return nullZone; // REVIEW: zone.centroidParent;
+      I7HZone parents[2];
+      int n = getZoneParents(zone, parents), i;
+
+      for(i = 0; i < n; i++)
+         if(parents[i].isCentroidChild)
+            return parents[i];
+      return nullZone;
    }
 
    I7HZone getZoneCentroidChild(I7HZone zone)
@@ -3259,7 +3262,6 @@ private:
          // TODO: Handle pentagons / polar zones correctly
          if(nPoints == 5) return -1;
 
-         // TODO: Verify interrupted hexagons
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
          // Rotate scanline direction to get direction to next scanline
@@ -3454,7 +3456,6 @@ private:
    }
 }
 
-// TODO: Review / Test / Adapt this logic for 7H
 __attribute__((unused)) static void compactI7HZones(AVLTree<I7HZone> zones, int level)
 {
    AVLTree<I7HZone> output { };
