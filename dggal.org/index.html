@@ -19,11 +19,28 @@ the <a href='https://docs.ogc.org/DRAFTS/21-038r1.html'>OGC API - DGGS Standard<
 
 <h3><a href='https://github.com/ecere/dggal/blob/eC-core/LICENSE'>License: BSD-3</a></h3>
 
+<a href='https://dggal.org/docs/html/dggal/Classes/DGGRS.html'><img alt='DGGAL docs' src='https://img.shields.io/badge/docs-API_documentation-green.svg'></a>
+<a href='https://pepy.tech/projects/dggal'><img alt='PyPI Downloads' src='https://static.pepy.tech/personalized-badge/dggal?period=total&units=INTERNATIONAL_SYSTEM&left_color=gray&right_color=GREEN&left_text=downloads'></a>
+
 <h2>Installation from PyPI</h2>
 
-Both a source distribution and built distribution for Linux and Windows, including the <code>dgg</code> utility and Python bindings are available <a href='https://pypi.org/project/dggal/'>from PyPI</a> and can be installed with:
+Both a source distribution and built distribution for Linux, Windows and macOS, including the <code>dgg</code> utility and Python bindings are available <a href='https://pypi.org/project/dggal/'>from PyPI</a> and can be installed with:
 <br/><br/>
 <code>pip install dggal</code>
+
+<h2>DGGAL integration in other software</h2>
+
+DGGAL is already being integrated in several DGGS-enabled software, notably:
+
+<ul>
+<li><a href='https://plugins.qgis.org/plugins/vgridtools/'>Vgrid plugin for QGIS</a> and <a href='https://vgrid.gishub.vn/notebooks/08_dggal/'>Vgrid DGGS</a>,
+<li>FME Community Modules: <a href='https://community.safe.com/fme-hub-alerts-55/dggsindexer-38685'>DGGS Indexer</a>, <a href='https://community.safe.com/fme-hub-alerts-55/dggsrelator-38765'>DGGS Relator</a>,
+<a href='https://community.safe.com/fme-hub-alerts-55/dggsjsondecoder-387740'>DGGS-JSON Decoder</a>, and <a href='https://community.safe.com/fme-hub-alerts-55/dggsjsonencoder-38787'>DGGS-JSON Encoder</a>,
+<li><a href='https://a5geo.org/'>a5geo</a> (adapting the DGGAL code for the DSEA / IVEA equal-area projection),
+<li><a href='https://github.com/LandscapeGeoinformatics/pydggsapi/tree/dggal'>pydggsapi<a>,
+<li><a href='https://github.com/GeoPlegma'>GeoPlegma</a>,
+<li><a href='https://ecere.ca'>Ecere</a>'s <a href='http://gnosis.earth/'>GNOSIS Software Development Kit</a> and <a href='https://maps.gnosis.earth'>GNOSIS Map Server</a>.
+</ul>
 
 <h2>Supported Discrete Global Grid Reference Systems</h2>
 
@@ -43,7 +60,12 @@ authalic latitude of <em>arctan(φ)</em> (where φ is the golden ratio), and lon
 vertex / pentagon on land. Each of the 12 pentagons occupies 5/6th the area of a hexagon at the same refinement level.
 
 <br/><br/>
-<em>WARNING: The aperture 7 hexagonal grids are still experimental; sub-zones are not yet implemented for them.</em>
+The aperture 7 hexagonal grids and indexing should now be quite stable, and support for listing and resolving sub-zones is implemented for hexagonal ancestral zones.
+<br/><br/>
+<em><b>Current limitation</b>: Support for listing and indexing sub-zones of <b>7H pentagonal</b> ancestral zones (all 12 level 0 zones and their centroid descendants) is not currently supported, but will be added in an upcoming version.
+In practice, the current lack of sub-zone support for pentagonal ancestral zones is only an issue for working with global low-resolution data,
+or at high resolution within close proximity to the 12 icosahedron vertices (within the pentagonal zones).
+All but one pentagon on land are avoided with a reference zone starting from 7H refinement level 9 (~1.26 km² area zones).</em>
 
 <h4>Icosahedral Snyder Equal Area (ISEA) projection</h4>
 
@@ -55,6 +77,14 @@ of <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slic
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs'>ISEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs'>ISEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea7h-dggrs'>ISEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
+<li> <b>ISEA7H_Z7</b>: Same Discrete Global Grid Hierarchy (DGGH) and sub-zone order as ISEA7H, but using the Z7 indexing for interoperability with <a href='https://github.com/sahrk/DGGRID'>DGGRID</a> and <a href='https://agile-giss.copernicus.org/articles/6/32/2025/'>IGEO7</a>.
+<br/><br/>
+<b>NOTE:</b> The DGGRID / IGEO7 interoperability of ISEA7H_Z7 relies on converting the authalic latitudes produced by DGGRID to geodetic latitudes to reference them to the WGS84 ellipsoid,
+and using the orientation which can be specified in DGGRID with <code>dggs_vert0_lon 11.20</code>, <code>dggs_vert0_lat 58.282525588538994675786</code> and <code>dggs_vert0_azimuth 0.0</code>.
+Efficient conversion from authalic latitude to geodetic latitudes is described by <a href='https://arxiv.org/pdf/2212.05818'>Charles Karney's "On auxiliary latitudes"</a>
+and can be performed using <a href='https://geographiclib.sourceforge.io/doc/library.html'>Geographiclib</a> or with the <code>authalicSetup()</code>, <code>latGeodeticToAuthalic()</code> and <code>latAuthalicToGeodetic()</code>
+<a href='https://github.com/ecere/dggal/blob/eC-core/src/projections/authalic.ec'>functions from DGGAL</a>.
+
 </ul>
 
 <h4>Icosahedral Vertex-oriented great circle Equal Area (IVEA) projection</h4>
@@ -66,6 +96,7 @@ of <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slic
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea9r-dggrs'>IVEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea3h-dggrs'>IVEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
 <li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea7h-dggrs'>IVEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
+<li> <b>IVEA7H_Z7</b>: Same DGGH and sub-zone order as IVEA7H, but using same Z7 indexing as for ISEA7H_Z7.
 </ul>
 
 <b>NOTE:</b> This projection is superior to ISEA and RT(S)EA at avoiding perceptible cusps, resulting in more compact/regular zones.
@@ -82,6 +113,7 @@ of <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slic
 <li> <b>RTEA9R</b>: An equal area rhombic grid with a refinement ratio of 9 defined in the RTEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
 <li> <b>RTEA3H</b>: An equal area hexagonal grid with a refinement ratio of 3 defined in the RTEA projection using the same global indexing and sub-zone ordering as for ISEA3H
 <li> <b>RTEA7H</b>: An equal area hexagonal grid with a refinement ratio of 7 defined in the RTEA projection using the same global indexing and sub-zone ordering as for ISEA7H
+<li> <b>RTEA7H_Z7</b>: Same DGGH and sub-zone order as RTEA7H, but using same Z7 indexing as for ISEA7H_Z7.
 </ul>
 
 <h3>Axis-aligned and Equal-Area DGGRSs based on HEALPix Projection</h3>
@@ -127,14 +159,19 @@ if the required development tools are properly installed and configured.
 <h2>Language bindings</h2>
 
 While the library is written in the <a href='https://ec-lang.org'>eC programming language</a>, object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Bindings for Rust are available as well.
+Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Bindings for Rust and Java are available as well, and bindings for JavaScript to a WebAssembly build are under development.
 Support for additional languages may be added in the future.
 
 <h3>C Bindings</h3>
 
-C bindings are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/c'>available here</a>.<br/><br/>
+C bindings with zero overhead invoking the eC methods, but relying on macros, are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/c'>available here</a>.<br/><br/>
 
-A C example implementing the <code>dgg info</code> command using the DGGAL C bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c/info.c'>available here</a>.
+A C example implementing the <code>dgg info</code> command using these DGGAL C bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c/info.c'>available here</a>.<br/><br/>
+
+A second set of C bindings with the small overhead of additional function calls but avoiding the need for macros are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/c_fn'>available here</a>.
+These bindings still rely on the first set of C bindings with no overhead, but their C header file and function exports make them more suitable for third-party bindings generator for additional languages.<br/><br/>
+
+A C example implementing the <code>dgg info</code> command using the no-macros C bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c_fn/info.c'>available here</a>.
 
 <h3>C++ Bindings</h3>
 
@@ -154,6 +191,17 @@ Rust bindings (depending on the C bindings) are <a href='https://github.com/ecer
 
 A Rust example using the DGGAL Rust bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/rust/info.rs'>available here</a>.
 
+<h3>Java Bindings</h3>
+
+Java bindings generated with the help of <a href='https://openjdk.org/projects/panama/'>Panama</a> (depending on the both the zero overhead and no-macro bindings) are
+<a href='https://github.com/jsorel/dggal-java/commits/main/'>available here</a>, currently maintained by <a href='https://github.com/jsorel'>Johann Sorel</a> from <a href='https://www.geomatys.com/'>Geomatys</a>.
+
+<h3>WebAssembly build and JavaScript Bindings</h3>
+
+DGGAL can be built for WebAssembly for use in DGGS-aware Web clients.<br/><br/>
+
+The WebAssembly build steps are being streamlined and JavaScript bindings are currently under development.
+
 <h2><code>dgg</code> tool</h2>
 
 <h3>Syntax</h3>
@@ -164,9 +212,9 @@ A Rust example using the DGGAL Rust bindings is <a href='https://github.com/ecer
 <h3>Supported DGGRSs</h3>
 <ul>
 <li> <code>gnosis</code> (Global Grid)
-<li> <code>isea4r</code>, <code>isea9r</code>, <code>isea3h</code>, <code>isea7h</code>
-<li> <code>ivea4r</code>, <code>ivea9r</code>, <code>ivea3h</code>, <code>ivea7h</code>
-<li> <code>rtea4r</code>, <code>rtea9r</code>, <code>rtea3h</code>, <code>rtea7h</code>
+<li> <code>isea4r</code>, <code>isea9r</code>, <code>isea3h</code>, <code>isea7h</code>, <code>isea7h_z7</code>
+<li> <code>ivea4r</code>, <code>ivea9r</code>, <code>ivea3h</code>, <code>ivea7h</code>, <code>ivea7h_z7</code>
+<li> <code>rtea4r</code>, <code>rtea9r</code>, <code>rtea3h</code>, <code>rtea7h</code>, <code>rtea7h_z7</code>
 <li> <code>rhealpix</code> (aperture 9, 50° E)
 <li> <code>healpix</code> (aperture 4, Nφ/H = 4, Nθ/K = 3)
 </ul>
