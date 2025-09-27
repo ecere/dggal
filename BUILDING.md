@@ -13,7 +13,7 @@ See also [this script](fetchAndBuild.sh) (running all of these commands), fetchi
 
 - (if wanting to build and use the C++ bindings)         ensure GCC or Clang C++ support is installed
 - (if wanting to build Python bindings)                  ensure Python is installed with cffi (pip3 install cffi)
-- (if wanting to build rust bindings)                    ensure the rust compiler (rustc) is installed and working
+- (if wanting to build Rust bindings)                    ensure the Rust compiler (rustc) is installed and working
 - (if wanting to build smaller compressed executables)   ensure UPX is installed
 
 ## Fetching and building
@@ -67,7 +67,7 @@ obj/static.linux/info ISEA3H A4-0-A
 cd ../..
 ```
 
-## rust bindings (after building the C bindings)
+## Rust bindings (after building the C bindings)
 
 ```
 cd ../eC/bindings/rust

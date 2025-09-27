@@ -79,7 +79,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -I. #-DECPRFX=eC_
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DBINDINGS_SHARED -I. #-DECPRFX=eC_
 
 #(SPECIFIC_FLAGS)#
 

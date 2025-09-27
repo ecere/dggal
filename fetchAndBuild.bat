@@ -1,10 +1,10 @@
 @echo off
-echo This script attempts to fetch and build DGGAL, DGG and its bindings and examples for C, C++, Python and rust.
+echo This script attempts to fetch and build DGGAL, DGG and its bindings and examples for C, C++, Python and Rust.
 echo Please make sure you have git installed to fetch the source code from the eC and DGGAL repositories.
 echo Please make sure you have GCC (MinGW-w64) or Clang, and GNU Make (mingw32-make) installed.
 echo Please make sure you have zlib (header files and library) installed.
 echo Please make sure you have GCC or Clang C++ support installed for C++.
-echo Please make sure you have the rust compiler (rustc) edition 2021+ installed for rust.
+echo Please make sure you have the Rust compiler (rustc) edition 2021+ installed for Rust.
 echo Please make sure you have cffi installed for Python (python -m pip install cffi).
 echo:
 echo Building in 'dgbuild' directory...
@@ -92,17 +92,17 @@ cd ..\..
 
 echo:
 echo **************************************
-echo *********** DGGAL for rust ***********
+echo *********** DGGAL for Rust ***********
 echo **************************************
-echo Building DGGAL for rust...
+echo Building DGGAL for Rust...
 cd ..\eC\bindings\rust
 mingw32-make
 cd ..\..\..\dggal\bindings\rust
 mingw32-make
-echo Building DGGAL sample rust application...
+echo Building DGGAL sample Rust application...
 cd ..\..\bindings_examples\rust
 mingw32-make
-echo Execution test for DGGAL sample rust application:
+echo Execution test for DGGAL sample Rust application:
 obj\win32\info ISEA3H A4-0-A
 cd ..\..
 
