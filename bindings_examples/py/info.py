@@ -86,3 +86,13 @@ depth = dggrs.get64KDepth()
 index = 100
 subZone = dggrs.getSubZoneAtIndex(zone, depth, index)
 printLn("Sub-zone at depth ", depth, " index ", index, " is ", dggrs.getZoneTextID(subZone))
+
+verts = dggrs.getZoneWGS84Vertices(zone)
+for v in verts:
+   printLn(v)
+   printLn("   [", v.lon, ", ", v.lat, "]")
+
+verts = dggrs.getZoneCRSVertices(zone, 0)
+for v in verts:
+   printLn(v)
+   printLn("   [", v.x, ", ", v.y, "]")

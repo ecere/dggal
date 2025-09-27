@@ -208,9 +208,14 @@ def cb_DGGRS_getZoneCRSExtent(__e, zone, crs, extent):
    dggrs.fn_DGGRS_getZoneCRSExtent(dggrs, DGGRSZone(impl = zone), CRS(impl = crs), CRSExtent(impl = extent))
 
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_CRS, eC_Pointd *)")
-def cb_DGGRS_getZoneCRSVertices(__e, zone, crs, vertices):
+def cb_DGGRS_getZoneCRSVertices(__e, zone, crs, verticesArray):
    dggrs = pyOrNewObject(DGGRS, __e)
-   return dggrs.fn_DGGRS_getZoneCRSVertices(dggrs, DGGRSZone(impl = zone), CRS(impl = crs), vertices)
+   vertices = dggrs.fn_DGGRS_getZoneCRSVertices(dggrs, DGGRSZone(impl = zone))
+   i = 0
+   for v in vertices:
+      verticesArray[i] = v.impl
+      i += 1
+   return i
 
 @ffi.callback("eC_DGGRSZone(eC_DGGRS, eC_DGGRSZone)")
 def cb_DGGRS_getZoneCentroidChild(__e, zone):
@@ -228,7 +233,7 @@ def cb_DGGRS_getZoneChildren(__e, zone, childrenArray):
    children = dggrs.fn_DGGRS_getZoneChildren(dggrs, DGGRSZone(impl = zone))
    i = 0
    for c in children:
-      childrenArray[i] = c[i]
+      childrenArray[i] = c
       i += 1
    return i
 
@@ -259,7 +264,7 @@ def cb_DGGRS_getZoneNeighbors(__e, zone, neighborsArray, nbTypeArray):
    neighbors = dggrs.fn_DGGRS_getZoneNeighbors(dggrs, DGGRSZone(impl = zone), nbType)
    i = 0
    for n in neighbors:
-      neighborsArray[i] = n[i]
+      neighborsArray[i] = n
       if nbType is not None:
          nbTypeArray[i] = nbType[i]
       i += 1
@@ -271,7 +276,7 @@ def cb_DGGRS_getZoneParents(__e, zone, parentsArray):
    parents = dggrs.fn_DGGRS_getZoneParents(dggrs, DGGRSZone(impl = zone))
    i = 0
    for p in parents:
-      parentsArray[i] = p[i]
+      parentsArray[i] = p
       i += 1
    return i
 
@@ -307,9 +312,14 @@ def cb_DGGRS_getZoneWGS84ExtentApproximate(__e, zone, extent):
    dggrs.fn_DGGRS_getZoneWGS84ExtentApproximate(dggrs, DGGRSZone(impl = zone), GeoExtent(impl = extent))
 
 @ffi.callback("int(eC_DGGRS, eC_DGGRSZone, eC_GeoPoint *)")
-def cb_DGGRS_getZoneWGS84Vertices(__e, zone, vertices):
+def cb_DGGRS_getZoneWGS84Vertices(__e, zone, verticesArray):
    dggrs = pyOrNewObject(DGGRS, __e)
-   return dggrs.fn_DGGRS_getZoneWGS84Vertices(dggrs, DGGRSZone(impl = zone), vertices)
+   vertices = dggrs.fn_DGGRS_getZoneWGS84Vertices(dggrs, DGGRSZone(impl = zone))
+   i = 0
+   for v in vertices:
+      verticesArray[i] = v.impl
+      i += 1
+   return i
 
 @ffi.callback("eC_bool(eC_DGGRS, eC_DGGRSZone)")
 def cb_DGGRS_isZoneCentroidChild(__e, zone):
@@ -662,8 +672,15 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneCRSExtent = value
       lib.Instance_setMethod(self.impl, "getZoneCRSExtent".encode('u8'), cb_DGGRS_getZoneCRSExtent)
 
-   def fn_unset_DGGRS_getZoneCRSVertices(self, zone, crs, vertices):
-      return lib.DGGRS_getZoneCRSVertices(self.impl, zone, crs.impl, vertices)
+   def fn_unset_DGGRS_getZoneCRSVertices(self, zone, crs):
+      verticesArray = ffi.new('eC_Pointd[6]')
+      nVertices = lib.DGGRS_getZoneCRSVertices(self.impl, zone, crs, verticesArray)
+      vertices = Array("<Pointd>")
+      vertices.size = nVertices
+      # REVIEW: Simpler / faster copy?
+      for i in range(nVertices):
+         vertices[i] = Pointd(impl = verticesArray[i])
+      return vertices
 
    @property
    def getZoneCRSVertices(self):
@@ -885,8 +902,15 @@ class DGGRS(Instance):
       self.fn_DGGRS_getZoneWGS84ExtentApproximate = value
       lib.Instance_setMethod(self.impl, "getZoneWGS84ExtentApproximate".encode('u8'), cb_DGGRS_getZoneWGS84ExtentApproximate)
 
-   def fn_unset_DGGRS_getZoneWGS84Vertices(self, zone, vertices):
-      return lib.DGGRS_getZoneWGS84Vertices(self.impl, zone, vertices)
+   def fn_unset_DGGRS_getZoneWGS84Vertices(self, zone):
+      verticesArray = ffi.new('eC_GeoPoint[6]')
+      nVertices = lib.DGGRS_getZoneWGS84Vertices(self.impl, zone, verticesArray)
+      vertices = Array("<GeoPoint>")
+      vertices.size = nVertices
+      # REVIEW: Simpler / faster copy?
+      for i in range(nVertices):
+         vertices[i] = GeoPoint(impl = verticesArray[i])
+      return vertices
 
    @property
    def getZoneWGS84Vertices(self):
