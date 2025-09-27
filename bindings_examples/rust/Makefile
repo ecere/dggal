@@ -6,7 +6,7 @@ MODULE := info
 
 # CORE VARIABLES
 
-VERSION := 0.0.1
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default

@@ -8,7 +8,7 @@ BINDMODLOC := obj
 BINDING_MODULE := dggal
 BINDING_NAME := dggal
 MODULE := $(BINDING_NAME)_c
-VERSION := 0.0.1
+VERSION := 0.0.5
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -56,7 +56,7 @@ TARGET = $(OBJ)$(LP)$(MODULE)$(SO)
 SONAME =
 ifndef SKIP_SONAME
 ifdef LINUX_TARGET
-TARGET = $(OBJ)$(LP)$(MODULE)$(SO).0.0.1
+TARGET = $(OBJ)$(LP)$(MODULE)$(SO).$(VERSION)
 SONAME = -Wl,-soname,$(LP)$(MODULE)$(SO).0
 endif
 endif
