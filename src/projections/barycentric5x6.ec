@@ -14,8 +14,6 @@ public class BarycentricSphericalTriAreaProjection : RI5x6Projection
 {
    bool projectedGP; projectedGP = false;
 
-   // TODO: This does not yet implement the foward projection (e.g., for 'zone' lookups)
-
    __attribute__ ((unused))
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    void inverseIcoFace(const Pointd v,
