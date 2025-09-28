@@ -2469,14 +2469,14 @@ public I9RZone I9RZoneFromI3H(I3HZone zone)
    else if(zone.rootRhombus == 10)
    {
       int level = zone.levelI9R;
-      uint64 p = (uint64)(pow(3, level) + 0.1);
+      uint64 p = POW3(level);
       uint row = 0, col = (uint)(p - 1);
       return { level, row, col };
    }
    else if(zone.rootRhombus == 11)
    {
       int level = zone.levelI9R;
-      uint64 p = (uint64)(pow(3, level) + 0.1);
+      uint64 p = POW3(level);
       uint row = (uint)(6 * p - 1), col = (uint)(4 * p);
       return { level, row, col };
    }

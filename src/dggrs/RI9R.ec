@@ -9,6 +9,7 @@ import "ri5x6"
 #include <stdio.h>
 
 #define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
+#define POW9(x) POW3((x)*2)
 
 extern uint64 powersOf3[34]; // in RI3H.ec
 
@@ -23,7 +24,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    uint64 countZones(int level)
    {
-      return (uint64)(10 * (pow(9, level)) + POW_EPSILON);
+      return (uint64)(10 * POW9(level));
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
@@ -32,7 +33,7 @@ public class RhombicIcosahedral9R : DGGRS
       double area;
       if(equalArea)
       {
-         double zoneCount = 10 * pow(9, zoneID.level);
+         double zoneCount = 10 * POW9(zoneID.level);
          static double earthArea = 0;
          if(!earthArea) earthArea = wholeWorld.geodeticArea;
 
@@ -52,7 +53,7 @@ public class RhombicIcosahedral9R : DGGRS
 
    uint64 countSubZones(I9RZone zone, int depth)
    {
-      return (uint64)(pow(9, depth) + POW_EPSILON);
+      return POW9(depth);
    }
 
    int getZoneLevel(I9RZone zone)
@@ -788,7 +789,7 @@ static uint getI9RRefinedWGS84Vertices(RhombicIcosahedral9R dggrs, I9RZone zone,
    GeoPoint centroid;
    int i;
    RI5x6Projection pj = dggrs.pj;
-   double poleOffset = 0.001 * pow(2, zone.level);
+   double poleOffset = 0.001 * (1LL << zone.level);
 
    dggrs.getZoneWGS84Centroid(zone, centroid);
 
