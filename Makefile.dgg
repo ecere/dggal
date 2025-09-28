@@ -117,7 +117,7 @@ ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,ecrt) $(call _L,dggal)
 
-OFLAGS += -L$(DGGAL_ABSPATH)obj/$(CONFIG).$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OFLAGS += -L$(DGGAL_ABSPATH)obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 ifdef OSX_TARGET
 OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath$(comma)'@executable_path/../lib' -Wl$(comma)-rpath$(comma)'@executable_path/../../ecrt/lib',)
 else

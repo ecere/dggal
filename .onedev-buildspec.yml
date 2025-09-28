@@ -49,12 +49,19 @@ jobs:
       - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100
       - tar xf eC/*output-linux*.tar.gz -C / &&
         tar xf eC/*extras*.tar.gz -C eC/ &&
-        tar xf eC/*deps*.tar.gz -C eC/ &&
         mkdir eC/obj/ && tar xf eC/*binaries-linux-x86_64.tar.gz -C eC/obj/ &&
         tar xf eC/*binaries-windows-x86_64.tar.gz -C eC/obj/ &&
         tar xf eC/*binaries-linux-i686.tar.gz -C eC/obj/ &&
         tar xf eC/*binaries-windows-i686.tar.gz -C eC/obj/ &&
         tar xf win32-patches/*.tar.gz &&
+        tar xf zlib-win32/*zlib-windows-x64.tar.gz &&
+        ln -sf $(pwd)/zlib-windows-x64/include/zlib.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -sf $(pwd)/zlib-windows-x64/include/zconf.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -sf $(pwd)/zlib-windows-x64/lib/libz.a /usr/x86_64-w64-mingw32/lib/ &&
+        tar xf zlib-win32/*zlib-windows-x32.tar.gz &&
+        ln -sf $(pwd)/zlib-windows-x32/include/zlib.h /usr/i686-w64-mingw32/include/ &&
+        ln -sf $(pwd)/zlib-windows-x32/include/zconf /usr/i686-w64-mingw32/include/ &&
+        ln -sf $(pwd)/zlib-windows-x32/lib/libz.a /usr/i686-w64-mingw32/lib/ &&
         tar xf upx/*linux-x86_64.tar.gz -C /usr/bin &&
         mkdir $(pwd)/.wine && export WINEPREFIX=$(pwd)/.wine &&
         git config --global --add safe.directory '*' &&
@@ -95,6 +102,13 @@ jobs:
   - !BranchUpdateTrigger
     projects: dggal
   projectDependencies:
+  - projectPath: zlib-win32
+    buildProvider: !LastFinishedBuild
+      jobName: Build
+      refName: refs/heads/main
+    artifacts: '**'
+    accessTokenSecret: ecere-sdk-access
+    destinationPath: zlib-win32
   - projectPath: win32-patches
     buildProvider: !LastFinishedBuild
       jobName: Build
@@ -105,7 +119,7 @@ jobs:
   - projectPath: eC
     buildProvider: !LastFinishedBuild
       jobName: Build
-      refName: refs/heads/latest
+      refName: refs/heads/main
     artifacts: '**'
     accessTokenSecret: ecere-sdk-access
     destinationPath: eC
