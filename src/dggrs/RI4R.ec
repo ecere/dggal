@@ -17,7 +17,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    uint64 countZones(int level)
    {
-      return (uint64)(10 * pow(4, level));
+      return (uint64)(10 * (1LL << (level<<1)));
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
@@ -26,7 +26,7 @@ public class RhombicIcosahedral4R : DGGRS
       double area;
       if(equalArea)
       {
-         double zoneCount = 10 * pow(4, zoneID.level);
+         double zoneCount = 10 * (1LL << (zoneID.level<<1));
          static double earthArea = 0;
          if(!earthArea) earthArea = wholeWorld.geodeticArea;
 
@@ -46,7 +46,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    uint64 countSubZones(I4RZone zone, int depth)
    {
-      return (uint64)pow(4, depth);
+      return (uint64)(1LL << (depth << 1));
    }
 
    int getZoneLevel(I4RZone zone)
@@ -110,7 +110,7 @@ public class RhombicIcosahedral4R : DGGRS
    {
       CRSExtent e = parent.ri5x6Extent;
       double dx, dy;
-      double d = 2 * pow(2, depth);
+      double d = 2 * (1LL << depth);
 
       dx = (e.br.x - e.tl.x) / d, dy = (e.br.y - e.tl.y) / d;
       return I4RZone::fromCRSExtent(e.tl, { e.tl.x + dx, e.tl.y + dy }, parent.level + depth );
@@ -146,7 +146,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
-      uint64 p = (uint64)pow(2, level);
+      uint64 p = (uint64)(1LL << level);
       uint64 numCols = 5*p, numRows = 6*p;
       AVLTree<I4RZone> zonesTree { };
       Array<I4RZone> zones { };
@@ -491,7 +491,7 @@ private:
 
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
-      uint64 s = (int64)pow(2, rDepth), nSubZones = s * s;
+      uint64 s = (int64)(1LL << rDepth), nSubZones = s * s;
       if(nSubZones < 1LL<<31)
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
@@ -517,7 +517,7 @@ private:
    {
       get
       {
-         double z = 1.0 / pow(2, level);
+         double z = 1.0 / (1LL << level);
          value.tl = { col * z, row * z };
          value.br = { value.tl.x + z, value.tl.y + z };
          value.crs = { ogc, 153456 };
@@ -528,7 +528,7 @@ private:
    {
       get
       {
-         double z = 1.0 / pow(2, level);
+         double z = 1.0 / (1LL << level);
          value = { (col + 0.5) * z, (row + 0.5) * z };
       }
    }
@@ -540,7 +540,7 @@ private:
    {
       int level = this.level;
       uint row = this.row, col = this.col;
-      uint64 p = (uint64)pow(2, level);
+      uint64 p = (uint64)(1LL << level);
       uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
       int root = rowOP + colOP;
       int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
@@ -552,7 +552,7 @@ private:
 
    I4RZone ::fromCRSExtent(const Pointd topLeft, const Pointd bottomRight, int level)
    {
-      uint64 p = (uint64)pow(2, level);
+      uint64 p = (uint64)(1LL << level);
       int64 numRows = 6 * p, numCols = 5 * p;
       Pointd mid
       {
@@ -614,7 +614,7 @@ private:
    {
       uint l = level;
       int row = this.row, col = this.col;
-      int p = (int)pow(2, l);
+      int p = (int)(1LL << l);
       uint numRows = 6 * p, numCols = 5 * p;
       int colOP = col / p, rowOP = row / p;
       int topDelta = (row - 1) / p - colOP;
@@ -697,7 +697,7 @@ int iLRC4FromLRtI(char levelChar, int root, uint64 ix, int * row, int * col)
    int level = levelChar - 'A';
    if(level >= 0 && level <= 20 && root >= 0 && root <= 9)
    {
-      uint64 p = (uint64)pow(2, level);
+      uint64 p = (uint64)(1LL << level);
       if(ix >= 0 && ix < p * p)
       {
          int rowOP = (root + 1) >> 1, colOP = root >> 1;
@@ -777,7 +777,7 @@ static uint getI4RRefinedWGS84Vertices(RhombicIcosahedral4R dggrs, I4RZone zone,
    GeoPoint centroid;
    int i;
    RI5x6Projection pj = dggrs.pj;
-   double poleOffset = 0.001 * pow(2, zone.level);
+   double poleOffset = 0.001 * (1LL << zone.level);
 
    dggrs.getZoneWGS84Centroid(zone, centroid);
 
