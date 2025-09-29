@@ -1,4 +1,18 @@
+#ifdef DGGAL_ALLINONE
+   #undef BINDINGS_SHARED
+#endif
+
 #include <dggal.h>
+
+#ifdef DGGAL_ALLINONE
+   #if defined(__WIN32__)
+      #define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility("default")))
+      #define LIB_IMPORT __attribute__((dllimport))
+   #else
+      #define LIB_EXPORT __attribute__ ((visibility("default")))
+      #define LIB_IMPORT
+   #endif
+#endif
 
 static Class * class_Array_DGGRSZone;
 

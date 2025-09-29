@@ -167,8 +167,8 @@ ifdef WINDOWS_HOST
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
-	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
-	$(call cp,$(TARGET),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
 
 # SYMBOL RULES
 

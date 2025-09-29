@@ -122,8 +122,8 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)) \
-	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib)
+	 -L$(call quote_path,../../obj/static.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib)
 endif
 
 # TARGETS

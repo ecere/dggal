@@ -88,11 +88,11 @@ ECFLAGS += -module $(MODULE)
 CECFLAGS += -cpp $(_CPP)
 
 OFLAGS += \
-	 -L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)) \
-	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
-	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/lib) \
-	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_CONFIG)/bin) \
-	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_CONFIG)/bin)
+	 -L$(call quote_path,../../obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/lib) \
+	 -L$(call quote_path,../../obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin) \
+	 -L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin)
 
 # TARGETS
 

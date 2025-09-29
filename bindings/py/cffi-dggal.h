@@ -626,11 +626,12 @@ extern eC_I7HZone (* Z7Zone_to7H)(eC_Z7Zone __this);
 
 extern eC_I3HZone (* eC_i3HZoneFromI9R)(eC_I9RZone zone, char subHex);
 extern eC_I9RZone (* eC_i9RZoneFromI3H)(eC_I3HZone zone);
-extern void (* eC_authalicSetup)(double a, double b, double cp[][]);
+// NOTE: These functions break on older CFFI
+//extern void (* eC_authalicSetup)(double a, double b, double cp[2][6]);
 extern void (* eC_canonicalize5x6)(const eC_Pointd * _src, eC_Pointd * out);
 extern void (* eC_compactGGGZones)(eC_Array zones, int start, int maxLevel);
-extern eC_Angle (* eC_latAuthalicToGeodetic)(const double cp[][], eC_Angle phi);
-extern eC_Angle (* eC_latGeodeticToAuthalic)(const double cp[][], eC_Angle phi);
+//extern eC_Angle (* eC_latAuthalicToGeodetic)(const double cp[2][6], eC_Angle phi);
+//extern eC_Angle (* eC_latGeodeticToAuthalic)(const double cp[2][6], eC_Angle phi);
 extern eC_DGGSJSON (* eC_readDGGSJSON)(eC_File f);
 extern eC_Class * class_BCTA3H;
 extern eC_Class * class_BarycentricSphericalTriAreaProjection;

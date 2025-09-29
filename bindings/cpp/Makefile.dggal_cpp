@@ -20,13 +20,14 @@ TARGET_TYPE = sharedlib
 # FLAGS
 
 ifndef DEBIAN_PACKAGE
-CFLAGS = -std=c++17 -fno-exceptions -fno-rtti -Wcomment
+CFLAGS =
 LDFLAGS =
 endif
 PRJ_CFLAGS =
 CECFLAGS =
 OFLAGS = -Wl,-nostdlib
 LIBS =
+CXXFLAGS += -std=c++17 -fno-exceptions -fno-rtti -Wcomment
 
 ifdef DEBUG
 NOSTRIP := y
@@ -49,7 +50,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(BINDING_NAME).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
@@ -123,11 +124,11 @@ ifdef LINUX_HOST
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 endif
 endif
-	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(SODESTDIR))
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO),)
 endif
 endif
 
@@ -140,7 +141,7 @@ $(OBJ)$(BINDING_NAME).c$(O): ../c/$(BINDING_NAME).c
 endif
 
 $(OBJ)$(BINDING_NAME)$(O): $(BINDING_NAME).cpp
-	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
+	$(CXX) $(CXXFLAGS) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 .PHONY: cleantarget
 cleantarget:

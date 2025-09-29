@@ -142,10 +142,6 @@ OFLAGS += \
 	$(if $(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin,-L$(call quote_path,$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)/bin),) \
 	-static-libgcc
 LIBS += \
-	-Wl,-Bdynamic \
-	$(call _L,gdi32) \
-	$(call _L,ws2_32) \
-	$(call _L,opengl32) \
 	-Wl,-Bstatic
 else
 OFLAGS += \
@@ -211,8 +207,8 @@ ifdef LINUX_HOST
 endif
 endif
 endif
-	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
-	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call mkdir,$(DGGAL_ABSPATH)$(SODESTDIR))
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(SODESTDIR))
 
 # SYMBOL RULES
 

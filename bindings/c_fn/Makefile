@@ -4,11 +4,10 @@ endif
 
 # CORE VARIABLES
 
-BINDMODLOC := obj
 BINDING_MODULE := dggal
 BINDING_NAME := dggal
 MODULE := $(BINDING_NAME)_c_fn
-VERSION := 0.0.4
+VERSION := 0.0.5
 CONFIG := release
 # CONTAINS_CXX := defined
 ifndef COMPILER
@@ -90,8 +89,20 @@ OFLAGS += \
 	-L$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
 	-L$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
 	-L$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	-L$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib \
-	-L$(BINDMODLOC)
+	-L$(EC_SDK_SRC)/obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+
+endif
+
+# PLATFORM-SPECIFIC OPTIONS
+
+ifdef WINDOWS_TARGET
+
+ifndef STATIC_LIBRARY_TARGET
+
+OFLAGS += -static-libgcc
+
+endif
+
 endif
 
 # TARGETS
@@ -117,12 +128,12 @@ ifdef LINUX_HOST
 	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
 endif
 endif
-	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(SODESTDIR))
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(if $(basename $(basename $(VER))),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(basename $(VER))),)
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+	$(if $(basename $(basename $(VER))),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(basename $(VER))),)
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO),)
 endif
 endif
 

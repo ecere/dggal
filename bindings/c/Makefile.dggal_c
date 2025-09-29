@@ -48,7 +48,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(BINDING_NAME).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
@@ -111,13 +111,13 @@ ifndef SKIP_SONAME
 endif
 endif
 endif
-	$(call mkdir,$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
-	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(HOST_SODESTDIR))
+	$(call mkdir,$(DGGAL_ABSPATH)$(SODESTDIR))
+	$(call cp,$(TARGET),$(DGGAL_ABSPATH)$(SODESTDIR))
 ifndef SKIP_SONAME
 ifdef LINUX_TARGET
 ifdef LINUX_HOST
-	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
-	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(HOST_SODESTDIR)$(LP)$(MODULE)$(SO),)
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(DGGAL_ABSPATH)$(SODESTDIR)$(LP)$(MODULE)$(SO),)
 endif
 endif
 endif

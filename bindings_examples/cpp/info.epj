@@ -13,7 +13,7 @@
          "ecere"
       ],
       "LibraryDirs" : [
-         "../../obj/release.$(PLATFORM)$(COMPILER_CONFIG)"
+         "../../obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ],
       "Console" : true
    },
@@ -48,7 +48,7 @@
                "ecereVanilla"
             ],
             "LibraryDirs" : [
-               "../../obj/static.$(PLATFORM)$(COMPILER_CONFIG)"
+               "../../obj/static.$(PLATFORM)$(COMPILER_SUFFIX)"
             ],
             "FastMath" : true
          },

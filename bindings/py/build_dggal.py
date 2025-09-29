@@ -45,9 +45,15 @@ try:
    incdir_ecrt = os.path.join(ecdev_location, 'include')
    ecrt_location = os.path.join(ecdev_location, syslibdir)
 except:
-   ecrt_bindings_py_dir = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'py')
-   ecrt_location = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'obj', sysdir, syslibdir)
-   incdir_ecrt = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'c')
+   try:
+      ec_sdk_src = os.getenv('EC_SDK_SRC')
+      ecrt_bindings_py_dir = os.path.join(ec_sdk_src, 'bindings', 'py')
+      ecrt_location = os.path.join(ec_sdk_src, 'obj', sysdir, syslibdir)
+      incdir_ecrt = os.path.join(ec_sdk_src, 'bindings', 'c')
+   except:
+      ecrt_bindings_py_dir = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'py')
+      ecrt_location = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'obj', sysdir, syslibdir)
+      incdir_ecrt = os.path.join(bindings_py_dir, '..', '..', '..', 'eC', 'bindings', 'c')
 # ecrt_location = os.path.join(pkg_resources.get_distribution("ecrt").location, 'ecrt', '.lib')
 
 ffi_ecrt = FFI()
@@ -60,6 +66,7 @@ else:
 
 if sys.platform == 'win32':
    extra_link_args.append('-Wl,--export-all-symbols')
+   extra_link_args.append('-static-libgcc')
 else:
    extra_link_args.append('-Wl,--export-dynamic')
 
@@ -107,7 +114,7 @@ ffi_dggal.set_source('_pydggal',
                '#include "dggal.h"',
                sources=srcs,
                define_macros=[('BINDINGS_SHARED', None), ('DGGAL_EXPORT', None)],
-               extra_compile_args=['-DECPRFX=eC_', '-DMS_WIN64', '-O2'], #--export-dynamic' ]
+               extra_compile_args=['-std=gnu11', '-DECPRFX=eC_', '-DMS_WIN64', '-O2'], #--export-dynamic' ]
                include_dirs=[bindings_py_dir, incdir, incdir_ecrt, ecrt_bindings_py_dir],
                libraries=libs,
                extra_link_args=extra_link_args,

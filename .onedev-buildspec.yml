@@ -24,8 +24,15 @@ jobs:
       - apt -y install gcc-8
       - apt -y install g++-8
       - apt -y install gcc-multilib
+      - apt -y install g++-8-multilib
       - apt -y install binutils-mingw-w64
       - apt -y install pkg-config
+      - apt -y install python3-pip
+#      - apt -y install rustc
+# make ARCH=x32 py_bindings &&
+# make ARCH=x32 rust_bindings &&
+      - apt -y install curl && export RUSTUP_HOME="/usr" && export CARGO_HOME="/usr" && curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - pip3 install cffi
       - tar xf mingw-w64/*.tar.gz &&
         tar xf mingw-w64-runtime/*.tar.gz &&
         dpkg -i mingw-w64-common_6.0.0-3_all.deb &&
@@ -42,6 +49,7 @@ jobs:
         dpkg -i mingw-w64_6.0.0-3_all.deb
       - apt -y install make
       - apt -y install zlib1g-dev
+      - apt -y install zlib1g-dev:i386
       - apt -y install git
       - apt -y install wine-stable
       - apt -y install wine64
@@ -49,6 +57,7 @@ jobs:
       - update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100
       - tar xf eC/*output-linux*.tar.gz -C / &&
         tar xf eC/*extras*.tar.gz -C eC/ &&
+        tar xf eC/*bindings*.tar.gz -C eC/ &&
         mkdir eC/obj/ && tar xf eC/*binaries-linux-x86_64.tar.gz -C eC/obj/ &&
         tar xf eC/*binaries-windows-x86_64.tar.gz -C eC/obj/ &&
         tar xf eC/*binaries-linux-i686.tar.gz -C eC/obj/ &&
@@ -71,13 +80,35 @@ jobs:
         cp obj/static.linux/libdggalStatic.a linux/lib &&
         cp obj/static.linux/dgg linux/bin && cp obj/release.linux/dgg linux/bin/dgg-dynamic &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-x86_64.tar.gz linux &&
+        make ARCH=x32 STATIC_SYSLIBS=y -j2 && make ARCH=x32 test && mkdir linux.x32 && mkdir linux.x32/bin && mkdir linux.x32/lib &&
+        cp obj/release.linux.x32/libdggal.so linux.x32/lib &&
+        cp obj/static.linux.x32/libdggalStatic.a linux.x32/lib &&
+        cp obj/static.linux.x32/dgg32 linux.x32/bin && cp obj/release.linux.x32/dgg32 linux.x32/bin/dgg32-dynamic &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-i686.tar.gz linux.x32 &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8 /usr/bin/g++ &&
+        make bindings &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-7 /usr/bin/gcc && ln -s /usr/bin/g++-7 /usr/bin/g++ &&
+        make ARCH=x32 c_bindings &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8 /usr/bin/g++ &&
+        make ARCH=x32 cpp_bindings &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-7 /usr/bin/gcc && ln -s /usr/bin/g++-7 /usr/bin/g++ &&
         make PLATFORM=win32 -j2 && make PLATFORM=win32 test &&
+        make PLATFORM=win32 cpp_bindings &&
         mkdir windows && mkdir windows/bin && mkdir windows/lib &&
         cp obj/release.win32/dggal.dll windows/bin &&
         cp obj/static.win32/libdggalStatic.a windows/lib &&
         cp obj/release.win32/dgg.exe windows/bin/dgg-dynamic.exe &&
         cp obj/static.win32/dgg.exe windows/bin &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-windows-x86_64.tar.gz windows
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-windows-x86_64.tar.gz windows &&
+        make PLATFORM=win32 ARCH=x32 -j2 && make PLATFORM=win32 ARCH=x32 test &&
+        make PLATFORM=win32 ARCH=x32 cpp_bindings &&
+        mkdir windows.x32 && mkdir windows.x32/bin && mkdir windows.x32/lib &&
+        cp obj/release.win32.x32/dggal.dll windows.x32/bin &&
+        cp obj/static.win32.x32/libdggalStatic.a windows.x32/lib &&
+        cp obj/release.win32.x32/dgg32.exe windows.x32/bin/dgg32-dynamic.exe &&
+        cp obj/static.win32.x32/dgg32.exe windows.x32/bin &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-windows-i686.tar.gz windows.x32 &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings.tar.gz bindings/
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
@@ -85,16 +116,20 @@ jobs:
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: Artefacts
+    name: Artefacts32bit
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-i686.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsWindows
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-windows-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: Artefacts
-    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-licensed-linux-x86_64.tar.gz'
+    name: ArtefactsWindows32Bit
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-windows-i686.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: Artefacts
-    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-licensed-windows-x86_64.tar.gz'
+    name: ArtefactsBindings
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !PullRequestUpdateTrigger

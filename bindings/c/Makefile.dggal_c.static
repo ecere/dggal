@@ -10,14 +10,14 @@ BINDING_NAME := dggal
 # CORE VARIABLES
 
 VERSION := 0.0.5
-CONFIG := release
+CONFIG := static
 ifndef COMPILER
 COMPILER := default
 endif
 
 # C_BINDINGS_SYMBOLS_PREFIX_ENABLE := y
 
-TARGET_TYPE = sharedlib
+TARGET_TYPE = staticlib
 
 # INCLUDES
 
@@ -33,7 +33,7 @@ include $(_CF_DIR)default.cf
 
 # POST-INCLUDES VARIABLES
 
-OBJ = obj/$(PLATFORM)$(COMPILER_SUFFIX)
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)
 
 SOURCES = $(MODULE).rs
 
@@ -49,7 +49,7 @@ _OBJECTS = $(_DEP_OBJECTS) $(OBJ)/$(BINDING_NAME)$(O)
 
 OBJECTS = $(_OBJECTS)
 
-SOURCES = $(_DEP_SOURCES) ../c/$(BINDING_NAME).c
+SOURCES = $(_DEP_SOURCES) $(BINDING_NAME).c
 
 CBINDING_STATIC_LIB = $(OBJ)/lib$(BINDING_NAME)_cStatic.a
 
@@ -59,7 +59,7 @@ all: objdir $(TARGET);
 
 # OBJECT RULES
 
-$(OBJ)/$(BINDING_NAME)$(O): ../c/$(BINDING_NAME).c
+$(OBJ)/$(BINDING_NAME)$(O): $(BINDING_NAME).c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,$<) -o $(call quote_path,$@)
 
 # TARGETS
@@ -72,8 +72,8 @@ $(OBJECTS): | objdir
 
 $(TARGET): $(SOURCES) $(OBJECTS) | objdir
 	$(AR) rcs $(CBINDING_STATIC_LIB) $(_OBJECTS)
-	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
-	$(call cp,$(CBINDING_STATIC_LIB),$(DGGAL_ABSPATH)obj/$(PLATFORM)/lib)
+	$(call mkdir,$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
+	$(call cp,$(CBINDING_STATIC_LIB),$(DGGAL_ABSPATH)obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib)
 
 cleantarget:
 	$(call rm,$(TARGET))
