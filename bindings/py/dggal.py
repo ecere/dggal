@@ -716,7 +716,7 @@ class DGGRS(Instance):
       lib.Instance_setMethod(self.impl, "getZoneCentroidParent".encode('u8'), cb_DGGRS_getZoneCentroidParent)
 
    def fn_unset_DGGRS_getZoneChildren(self, zone):
-      childrenArray = ffi.new('eC_DGGRSZone[9]')
+      childrenArray = ffi.new('eC_DGGRSZone[13]')
       nChildren = lib.DGGRS_getZoneChildren(self.impl, zone, childrenArray)
       children = Array("<DGGRSZone>")
       children.size = nChildren
