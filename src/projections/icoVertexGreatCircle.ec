@@ -194,11 +194,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       {
          double h = 1 - b[0];
          double S = sin(b[2]/h * areaABC);
-         double c01 = A.DotProduct(B);
-         double c12 = B.DotProduct(C);
-         double c20 = C.DotProduct(A);
+         double c01 = A.x * B.x + A.y * B.y + A.z * B.z; //A.DotProduct(B);
+         double c12 = B.x * C.x + B.y * C.y + B.z * C.z; //B.DotProduct(C);
+         double c20 = C.x * A.x + C.y * A.y + C.z * A.z; //C.DotProduct(A);
          double s12 = sqrt(1 - c12*c12);
-         double V = A.DotProduct(c1);
+         double V = A.x * c1.x + A.y * c1.y + A.z * c1.z; //A.DotProduct(c1);
          double CC = 1 - sqrt(1 - S * S);
          double f = S * V + CC * (c01 * c12 - c20);
          double g = CC * s12 * (1 + c01);
@@ -220,7 +220,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                ap * B.z + bp * C.z
             };
 
-            double av = A.DotProduct(p);
+            double av = A.x * p.x + A.y * p.y + A.z * p.z; //A.DotProduct(p);
             double bv = 1 + h*h * (av - 1);
             double bvp = h * sqrt((1 + bv) / (1 + av));
             double avp = bv - av * bvp;
