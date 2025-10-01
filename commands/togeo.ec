@@ -96,6 +96,7 @@ int convertToGeoJSON(const String inputFile, Map<String, const String> options)
 
                            i++;
                         }
+                        delete subZones;
 
                         props.Free();
                         delete props;

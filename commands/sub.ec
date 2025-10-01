@@ -88,6 +88,7 @@ int subZones(DGGRS dggrs, DGGRSZone zone, int64 index, Map<String, const String>
                }
             }
             PrintLn(" ]");
+            delete subZones;
          }
          else
             PrintLn("null");
