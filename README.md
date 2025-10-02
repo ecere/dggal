@@ -117,7 +117,7 @@ if the required development tools are properly installed and configured.
 ## Language bindings
 
 While the library is written in the [eC programming language](https://ec-lang.org), object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Bindings for Rust and Java are available as well, and bindings for JavaScript to a WebAssembly build are under development.
+Ecere SDK's [`bgen` tool](https://github.com/ecere/bgen) are provided. Bindings for Rust, Java and JavaScript (for WebAssembly build) are available as well.
 Support for additional languages may be added in the future.
 
 ### C Bindings
@@ -151,14 +151,19 @@ A Rust example using the DGGAL Rust bindings is [available here](https://github.
 
 ### Java Bindings
 
-Java bindings generated with the help of [Panama](https://openjdk.org/projects/panama/) (depending on the both the zero overhead and no-macro bindings) are
+Java bindings generated with the help of [Panama](https://openjdk.org/projects/panama/) (depending on both the zero overhead and no-macro bindings) are
 [available here](https://github.com/jsorel/dggal-java/commits/main/), currently maintained by [Johann Sorel](https://github.com/jsorel) from [Geomatys](https://www.geomatys.com/).
 
 ### WebAssembly build and JavaScript Bindings
 
 DGGAL can be built for WebAssembly for use in DGGS-aware Web clients.
 
-The WebAssembly build steps are being streamlined and JavaScript bindings are currently under development.
+Java bindings (based on both the zero overhead and no-macro bindings) are available here: [dggal.js](https://github.com/ecere/dggal/blob/eC-core/bindings/js/dggal.js),
+depending on [libdggal.js](https://dggal.org/web/libdggal.js) and [libdggal.wasm](https://dggal.org/web/libdggal.wasm).
+
+HTML / JavaScript examples using the DGGAL JavaScript bindings are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings_examples/js), with a [live demo here](https://dggal.org/web/).
+
+The WebAssembly build steps are being streamlined to facilitate building it from source.
 
 ## `dgg` tool
 
