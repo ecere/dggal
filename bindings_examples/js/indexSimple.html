@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DGGAL in the browser</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .log-container {
+            margin-top: 30px;
+        }
+
+        .log-header {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #consoleLog {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            box-sizing: border-box;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        .clear-btn {
+            background-color: #dc3545;
+            margin-top: 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .clear-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <h1>DGGAL in the browser</h1>
+        <form id="userForm">
+            <div class="form-group">
+                <label for="name">DGGRS Name:</label>
+                <select id="name" name="name">
+                 <option value="GNOSISGlobalGrid">GNOSISGlobalGrid</option>
+                 <option value="ISEA4R">ISEA4R</option>
+                 <option value="ISEA9R">ISEA9R</option>
+                 <option value="ISEA3H">ISEA3H</option>
+                 <option value="ISEA7H">ISEA7H</option>
+                 <option value="ISEA7H_Z7">ISEA7H_Z7</option>
+                 <option value="IVEA4R">IVEA4R</option>
+                 <option value="IVEA9R">IVEA9R</option>
+                 <option value="IVEA3H">IVEA3H</option>
+                 <option value="IVEA7H">IVEA7H</option>
+                 <option value="IVEA7H_Z7" selected>IVEA7H_Z7</option>
+                 <option value="RTEA4R">RTEA4R</option>
+                 <option value="RTEA9R">RTEA9R</option>
+                 <option value="RTEA3H">RTEA3H</option>
+                 <option value="RTEA7H">RTEA7H</option>
+                 <option value="RTEA7H_Z7">RTEA7H_Z7</option>
+                 <option value="rHEALPix">rHEALPix</option>
+                 <option value="HEALPix">HEALPix</option>
+               </select>
+            </div>
+            <div class="form-group">
+                <label for="id">Zone ID:</label>
+                <input type="text" id="id" name="id" placeholder="Enter your ID" value="0234">
+            </div>
+            <button type="button" onclick="processForm()">Query</button>
+        </form>
+        <div class="log-container">
+            <div class="log-header">Output:</div>
+            <textarea id="consoleLog" readonly placeholder=""></textarea>
+            <button type="button" class="clear-btn" onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+    <script type="module" src="./dggalExample.js"></script>
+</body>
+
+</html>
