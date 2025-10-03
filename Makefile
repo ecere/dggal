@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean test dggal dgg bindings c_bindings cpp_bindings py_bindings rust_bindings
+.PHONY: all clean realclean distclean test dggal dgg bindings c_bindings cpp_bindings py_bindings rust_bindings clean_python
 
 DGGAL_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 
@@ -51,7 +51,17 @@ bindings: c_bindings cpp_bindings py_bindings rust_bindings
 test: all
 	+cd tests && $(_MAKE) test
 
-clean:
+clean_python:
+	+cd bindings/py
+	+$(call rm,*.c)
+	+$(call rm,*.o)
+	+$(call rm,*.so)
+	+$(call rm,*.dyld)
+	+$(call rm,*.dll)
+	+$(call rm,__pycache__)
+	+$(call rm,projects)
+
+clean: clean_python
 	+$(_MAKE) -f Makefile.dgg clean
 	+$(_MAKE) -f Makefile.dgg.static clean
 	+$(_MAKE) -f Makefile.dggal clean
@@ -60,11 +70,10 @@ clean:
 	+cd bindings/c_fn && $(_MAKE) clean
 	+cd bindings/c_fn && $(_MAKE) -f Makefile.allinone clean
 	+cd bindings/cpp && $(_MAKE) clean
-	+cd bindings/py && rm -rf *.c *.o *.so *.dyld *.dll __pycache__ projects
 	+cd bindings/rust && $(_MAKE) clean
 	+cd tests && $(_MAKE) clean
 	
-realclean:
+realclean: clean_python
 	+$(_MAKE) -f Makefile.dgg realclean
 	+$(_MAKE) -f Makefile.dgg.static realclean
 	+$(_MAKE) -f Makefile.dggal realclean
@@ -73,11 +82,10 @@ realclean:
 	+cd bindings/c_fn && $(_MAKE) realclean
 	+cd bindings/c_fn && $(_MAKE) -f Makefile.allinone realclean
 	+cd bindings/cpp && $(_MAKE) realclean
-	+cd bindings/py && rm -rf *.c *.o *.so *.dyld *.dll __pycache__ projects
 	+cd bindings/rust && $(_MAKE) realclean
 	+cd tests && $(_MAKE) realclean
 	
-distclean:
+distclean: clean_python
 	+$(_MAKE) -f Makefile.dgg distclean
 	+$(_MAKE) -f Makefile.dgg.static distclean
 	+$(_MAKE) -f Makefile.dggal distclean
@@ -86,6 +94,5 @@ distclean:
 	+cd bindings/c_fn && $(_MAKE) distclean
 	+cd bindings/c_fn && $(_MAKE) -f Makefile.allinone distclean
 	+cd bindings/cpp && $(_MAKE) distclean
-	+cd bindings/py && rm -rf *.c *.o *.so *.dyld *.dll __pycache__ projects
 	+cd bindings/rust && $(_MAKE) distclean
 	+cd tests && $(_MAKE) distclean
