@@ -640,17 +640,16 @@ public class HEALPix : DGGRS
 
    void getZoneWGS84Extent(HPZone zone, GeoExtent value)
    {
-      // REVIEW:
       CRSExtent e = zone.hpExtent;
       GeoPoint v[4];
       int i;
-      bool includesNorthPole = e.tl.y > Pi/2 && e.br.y < Pi/2 && e.tl.x < -3*Pi/4 && e.br.x > -3*Pi/4;
-      bool includesSouthPole = e.tl.y > -Pi/2 && e.br.y < -Pi/2 && e.tl.x < -3*Pi/4 && e.br.x > -3*Pi/4;
+      double midX = (e.tl.x + e.br.x) / 2;
+      double midY = (e.tl.y + e.br.y) / 2;
 
-      pj.inverse(e.tl, v[0], false);
-      pj.inverse({ e.tl.x, e.br.y }, v[1], false);
-      pj.inverse(e.br, v[2], false);
-      pj.inverse({ e.br.x, e.tl.y }, v[3], false);
+      pj.inverse({ e.tl.x, midY }, v[0], false);
+      pj.inverse({ midX, e.br.y }, v[1], false);
+      pj.inverse({ e.br.x, midY }, v[2], false);
+      pj.inverse({ midX, e.tl.y }, v[3], false);
 
       value.clear();
       for(i = 0; i < 4; i++)
@@ -679,19 +678,6 @@ public class HEALPix : DGGRS
          value.ll.lon += 360;
       if(value.ur.lon < -180)
          value.ur.lon += 360;
-
-      if(includesNorthPole)
-      {
-         value.ll.lon = -180;
-         value.ur.lon =  180;
-         value.ur.lat =  90;
-      }
-      else if(includesSouthPole)
-      {
-         value.ll.lon = -180;
-         value.ur.lon =  180;
-         value.ll.lat =  -90;
-      }
    }
 
    HPZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)

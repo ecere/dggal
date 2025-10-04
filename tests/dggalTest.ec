@@ -264,8 +264,6 @@ public class DGGSUnitTest : eTest
       DGGRS dggrs = eInstance_New(dggrsClass);
       char thisTest[256];
 
-      dggrs.listZones(0, null);
-
       sprintf(thisTest, "%s parent level 0..%d / depth 0..%d",
          ((Class)dggrsClass).name, maxParentLevel, maxDepth);
 
