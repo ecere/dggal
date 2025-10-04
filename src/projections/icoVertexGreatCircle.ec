@@ -189,7 +189,10 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       if(b[1] < 1E-15) b[1] = 0;
       if(b[2] < 1E-15) b[2] = 0;
 
-      c1.CrossProduct(B, C);
+      // c1.CrossProduct(B, C);
+      c1.x = B.y * C.z - B.z * C.y;
+      c1.y = B.z * C.x - B.x * C.z;
+      c1.z = B.x * C.y - B.y * C.x;
 
       {
          double h = 1 - b[0];
