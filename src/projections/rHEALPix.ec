@@ -51,7 +51,7 @@ public class HEALPixProjection
       if(fabs(v.y) <= Pi/4)
       {
          // Equatorial region
-         result.lon = (Radians)v.x + (((Radians)result.lon < -Pi - 1E-11) ? 2 * Pi : 0);
+         result.lon = (Radians)v.x + (((Radians)v.x < -Pi - 1E-11) ? 2 * Pi : 0);
          result.lat = latAuthalicToGeodetic(asin(8 * v.y / (3 * Pi)));
       }
       else
