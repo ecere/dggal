@@ -158,12 +158,12 @@ Java bindings generated with the help of [Panama](https://openjdk.org/projects/p
 
 DGGAL can be built for WebAssembly for use in DGGS-aware Web clients.
 
-Java bindings (based on both the zero overhead and no-macro bindings) are available here: [dggal.js](https://github.com/ecere/dggal/blob/eC-core/bindings/js/dggal.js),
-depending on [libdggal.js](https://dggal.org/web/libdggal.js) and [libdggal.wasm](https://dggal.org/web/libdggal.wasm).
+JavaScript bindings (based on both the zero overhead and no-macro bindings) are available here: [dggal.js](https://github.com/ecere/dggal/blob/eC-core/bindings/js/dggal.js),
+depending on [libdggal.js](https://dggal.org/web/libdggal.js) and [libdggal_c_fn.js.0.0.wasm](https://dggal.org/web/libdggal_c_fn.js.0.0.wasm).
 
 HTML / JavaScript examples using the DGGAL JavaScript bindings are [available here](https://github.com/ecere/dggal/tree/eC-core/bindings_examples/js), with a [live demo here](https://dggal.org/web/).
 
-The WebAssembly build steps are being streamlined to facilitate building it from source.
+See the [fetchAndBuildWASM.sh](https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuildWASM.sh) script for building the DGGAL WASM module from source.
 
 ## `dgg` tool
 
