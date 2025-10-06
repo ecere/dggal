@@ -1,0 +1,21 @@
+ifneq ($(V),1)
+.SILENT:
+endif
+
+.PHONY: all clean
+
+all:
+	@echo "Building 32-bit DGGAL (host)..."
+	+$(MAKE) -f Makefile.dggal ARCH=x32
+	@echo "Building WebAssembly DGGAL..."
+	+COMPILER=wasm $(MAKE) -f Makefile.dggal.static
+	@echo "Building WebAssembly C bindings to DGGAL..."
+	+cd bindings/c && COMPILER=wasm $(MAKE) -f Makefile.dggal_c.static
+	@echo "Building WebAssembly C function bindings and JavaScript module for DGGAL..."
+	+cd bindings/c_fn && COMPILER=wasm $(MAKE) -f Makefile.allinone
+	@echo "All done!"
+
+clean:
+	+COMPILER=wasm $(MAKE) -f Makefile.dggal.static clean
+	+cd bindings/c && COMPILER=wasm $(MAKE) -f Makefile.dggal_c.static clean
+	+cd bindings/c_fn && COMPILER=wasm $(MAKE) -f Makefile.allinone clean

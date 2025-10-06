@@ -29,7 +29,7 @@ endif
 
 _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
-include $(_CF_DIR)default.cf
+include $(_CF_DIR)$(COMPILER).cf
 
 # POST-INCLUDES VARIABLES
 

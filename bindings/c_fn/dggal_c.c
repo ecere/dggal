@@ -8,6 +8,9 @@
    #if defined(__WIN32__)
       #define LIB_EXPORT __attribute__((dllexport)) __attribute__ ((visibility("default")))
       #define LIB_IMPORT __attribute__((dllimport))
+   #elif defined(__EMSCRIPTEN__)
+      #define LIB_EXPORT EMSCRIPTEN_KEEPALIVE
+      #define LIB_IMPORT
    #else
       #define LIB_EXPORT __attribute__ ((visibility("default")))
       #define LIB_IMPORT
