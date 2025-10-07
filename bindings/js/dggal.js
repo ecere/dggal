@@ -457,8 +457,8 @@ export class DGGRS {
     return this.module._DGGAL_DGGRS_getMetersPerSubZoneFromLevel(this.dggrsPtr, level, relativeDepth);
   }
 
-  getRefZoneArea(zone, relativeDepth) {
-    return this.module._DGGAL_DGGRS_getRefZoneArea(this.dggrsPtr, zone, relativeDepth);
+  getRefZoneArea(relativeDepth) {
+    return this.module._DGGAL_DGGRS_getRefZoneArea(this.dggrsPtr, relativeDepth);
   }
 
   getScaleDenominatorFromLevel(level, relativeDepth) {

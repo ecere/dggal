@@ -139,7 +139,7 @@ export class DGGRS {
   getLevelFromRefZoneArea(refArea: number, relativeDepth: number): number
   getLevelFromScaleDenominator(scaleDenominator: number, relativeDepth: number): number
   getMetersPerSubZoneFromLevel(level: number, relativeDepth: number): number
-  getRefZoneArea(zone: DGGRSZone, relativeDepth: number): number
+  getRefZoneArea(relativeDepth: number): number
   getScaleDenominatorFromLevel(level: number, relativeDepth: number): number
 
   // Clean up native resources
