@@ -159,7 +159,7 @@ if the required development tools are properly installed and configured.
 <h2>Language bindings</h2>
 
 While the library is written in the <a href='https://ec-lang.org'>eC programming language</a>, object-oriented bindings for C, C++ and Python generated using the
-Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Bindings for Rust and Java are available as well, and bindings for JavaScript to a WebAssembly build are under development.
+Ecere SDK's <a href='https://github.com/ecere/bgen'><code>bgen</code> tool</a> are provided. Bindings for Rust, Java and JavaScript (for WebAssembly build) are available as well.
 Support for additional languages may be added in the future.
 
 <h3>C Bindings</h3>
@@ -193,14 +193,17 @@ A Rust example using the DGGAL Rust bindings is <a href='https://github.com/ecer
 
 <h3>Java Bindings</h3>
 
-Java bindings generated with the help of <a href='https://openjdk.org/projects/panama/'>Panama</a> (depending on the both the zero overhead and no-macro bindings) are
+Java bindings generated with the help of <a href='https://openjdk.org/projects/panama/'>Panama</a> (depending on both the zero overhead and no-macro bindings) are
 <a href='https://github.com/jsorel/dggal-java/commits/main/'>available here</a>, currently maintained by <a href='https://github.com/jsorel'>Johann Sorel</a> from <a href='https://www.geomatys.com/'>Geomatys</a>.
 
 <h3>WebAssembly build and JavaScript Bindings</h3>
 
-DGGAL can be built for WebAssembly for use in DGGS-aware Web clients.<br/><br/>
+JavaScript bindings (based on both the zero overhead and no-macro bindings) are available here: <a href='https://github.com/ecere/dggal/blob/eC-core/bindings/js/dggal.js'>dggal.js</a>,
+depending on <a href='https://dggal.org/web/libdggal.js'>libdggal.js</a> and <a href='https://dggal.org/web/libdggal_c_fn.js.0.0.wasm'>libdggal_c_fn.js.0.0.wasm</a>.<br/><br/>
 
-The WebAssembly build steps are being streamlined and JavaScript bindings are currently under development.
+HTML / JavaScript examples using the DGGAL JavaScript bindings are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings_examples/js'>available here</a>, with a <a href='https://dggal.org/web/'>live demo here</a>.<br/><br/>
+
+See the <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuildWASM.sh'>fetchAndBuildWASM.sh</a> script for building the DGGAL WASM module from source.
 
 <h2><code>dgg</code> tool</h2>
 
