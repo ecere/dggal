@@ -3,7 +3,7 @@
 // A 64-bit unsigned zone identifier
 export type DGGRSZone = bigint
 
-// A Coordinate Reference Systme identifier
+// A Coordinate Reference System identifier
 export type CRS = bigint;
 
 // A geographic point in radians
@@ -165,6 +165,9 @@ export class DGGAL {
 
   // Create a DGGRS instance by name
   createDGGRS(name: string): DGGRS
+
+  // List available DGGRSs
+  listDGGRS(): string[]
 
   // Tear down the WASM runtime
   terminate(): void

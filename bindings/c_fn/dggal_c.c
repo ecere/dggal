@@ -125,6 +125,22 @@ LIB_EXPORT void DGGAL_DGGRS_delete(DGGRS self)
    deletei(self);
 }
 
+LIB_EXPORT const char ** DGGAL_DGGRS_list(uint * count)
+{
+   static const char * dggrsList[] =
+   {
+      "GNOSISGlobalGrid",
+      "ISEA4R", "ISEA9R", "ISEA3H", "ISEA7H", "ISEA7H_Z7",
+      "IVEA4R", "IVEA9R", "IVEA3H", "IVEA7H", "IVEA7H_Z7",
+      "RTEA4R", "RTEA9R", "RTEA3H", "RTEA7H", "RTEA7H_Z7",
+      "HEALPix", "rHEALPix",
+      null
+   };
+   if(count)
+      *count = sizeof(dggrsList) / sizeof(dggrsList[0]) - 1;
+   return dggrsList;
+}
+
 // DGGRS Class
 
 // Virtual Methods

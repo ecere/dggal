@@ -73,10 +73,13 @@ window.clearLog = clearLog;
 
 // Main form handler (kept intact, hardened slightly)
 document.addEventListener('DOMContentLoaded', () => {
+ (async () => {
+  dggal = await initPromise;
+
+  populateDGGRSDropdown('IVEA7H_Z7');
+
   window.processForm = async function () {
     try {
-      dggal = await initPromise;
-
       // ensure map is initialized
       if (!window.__dggal_map) {
         addToLog('Map not initialized');
@@ -166,6 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Optional: clear log on page load
   clearLog();
+ })();
 });
 
 window.addEventListener('pagehide', (event) => {
@@ -179,3 +183,27 @@ document.getElementById('userForm').addEventListener('submit', function(event) {
   event.preventDefault();
   processForm();
 });
+
+function populateDGGRSDropdown(defaultValue = null) {
+  const select = document.getElementById('name');
+  select.innerHTML = '';
+
+  const names = dggal.listDGGRS();
+
+  for (const name of names) {
+    const option = document.createElement('option');
+    option.value = name;
+    option.textContent = name;
+    if (name === defaultValue) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  }
+  if (!defaultValue) {
+    const placeholder = document.createElement('option');
+    placeholder.textContent = 'Select a DGGRS...';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+  }
+}

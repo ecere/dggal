@@ -205,6 +205,18 @@ int main(int argc, char * argv[])
       DGGRS dggrs = DGGAL_DGGRS_new(dggal, dggrsName);
       DGGRSZone zone = nullZone;
 
+      #if 0
+      uint nDGGRS;
+      const char ** dggrsList = DGGAL_DGGRS_list(&nDGGRS);
+      {
+         int i;
+
+         printf("Available DGGRSs:\n");
+         for(i = 0; i < nDGGRS; i++)
+            printf("   %s\n", dggrsList[i]);
+      }
+      #endif
+
       printf("DGGRS: https://maps.gnosis.earth/ogcapi/dggrs/%s\n", dggrsName);
 
       if(zoneID)

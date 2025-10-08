@@ -494,6 +494,22 @@ export class DGGAL {
   createDGGRS(name) {
     return new DGGRS(this.module, this.modulePtr, name);
   }
+
+  listDGGRS() {
+    const PTR_SIZE = this.module.HEAPU32.BYTES_PER_ELEMENT;
+    const PTR_TYPE = PTR_SIZE === 4 ? 'i32' : 'i64';
+    const result = [];
+    const listPtr = this.module._DGGAL_DGGRS_list(0);
+    let offset = 0;
+    while (true) {
+      const strPtr = this.module.getValue(listPtr + offset, PTR_TYPE);
+      if (strPtr === 0) break;
+      const str = this.module.UTF8ToString(strPtr);
+      result.push(str);
+      offset += PTR_SIZE;
+    }
+    return result;
+  }
 }
 
 export default DGGAL;

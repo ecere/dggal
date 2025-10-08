@@ -83,6 +83,7 @@ LIB_IMPORT DGGRSZone * DGGAL_Array_DGGRSZone_getPointer(const Array_DGGRSZone se
 LIB_IMPORT void DGGAL_Array_DGGRSZone_delete(Array_DGGRSZone self);
 
 // DGGRS Instantiation -- Setup and re-use single instance per DGGRS (e.g., IVEA3H, HEALPix, GNOSISGlobalGrid)
+LIB_IMPORT const char ** DGGAL_DGGRS_list(unsigned int * count);
 LIB_IMPORT DGGRS DGGAL_DGGRS_new(DGGALModule mDGGAL, constString name);
 LIB_IMPORT void DGGAL_DGGRS_delete(DGGRS self);
 
