@@ -563,10 +563,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
    }
 
 #ifdef USE_VECTORS
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static void forwardVector(const Vector3D v,
       const Vector3D A, const Vector3D B, const Vector3D C,
       const Pointd pai, const Pointd pbi, const Pointd pci,
-      Pointd out)
+      Pointd out, int subTri)
    {
       Vector3D c1, c2, p;
       double h, b[3];
@@ -574,17 +575,29 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
       double dotAv, dotAp;
 
-      c1.CrossProduct(A, v);
-      c2.CrossProduct(B, C);
-      p.CrossProduct(c1, c2);
+      // c1.CrossProduct(A, v);
+      c1.x = A.y * v.z - A.z * v.y;
+      c1.y = A.z * v.x - A.x * v.z;
+      c1.z = A.x * v.y - A.y * v.x;
+
+      // c2.CrossProduct(B, C);
+      c2.x = B.y * C.z - B.z * C.y;
+      c2.y = B.z * C.x - B.x * C.z;
+      c2.z = B.x * C.y - B.y * C.x;
+
+      // p.CrossProduct(c1, c2);
+      p.x = c1.y * c2.z - c1.z * c2.y;
+      p.y = c1.z * c2.x - c1.x * c2.z;
+      p.z = c1.x * c2.y - c1.y * c2.x;
+
       p.Normalize(p);
 
-      dotAv = A.DotProduct(v);
-      dotAp = A.DotProduct(p);
+      dotAv = A.x * v.x + A.y * v.y + A.z * v.z; // dotAv = A.DotProduct(v);
+      dotAp = A.x * p.x + A.y * p.y + A.z * p.z; // A.DotProduct(p);
 
+      #define V_EPSILON 1E-14
       if(fabs(dotAv - dotAp) < 1E-14)
       {
-         #define V_EPSILON 1E-7
          if(fabs(v.x - A.x) < V_EPSILON && fabs(v.y - A.y) < V_EPSILON && fabs(v.z - A.z) < V_EPSILON)
          {
             out = pai;
@@ -603,10 +616,59 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          else
             h = 1;
       }
-      else if(fabs(1 - dotAv) < 1E-7)
+      else if(fabs(1 - dotAv) < 1E-14)
       {
-         out = pai;
-         return;
+         // Fall back to spherical trigonometry
+         // Remapping variables to different names... B is the vertex form which great circle radiates here, rather than A
+         bool aIsB = (radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4);
+         const Vector3D * nA = aIsB ? B : C, * nB = A;
+         const Pointd * npai = aIsB ? pbi : pci, * npbi = pai, * npci = aIsB ? pci : pbi;
+
+         {
+            Vector3D A = *nA, B = *nB;
+            Pointd pai = *npai, pbi = *npbi, pci = *npci;
+            double cosX = Max(0.0, Min(1.0, B.x * v.x + B.y * v.y + B.z * v.z));
+            if(cosX == 1.0)
+               out = pbi;
+            else
+            {
+               double sinX = sqrt(1 - cosX * cosX);
+               Radians x = acos(cosX); //angleBetweenUnitVectors(B, v); // x should be < AB < BC
+               double vDotA = Max(0.0, Min(1.0, v.x * A.x + v.y * A.y + v.z * A.z));
+               Radians PA = acos(vDotA); //angleBetweenUnitVectors(v, A);
+               //double EABP = PA + x + AB - Pi;
+               // Half-angle formula:
+               double s = (x + PA + AB) / 2;
+               double cosX = Max(0.0, Min(1.0, B.x * v.x + B.y * v.y + B.z * v.z));
+               double square = sin(s - x) * sin(s - AB) / (sinX /*sin(x)*/ * sinAB);
+               Radians rho = fabs(PA) < 1E-14 ? 0 : 2*asin(sqrt(Max(0.0, Min(1.0, square))));
+               Radians delta = (radialVertex != rtea) ? acos(Max(0.0, Min(1.0, sin(rho) * cosAB))) : acos(sinAlpha * sin(rho) * cosAB - cosAlpha * cos(rho));
+               double upOverupPvp = (beta + gamma - rho - delta) / (beta + gamma + alpha - Pi); // This should be between 0 and 1
+               double cosXpY; // cos(x + y) = cos(BD)
+               double xpOverxpPlusyp;
+               Pointd pdi;
+
+               if(fabs(rho - 0) < 1E-14)
+                  cosXpY = cosAB;
+               else if(fabs(rho - beta) < 1E-14)
+                  cosXpY = cos(BC);
+               else
+               {
+                  if(radialVertex != rtea) // alpha == 90 degrees
+                     cosXpY = 1 / (tan(rho) * tan(delta));
+                  else // alpha is not 90 degrees for RTEA
+                  {
+                     Radians S = (rho + delta + alpha) / 2;
+                     cosXpY = 2 * cos(S - rho) * cos(S - delta) / (sin(rho) * sin(delta)) - 1;
+                  }
+                  cosXpY = Min(1.0, Max(-1.0, cosXpY));
+               }
+               xpOverxpPlusyp = sqrt((1 - cosX /*cos(x)*/) / (1 - cosXpY)); // This should be between 0 and 1
+               pdi = { pci.x + (pai.x - pci.x) * upOverupPvp, pci.y + (pai.y - pci.y) * upOverupPvp };
+               out = { pbi.x + (pdi.x - pbi.x) * xpOverxpPlusyp, pbi.y + (pdi.y - pbi.y) * xpOverxpPlusyp };
+            }
+            return;
+         }
       }
       else
          h = sqrt((1 - dotAv) / (1 - dotAp));
@@ -750,7 +812,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
             b = va, c = vc;
          else
             b = vc, c = va;
-         forwardVector(v, v3D[a], v3D[b], v3D[c], p5x6[a], p5x6[b], p5x6[c], out);
+         forwardVector(v, v3D[a], v3D[b], v3D[c], p5x6[a], p5x6[b], p5x6[c], out, subTri);
       }
 #else
       forwardPointInSDTTriangle(v, v3D[va], v3D[vb], v3D[vc], p5x6[va], p5x6[vb], p5x6[vc], out);
