@@ -722,6 +722,7 @@ public class RhombicIcosahedral3H : DGGRS
       return geo;
    }
 
+   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
    static Array<DGGRSZone> listZones(int zoneLevel, const GeoExtent bbox)
    {
       Array<DGGRSZone> zones = null;
@@ -753,8 +754,8 @@ public class RhombicIcosahedral3H : DGGRS
       else
          extentCheck = false, pj.extent5x6FromWGS84(wholeWorld, tl, br);
 
-      yCount = (int64)((br.y - tl.y + 1E-11) / z) + 2;
-      xCount = (int64)((br.x - tl.x + 1E-11) / z) + 2;
+      yCount = (int64)((br.y - tl.y + 1E-11) * power) + 3;
+      xCount = (int64)((br.x - tl.x + 1E-11) * power) + 3;
 
       // These loops adding z were problematic at high level losing precision with the z additions
       //for(y = tl.y; y < br.y + 2*z; y += z)
@@ -762,13 +763,13 @@ public class RhombicIcosahedral3H : DGGRS
       {
          double y = tl.y + yi * z;
          int rootY = (int)(y + 1E-11);
-         int row = (int)(y / z + 1E-11);
+         int row = (int)(tl.y * power + yi + 1E-11);
          //for(x = tl.x; x < br.x + 2*z; x += z)
          for(xi = 0; xi < xCount; xi++)
          {
             double x = tl.x + xi * z;
             int rootX = (int)(x + 1E-11);
-            int col = (int)(x / z + 1E-11);
+            int col = (int)(tl.x * power + xi + 1E-11);
             int d = rootY - rootX;
             if(rootX < 5 && (d == 0 || d == 1))
             {
