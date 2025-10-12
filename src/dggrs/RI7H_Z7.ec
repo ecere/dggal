@@ -424,6 +424,7 @@ private:
       {
          int root;
          int r = sscanf(zoneID, "%2d", &root);
+         bool parentIsPentagon = true, south = r >= 6;
 
          if(r && root >= 0 && root <= 11)
          {
@@ -434,7 +435,7 @@ private:
             for(i = 2; i < len; i++)
             {
                char c = zoneID[i];
-               if(c < '0' || c > '6')
+               if((c < '0' || c > '6') || (parentIsPentagon && c == (south ? '5' : '2')))
                {
                   zone = nullZone;
                   break;
@@ -442,6 +443,8 @@ private:
                else
                   ancestry |= (uint64)(c - '0') << shift;
                shift -= 3;
+               if(c != '0')
+                  parentIsPentagon = false;
             }
             while(shift >= 0)
             {
