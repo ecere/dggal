@@ -2426,10 +2426,10 @@ class Z7Zone(DGGRSZone):
       if zone is None: zone = ffi.NULL
       return lib.Z7Zone_getParentRotationOffset(zone)
 
-   def getTextID(self, zoneID = None):
-      if isinstance(zoneID, str): zoneID = ffi.new("char[]", zoneID.encode('u8'))
-      elif zoneID is None: zoneID = ffi.NULL
-      lib.Z7Zone_getTextID(self.impl, zoneID)
+   def getTextID(self):
+      zid = ffi.new('byte[]', 256)
+      lib.Z7Zone_getTextID(self.impl, zid)
+      return ffi.string(zid).decode('u8')
 
    def to7H(self):
       return I7HZone(impl = lib.Z7Zone_to7H(self.impl))
