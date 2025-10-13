@@ -278,8 +278,8 @@ export class DGGRS {
     const bytesPerZone = 8; // DGGRSZone is 64-bit
     for (let i = 0; i < count; i++) {
       const zPtr = basePtr + i * bytesPerZone;
-      const low = BigInt.asUintN(64, this.module.HEAPU32[zPtr >> 2]);
-      const high = BigInt.asUintN(64, this.module.HEAPU32[(zPtr + 4) >> 2]);
+      const low = BigInt.asUintN(64, BigInt(this.module.HEAPU32[zPtr >> 2]));
+      const high = BigInt.asUintN(64, BigInt(this.module.HEAPU32[(zPtr + 4) >> 2]));
       out[i] = (high << 32n) | low;
     }
     this.module._DGGAL_Array_DGGRSZone_delete(arrPtr);
