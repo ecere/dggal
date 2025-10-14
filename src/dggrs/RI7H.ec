@@ -3418,7 +3418,7 @@ private:
    {
       uint64 nSubZones = getSubZonesCount(rDepth);
       // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
-      if(nSubZones < 1LL<< (32-4) && (nPoints == 6 || !rDepth))
+      if(this != nullZone && nSubZones < 1LL<< (32-4) && (nPoints == 6 || !rDepth))
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
