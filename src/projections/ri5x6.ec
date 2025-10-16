@@ -327,6 +327,9 @@ public class RI5x6Projection
       return face;
    }
 
+   #define WITHIN_TRI_THRESHOLD 1E-12
+
+
    bool ::vertexWithinSphericalTri(const Vector3D v3D,
       const Vector3D v1, const Vector3D v2, const Vector3D v3)
    {
@@ -345,7 +348,7 @@ public class RI5x6Projection
       for(i = 0; i < 3; i++)
       {
          double d = planes[i].a * v3D.x + planes[i].b * v3D.y + planes[i].c * v3D.z;
-         if(fabs(d) > 1E-9)
+         if(fabs(d) > WITHIN_TRI_THRESHOLD)
          {
             int s = Sgn(d);
             if(sgn && s != sgn)
@@ -368,7 +371,7 @@ public class RI5x6Projection
       for(i = 0; i < 3; i++)
       {
          double d = planes[i].a * v3D.x + planes[i].b * v3D.y + planes[i].c * v3D.z;
-         if(fabs(d) > 1E-9)
+         if(fabs(d) > WITHIN_TRI_THRESHOLD)
          {
             int s = Sgn(d);
             if(sgn && s != sgn)
@@ -437,7 +440,7 @@ public class RI5x6Projection
                         vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
                         v);
 
-                     inverse(v, rtp);
+                     inverse(v, rtp, false);
                   }
                }
                else
@@ -459,7 +462,7 @@ public class RI5x6Projection
    // so as to generate correct plate carrée grids
    void fixPoles(const Pointd v, GeoPoint result, bool oddGrid)
    {
-      #define epsilon5x6 1E-5
+      #define epsilon5x6 1E-8 // 1E-5 was causing ~111 m imprecisions for points near the geographic poles
       Degrees lon1 = -180 - orientation.lon;
       bool northPole = false, southPole = false, add180 = false;
       /*
