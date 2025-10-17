@@ -10,6 +10,8 @@ import "ri5x6"
 
 define I4R_MAX_VERTICES = 200; // * 1024;
 
+static define max4RLevel = 25;
+
 public class RhombicIcosahedral4R : DGGRS
 {
    bool equalArea;
@@ -38,7 +40,7 @@ public class RhombicIcosahedral4R : DGGRS
       return area;
    }
 
-   int getMaxDGGRSZoneLevel() { return 20; }
+   int getMaxDGGRSZoneLevel() { return max4RLevel; }
    int getRefinementRatio() { return 4; }
    int getMaxParents() { return 1; }
    int getMaxNeighbors() { return 4; }
@@ -80,7 +82,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    I4RZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      if(level <= 20)
+      if(level <= max4RLevel)
       {
          Pointd v;
          pj.forward(centroid, v);
@@ -290,7 +292,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    I4RZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
    {
-      if(level <= 20)
+      if(level <= max4RLevel)
       {
          switch(crs)
          {
@@ -700,7 +702,7 @@ private:
 int iLRC4FromLRtI(char levelChar, int root, uint64 ix, int * row, int * col)
 {
    int level = levelChar - 'A';
-   if(level >= 0 && level <= 20 && root >= 0 && root <= 9)
+   if(level >= 0 && level <= max4RLevel && root >= 0 && root <= 9)
    {
       uint64 p = (uint64)(1LL << level);
       if(ix >= 0 && ix < p * p)
