@@ -22,7 +22,7 @@ See also [this script](fetchAndBuild.sh) (running all of these commands), fetchi
 mkdir dgbuild
 cd dgbuild
 git clone -b main --single-branch https://github.com/ecere/eC.git
-git clone -b eC-core --single-branch https://github.com/ecere/dggal.git
+git clone -b main --single-branch https://github.com/ecere/dggal.git
 cd eC
 make
 cd ../dggal/

@@ -16,7 +16,7 @@ echo "Fetching eC core development environment..."
 git clone -b main --single-branch https://github.com/ecere/eC.git
 
 echo "Fetching DGGAL..."
-git clone -b eC-core --single-branch https://github.com/ecere/dggal.git
+git clone -b main --single-branch https://github.com/ecere/dggal.git
 
 echo "Building eC development environment..."
 cd eC

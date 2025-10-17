@@ -15,9 +15,9 @@
 the <a href='https://docs.ogc.org/DRAFTS/21-038r1.html'>OGC API - DGGS Standard</a>.</em></h2>
 <h3>GitHub repository: <a href='https://github.com/ecere/dggal'>ecere/dggal</a></h3>
 
-<h3><a href='https://github.com/ecere/dggal/archive/refs/heads/eC-core.zip'>Latest Source Code</a></h3>
+<h3><a href='https://github.com/ecere/dggal/archive/refs/heads/main.zip'>Latest Source Code</a></h3>
 
-<h3><a href='https://github.com/ecere/dggal/blob/eC-core/LICENSE'>License: BSD-3</a></h3>
+<h3><a href='https://github.com/ecere/dggal/blob/main/LICENSE'>License: BSD-3</a></h3>
 
 <a href='https://dggal.org/docs/html/dggal/Classes/DGGRS.html'><img alt='DGGAL docs' src='https://img.shields.io/badge/docs-API_documentation-green.svg'></a>
 <a href='https://pepy.tech/projects/dggal'><img alt='PyPI Downloads' src='https://static.pepy.tech/personalized-badge/dggal?period=total&units=INTERNATIONAL_SYSTEM&left_color=gray&right_color=GREEN&left_text=downloads'></a>
@@ -83,7 +83,7 @@ of <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slic
 and using the orientation which can be specified in DGGRID with <code>dggs_vert0_lon 11.20</code>, <code>dggs_vert0_lat 58.282525588538994675786</code> and <code>dggs_vert0_azimuth 0.0</code>.
 Efficient conversion from authalic latitude to geodetic latitudes is described by <a href='https://arxiv.org/pdf/2212.05818'>Charles Karney's "On auxiliary latitudes"</a>
 and can be performed using <a href='https://geographiclib.sourceforge.io/doc/library.html'>Geographiclib</a> or with the <code>authalicSetup()</code>, <code>latGeodeticToAuthalic()</code> and <code>latAuthalicToGeodetic()</code>
-<a href='https://github.com/ecere/dggal/blob/eC-core/src/projections/authalic.ec'>functions from DGGAL</a>.
+<a href='https://github.com/ecere/dggal/blob/main/src/projections/authalic.ec'>functions from DGGAL</a>.
 
 </ul>
 
@@ -145,13 +145,12 @@ The DGGAL library also allows to resolve a sub-zone index at a particular depth 
 
 <a name='building-dggal'><h2>Building DGGAL</h2></a>
 
-The recommended method to obtain and build DGGAL and the <code>dgg</code> tool is to follow the instructions in <a href='https://github.com/ecere/dggal/blob/eC-core/BUILDING.md'>BUILDING.md</a>,
-or running <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuild.sh'>fetchAndBuild.sh<a> /
-<a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuild.bat'>fetchAndBuild.bat</a>.<br/><br/>
+The recommended method to obtain and build DGGAL and the <code>dgg</code> tool is to follow the instructions in <a href='https://github.com/ecere/dggal/blob/main/BUILDING.md'>BUILDING.md</a>,
+or running <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/main/fetchAndBuild.sh'>fetchAndBuild.sh<a> /
+<a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/main/fetchAndBuild.bat'>fetchAndBuild.bat</a>.<br/><br/>
 
-This method will use the <a href='https://github.com/ecere/dggal/tree/eC-core'>eC-core</a> branch meant to be used with
-the <a href='https://github.com/ecere/eC'>stand-alone eC development kit and eC runtime library</a>,
-avoiding unnecessary dependencies on other components of the Ecere SDK runtime library.<br/><br/>
+DGGAL is now built using the <a href='https://github.com/ecere/eC'>stand-alone eC development kit and eC runtime library</a>,
+avoiding unnecessary dependencies on other components of the legacy monolithic Ecere SDK runtime library.<br/><br/>
 
 The script will clone both the eC and DGGAL repositories and build everything, including the C, C++, Rust and Python bindings
 if the required development tools are properly installed and configured.
@@ -164,32 +163,32 @@ Support for additional languages may be added in the future.
 
 <h3>C Bindings</h3>
 
-C bindings with zero overhead invoking the eC methods, but relying on macros, are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/c'>available here</a>.<br/><br/>
+C bindings with zero overhead invoking the eC methods, but relying on macros, are <a href='https://github.com/ecere/dggal/tree/main/bindings/c'>available here</a>.<br/><br/>
 
-A C example implementing the <code>dgg info</code> command using these DGGAL C bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c/info.c'>available here</a>.<br/><br/>
+A C example implementing the <code>dgg info</code> command using these DGGAL C bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/c/info.c'>available here</a>.<br/><br/>
 
-A second set of C bindings with the small overhead of additional function calls but avoiding the need for macros are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/c_fn'>available here</a>.
+A second set of C bindings with the small overhead of additional function calls but avoiding the need for macros are <a href='https://github.com/ecere/dggal/tree/main/bindings/c_fn'>available here</a>.
 These bindings still rely on the first set of C bindings with no overhead, but their C header file and function exports make them more suitable for third-party bindings generator for additional languages.<br/><br/>
 
-A C example implementing the <code>dgg info</code> command using the no-macros C bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/c_fn/info.c'>available here</a>.
+A C example implementing the <code>dgg info</code> command using the no-macros C bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/c_fn/info.c'>available here</a>.
 
 <h3>C++ Bindings</h3>
 
-C++ bindings (depending on the C bindings)  are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/cpp'>available here</a>.<br/><br/>
+C++ bindings (depending on the C bindings)  are <a href='https://github.com/ecere/dggal/tree/main/bindings/cpp'>available here</a>.<br/><br/>
 
-A C++ example implementing the <code>dgg info</code> command using the DGGAL C++ bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/cpp/info.cpp'>available here</a>.
+A C++ example implementing the <code>dgg info</code> command using the DGGAL C++ bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/cpp/info.cpp'>available here</a>.
 
 <h3>Python Bindings</h3>
 
-Python bindings (depending on the C bindings) are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/py'>available here</a>.<br/><br/>
+Python bindings (depending on the C bindings) are <a href='https://github.com/ecere/dggal/tree/main/bindings/py'>available here</a>.<br/><br/>
 
-A Python example using the DGGAL Python bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/py/info.py'>available here</a>.
+A Python example using the DGGAL Python bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/py/info.py'>available here</a>.
 
 <h3>Rust Bindings</h3>
 
-Rust bindings (depending on the C bindings) are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings/rust'>available here</a>.<br/><br/>
+Rust bindings (depending on the C bindings) are <a href='https://github.com/ecere/dggal/tree/main/bindings/rust'>available here</a>.<br/><br/>
 
-A Rust example using the DGGAL Rust bindings is <a href='https://github.com/ecere/dggal/blob/eC-core/bindings_examples/rust/info.rs'>available here</a>.
+A Rust example using the DGGAL Rust bindings is <a href='https://github.com/ecere/dggal/blob/main/bindings_examples/rust/info.rs'>available here</a>.
 
 <h3>Java Bindings</h3>
 
@@ -198,12 +197,12 @@ Java bindings generated with the help of <a href='https://openjdk.org/projects/p
 
 <h3>WebAssembly build and JavaScript Bindings</h3>
 
-JavaScript bindings (based on both the zero overhead and no-macro bindings) are available here: <a href='https://github.com/ecere/dggal/blob/eC-core/bindings/js/dggal.js'>dggal.js</a>,
+JavaScript bindings (based on both the zero overhead and no-macro bindings) are available here: <a href='https://github.com/ecere/dggal/blob/main/bindings/js/dggal.js'>dggal.js</a>,
 depending on <a href='https://dggal.org/web/libdggal.js'>libdggal.js</a> and <a href='https://dggal.org/web/libdggal_c_fn.js.0.0.wasm'>libdggal_c_fn.js.0.0.wasm</a>.<br/><br/>
 
-HTML / JavaScript examples using the DGGAL JavaScript bindings are <a href='https://github.com/ecere/dggal/tree/eC-core/bindings_examples/js'>available here</a>, with a <a href='https://dggal.org/web/'>live demo here</a>.<br/><br/>
+HTML / JavaScript examples using the DGGAL JavaScript bindings are <a href='https://github.com/ecere/dggal/tree/main/bindings_examples/js'>available here</a>, with a <a href='https://dggal.org/web/'>live demo here</a>.<br/><br/>
 
-See the <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/eC-core/fetchAndBuildWASM.sh'>fetchAndBuildWASM.sh</a> script for building the DGGAL WASM module from source.
+See the <a href='https://raw.githubusercontent.com/ecere/dggal/refs/heads/main/fetchAndBuildWASM.sh'>fetchAndBuildWASM.sh</a> script for building the DGGAL WASM module from source.
 
 <h2><code>dgg</code> tool</h2>
 

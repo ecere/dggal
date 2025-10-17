@@ -15,7 +15,7 @@ echo "Fetching eC core development environment..."
 git clone -b main --depth 1 --single-branch --recurse-submodules https://github.com/ecere/eC.git
 
 echo "Fetching DGGAL..."
-git clone -b eC-core --single-branch https://github.com/ecere/dggal.git
+git clone -b main --single-branch https://github.com/ecere/dggal.git
 
 echo "Building eC SDK for WASM..."
 cd eC
