@@ -2412,7 +2412,7 @@ class Z7Zone(DGGRSZone):
    def ancestry(self, value): self.impl = ((self.impl) & ~(lib.Z7ZONE_ancestry_MASK)) | (((value)) << lib.Z7ZONE_ancestry_SHIFT)
 
    def from7H(zone):
-      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(zone)
+      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(impl=zone)
       if zone is None: zone = ffi.NULL
       return Z7Zone(impl = lib.Z7Zone_from7H(zone))
 
@@ -2422,7 +2422,7 @@ class Z7Zone(DGGRSZone):
       return Z7Zone(impl = lib.Z7Zone_fromTextID(zoneID))
 
    def getParentRotationOffset(zone):
-      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(zone)
+      if zone is not None and not isinstance(zone, I7HZone): zone = I7HZone(impl=zone)
       if zone is None: zone = ffi.NULL
       return lib.Z7Zone_getParentRotationOffset(zone)
 
@@ -2449,12 +2449,12 @@ class rHEALPixProjection(HEALPixProjection):
       self.init_args(list(args), kwArgs)
 
 def i3HZoneFromI9R(zone, subHex):
-   if zone is not None and not isinstance(zone, I9RZone): zone = I9RZone(zone)
+   if zone is not None and not isinstance(zone, I9RZone): zone = I9RZone(impl=zone)
    if zone is None: zone = ffi.NULL
    return I3HZone(impl = lib.eC_i3HZoneFromI9R(zone, subHex))
 
 def i9RZoneFromI3H(zone):
-   if zone is not None and not isinstance(zone, I3HZone): zone = I3HZone(zone)
+   if zone is not None and not isinstance(zone, I3HZone): zone = I3HZone(impl=zone)
    if zone is None: zone = ffi.NULL
    return I9RZone(impl = lib.eC_i9RZoneFromI3H(zone))
 
