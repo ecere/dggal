@@ -12,7 +12,10 @@ mkdir dgbuild
 cd dgbuild
 
 echo "Fetching eC core development environment..."
-git clone -b main --depth 1 --single-branch --recurse-submodules https://github.com/ecere/eC.git
+git clone -b main --single-branch https://github.com/ecere/eC.git
+cd eC
+git submodule update --init --recursive
+cd ..
 
 echo "Fetching DGGAL..."
 git clone -b main --single-branch https://github.com/ecere/dggal.git
