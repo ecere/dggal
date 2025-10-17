@@ -16,12 +16,13 @@ Both a source distribution and built distribution for Linux, Windows and macOS, 
 
 DGGAL is already being integrated in several DGGS-enabled software, notably:
 
-- [Vgrid plugin for QGIS](https://plugins.qgis.org/plugins/vgridtools/) and [Vgrid DGGS](https://vgrid.gishub.vn/notebooks/08_dggal/),
+- [Vgrid plugin for QGIS](https://plugins.qgis.org/plugins/vgridtools/), [Vgrid DGGS](https://vgrid.gishub.vn/notebooks/08_dggal/), and [Vgrid plugin for Map Libre](https://github.com/opengeoshub/vgrid-maplibre/),
 - FME Community Modules: [DGGS Indexer](https://community.safe.com/fme-hub-alerts-55/dggsindexer-38685), [DGGS Relator](https://community.safe.com/fme-hub-alerts-55/dggsrelator-38765),
 [DGGS-JSON Decoder](https://community.safe.com/fme-hub-alerts-55/dggsjsondecoder-387740), and [DGGS-JSON Encoder](https://community.safe.com/fme-hub-alerts-55/dggsjsonencoder-38787),
 - [a5geo](https://a5geo.org/) (adapting the DGGAL code for the DSEA / IVEA equal-area projection),
 - [pydggsapi](https://github.com/LandscapeGeoinformatics/pydggsapi/tree/dggal),
 - [GeoPlegma](https://github.com/GeoPlegma),
+- [Geotoolkit](https://github.com/Geomatys/geotoolkit), a testing ground for [Apache SIS](https://sis.apache.org/),
 - [Ecere](https://ecere.ca)'s [GNOSIS Software Development Kit](http://gnosis.earth/) and [GNOSIS Map Server](https://maps.gnosis.earth).
 
 ## Supported Discrete Global Grid Reference Systems
