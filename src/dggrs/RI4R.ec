@@ -80,7 +80,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    I4RZone getZoneFromWGS84Centroid(int level, const GeoPoint centroid)
    {
-      if(level <= 16)
+      if(level <= 20)
       {
          Pointd v;
          pj.forward(centroid, v);
@@ -290,7 +290,7 @@ public class RhombicIcosahedral4R : DGGRS
 
    I4RZone getZoneFromCRSCentroid(int level, CRS crs, const Pointd centroid)
    {
-      if(level <= 16)
+      if(level <= 20)
       {
          switch(crs)
          {
@@ -538,16 +538,21 @@ private:
    // from an ISEA9R TileMatrixSet Level, Row, Column
    void getZoneID(String zoneID)
    {
-      int level = this.level;
-      uint row = this.row, col = this.col;
-      uint64 p = (uint64)(1LL << level);
-      uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
-      int root = rowOP + colOP;
-      int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
-      uint64 ix = y * p + x;
-      sprintf(zoneID,
-         __runtimePlatform == win32 ? "%c%d-%I64X" : "%c%d-%llX",
-         'A' + level, root, ix);
+      if(this == nullZone)
+         strcpy(zoneID,"(null)");
+      else
+      {
+         int level = this.level;
+         uint row = this.row, col = this.col;
+         uint64 p = (uint64)(1LL << level);
+         uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
+         int root = rowOP + colOP;
+         int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
+         uint64 ix = y * p + x;
+         sprintf(zoneID,
+            __runtimePlatform == win32 ? "%c%d-%I64X" : "%c%d-%llX",
+            'A' + level, root, ix);
+      }
    }
 
    I4RZone ::fromCRSExtent(const Pointd topLeft, const Pointd bottomRight, int level)

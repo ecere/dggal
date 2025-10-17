@@ -548,16 +548,21 @@ private:
    // from an ISEA9R TileMatrixSet Level, Row, Column
    void getZoneID(String zoneID)
    {
-      int level = this.level;
-      uint row = this.row, col = this.col;
-      uint64 p = POW3(level);
-      uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
-      int root = rowOP + colOP;
-      int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
-      uint64 ix = y * p + x;
-      sprintf(zoneID,
-         __runtimePlatform == win32 ? "%c%d-%I64X" : "%c%d-%llX",
-         'A' + level, root, ix);
+      if(this == nullZone)
+         strcpy(zoneID, "(null)");
+      else
+      {
+         int level = this.level;
+         uint row = this.row, col = this.col;
+         uint64 p = POW3(level);
+         uint rowOP = (uint)(row / p), colOP = (uint)(col / p);
+         int root = rowOP + colOP;
+         int y = (int)(row - rowOP * p), x = (int)(col - colOP * p);
+         uint64 ix = y * p + x;
+         sprintf(zoneID,
+            __runtimePlatform == win32 ? "%c%d-%I64X" : "%c%d-%llX",
+            'A' + level, root, ix);
+      }
    }
 
    I9RZone ::fromCRSExtent(const Pointd topLeft, const Pointd bottomRight, int level)
