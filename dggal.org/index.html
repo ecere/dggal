@@ -12,7 +12,7 @@
 <h1>DGGAL, the Discrete Global Grid Abstraction Library</h1>
 
 <h2><em>DGGAL provides a common interface to perform various operations on Discrete Global Grid Reference Systems (DGGRS), facilitating the implementation of Discrete Global Grid Systems (DGGS), including implementing Web APIs based on
-the <a href='https://docs.ogc.org/DRAFTS/21-038r1.html'>OGC API - DGGS Standard</a>.</em></h2>
+the <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html'>OGC API - DGGS Standard</a>.</em></h2>
 <h3>GitHub repository: <a href='https://github.com/ecere/dggal'>ecere/dggal</a></h3>
 
 <h3><a href='https://github.com/ecere/dggal/archive/refs/heads/main.zip'>Latest Source Code</a></h3>
@@ -33,22 +33,23 @@ Both a source distribution and built distribution for Linux, Windows and macOS, 
 DGGAL is already being integrated in several DGGS-enabled software, notably:
 
 <ul>
-<li><a href='https://plugins.qgis.org/plugins/vgridtools/'>Vgrid plugin for QGIS</a> and <a href='https://vgrid.gishub.vn/notebooks/08_dggal/'>Vgrid DGGS</a>,
+<li><a href='https://plugins.qgis.org/plugins/vgridtools/'>Vgrid plugin for QGIS</a>, <a href='https://vgrid.gishub.vn/notebooks/08_dggal/'>Vgrid DGGS</a> and <a href='https://github.com/opengeoshub/vgrid-maplibre'>Vgrid plugin for Map Libre</a>,
 <li>FME Community Modules: <a href='https://community.safe.com/fme-hub-alerts-55/dggsindexer-38685'>DGGS Indexer</a>, <a href='https://community.safe.com/fme-hub-alerts-55/dggsrelator-38765'>DGGS Relator</a>,
 <a href='https://community.safe.com/fme-hub-alerts-55/dggsjsondecoder-387740'>DGGS-JSON Decoder</a>, and <a href='https://community.safe.com/fme-hub-alerts-55/dggsjsonencoder-38787'>DGGS-JSON Encoder</a>,
 <li><a href='https://a5geo.org/'>a5geo</a> (adapting the DGGAL code for the DSEA / IVEA equal-area projection),
 <li><a href='https://github.com/LandscapeGeoinformatics/pydggsapi/tree/dggal'>pydggsapi<a>,
 <li><a href='https://github.com/GeoPlegma'>GeoPlegma</a>,
+<li><a href='https://github.com/Geomatys/geotoolkit'>Geotoolkit</a>, a testing ground for <a href='https://sis.apache.org/'>Apache SIS</a>,
 <li><a href='https://ecere.ca'>Ecere</a>'s <a href='http://gnosis.earth/'>GNOSIS Software Development Kit</a> and <a href='https://maps.gnosis.earth'>GNOSIS Map Server</a>.
 </ul>
 
 <h2>Supported Discrete Global Grid Reference Systems</h2>
 
-DGGAL currently supports all nine DGGRS described in <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def'>OGC API - DGGS Annex B</a>, as well as additional DGGRSs:
+DGGAL currently supports all nine DGGRS described in <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#annex-dggrs-def'>OGC API - DGGS Annex B</a>, as well as additional DGGRSs:
 <h3>Axis-aligned DGGRS in WGS84 latitude and longitude (simple bounding boxes)</h3>
 
 <ul>
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ggg-dggrs'>GNOSIS Global Grid</a>: An axis-aligned quad-tree defined in WGS84 latitude and
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#ggg-dggrs'>GNOSIS Global Grid</a>: An axis-aligned quad-tree defined in WGS84 latitude and
 longitude, with special handling of polar regions achieving an approximate maximum of ~48% variance from median zone area, corresponding to the
 <a href='https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58'>OGC 2D Tile Matrix Set of the same name</a>)
 </ul>
@@ -74,9 +75,9 @@ of <a href='https://www.tandfonline.com/doi/abs/10.1559/152304006779500687'>Slic
 
 <ul>
 <li> <b>ISEA4R</b>: An equal area rhombic grid with a refinement ratio of 4 defined in the  transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs'>ISEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs'>ISEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#isea7h-dggrs'>ISEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#isea9r-dggrs'>ISEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#isea3h-dggrs'>ISEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#isea7h-dggrs'>ISEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
 <li> <b>ISEA7H_Z7</b>: Same Discrete Global Grid Hierarchy (DGGH) and sub-zone order as ISEA7H, but using the Z7 indexing for interoperability with <a href='https://github.com/sahrk/DGGRID'>DGGRID</a> and <a href='https://agile-giss.copernicus.org/articles/6/32/2025/'>IGEO7</a>.
 <br/><br/>
 <b>NOTE:</b> The DGGRID / IGEO7 interoperability of ISEA7H_Z7 relies on converting the authalic latitudes produced by DGGRID to geodetic latitudes to reference them to the WGS84 ellipsoid,
@@ -93,9 +94,9 @@ and can be performed using <a href='https://geographiclib.sourceforge.io/doc/lib
 
 <ul>
 <li> <b>IVEA4R</b>: An equal area rhombic grid with a refinement ratio of 4 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA4R
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea9r-dggrs'>IVEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea3h-dggrs'>IVEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#ivea7h-dggrs'>IVEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea9r-dggrs'>IVEA9R</a>: An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea3h-dggrs'>IVEA3H</a>: An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea7h-dggrs'>IVEA7H</a>: An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
 <li> <b>IVEA7H_Z7</b>: Same DGGH and sub-zone order as IVEA7H, but using same Z7 indexing as for ISEA7H_Z7.
 </ul>
 
@@ -121,11 +122,11 @@ and can be performed using <a href='https://geographiclib.sourceforge.io/doc/lib
 (<a href='https://arxiv.org/pdf/astro-ph/0409513'>HEALPix projection</a>)
 
 <ul>
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#HEALPix-dggrs'>HEALPix</a>: An equal area and axis-aligned grid with square zones topology and a
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#HEALPix-dggrs'>HEALPix</a>: An equal area and axis-aligned grid with square zones topology and a
 refinement ratio of 4 defined in the HEALPix projection, using configuration Nφ/H = 4, Nθ/K = 3 (same as default
 <a href='https://proj.org/en/stable/operations/projections/healpix.html'>PROJ implementation</a>), the new indexing described in OGC API - DGGS Annex B,
 and scanline-based sub-zone ordering
-<li> <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#rHEALPix-dggrs'>rHEALPix</a>: An equal area and axis-aligned grid with square zones topology and
+<li> <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#rHEALPix-dggrs'>rHEALPix</a>: An equal area and axis-aligned grid with square zones topology and
 a refinement ratio of 9 defined in the rHEALPix projection using 50° E prime meridian
 (equivalent to <a href='https://proj.org/en/stable/operations/projections/rhealpix.html'>PROJ implementation</a> with parameters
 <code>+proj=rhealpix +lon_0=50 +ellps=WGS84</code>),
@@ -139,9 +140,9 @@ The API documentation can be <a href='https://dggal.org/docs/html/dggal/Classes/
 
 The <code>DGGRS</code> class provides most of the functionality of the library, allowing to resolve DGGRS zones by textual ID to a unique 64-bit zone integer identifier (<code>DGGRSZone</code>).
 The geometry and sub-zones of a particular zone can also be queried.
-The concept of <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#term-sub-zone'>sub-zones</a> is key to encoding both vector and raster geospatial data quantized to a DGGRS.
+The concept of <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#term-sub-zone'>sub-zones</a> is key to encoding both vector and raster geospatial data quantized to a DGGRS.
 The DGGAL library also allows to resolve a sub-zone index at a particular depth from a parent zone, allowing to read DGGS-optimized data such as
-<a href='http://dggs-json.org'>DGGS-JSON</a> and <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg'>DGGS-JSON-FG</a>.
+<a href='http://dggs-json.org'>DGGS-JSON</a> and <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#rc_data-dggs-jsonfg'>DGGS-JSON-FG</a>.
 
 <a name='building-dggal'><h2>Building DGGAL</h2></a>
 
@@ -670,7 +671,7 @@ sub-zone B6-5-C not found within parent A4-0-A
 
 <a name='togeo'><h4><code>togeo</code></h4></a>
 
-Converts <a href'http://dggs-json.org'>DGGS-JSON</a> (and eventually <a href='https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg'>DGGS-JSON-FG</a> and <a href='https://ubjson.org/'>UBJSON</a> variants) to GeoJSON
+Converts <a href'http://dggs-json.org'>DGGS-JSON</a> (and eventually <a href='https://docs.ogc.org/is/21-038r1/21-038r1.html#rc_data-dggs-jsonfg'>DGGS-JSON-FG</a> and <a href='https://ubjson.org/'>UBJSON</a> variants) to GeoJSON
 to facilitate interoperability with traditional GIS software / software not aware of the DGGRS.
 
 <br><br>

@@ -4,7 +4,7 @@
 # DGGAL, the Discrete Global Grid Abstraction Library
 
 DGGAL provides a common interface to perform various operations on Discrete Global Grid Reference Systems (DGGRS), facilitating the implementation of Discrete Global Grid Systems (DGGS),
-including implementing Web APIs based on the [OGC API - DGGS Standard](https://docs.ogc.org/DRAFTS/21-038r1.html).
+including implementing Web APIs based on the [OGC API - DGGS Standard](https://docs.ogc.org/is/21-038r1/21-038r1.html).
 
 ## Installation from PyPI
 
@@ -27,11 +27,11 @@ DGGAL is already being integrated in several DGGS-enabled software, notably:
 
 ## Supported Discrete Global Grid Reference Systems
 
-DGGAL currently supports all nine DGGRSs described in [OGC API - DGGS Annex B](https://docs.ogc.org/DRAFTS/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
+DGGAL currently supports all nine DGGRSs described in [OGC API - DGGS Annex B](https://docs.ogc.org/is/21-038r1/21-038r1.html#annex-dggrs-def), as well as additional DGGRSs:
 
 ### Axis-aligned DGGRS in WGS84 latitude and longitude (simple bounding boxes)
 
-* [GNOSIS Global Grid](https://docs.ogc.org/DRAFTS/21-038r1.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions achieving an approximate maximum of ~48% variance from median zone area, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
+* [GNOSIS Global Grid](https://docs.ogc.org/is/21-038r1/21-038r1.html#ggg-dggrs): An axis-aligned quad-tree defined in WGS84 latitude and longitude, with special handling of polar regions achieving an approximate maximum of ~48% variance from median zone area, corresponding to the [OGC 2D Tile Matrix Set of the same name](https://docs.ogc.org/is/17-083r4/17-083r4.html#toc58)
 
 ### Equal-Area DGGRSs based on Icosahedral Projections (aperture 3 and 7 Hexagonal, aperture 4 and 9 Axis-Aligned Rhombic)
 
@@ -51,9 +51,9 @@ All but one pentagon on land are avoided with a reference zone starting from 7H 
 ([An Equal-Area Map Projection for Polyhedral Globes (1992)](https://doi.org/10.3138%2F27H7-8K88-4882-1752), or dodecahedron configuration (DVEA) of [Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687))
 
 * **ISEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the  transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
-* [ISEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
-* [ISEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
-* [ISEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#isea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
+* [ISEA9R](https://docs.ogc.org/is/21-038r1/21-038r1.html#isea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the ISEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones
+* [ISEA3H](https://docs.ogc.org/is/21-038r1/21-038r1.html#isea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the ISEA projection
+* [ISEA7H](https://docs.ogc.org/is/21-038r1/21-038r1.html#isea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the ISEA projection
 * **ISEA7H_Z7**: Same Discrete Global Grid Hierarchy (DGGH) and sub-zone order as ISEA7H, but using the Z7 indexing for interoperability with [DGGRID](https://github.com/sahrk/DGGRID) and [IGEO7](https://agile-giss.copernicus.org/articles/6/32/2025/).
 
 **NOTE:** The DGGRID / IGEO7 interoperability of ISEA7H_Z7 relies on converting the authalic latitudes produced by DGGRID to geodetic latitudes to reference them to the WGS84 ellipsoid,
@@ -67,9 +67,9 @@ and can be performed using [Geographiclib](https://geographiclib.sourceforge.io/
 ([Slice & Dice (2006)](https://www.tandfonline.com/doi/abs/10.1559/152304006779500687), or applying [Snyder 1992](https://doi.org/10.3138%2F27H7-8K88-4882-1752) to the dodecahedron (DSEA))
 
 * **IVEA4R**: An equal area rhombic grid with a refinement ratio of 4 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA4R
-* [IVEA9R](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
-* [IVEA3H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
-* [IVEA7H](https://docs.ogc.org/DRAFTS/21-038r1.html#ivea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
+* [IVEA9R](https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea9r-dggrs): An equal area rhombic grid with a refinement ratio of 9 defined in the IVEA projection transformed into a 5x6 Cartesian space resulting in axis-aligned square zones, using the same global indexing and sub-zone ordering as for ISEA9R
+* [IVEA3H](https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea3h-dggrs): An equal area hexagonal grid with a refinement ratio of 3 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA3H
+* [IVEA7H](https://docs.ogc.org/is/21-038r1/21-038r1.html#ivea7h-dggrs): An equal area hexagonal grid with a refinement ratio of 7 defined in the IVEA projection, using the same global indexing and sub-zone ordering as for ISEA7H
 * **IVEA7H_Z7**: Same DGGH and sub-zone order as IVEA7H, but using same Z7 indexing as for ISEA7H_Z7.
 
 **NOTE:** This projection is superior to ISEA and RT(S)EA at avoiding perceptible cusps, resulting in more compact/regular zones.
@@ -91,8 +91,8 @@ and can be performed using [Geographiclib](https://geographiclib.sourceforge.io/
 
 ([HEALPix projection](https://arxiv.org/pdf/astro-ph/0409513))
 
-* [HEALPix](https://docs.ogc.org/DRAFTS/21-038r1.html#HEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 4 defined in the HEALPix projection, using configuration Nφ/H = 4, Nθ/K = 3 (same as default [PROJ implementation](https://proj.org/en/stable/operations/projections/healpix.html)), the new indexing described in OGC API - DGGS Annex B, and scanline-based sub-zone ordering
-* [rHEALPix](https://docs.ogc.org/DRAFTS/21-038r1.html#rHEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection using 50° E prime meridian (equivalent to [PROJ implementation](https://proj.org/en/stable/operations/projections/rhealpix.html) with parameters `+proj=rhealpix +lon_0=50 +ellps=WGS84`), the [original hierarchical indexing](https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012), and scanline-based sub-zone ordering
+* [HEALPix](https://docs.ogc.org/is/21-038r1/21-038r1.html#HEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 4 defined in the HEALPix projection, using configuration Nφ/H = 4, Nθ/K = 3 (same as default [PROJ implementation](https://proj.org/en/stable/operations/projections/healpix.html)), the new indexing described in OGC API - DGGS Annex B, and scanline-based sub-zone ordering
+* [rHEALPix](https://docs.ogc.org/is/21-038r1/21-038r1.html#rHEALPix-dggrs): An equal area and axis-aligned grid with square zones topology and a refinement ratio of 9 defined in the rHEALPix projection using 50° E prime meridian (equivalent to [PROJ implementation](https://proj.org/en/stable/operations/projections/rhealpix.html) with parameters `+proj=rhealpix +lon_0=50 +ellps=WGS84`), the [original hierarchical indexing](https://iopscience.iop.org/article/10.1088/1755-1315/34/1/012012), and scanline-based sub-zone ordering
 
 ## libDGGAL API Documentation
 
@@ -100,9 +100,9 @@ The API documentation can be [found here](https://dggal.org/docs/html/dggal/Clas
 
 The `DGGRS` class provides most of the functionality of the library, allowing to resolve DGGRS zones by textual ID to a unique 64-bit zone integer identifier (`DGGRSZone`).
 The geometry and sub-zones of a particular zone can also be queried.
-The concept of [sub-zones](https://docs.ogc.org/DRAFTS/21-038r1.html#term-sub-zone) is key to encoding both vector and raster geospatial data quantized to a DGGRS.
+The concept of [sub-zones](https://docs.ogc.org/is/21-038r1/21-038r1.html#term-sub-zone) is key to encoding both vector and raster geospatial data quantized to a DGGRS.
 The DGGAL library also allows to resolve a sub-zone index at a particular depth from a parent zone, allowing to read DGGS-optimized data such as
-[DGGS-JSON](http://dggs-json.org) and [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg).
+[DGGS-JSON](http://dggs-json.org) and [DGGS-JSON-FG](https://docs.ogc.org/is/21-038r1/21-038r1.html#rc_data-dggs-jsonfg).
 
 ## Building DGGAL
 
@@ -567,7 +567,7 @@ sub-zone B6-5-C not found within parent A4-0-A
 
 #### `togeo`
 
-Converts [DGGS-JSON](http://dggs-json.org) (and eventually [DGGS-JSON-FG](https://docs.ogc.org/DRAFTS/21-038r1.html#rc_data-dggs-jsonfg) and [UBJSON](https://ubjson.org/) variants) to GeoJSON
+Converts [DGGS-JSON](http://dggs-json.org) (and eventually [DGGS-JSON-FG](https://docs.ogc.org/is/21-038r1/21-038r1.html#rc_data-dggs-jsonfg) and [UBJSON](https://ubjson.org/) variants) to GeoJSON
 to facilitate interoperability with traditional GIS software / software not aware of the DGGRS.
 
 https://maps.gnosis.earth/ogcapi/collections/sentinel2-l2a/dggs/ISEA3H/zones/G7-67252-B/data.json?zone-depth=8&datetime=2022-10-28&properties=B08
