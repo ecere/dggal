@@ -7,7 +7,13 @@ Significant progress was achieved as part of a number of initiatives including:
 - the Ecere GeoConnections 2025-2027 project entitled "Advancing and Implementing OGC Standards for GeoDataCubes, DGGSs, Data Stores for Digital Twins and Cartographic Symbology").
 
 Special thanks to Perry Peterson, Matthew Purss, Robert Gibb, Idan Shatz, Marta Padilla Ruiz, Brenton R S Recht, Kevin Sahr,
-Alexander Kmoch, Luís Moreira de Sousa, and Daniel Strebe for several insights making DGGAL possible.
+Alexander Kmoch, Luís Moreira de Sousa, Daniel Strebe, Diederik van Leeuwen, Charles Karney and Felix Palmer for several insights making DGGAL possible.
+
+Many thanks to early adopters for reporting bugs, in particular Samantha Lavander, Taras Zakharko, Erin Li, Johann Sorel, Wai Tik Chan and Francis Charette-Migneault.
+
+Thanks to Johann Sorel for the Java bindings ( https://github.com/jsorel/dggal-java ).
+
+Thanks to Jeremy Costello and Réjean Loyer (Ecere) for help with the WebAssembly build and JavaScript bindings.
 
 Acknowledgements
 
