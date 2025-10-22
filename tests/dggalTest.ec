@@ -620,7 +620,7 @@ public class DGGSUnitTest : eTest
       testSubZones(class(ISEA9R), 2, 4);
       testSubZones(class(GNOSISGlobalGrid), 6, 3);
       testSubZones(class(rHEALPix), 3, 3);
-      testSubZones(class(ISEA7H), 3, 3); // Passing 4,4 ; 5, 3 for hexagons
+      testSubZones(class(ISEA7H), 3, 4); // Passing 5, 4
       testSubZones(class(HEALPix), 4, 3);
       testSubZones(class(ISEA4R), 4, 3);
 

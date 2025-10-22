@@ -1726,19 +1726,54 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 
    if(c.x < 0 && c.y < 1 + 1E-11)
       c.x += 5, c.y += 5;
+
+   if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
+   {
+      v = c;
+      return;
+   }
+
    while(true)
    {
       double cdx = c.x, cdy = c.y;
-      bool north = cdx - cdy - 1E-11 > 0;
       int cx, cy;
       int nx, ny;
       int rotation = 0;
       double px, py;
+      bool north = !(cdy - cdx > 1);
+      const double EPS = 1e-11;
+      int iy = (int)floor(cdy + EPS);
+      int ix = (int)floor(cdx + EPS);
+      bool doNudge = true;
 
-      if(north)
-         cdx -= 1E-11, cdy += 1E-11;
-      else
-         cdx += 1E-11, cdy -= 1E-11;
+      if(fabs(c.y - iy) < EPS && iy >= 0 && iy <= 5
+         && c.x > (double)(iy - 1) - EPS && c.x < (double)iy + EPS)
+      {
+         cdy += 2*Sgn(dy) * EPS;
+         if(c.x > (double)(iy - 1) + EPS && c.x < (double)iy - EPS)
+            doNudge = false;
+      }
+      if (fabs(c.x - ix) < EPS && ix >= 0 && ix <= 5
+         && c.y > (double)ix - EPS && c.y < (double)(ix + 1) + EPS)
+      {
+         cdx += 2*Sgn(dx) * EPS;
+         if(c.y > (double)ix + EPS && c.y < (double)(ix + 1) - EPS)
+            doNudge = false;
+      }
+
+      if(doNudge)
+      {
+         if(!north)
+         {
+            cdx += 1E-11;
+            cdy -= 1E-11;
+         }
+         else
+         {
+            cdx -= 1E-11;
+            cdy += 1E-11;
+         }
+      }
 
       if(cdx < 0 && cdy < 1 + 1E-11)
       {
@@ -1750,6 +1785,16 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
          cdx -= 5, cdy -= 5;
          c.x -= 5, c.y -= 5;
       }
+      if(cdy < 0 && cdx < 1E-11)
+      {
+         cdx += 5, cdy += 5;
+         c.x += 5, c.y += 5;
+      }
+
+      if(cdx < 0) cdx = 0;
+      if(cdy < 0) cdy = 0;
+      if(cdx > 5) cdx = 5;
+      if(cdy > 6) cdy = 6;
 
       cx = (int)floor(cdx);
       cy = (int)floor(cdy);
@@ -1775,17 +1820,30 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
             break;
       }
 
-      nx = (int)floor(c.x + 1E-11 * Sgn(dx)); //px));
-      ny = (int)floor(c.y + 1E-11 * Sgn(dy)); //py));
-
-      if((nx != cx || ny != cy) && (nx > cx || fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
       {
-         int root = cx + cy;
+         bool atVertex = fabs(c.x - (int)(c.x + 0.5)) < EPS && fabs(c.y - (int)(c.y + 0.5)) < EPS;
 
-         if(!(root & 1))
+         nx = (int)floor(c.x + EPS * Sgn(dx));
+         ny = (int)floor(c.y + EPS * Sgn(dy));
+
+         if(atVertex && fabs(dx) > EPS && fabs(dy) <= EPS)
+            ny = cy, nx = cx + Sgn(dx);
+         else if(atVertex && fabs(dy) > EPS && fabs(dx) <= EPS)
+            nx = cx, ny = cy + Sgn(dy);
+         else if(nx > cx && ny < cy)
+            nx = cx;
+         else if(nx < cx && ny > cy)
+            ny = cy;
+      }
+
+      if(nx != cx || ny != cy)
+      {
+         bool nNorth = !((cx + cy) & 1);
+
+         if(nNorth)
          {
             // North
-            if(ny == cy && nx == cx + 1)   // Crossing interruption to the right
+            if((ny == cy && nx == cx + 1))   // Crossing interruption to the right
             {
                int iy = (int)(c.x - 1 + 1E-11);
                c = { iy + 2 - (c.y - iy), c.x };
@@ -1796,15 +1854,6 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
                int ix = (int)(c.y + 1E-11);
                c = { c.y, ix - (c.x - ix) };
                rotation = 1; // Counter-clockwise rotation
-            }
-            else
-            {
-               // REVIEW: Non-crossing internal rhombus edges?
-               c.x += dx - px;
-               c.y += dy - py;
-
-               px = dx;
-               py = dy;
             }
          }
          else
@@ -1822,23 +1871,18 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
                c = { iy - 1 - (c.y - iy), c.x + 1 };
                rotation = -1; // Clockwise rotation
             }
-            else
-            {
-               // REVIEW: Non-crossing internal rhombus edges?
-               c.x += dx - px;
-               c.y += dy - py;
-
-               px = dx;
-               py = dy;
-            }
          }
       }
 
       dx -= px;
       dy -= py;
 
-      if(c.x < 0 && c.y < 1 + 1E-11)
+      if(c.x < -1E-11 && c.y < 1 + 1E-11)
          c.x += 5, c.y += 5;
+      else if(c.y < 0 && c.x < 1E-11)
+         c.x += 5, c.y += 5;
+      else if(c.x > 5 - 1E-11 && c.y > 6 + 1E-11)
+         c.x -= 5, c.y -= 5;
 
       // Apply rotation
       if(rotation)
@@ -1877,7 +1921,10 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
          }
       }
 
-      if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11)
+      if(fabs(dx) < 1E-11) dx = 0;
+      if(fabs(dy) < 1E-11) dy = 0;
+
+      if(!dx && !dy)
          break;
    }
    v = c;
@@ -1886,9 +1933,85 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 void test5x6()
 {
    Pointd v;
+   //return;
 
+   //PrintLn("Testing 5 x 6 Space!");
+
+   /* REVIEW: these nRotations = 2 cause an endless loop... do they make any sense?
+   move5x6(v, { 4.7755102040816331, 5.8979591836734695 }, 0.1836734693877551, 0.1224489795918367, 2, null, null, true);
+   PrintLn(v);
+   */
+
+   // EA-0-A case...
+   move5x6(v, { 1.991253644314869, 0.99999999999999956 }, 0.0087463556851312, 0, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 4.9970845481049562, 4.0087463556851315 }, 0.0116618075801749, 0, 1, null, null, true);
+   PrintLn(v);
+
+   // AA-0-A case...
+   move5x6(v, { 4.8571428571428577, 4.4285714285714279 }, 0.5714285714285714, 0, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 1.5714285714285721, 1 }, 0.4285714285714285, 0, 1, null, null, true);
+   PrintLn(v);
+
+   ////////////
+   move5x6(v, { 3.4285714285714288, 5 }, -0.5714285714285712, 0, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 1.571428571428571, 2.5714285714285698 }, 0.5714285714285714, 0.5714285714285714, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0, 0 }, -0.047142857142857139, -0.094285714285714278, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 1.9387755102040813, 2.9387755102040818 }, 0.0816326530612245, 0.0816326530612245, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 1, 2.2857142857142856 }, -0.094285714285714278, -0.047142857142857139, 1, null, null, true);
+   PrintLn(v);
+
+   /// from here...
    move5x6(v, { 2/3.0, 1/3.0 }, 1/3.0, 1/6.0, 1, null, null, true);
    PrintLn(v); // Should be 1, 0.5 (or 1.5, 1)
+
+   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
+   PrintLn(v);
+
+   // These all seem to behave better with the new function...
+   move5x6(v, { 1, 0 }, 0.047142857142857139, -0.047142857142857139, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 5, 5 }, 1/7.0, 1/7.0, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0.2857142857142857, 0.28571428571428581 }, -0.4285714285714284, 0, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 4.5714285714285712, 4.8571428571428568 }, 0.4285714285714285, 0.4285714285714285, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0, 0.14285714285714285 }, 0.047142857142857139, 0.094285714285714278, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0, 1.2857142857142856 }, -0.094285714285714278, -0.047142857142857139, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0.5714285714285714, 0 }, -0.047142857142857139, -0.094285714285714278, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0, 1.2857142857142856 }, -0.047142857142857139, -0.094285714285714278, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 0.14285714285714285, 0 }, 0.047142857142857139, -0.047142857142857139, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 4.5714285714285712, 4.8571428571428568 }, 0.2857142857142857, 0.28571428571428571, 1, null, null, true);
+   PrintLn(v);
+
+   move5x6(v, { 4.7142857142857144, 5 }, -0.047142857142857139, -0.094285714285714278, 1, null, null, true);
+   PrintLn(v);
 
    move5x6(v, { 2/3.0, 1/3.0 }, 2/3.0, 1/3.0, 1, null, null, true);
    PrintLn(v); // Should be 1.66666666666667, 1.33333333333333
@@ -1898,9 +2021,6 @@ void test5x6()
    PrintLn(v);
 
    move5x6(v, { 8/3.0, 7/3.0 }, 2/9.0, 0, 2, null, null, true); // Should be: 2.8888888888889, 2.33333333333333
-   PrintLn(v);
-
-   move5x6(v, { 8/3.0, 7/3.0 }, 3/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3  (or 3, 2.66666666666667)
    PrintLn(v);
 
    move5x6(v, { 8/3.0, 7/3.0 }, 4/9.0, 0, 2, null, null, true); // Should be: 3.66666666666667, 3.1111111111111
