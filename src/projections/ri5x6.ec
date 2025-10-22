@@ -1782,7 +1782,7 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
       {
          int root = cx + cy;
 
-         if(!(root & 1))
+         if(!(root & 1) || cx > cy)
          {
             // North
             if(ny == cy && nx == cx + 1)   // Crossing interruption to the right

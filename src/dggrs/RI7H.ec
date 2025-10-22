@@ -3135,6 +3135,7 @@ private:
       int level = this.level;
       bool oddLevel = level & 1;
       bool specialOddCase = false;
+      bool northPole = nPoints == 5 && rootRhombus == 10;
 
       RI5x6Projection::toIcosahedronNet(vertices[0], topIco);
 
@@ -3144,17 +3145,19 @@ private:
 
          RI5x6Projection::toIcosahedronNet(vertices[i], ico);
 
-         if(ico.y > topIco.y + 1E-6)
+         if(northPole ? ico.y < topIco.y - 1E-6 : ico.y > topIco.y + 1E-6)
          {
             equalTop = false;
             topIco = ico;
             top = i;
          }
-         else if(ico.y >= topIco.y - 1E-6)
+         else if(northPole ? ico.y <= topIco.y + 1E-6 : ico.y >= topIco.y - 1E-6)
          {
             if(!oddLevel || north)
                equalTop = true;
-            if(ico.x < topIco.x - 1E-8 && topIco.x - ico.x < 5*triWidthOver2)
+            if(northPole ?
+               ico.x > topIco.x + 1E-8 && topIco.x + ico.x > 5*triWidthOver2 :
+               ico.x < topIco.x - 1E-8 && topIco.x - ico.x < 5*triWidthOver2)
             {
                topIco = ico;
                top = i;
@@ -3184,6 +3187,7 @@ private:
       int level = this.level;
       int64 szp = POW7((level + 1 + rDepth) / 2);
       double dx, dy;
+      bool northPole = rootRhombus == 10 && nPoints == 5;
 
       if(rDepth & 1) // Odd depth
       {
@@ -3216,16 +3220,21 @@ private:
 
       if(nTop == 2 && ((level & 1) || v.x - v.y - 1E-11 > 0))
       {
-         // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
-         double ndy = dy - dx;
-         dx = dy;
-         dy = ndy;
+         int i, nRotation = northPole ? 3 : 1;
 
-         if(sx && sy)
+         for(i = 0; i < nRotation; i++)
          {
-            ndy = *sy - *sx;
-            *sx = *sy;
-            *sy = ndy;
+            // Hexagon spanning interruption between 2 top vertices, rotate offset 60 degrees counter-clockwise
+            double ndy = dy - dx;
+            dx = dy;
+            dy = ndy;
+
+            if(sx && sy)
+            {
+               ndy = *sy - *sx;
+               *sx = *sy;
+               *sy = ndy;
+            }
          }
       }
 
@@ -3258,9 +3267,9 @@ private:
          double sy = c2c * (oddLevelSZ ? 2 : 1);
          // Direction to the next scanline (hexagon immediately to the left -- 120 degrees clockwise)
          double nsx, nsy;
-
-         // TODO: Handle pentagons / polar zones correctly
-         if(nPoints == 5) return -1;
+         int nPoints = this.nPoints;
+         // TODO: Handle pentagons / polar zones correctly for odd depths and odd ancestor
+         if(nPoints == 5 && (oddDepth || oddAncestor)) return -1;
 
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
@@ -3349,13 +3358,20 @@ private:
             int64 nCapSL = (POW7(rDepth/2) - 1) / 3;
             int64 nMidSL = (2*POW7(rDepth/2) + 1)/3;
             int64 B = nCapSL, C = B + nMidSL;
-
+            int64 nUntilPentagon = MAXINT64;
+            bool pastPentagon = false;
             nScanlines = 2 * nCapSL + nMidSL;
+            if(nPoints == 5)
+               nScanlines -= nCapSL / 2, nUntilPentagon = nMidSL-1;
+
             zonesPerSL = 3;
 
             for(s = 0; s < nScanlines && keepGoing; s++)
             {
                double tsx = sx, tsy = sy;
+
+               if(s == nUntilPentagon)
+                  pastPentagon = true;
 
                if(s < B)
                {
@@ -3372,6 +3388,9 @@ private:
                   left = s == C ? -1 : -2;
                   right = s == C ? 0 : -1;
                }
+
+               if(pastPentagon && s > nUntilPentagon)
+                  right -= 1;
 
                cStart += left;
                zonesPerSL += left + right;
@@ -3393,7 +3412,25 @@ private:
                   for(; i < zonesPerSL; i++)
                   {
                      Pointd centroid;
-                     move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
+                     if(pastPentagon && ((rootRhombus & 1) ? s > nUntilPentagon : 1) && i > zonesPerSL / 2)
+                     {
+                        Pointd cc;
+                        int64 h = zonesPerSL / 2;
+                        double ttx = tsx, tty = tsy;
+                        Pointd dO;
+
+                        move5x6(cc, sc, h * ttx, h * tty, 1, null, null, true);
+                        rotate5x6Offset(dO, ttx, tty, true);
+                        ttx = dO.x, tty = dO.y;
+                        if(rootRhombus == 10 && pastPentagon)
+                        {
+                           rotate5x6Offset(dO, ttx, tty, true);
+                           ttx = dO.x, tty = dO.y;
+                        }
+                        move5x6(centroid, cc, (i - h) * ttx, (i - h) * tty, 1, &ttx, &tty, true);
+                     }
+                     else
+                        move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
                      keepGoing = centroidCallback(context, index, centroid);
                      if(searchIndex != -1 || !keepGoing)
                         break;
@@ -3418,7 +3455,7 @@ private:
    {
       uint64 nSubZones = getSubZonesCount(rDepth);
       // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
-      if(this != nullZone && nSubZones < 1LL<< (32-4) && (nPoints == 6 || !rDepth))
+      if(this != nullZone && nSubZones < 1LL<< (32-4) && (nPoints == 6 || (!(rDepth & 1) && !(level & 1))))
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
