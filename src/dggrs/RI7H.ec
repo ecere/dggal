@@ -3276,7 +3276,6 @@ private:
          int64 s;
          int64 zonesPerSL;
          int64 nScanlines;
-         int64 left, right;
          int64 i;
          // Direction along scanlines:
          double sx = c2c * (oddLevelSZ ? 3 : 1);
@@ -3285,7 +3284,7 @@ private:
          double nsx, nsy;
          int nPoints = this.nPoints;
          // TODO: Handle pentagons / polar zones correctly for odd depths
-         if(nPoints == 5 && oddDepth) return -1;
+         if(nPoints == 5 && oddDepth && (oddAncestor || (rootRhombus & 1) || rootRhombus > 9)) return -1;
 
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
@@ -3297,18 +3296,32 @@ private:
 
          if(oddDepth)
          {
+            bool south = rootRhombus & 1;
             int64 nInterSL = (int64)(POW7((rDepth-1) / 2));
             int64 nCapSL = (int64)(ceil(nInterSL / 3.0) + 0.5);
             int64 nMidSL = (int64)(ceil(nInterSL * 2 / 3.0) + 0.5);
             int64 B = nCapSL, C = B + nInterSL, D = C + nMidSL, E = D + nInterSL;
             int64 leftACCounter = 0, leftCECounter = 0, rightBDCounter = 0, rightDFCounter = 0;
+            int64 nUntilPentagon = MAXINT64;
+            bool pastPentagon = false;
+            int64 pSLZones = 0, pRightBDCounterMod5 = 0;
 
             nScanlines = 2 * nCapSL + 2 * nInterSL + nMidSL;
+            if(nPoints == 5)
+            {
+               nUntilPentagon = nInterSL + nMidSL;
+               nScanlines -= (4 * nInterSL + 11) / 15;
+            }
+
             zonesPerSL = 1;
 
             for(s = 0; s < nScanlines && keepGoing; s++)
             {
+               int64 left, right;
                double tsx = sx, tsy = sy;
+
+               if(s == nUntilPentagon)
+                  pastPentagon = true;
 
                if(s < B)
                {
@@ -3320,20 +3333,47 @@ private:
                   left = ((leftACCounter++) % 4 == 0) ? 1 : 0;
                   right = (s == B) ? 2 : ((rightBDCounter++) % 5 != 0) ? 1 : 0;
                }
-               else if(s < D)
-               {
-                  left = (s == C || (leftCECounter++) % 5 != 0) ? -1 : 0;
-                  right = ((rightBDCounter++) % 5 != 0) ? 1 : 0;
-               }
-               else if(s < E)
-               {
-                  left = ((leftCECounter++) % 5 != 0) ? -1 : 0;
-                  right = (s == D) ? 1 : ((rightDFCounter++) % 4) == 0 ? -1 : 0;
-               }
                else
                {
-                  left = s == E ? -2 : -5;
-                  right = ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+                  if(nPoints == 5)
+                  {
+                     if(s < D)
+                     {
+                        left = (s == C || (leftCECounter++) % 5 != 0) ? -1 : 0;
+                        right = ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+                     }
+                     else
+                     {
+                        left = ((leftCECounter++) % 5 != 0) ? -1 : 0;
+                        right = (s == D) ? 1 : ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+                     }
+
+                     if(s >= C + B)
+                        left--;
+                     if(s >= E)
+                        left -= 1 + (s > E) * 3 + (leftCECounter % 5 == 1);
+
+                     if(s == nUntilPentagon)
+                        pRightBDCounterMod5 = (rightBDCounter + 4) % 5;
+                  }
+                  else
+                  {
+                     if(s < D)
+                     {
+                        left = (s == C || (leftCECounter++) % 5 != 0) ? -1 : 0;
+                        right = ((rightBDCounter++) % 5 != 0) ? 1 : 0;
+                     }
+                     else if(s < E)
+                     {
+                        left = ((leftCECounter++) % 5 != 0) ? -1 : 0;
+                        right = (s == D) ? 1 : ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+                     }
+                     else
+                     {
+                        left = s == E ? -2 : -5;
+                        right = ((rightDFCounter++) % 4) == 0 ? -1 : 0;
+                     }
+                  }
                }
 
                cStart += oddAncestor ? left : right;
@@ -3342,6 +3382,29 @@ private:
                if(searchIndex == -1 || (searchIndex >= index && searchIndex < index + zonesPerSL))
                {
                   Pointd sc; // Start of scanline
+                  bool pgonRedir = pastPentagon &&
+                     (south ? s > nUntilPentagon || (oddAncestor && rootRhombus == 11) : 1);
+                  int64 h = 0;
+
+                  if(pgonRedir)
+                  {
+                     h = zonesPerSL / 2;
+                     if(s == nUntilPentagon)
+                        pSLZones = h;
+                     else// if(s > nUntilPentagon)
+                     {
+                        int64 dms = Min(s, D) - nUntilPentagon;
+
+                        h = pSLZones;
+                        if(dms)
+                           h -= (dms + pRightBDCounterMod5) / 5;
+                        if(s > D)
+                        {
+                           int64 smd = s - D;
+                           h -= smd + (smd + 3) / 4;
+                        }
+                     }
+                  }
 
                   if(searchIndex != -1)
                   {
@@ -3356,7 +3419,22 @@ private:
                   for(; i < zonesPerSL; i++)
                   {
                      Pointd centroid;
-                     move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
+
+                     if(pgonRedir && i > h)
+                     {
+                        Pointd cc;
+                        double ttx = tsx, tty = tsy;
+                        Pointd dO;
+
+                        move5x6(cc, sc, h * ttx, h * tty, 1, null, null, true);
+
+                        rotate5x6Offset(dO, ttx, tty, true);
+                        ttx = dO.x, tty = dO.y;
+
+                        move5x6(centroid, cc, (i - h) * ttx, (i - h) * tty, 1, null, null, true);
+                     }
+                     else
+                        move5x6(centroid, sc, i * tsx, i * tsy, 1, null, null, true);
                      keepGoing = centroidCallback(context, index, centroid);
                      if(searchIndex != -1 || !keepGoing)
                         break;
@@ -3400,6 +3478,7 @@ private:
             for(s = 0; s < nScanlines && keepGoing; s++)
             {
                double tsx = sx, tsy = sy;
+               int64 left, right;
 
                if(s == nUntilPentagon)
                   pastPentagon = true;
@@ -3552,7 +3631,7 @@ private:
                               ttx = dO.x, tty = dO.y;
                            }
                         }
-                        move5x6(centroid, cc, (i - h) * ttx, (i - h) * tty, 1, &ttx, &tty, true);
+                        move5x6(centroid, cc, (i - h) * ttx, (i - h) * tty, 1, null, null, true);
                      }
                      else
                         move5x6(centroid, sc, i * tsx, i * tsy, !oddAncestor && pastPentagon ? 2 : 1, null, null, true);
@@ -3580,11 +3659,13 @@ private:
    {
       uint64 nSubZones = getSubZonesCount(rDepth);
       bool evenDepths = !(rDepth & 1);
-      //bool evenAncestors = !(level & 1);
-      //bool nonPolar = rootRhombus < 10;
+      bool evenAncestors = !(level & 1);
+      bool nonPolar = rootRhombus < 10;
+      bool south = (rootRhombus & 1);
+      int nPoints = this.nPoints;
       // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
-      if(this != nullZone && nSubZones < 1LL<< (32-4) &&
-         (nPoints == 6 || evenDepths))
+      if(this != nullZone /*&& nSubZones < 1LL<< (32-4)*/ &&
+         (nPoints == 6 || (evenDepths || (nonPolar && evenAncestors && !south))))
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
