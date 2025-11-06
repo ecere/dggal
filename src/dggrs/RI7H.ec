@@ -3284,7 +3284,7 @@ private:
          double nsx, nsy;
          int nPoints = this.nPoints;
          // TODO: Handle pentagons / polar zones correctly for odd depths
-         if(nPoints == 5 && oddDepth && (oddAncestor || (rootRhombus & 1) || rootRhombus > 9)) return -1;
+         if(nPoints == 5 && oddDepth && (oddAncestor || rootRhombus > 9)) return -1;
 
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
@@ -3305,6 +3305,8 @@ private:
             int64 nUntilPentagon = MAXINT64;
             bool pastPentagon = false;
             int64 pSLZones = 0, pRightBDCounterMod5 = 0;
+            int64 S = 2 * (nInterSL - 1);
+            int64 n = 0; // For South, number of scanlines on left side of interruption
 
             nScanlines = 2 * nCapSL + 2 * nInterSL + nMidSL;
             if(nPoints == 5)
@@ -3312,6 +3314,9 @@ private:
                nUntilPentagon = nInterSL + nMidSL;
                nScanlines -= (4 * nInterSL + 11) / 15;
             }
+
+            if(south)
+               n = nScanlines - (rDepth > 1) - (S / 5);
 
             zonesPerSL = 1;
 
@@ -3384,14 +3389,13 @@ private:
                   Pointd sc; // Start of scanline
                   bool pgonRedir = pastPentagon &&
                      (south ? s > nUntilPentagon || (oddAncestor && rootRhombus == 11) : 1);
-                  int64 h = 0;
+                  int64 h = zonesPerSL / 2;
 
+                  if(s == nUntilPentagon)
+                     pSLZones = h;
                   if(pgonRedir)
                   {
-                     h = zonesPerSL / 2;
-                     if(s == nUntilPentagon)
-                        pSLZones = h;
-                     else// if(s > nUntilPentagon)
+                     if(s > nUntilPentagon)
                      {
                         int64 dms = Min(s, D) - nUntilPentagon;
 
@@ -3428,8 +3432,11 @@ private:
 
                         move5x6(cc, sc, h * ttx, h * tty, 1, null, null, true);
 
-                        rotate5x6Offset(dO, ttx, tty, true);
-                        ttx = dO.x, tty = dO.y;
+                        if(!south || s >= n)
+                        {
+                           rotate5x6Offset(dO, ttx, tty, true);
+                           ttx = dO.x, tty = dO.y;
+                        }
 
                         move5x6(centroid, cc, (i - h) * ttx, (i - h) * tty, 1, null, null, true);
                      }
@@ -3661,11 +3668,10 @@ private:
       bool evenDepths = !(rDepth & 1);
       bool evenAncestors = !(level & 1);
       bool nonPolar = rootRhombus < 10;
-      bool south = (rootRhombus & 1);
       int nPoints = this.nPoints;
       // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
       if(this != nullZone /*&& nSubZones < 1LL<< (32-4)*/ &&
-         (nPoints == 6 || (evenDepths || (nonPolar && evenAncestors && !south))))
+         (nPoints == 6 || (evenDepths || (nonPolar && evenAncestors))))
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
