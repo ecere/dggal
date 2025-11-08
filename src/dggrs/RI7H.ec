@@ -3284,7 +3284,7 @@ private:
          double nsx, nsy;
          int nPoints = this.nPoints;
          // TODO: Handle pentagons / polar zones correctly for odd depths
-         if(nPoints == 5 && oddDepth && (oddAncestor /*|| rootRhombus > 9*/)) return -1;
+         if(nPoints == 5 && oddDepth && (oddAncestor && rootRhombus > 9)) return -1;
 
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
@@ -3352,10 +3352,20 @@ private:
                         right = (s == D) ? 1 : ((rightDFCounter++) % 4) == 0 ? -1 : 0;
                      }
 
-                     if(s >= C + B)
-                        left--;
-                     if(s >= E)
-                        left -= 1 + (s > E) * 3 + (leftCECounter % 5 == 1);
+                     if(!oddAncestor)
+                     {
+                        if(s >= C + B)
+                           left--;
+                        if(s >= E)
+                           left -= 1 + (s > E) * 3 + (leftCECounter % 5 == 1);
+                     }
+                     else
+                     {
+                        if(s >= C + B)
+                           right--;
+                        if(s >= E)
+                           left -= 1 + (s > E) * 3 + (leftCECounter % 5 == 1);
+                     }
 
                      if(s == nUntilPentagon)
                         pRightBDCounterMod5 = (rightBDCounter + 4) % 5;
@@ -3387,7 +3397,7 @@ private:
                {
                   Pointd sc; // Start of scanline
                   bool pgonRedir = pastPentagon &&
-                     (south ? s > nUntilPentagon || (/*oddAncestor && */rootRhombus == 11) : 1);
+                     (south ? s > nUntilPentagon || rootRhombus == 11 : 1);
                   int64 h = zonesPerSL / 2;
 
                   if(s == nUntilPentagon)
@@ -3396,15 +3406,28 @@ private:
                   {
                      if(s > nUntilPentagon)
                      {
-                        int64 dms = Min(s, D) - nUntilPentagon;
-
-                        h = pSLZones;
-                        if(dms)
-                           h -= (dms + pRightBDCounterMod5) / 5;
-                        if(s > D)
+                        if(oddAncestor)
                         {
-                           int64 smd = s - D;
-                           h -= smd + (smd + 3) / 4;
+                           int64 m = Min(s, E) - nUntilPentagon;
+                           int64 shift = (5 - pRightBDCounterMod5) % 5;
+                           int64 n5 = (m + shift - 1) / 5;
+
+                           h = Max(1, pSLZones - (m - n5));
+                           if(s >= E)
+                              h -= (s - E) * 5 + 1;
+                        }
+                        else
+                        {
+                           int64 dms = Min(s, D) - nUntilPentagon;
+
+                           h = pSLZones;
+                           if(dms)
+                              h -= (dms + pRightBDCounterMod5) / 5;
+                           if(s > D)
+                           {
+                              int64 smd = s - D;
+                              h -= smd + (smd + 3) / 4;
+                           }
                         }
                      }
                   }
@@ -3459,7 +3482,7 @@ private:
                               ttx = dO.x, tty = dO.y;
                            }
                         }
-                        else if(!south || s >= n)
+                        else if(!south || (!oddAncestor && s >= n))
                         {
                            rotate5x6Offset(dO, ttx, tty, true);
                            ttx = dO.x, tty = dO.y;
@@ -3698,7 +3721,7 @@ private:
       int nPoints = this.nPoints;
       // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
       if(this != nullZone /*&& nSubZones < 1LL<< (32-4)*/ &&
-         (nPoints == 6 || (evenDepths || (/*nonPolar && */evenAncestors))))
+         (nPoints == 6 || (evenDepths || (evenAncestors || nonPolar))))
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
