@@ -3283,8 +3283,6 @@ private:
          // Direction to the next scanline (hexagon immediately to the left -- 120 degrees clockwise)
          double nsx, nsy;
          int nPoints = this.nPoints;
-         // TODO: Handle pentagons / polar zones correctly for odd depths
-         if(nPoints == 5 && oddDepth && (oddAncestor && rootRhombus > 9)) return -1;
 
          getFirstSubZoneCentroid(rDepth, first, &sx, &sy);
 
@@ -3456,7 +3454,7 @@ private:
 
                         if(rootRhombus == 10)
                         {
-                           if(s == nUntilPentagon)
+                           if(s == nUntilPentagon && !oddAncestor)
                            {
                               rotate5x6Offset(dO, ttx, tty, false);
                               ttx = dO.x, tty = dO.y;
@@ -3465,7 +3463,7 @@ private:
                            {
                               rotate5x6Offset(dO, ttx, tty, true);
                               ttx = dO.x, tty = dO.y;
-                              if(s < n)
+                              if(s < n || oddAncestor)
                               {
                                  rotate5x6Offset(dO, ttx, tty, true);
                                  ttx = dO.x, tty = dO.y;
@@ -3476,7 +3474,7 @@ private:
                         {
                            rotate5x6Offset(dO, ttx, tty, true);
                            ttx = dO.x, tty = dO.y;
-                           if(s < n)
+                           if(s < n || oddAncestor)
                            {
                               rotate5x6Offset(dO, ttx, tty, true);
                               ttx = dO.x, tty = dO.y;
@@ -3715,13 +3713,7 @@ private:
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
       uint64 nSubZones = getSubZonesCount(rDepth);
-      bool evenDepths = !(rDepth & 1);
-      bool evenAncestors = !(level & 1);
-      bool nonPolar = rootRhombus < 10;
-      int nPoints = this.nPoints;
-      // Each centroid is 16 bytes and array memory allocation currently does not support more than 4G
-      if(this != nullZone /*&& nSubZones < 1LL<< (32-4)*/ &&
-         (nPoints == 6 || (evenDepths || (evenAncestors || nonPolar))))
+      if(this != nullZone && nSubZones < 1LL<<32)
       {
          Array<Pointd> centroids { size = (uint)nSubZones };
          if(rDepth > 0)
