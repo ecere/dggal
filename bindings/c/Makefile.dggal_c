@@ -8,7 +8,7 @@ BINDMODLOC := obj
 BINDING_MODULE := dggal
 BINDING_NAME := dggal
 MODULE := $(BINDING_NAME)_c
-VERSION := 0.0.5
+VERSION := 0.0.6
 CONFIG := release
 ifndef COMPILER
 COMPILER := default

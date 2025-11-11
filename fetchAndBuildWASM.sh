@@ -36,6 +36,6 @@ echo "You can find examples of using DGGAL in JavaScript in bindings_examples/js
 echo "You will need to serve the example files on a Web server together with the following files:"
 echo "   dgbuild/dggal/bindings/js/dggal.js"
 echo "   dgbuild/dggal/bindings/c_fn/obj/dggal.allinone.linux.wasm/libdggal_c_fn.js.0.0.wasm"
-echo "   dgbuild/dggal/bindings/c_fn/obj/dggal.allinone.linux.wasm/libdggal_c_fn.js.0.0.5 (symlinked or renamed as libdggal.js)"
+echo "   dgbuild/dggal/bindings/c_fn/obj/dggal.allinone.linux.wasm/libdggal_c_fn.js.0.0.6 (symlinked or renamed as libdggal.js)"
 
 echo "Thank you for trying out and using DGGAL."

@@ -8,7 +8,7 @@ BINDING_MODULE := dggal
 BINDING_NAME := dggal
 MODULE := dggal
 TARGET_NAME := $(MODULE)_c_fn
-VERSION := 0.0.5
+VERSION := 0.0.6
 CONFIG := allinone
 # CONTAINS_CXX := defined
 ifndef COMPILER

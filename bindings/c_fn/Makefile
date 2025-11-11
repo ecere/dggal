@@ -7,7 +7,7 @@ endif
 BINDING_MODULE := dggal
 BINDING_NAME := dggal
 MODULE := $(BINDING_NAME)_c_fn
-VERSION := 0.0.5
+VERSION := 0.0.6
 CONFIG := release
 # CONTAINS_CXX := defined
 ifndef COMPILER

@@ -9,7 +9,7 @@ BINDING_NAME := dggal
 
 # CORE VARIABLES
 
-VERSION := 0.0.5
+VERSION := 0.0.6
 CONFIG := static
 ifndef COMPILER
 COMPILER := default
