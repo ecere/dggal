@@ -253,7 +253,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                if(bIsA) D = B; else D = C;
                BD = AB;
             }
-            else if(fabs(areaABD - areaABC) < 1E-11)
+            else if(fabs(areaABD - areaABC) < 1E-13)
             {
                // (B or C) vertex at angle gamma
                if(bIsA) D = C; else D = B;
