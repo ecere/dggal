@@ -1,4 +1,12 @@
 /*
+DGGAL, the Discrete Global Grid Abstraction Library
+
+https://dggal.org
+
+Source: https://github.com/ecere/dggal
+
+NPM: https://www.npmjs.com/package/dggal
+
 BSD 3-Clause License
 
 Copyright (c) 2014-2025, Ecere Corporation
