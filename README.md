@@ -39,12 +39,7 @@ All of these Icosahedral DGGRSs achieve equal-area on the WGS84 ellipsoid, and a
 authalic latitude of _arctan(φ)_ (where φ is the golden ratio), and longitude 11.20°E, with second vertex due North, resulting in only one
 vertex / pentagon on land. Each of the 12 pentagons occupies 5/6th the area of a hexagon at the same refinement level.
 
-The aperture 7 hexagonal grids and indexing should now be quite stable, and support for listing and resolving sub-zones is implemented for hexagonal ancestral zones.
-
-**_Current limitation_**: _Support for listing and indexing sub-zones of **7H pentagonal** ancestral zones (all 12 level 0 zones and their centroid descendants) is not currently supported, but will be added in an upcoming version.
-In practice, the current lack of sub-zone support for pentagonal ancestral zones is only an issue for working with global low-resolution data,
-or at high resolution within close proximity to the 12 icosahedron vertices (within the pentagonal zones).
-All but one pentagon on land are avoided with a reference zone starting from 7H refinement level 9 (~1.26 km² area zones)._
+Starting from version 0.0.6, the aperture 7 hexagonal grids and indexing are fully functional, including support for listing and resolving sub-zones for both hexagonal and pentagonal ancestral zones.
 
 #### Icosahedral Snyder Equal Area (ISEA) projection
 
