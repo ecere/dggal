@@ -1156,6 +1156,8 @@ class SliceAndDiceGreatCircleIcosahedralProjection(RI5x6Projection):
       self.init_args(list(args), kwArgs)
 
 wgs84Major = Meters ( 6378137.0 )
+wgs84InvFlattening = 298.257223563
+wgs84Minor = wgs84Major - (wgs84Major / wgs84InvFlattening) # 6356752.3142451792955399
 
 wholeWorld = GeoExtent (  ( -90, -180 ),  ( 90, 180 ) )
 
@@ -2458,8 +2460,10 @@ def i9RZoneFromI3H(zone):
    if zone is None: zone = ffi.NULL
    return I9RZone(impl = lib.eC_i9RZoneFromI3H(zone))
 
-def authalicSetup(a, b, cp):
+def authalicSetup(a, b):
+   cp = ffi.new("double[12]")
    lib.eC_authalicSetup(a, b, cp)
+   return cp
 
 def canonicalize5x6(_src = None, out = None):
    if _src is not None and not isinstance(_src, Pointd): _src = Pointd(_src)

@@ -353,11 +353,11 @@ unsigned int __eCDll_Unload_dggal(C(Module) * module);
 
 LIB_EXPORT C(I3HZone) (* F(i3HZoneFromI9R))(C(I9RZone) zone, char subHex);
 LIB_EXPORT C(I9RZone) (* F(i9RZoneFromI3H))(C(I3HZone) zone);
-LIB_EXPORT void (* F(authalicSetup))(double a, double b, double cp[2][6]);
+LIB_EXPORT void (* F(authalicSetup))(double a, double b, double * cp /*[2][6]*/);
 LIB_EXPORT void (* F(canonicalize5x6))(const C(Pointd) * _src, C(Pointd) * out);
 LIB_EXPORT void (* F(compactGGGZones))(C(Array) zones, int start, int maxLevel);
-LIB_EXPORT C(Angle) (* F(latAuthalicToGeodetic))(const double cp[2][6], C(Angle) phi);
-LIB_EXPORT C(Angle) (* F(latGeodeticToAuthalic))(const double cp[2][6], C(Angle) phi);
+LIB_EXPORT C(Angle) (* F(latAuthalicToGeodetic))(const double * cp /*[2][6]*/, C(Angle) phi);
+LIB_EXPORT C(Angle) (* F(latGeodeticToAuthalic))(const double * cp /*[2][6]*/, C(Angle) phi);
 LIB_EXPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 
 

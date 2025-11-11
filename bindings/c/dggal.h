@@ -944,11 +944,11 @@ extern THIS_LIB_IMPORT C(I7HZone) (* Z7Zone_to7H)(C(Z7Zone) __this);
 
 extern THIS_LIB_IMPORT C(I3HZone) (* F(i3HZoneFromI9R))(C(I9RZone) zone, char subHex);
 extern THIS_LIB_IMPORT C(I9RZone) (* F(i9RZoneFromI3H))(C(I3HZone) zone);
-extern THIS_LIB_IMPORT void (* F(authalicSetup))(double a, double b, double cp[2][6]);
+extern THIS_LIB_IMPORT void (* F(authalicSetup))(double a, double b, double * cp /*[2][6]*/);
 extern THIS_LIB_IMPORT void (* F(canonicalize5x6))(const C(Pointd) * _src, C(Pointd) * out);
 extern THIS_LIB_IMPORT void (* F(compactGGGZones))(C(Array) zones, int start, int maxLevel);
-extern THIS_LIB_IMPORT C(Angle) (* F(latAuthalicToGeodetic))(const double cp[2][6], C(Angle) phi);
-extern THIS_LIB_IMPORT C(Angle) (* F(latGeodeticToAuthalic))(const double cp[2][6], C(Angle) phi);
+extern THIS_LIB_IMPORT C(Angle) (* F(latAuthalicToGeodetic))(const double * cp /*[2][6]*/, C(Angle) phi);
+extern THIS_LIB_IMPORT C(Angle) (* F(latGeodeticToAuthalic))(const double * cp /*[2][6]*/, C(Angle) phi);
 extern THIS_LIB_IMPORT C(DGGSJSON) (* F(readDGGSJSON))(C(File) f);
 extern THIS_LIB_IMPORT C(Class) * CO(BCTA3H);
 extern THIS_LIB_IMPORT C(Class) * CO(BarycentricSphericalTriAreaProjection);

@@ -13691,7 +13691,7 @@ inline C(I9RZone) i9RZoneFromI3H(/*1Ab*/I3HZone zone)
    return F(i9RZoneFromI3H)(/*5Ee*/(C(I3HZone))zone.impl);
 }
 // function: authalicSetup
-inline void authalicSetup(/*1Ab*/double a, /*1Ab*/double b, /*1Ab*/double cp[2][AUTH_ORDER])
+inline void authalicSetup(/*1Ab*/double a, /*1Ab*/double b, /*1Ab*/double * cp /*[2][AUTH_ORDER]*/)
 {
    F(authalicSetup)(/*5Ge*/a, /*5Ge*/b, /*5Ge*/cp);
 }
@@ -13710,12 +13710,12 @@ inline void compactGGGZones(/*1Ab*/TArray<C(GGGZone) _ARG int _ARG C(GGGZone)> &
    F(compactGGGZones)(/*5De*/((Instance&&)zones).impl, /*5Ge*/start, /*5Ge*/maxLevel);
 }
 // function: latAuthalicToGeodetic
-inline C(Angle) latAuthalicToGeodetic(/*1Ab*/const double cp[2][AUTH_ORDER], /*1Ab*/Angle phi)
+inline C(Angle) latAuthalicToGeodetic(/*1Ab*/const double * cp /*[2][AUTH_ORDER]*/, /*1Ab*/Angle phi)
 {
    return F(latAuthalicToGeodetic)(/*5Ge*/cp, /*5Ee*/(C(Angle))phi.impl);
 }
 // function: latGeodeticToAuthalic
-inline C(Angle) latGeodeticToAuthalic(/*1Ab*/const double cp[2][AUTH_ORDER], /*1Ab*/Angle phi)
+inline C(Angle) latGeodeticToAuthalic(/*1Ab*/const double * cp /*[2][AUTH_ORDER]*/, /*1Ab*/Angle phi)
 {
    return F(latGeodeticToAuthalic)(/*5Ge*/cp, /*5Ee*/(C(Angle))phi.impl);
 }
