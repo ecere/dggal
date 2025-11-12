@@ -424,10 +424,10 @@ private:
       {
          int root;
          int r = sscanf(zoneID, "%2d", &root);
-         bool parentIsPentagon = true, south = r >= 6;
 
          if(r && root >= 0 && root <= 11)
          {
+            bool parentIsPentagon = true, south = root >= 6;
             int i;
             uint64 ancestry = 0;
             int shift = 3 * 19;
