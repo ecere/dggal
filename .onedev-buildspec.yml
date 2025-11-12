@@ -33,6 +33,7 @@ jobs:
 # make ARCH=x32 rust_bindings &&
       - apt -y install curl && export RUSTUP_HOME="/usr" && export CARGO_HOME="/usr" && curl https://sh.rustup.rs -sSf | sh -s -- -y
       - pip3 install cffi
+      - pip3 install importlib_metadata
       - tar xf mingw-w64/*.tar.gz &&
         tar xf mingw-w64-runtime/*.tar.gz &&
         dpkg -i mingw-w64-common_6.0.0-3_all.deb &&
