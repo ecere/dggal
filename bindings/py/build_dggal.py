@@ -5,7 +5,12 @@ from distutils.util import get_platform;
 from os import path
 from cffi import FFI
 from distutils.sysconfig import get_config_var
-import pkg_resources
+# pkg_resources is deprecated in setuptools >= 81
+# import pkg_resources
+try:
+    from importlib.metadata import distribution # Python 3.8+
+except ImportError:
+    from importlib_metadata import distribution # Fallback for older Python (<3.8)
 
 owd = os.getcwd()
 
@@ -40,7 +45,9 @@ sys.path.append(bindings_py_dir)
 ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUFFIX')
 
 try:
-   ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+   # pkg_resources is deprecated in setuptools >= 81
+   # ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
+   ecdev_location = os.path.join(distribution("ecdev").locate_file(""), "ecdev")
    ecrt_bindings_py_dir = os.path.join(ecdev_location, 'include')
    incdir_ecrt = os.path.join(ecdev_location, 'include')
    ecrt_location = os.path.join(ecdev_location, syslibdir)
