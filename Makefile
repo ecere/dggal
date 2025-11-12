@@ -6,7 +6,7 @@ ifndef EC_SDK_SRC
 EC_SDK_SRC := $(DGGAL_ABSPATH)../eC
 endif
 
-_CF_DIR = $(EC_SDK_SRC)/
+export _CF_DIR = $(EC_SDK_SRC)/
 include $(_CF_DIR)crossplatform.mk
 
 ifdef WINDOWS_HOST
