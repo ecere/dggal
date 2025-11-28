@@ -137,10 +137,10 @@ export class DGGRS {
   getLevelFromMetersPerSubZone(physicalMetersPerSubZone: number, relativeDepth: number): number
   getLevelFromPixelsAndExtent(extent: GeoExtent, width: number, height: number, relativeDepth: number): number
   getLevelFromRefZoneArea(refArea: number, relativeDepth: number): number
-  getLevelFromScaleDenominator(scaleDenominator: number, relativeDepth: number): number
+  getLevelFromScaleDenominator(scaleDenominator: number, relativeDepth: number, mmPerPixel: number): number
   getMetersPerSubZoneFromLevel(level: number, relativeDepth: number): number
   getRefZoneArea(relativeDepth: number): number
-  getScaleDenominatorFromLevel(level: number, relativeDepth: number): number
+  getScaleDenominatorFromLevel(level: number, relativeDepth: number, mmPerPixel: number): number
 
   // Clean up native resources
   delete(): void

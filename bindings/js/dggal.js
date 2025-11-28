@@ -487,12 +487,12 @@ export class DGGRS {
     return this.module._DGGAL_DGGRS_getLevelFromRefZoneArea(this.dggrsPtr, refArea, relativeDepth);
   }
 
-  getLevelFromScaleDenominator(scaleDenominator, relativeDepth) {
-    return this.module._DGGAL_DGGRS_getLevelFromScaleDenominator(this.dggrsPtr, scaleDenominator, relativeDepth);
+  getLevelFromScaleDenominator(scaleDenominator, relativeDepth, mmPerPixel) {
+    return this.module._DGGAL_DGGRS_getLevelFromScaleDenominator(this.dggrsPtr, scaleDenominator, relativeDepth, mmPerPixel);
   }
 
-  getMetersPerSubZoneFromLevel(level, relativeDepth) {
-    return this.module._DGGAL_DGGRS_getMetersPerSubZoneFromLevel(this.dggrsPtr, level, relativeDepth);
+  getMetersPerSubZoneFromLevel(level, relativeDepth, mmPerPixel) {
+    return this.module._DGGAL_DGGRS_getMetersPerSubZoneFromLevel(this.dggrsPtr, level, relativeDepth, mmPerPixel);
   }
 
   getRefZoneArea(relativeDepth) {
