@@ -114,7 +114,7 @@ export class DGGRS {
   getZoneFromCRSCentroid(crs: CRS, pointd: Pointd): DGGRSZone
 
   // Global zone counts
-  countZones(level: number): DGGRSZone
+  countZones(level: number): bigint
 
   // Indexed sub-zones
   getFirstSubZone(parent: DGGRSZone, relativeDepth: number): DGGRSZone
