@@ -99,21 +99,31 @@ public class RI5x6Projection
    Pointd ico56Center[20], ico56Mids[20][6];
 
    // bool poleFixIVEA;
+   bool defaultOrientation;
 
    RI5x6Projection()
    {
-      int i;
-
 #if 0
       test5x6();
 #endif
 
+      authalicSetup(wgs84Major, wgs84Minor, cp);
       vertex2Azimuth = 0;
       orientation = { /*(E + F) / 2 /* 90 - 58.2825255885389 = */31.7174744114611, -11.20 };
+      updateOrientation();
+   }
+
+   // REVIEW: make orientation a property?
+   void updateOrientation()
+   {
+      int i;
+
       getVertices(icoVertices);
       sinOrientationLat = sin(orientation.lat); cosOrientationLat = cos(orientation.lat);
-      authalicSetup(wgs84Major, wgs84Minor, cp);
-
+      defaultOrientation =
+         fabs((double)orientation.lat -  31.7174744114611) < 1E-11 &&
+         fabs((double)orientation.lon - -11.20) < 1E-11 &&
+         fabs(vertex2Azimuth - 0) < 1E-11;
       for(i = 0; i < 20; i++)
       {
          const Vector3D * v1 = &icoVertices[icoIndices[i][0]];
@@ -342,7 +352,7 @@ public class RI5x6Projection
       return applyCoefficients(cp[0], phi);
    }
 
-   static void /*::*/getVertices(Vector3D * vertices /* [12] */)
+   /*static */void /*::*/getVertices(Vector3D * vertices /* [12] */)
    {
       // double a = edgeSize;
       Radians t = atan(0.5);
@@ -613,6 +623,8 @@ public class RI5x6Projection
       */
       Degrees qOffset = oddGrid ? 0 : 90;
 
+      if(!defaultOrientation) return;
+
       if(fabs(v.x - 1.5) < epsilon5x6 && fabs(v.y - 3) < epsilon5x6)
          add180 = v.x > 1.5, southPole = true;
       else if(fabs(v.x - 2) < epsilon5x6 && fabs(v.y - 3.5) < epsilon5x6)
@@ -769,6 +781,12 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
 {
    double dx = n.x - p.x, dy = n.y - p.y;
    int j;
+   Pointd * pole = null;
+   static const Pointd nPole1 { 0.5, 0 };
+   static const Pointd nPole2 { 5.5, 5 };
+   static const Pointd nPole3 { 5, 4.5 };
+   static const Pointd sPole1 { 2, 3.5 };
+   static const Pointd sPole2 { 1.5, 3 };
    bool interruptionNearPole = crs84 && i1 != null && (
       (fabs(i1.x - 0.5) < 1E-6 && fabs(i1.y - 0) < 1E-6) ||
       (fabs(i1.x - 5) < 1E-6 && fabs(i1.y - 4.5) < 1E-6) ||
@@ -787,6 +805,25 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
    else if(n.x < 2.01 && p.x < 2.01 && p.y < 3.5 && n.y > 3.5)
       interruptionNearPole = true;
 
+   if(crs84)
+   {
+      if((fabs(p.x - 5.5) < 1E-6 && fabs(p.y - 5) < 1E-6) ||
+         (fabs(n.x - 5.5) < 1E-6 && fabs(n.y - 5) < 1E-6))
+         interruptionNearPole = true, pole = &nPole2;
+      else if((fabs(p.x - 5) < 1E-6 && fabs(p.y - 4.5) < 1E-6) ||
+              (fabs(n.x - 5) < 1E-6 && fabs(n.y - 4.5) < 1E-6))
+         interruptionNearPole = true, pole = &nPole3;
+      else if((fabs(p.x - 0.5) < 1E-6 && fabs(p.y - 0) < 1E-6) ||
+         (fabs(n.x - 0.5) < 1E-6 && fabs(n.y - 0) < 1E-6))
+         interruptionNearPole = true, pole = &nPole1;
+
+      else if((fabs(p.x - 2) < 1E-6 && fabs(p.y - 3.5) < 1E-6) ||
+         (fabs(n.x - 2) < 1E-6 && fabs(n.y - 3.5) < 1E-6))
+         interruptionNearPole = true, pole = &sPole1;
+      else if((fabs(p.x - 1.5) < 1E-6 && fabs(p.y - 3) < 1E-6) ||
+         (fabs(n.x - 1.5) < 1E-6 && fabs(n.y - 3) < 1E-6))
+         interruptionNearPole = true, pole = &sPole2;
+   }
 
    if(!nDivisions) nDivisions = 1;
    if(interruptionNearPole)
@@ -805,6 +842,8 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
       double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
       double length = l1 + l2;
       double t = nDivisions * l1 / length;
+
+      interruptionNearPole = 1;
 
       points.Add(p);
 
@@ -833,13 +872,31 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
             });
       }
    }
+   else if(crs84 && pole != null)
+   {
+      // REVIEW:
+      Pointd pi1 { pole->x - p.x, pole->y - p.y };
+      Pointd i2n { n.x - pole->x, n.y - pole->y };
+      double l1 = sqrt(pi1.x * pi1.x + pi1.y * pi1.y);
+      double l2 = sqrt(i2n.x * i2n.x + i2n.y * i2n.y);
+      double length = l1 + l2;
+      double t = nDivisions * l1 / length;
+
+      for(j = 0; j < nDivisions; j += (interruptionNearPole && fabs(j - t) > 20.1 ? 20 : 1))
+      {
+         if(j > t && j > 0)
+            points.Add({ p.x + (j - 0.9999) * dx / nDivisions, p.y + (j - 0.9999) * dy / nDivisions });
+         else
+            points.Add({ p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
+         if(j < t && fabs(t - nDivisions) < 1 && j == nDivisions - 1)
+            points.Add({ p.x + (j + 0.9999) * dx / nDivisions, p.y + (j + 0.9999) * dy / nDivisions });
+      }
+   }
    else if(nDivisions == 1)
       points.Add(p);
    else
       for(j = 0; j < nDivisions; j++)
-      {
          points.Add({ p.x + j * dx / nDivisions, p.y + j * dy / nDivisions });
-      }
 }
 
 void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
@@ -1797,7 +1854,8 @@ bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSr
                iSrc = c;
                iDst = { iy + 2 - (c.y - iy), c.x };
                *inNorth = true;
-               result = true;
+               if(fabs(px) > 1E-11 || fabs(py) > 1E-11)
+                  result = true;
             }
             else if(nx == cx && ny == cy - 1) // Crossing interruption to the left
             {
@@ -1806,7 +1864,8 @@ bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSr
                iSrc = c;
                iDst = { c.y, ix - (c.x - ix) };
                *inNorth = true;
-               result = true;
+               if(fabs(px) > 1E-11 || fabs(py) > 1E-11)
+                  result = true;
             }
          }
          else
@@ -1818,7 +1877,8 @@ bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSr
                iSrc = c;
                iDst = { c.y - 1, ix + 3 - (c.x - ix) };
                *inNorth = false;
-               result = true;
+               if(fabs(px) > 1E-11 || fabs(py) > 1E-11)
+                  result = true;
             }
             else if(ny == cy && nx == cx - 1) // Crossing interruption to the left
             {
@@ -1826,7 +1886,8 @@ bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSr
                iSrc = c;
                iDst = { iy - 1 - (c.y - iy), c.x + 1 };
                *inNorth = false;
-               result = true;
+               if(fabs(px) > 1E-11 || fabs(py) > 1E-11)
+                  result = true;
             }
          }
       }

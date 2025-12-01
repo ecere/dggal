@@ -128,6 +128,8 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsClass = class(rHEALPix), cmdArg = 1;
       else if(!strcmpi(argv[0], "hpx") || !strcmpi(argv[0], "HEALPix")) dggrsClass = class(HEALPix), cmdArg = 1;
 
+      else if(!strcmpi(argv[0], "a5")) dggrsClass = class(A5), cmdArg = 1;
+
       for(a = 1; !syntaxError && a < argc; a++)
       {
          const char * arg = argv[a];
@@ -177,6 +179,8 @@ class DGGAL : Application
 
                   else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
                   else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
+
+                  else if(!strcmpi(arg, "A5"))   dggrsClass = class(A5);
 
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;

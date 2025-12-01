@@ -78,6 +78,7 @@ _ECSOURCES = \
 	src/dggrs/ISEA7H_Z7.ec \
 	src/dggrs/IVEA7H_Z7.ec \
 	src/dggrs/RTEA7H_Z7.ec \
+	src/dggrs/A5.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
@@ -290,6 +291,9 @@ $(OBJ)IVEA7H_Z7.sym: src/dggrs/IVEA7H_Z7.ec
 $(OBJ)RTEA7H_Z7.sym: src/dggrs/RTEA7H_Z7.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/RTEA7H_Z7.ec) -o $(call quote_path,$@)
 
+$(OBJ)A5.sym: src/dggrs/A5.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/A5.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -406,6 +410,9 @@ $(OBJ)IVEA7H_Z7.c: src/dggrs/IVEA7H_Z7.ec $(OBJ)IVEA7H_Z7.sym | $(SYMBOLS)
 $(OBJ)RTEA7H_Z7.c: src/dggrs/RTEA7H_Z7.ec $(OBJ)RTEA7H_Z7.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/RTEA7H_Z7.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)A5.c: src/dggrs/A5.ec $(OBJ)A5.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/A5.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -521,6 +528,9 @@ $(OBJ)IVEA7H_Z7$(O): $(OBJ)IVEA7H_Z7.c
 
 $(OBJ)RTEA7H_Z7$(O): $(OBJ)RTEA7H_Z7.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RTEA7H_Z7.c) -o $(call quote_path,$@)
+
+$(OBJ)A5$(O): $(OBJ)A5.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)A5.c) -o $(call quote_path,$@)
 
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)
