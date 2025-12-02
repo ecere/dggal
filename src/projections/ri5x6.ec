@@ -777,7 +777,7 @@ public class RI5x6Projection
 }
 
 
-void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, Pointd i1, Pointd i2, bool crs84)
+void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd n, int nDivisions, const Pointd i1, const Pointd i2, bool crs84)
 {
    double dx = n.x - p.x, dy = n.y - p.y;
    int j;
@@ -826,7 +826,7 @@ void ::addIntermediatePoints(Array<Pointd> points, const Pointd p, const Pointd 
    }
 
    if(!nDivisions) nDivisions = 1;
-   if(interruptionNearPole)
+   if(interruptionNearPole && crs84)
       nDivisions *= 20;
 
    if(dx < -3)
@@ -1779,16 +1779,24 @@ public void canonicalize5x6(const Pointd _src, Pointd out)
 }
 
 
+bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSrc, Pointd iDst, bool * inNorth)
+{
+   return crosses5x6InterruptionV2Ex(cIn, dx, dy, iSrc, iDst, inNorth, false, null);
+}
+
 #if !defined(__EMSCRIPTEN__)
 __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
 #endif
-bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSrc, Pointd iDst, bool * inNorth)
+bool crosses5x6InterruptionV2Ex(const Pointd cIn, double dx, double dy, Pointd iSrc, Pointd iDst,
+   bool * inNorth, bool finalCross, bool * endsAtEdge)
 {
    bool result = false;
    Pointd c = cIn;
 
    if(c.x < 0 && c.y < 1 + 1E-11)
       c.x += 5, c.y += 5;
+   else if(c.x > 5 && c.y > 5 + 1E-11)
+      c.x -= 5, c.y -= 5;
 
    {
       double cdx = c.x, cdy = c.y;
@@ -1831,16 +1839,28 @@ bool crosses5x6InterruptionV2(const Pointd cIn, double dx, double dy, Pointd iSr
       c.x += px;
       c.y += py;
 
-      //if(!finalCross)
+      if(!finalCross)
       {
          if(fabs(dx - px) < 1E-11 && fabs(dy - py) < 1E-11)
             return false;
+      }
+      else if(endsAtEdge)
+      {
+         if(fabs(dx - px) < 1E-11 && fabs(dy - py) < 1E-11)
+         {
+            if(fabs((dx < 0 ? cx - cx : cx + 1 - cx) - fabs(dx)) < 1E-11 &&
+               fabs((dy < 0 ? cy - cy : cy + 1 - cy) - fabs(dy)) < 1E-11)
+               *endsAtEdge = true;
+         }
       }
 
       nx = (int)floor(c.x + 1E-11 * Sgn(dx));
       ny = (int)floor(c.y + 1E-11 * Sgn(dy));
 
-      if((nx != cx || ny != cy) && (nx > cx || fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
+      if((nx != cx || ny != cy) &&
+         // REVIEW: Testing new condition for arriving on edge
+         (nx > cx || (nx == cx && ny - nx == 2) ||
+          fabs(dx - px) > 1E-11 || fabs(dy - py) > 1E-11))
       {
          int root = cx + cy;
 
@@ -1976,6 +1996,10 @@ void move5x6(Pointd v, const Pointd o, double dx, double dy, int nRotations, dou
 
       cx = (int)floor(cdx);
       cy = (int)floor(cdy);
+      if(c.x < cx)
+         c.x = cx;
+      if(c.y < cy)
+         c.y = cy;
 
       px = dx < 0 ? Max(cx - c.x, dx) : Min(cx + 1 - c.x, dx);
       py = dy < 0 ? Max(cy - c.y, dy) : Min(cy + 1 - c.y, dy);
@@ -2118,7 +2142,12 @@ void test5x6()
    /* REVIEW: these nRotations = 2 cause an endless loop... do they make any sense?
    move5x6(v, { 4.7755102040816331, 5.8979591836734695 }, 0.1836734693877551, 0.1224489795918367, 2, null, null, true);
    PrintLn(v);
+
    */
+
+   move5x6(v, { 3.9999999999999991, 5.5000000000000018 },
+      -8.8817841970012523e-16, 0.50000000000000178, 1, null, null, true);
+   PrintLn(v); // Expecting 2, 4 ( 4, 6 )
 
    // EA-0-A case...
    move5x6(v, { 1.991253644314869, 0.99999999999999956 }, 0.0087463556851312, 0, 1, null, null, true);

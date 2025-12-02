@@ -7,24 +7,52 @@ import "icoVertexGreatCircle"
 
 #include <stdio.h>
 
+//#define SHOW_TRIANGLES
+//#define SHOW_TRI_MID
+//#define SHOW_IN_VERTS
+
+//#define TEST_QUINTANT 46
+
+//#define TEST_TRI   2
+
 void computeTriCentroid(Pointd c, const Pointd v0, const Pointd v1, const Pointd v2)
 {
    c.x = v0.x + (v1.x - v0.x + v2.x - v0.x) / 3;
    c.y = v0.y + (v1.y - v0.y + v2.y - v0.y) / 3;
 }
 
-void computePgonCentroid(Pointd c, const Pointd * v /*[5]*/)
+void computePgonCentroid(Pointd c, const Pointd * v, int nPoints)
 {
    int i;
 
    c = { v[1].x - v[0].x, v[1].y - v[0].y };
-   for(i = 2; i < 5; i++)
+   for(i = 2; i < nPoints; i++)
    {
       c.x += v[i].x - v[0].x;
       c.y += v[i].y - v[0].y;
    }
-   c.x = c.x / 5 + v[0].x;
-   c.y = c.y / 5 + v[0].y;
+   c.x = c.x / nPoints + v[0].x;
+   c.y = c.y / nPoints + v[0].y;
+}
+
+void compute5x6Centroid(Pointd c, const Pointd * v, int nPoints)
+{
+   int i;
+   Pointd d { };
+   Pointd v0 = v[0];
+
+   for(i = 1; i < nPoints; i++)
+   {
+      Pointd d0;
+
+      A5Zone::distance5x6(d0, null, v0, v[i], v0);
+      d.x += d0.x;
+      d.y += d0.y;
+   }
+   d.x /= nPoints;
+   d.y /= nPoints;
+
+   move5x6(c, v0, d.x, d.y, 1, null, null, false);
 }
 
 public class A5 : DGGRS
@@ -1663,6 +1691,15 @@ private:
          int tri = quintant % 5;
          /*int nr = */root.getVertices(0, root.quintant, 0, rc, 5, rVerts);
 
+         // This fixes the triangles...
+         if(quintant >= 55)
+         {
+            tri = (tri + 4) % 5;
+            rc.x += 5 - tri, rc.y += 5 - tri;
+         }
+         else if(quintant >= 50)
+            rc.x += tri, rc.y += tri;
+
          vertices[count++] = rc;
          vertices[count++] = rVerts[tri];
          vertices[count++] = rVerts[(tri + 1) % 5];
@@ -1836,9 +1873,9 @@ private:
       Pointd * qq, Pointd * qm, int a, int b, int s)
    {
       int c = (b + 2) % 3;
-      qq[s] = qv[b];
-      qq[(s + 1) % 3].x = mid[b].x - (qv[c].x - mid[b].x);
-      qq[(s + 1) % 3].y = mid[b].y - (qv[c].y - mid[b].y);
+      qq[s] = qv[b]; // REVIEW: This moving backwards to the neighbor part...
+
+      weight5x6(qq[(s + 1) % 3], mid[b], qv[c], -1);
       qq[(s + 2) % 3] = qv[a];
 
       mid5x6(qm[0], qq[0], qq[1]);
@@ -1849,42 +1886,29 @@ private:
    void ::getTriPgonVertex(Pointd v,
       const Pointd * tv/*[3]*/, const Pointd * mid /*[3]*/, const Pointd qc, int ix)
    {
+      static const double r1 = 0.1755033763321484;
+      static const double r2 = 0.065880474165889;
+      static const double r3 = 0.1014008236885;
       switch(ix)
       {
          case 0:
-            v = {
-               qc.x + (mid[2].x - qc.x) * 0.175,
-               qc.y + (mid[2].y - qc.y) * 0.175 };
-            v = {
-               v.x + (mid[1].x - v.x) * 0.065,
-               v.y + (mid[1].y - v.y) * 0.065 };
+            weight5x6(v, qc, mid[2], r1);
+            weight5x6(v,  v, mid[1], r2);
             break;
          case 1:
-            computeTriCentroid(v, mid[2], tv[0], mid[0]);
-            v = {
-               v.x + (mid[0].x - v.x) * 0.175,
-               v.y + (mid[0].y - v.y) * 0.175 };
-            v = {
-               v.x + (tv[0].x - v.x) * 0.065,
-               v.y + (tv[0].y - v.y) * 0.065 };
+            triCentroid5x6(v, mid[2], tv[0], mid[0]);
+            weight5x6(v, v, mid[0], r1);
+            weight5x6(v, v,  tv[0], r2);
             break;
          case 2:
-            computeTriCentroid(v, mid[0], tv[1], mid[1]);
-            v = {
-               v.x + (mid[1].x - v.x) * 0.105,
-               v.y + (mid[1].y - v.y) * 0.105 };
-            v = {
-               v.x + (mid[2].x - v.x) * 0.032,
-               v.y + (mid[2].y - v.y) * 0.032 };
+            triCentroid5x6(v, tv[1], mid[0], mid[1]);
+            weight5x6(v, v, mid[1], r3);
+            weight5x6(v, v, mid[2], r2 / 2);
             break;
          case 3:
-            computeTriCentroid(v, mid[2], mid[1], tv[2]);
-            v = {
-               v.x + (tv[2].x - v.x) * 0.175,
-               v.y + (tv[2].y - v.y) * 0.175 };
-            v = {
-               v.x + (mid[2].x - v.x) * 0.065,
-               v.y + (mid[2].y - v.y) * 0.065 };
+            triCentroid5x6(v, tv[2], mid[2], mid[1]);
+            weight5x6(v, v, tv[2], r1);
+            weight5x6(v, v, mid[2], r2);
             break;
       }
    }
@@ -1892,16 +1916,15 @@ private:
    void ::computeBasePgonVertices(Pointd * pentagon/*[5]*/, int quintant, int64 triCurve)
    {
       Pointd qc = A5Zone { 1, quintant }.centroid, qVerts[5], mid[5];
-      Pointd qq[5], qm[5]; // For neighboring triangle
       int i;
 
       A5Zone::getVertices(1, quintant, 0, qc, 3, qVerts);
 
       for(i = 0; i < 3; i++)
       {
-         if(qVerts[i].x - qc.x < -3)
+         if(qVerts[i].x < 0) //- qc.x < -3)
             qVerts[i].x += 5, qVerts[i].y += 5;
-         else if(qVerts[i].x - qc.x > 3)
+         else if(qVerts[i].x > 5) //- qc.x > 3)
             qVerts[i].x -= 5, qVerts[i].y -= 5;
       }
 
@@ -1910,41 +1933,59 @@ private:
       mid5x6(mid[1], qVerts[1], qVerts[2]);
       mid5x6(mid[2], qVerts[2], qVerts[0]);
 
-      switch(triCurve)
+#ifdef SHOW_TRI_MID
+      pentagon[0] = mid[0];
+      pentagon[1] = mid[1];
+      pentagon[2] = mid[2];
+#elif defined(SHOW_TRIANGLES)
+      pentagon[0] = qVerts[0];
+      pentagon[1] = qVerts[1];
+      pentagon[2] = qVerts[2];
+#elif defined(SHOW_IN_VERTS)
+      getTriPgonVertex(pentagon[0], qVerts, mid, qc, 0);
+      getTriPgonVertex(pentagon[1], qVerts, mid, qc, 1);
+      getTriPgonVertex(pentagon[2], qVerts, mid, qc, 2);
+      getTriPgonVertex(pentagon[3], qVerts, mid, qc, 3);
+#else
       {
-         case 0:
-            pentagon[0] = mid[1];
-            getTriPgonVertex(pentagon[1], qVerts, mid, qc, 0);
-            getTriPgonVertex(pentagon[2], qVerts, mid, qc, 1);
-            pentagon[3] = mid[0];
-            getTriPgonVertex(pentagon[4], qVerts, mid, qc, 2);
-            break;
-          case 1:
-            getTriPgonVertex(pentagon[0], qVerts, mid, qc, 0);
-            pentagon[1] = mid[2];
-            setupNBTri(qVerts, mid, qq, qm, 0, 2, 1);
-            getTriPgonVertex(pentagon[2], qq, qm, null, 1);
-            pentagon[3] = qVerts[0];
-            getTriPgonVertex(pentagon[4], qVerts, mid, qc, 1);
-            break;
-         case 2:
-            pentagon[0] = mid[1];
-            getTriPgonVertex(pentagon[1], qVerts, mid, qc, 0);
-            pentagon[2] = mid[2];
-            getTriPgonVertex(pentagon[3], qVerts, mid, qc, 3);
-            setupNBTri(qVerts, mid, qq, qm, 2, 1, 2);
-            getTriPgonVertex(pentagon[4], qq, qm, null, 2);
-            break;
-         case 3:
-            getTriPgonVertex(pentagon[0], qVerts, mid, qc, 2);
-            pentagon[1] = mid[0];
-            setupNBTri(qVerts, mid, qq, qm, 1, 0, 0);
-            getTriPgonVertex(pentagon[2], qq, qm, null, 3);
-            pentagon[3] = qVerts[1];
-            setupNBTri(qVerts, mid, qq, qm, 2, 1, 2);
-            getTriPgonVertex(pentagon[4], qq, qm, null, 3);
-            break;
+         Pointd qq[5], qm[5]; // For neighboring triangle
+         switch(triCurve)
+         {
+            case 0:
+               pentagon[0] = mid[1];
+               getTriPgonVertex(pentagon[1], qVerts, mid, qc, 0);
+               getTriPgonVertex(pentagon[2], qVerts, mid, qc, 1);
+               pentagon[3] = mid[0];
+               getTriPgonVertex(pentagon[4], qVerts, mid, qc, 2);
+               break;
+             case 1:
+               getTriPgonVertex(pentagon[0], qVerts, mid, qc, 0);
+               pentagon[1] = mid[2];
+               setupNBTri(qVerts, mid, qq, qm, 0, 2, 1);
+               getTriPgonVertex(pentagon[2], qq, qm, null, 1);
+               pentagon[3] = qVerts[0];
+               getTriPgonVertex(pentagon[4], qVerts, mid, qc, 1);
+               break;
+            case 2:
+               pentagon[0] = mid[1];
+               getTriPgonVertex(pentagon[1], qVerts, mid, qc, 0);
+               pentagon[2] = mid[2];
+               getTriPgonVertex(pentagon[3], qVerts, mid, qc, 3);
+               setupNBTri(qVerts, mid, qq, qm, 2, 1, 2);
+               getTriPgonVertex(pentagon[4], qq, qm, null, 2);
+               break;
+            case 3:
+               getTriPgonVertex(pentagon[0], qVerts, mid, qc, 2);
+               pentagon[1] = mid[0];
+               setupNBTri(qVerts, mid, qq, qm, 1, 0, 0);
+               getTriPgonVertex(pentagon[2], qq, qm, null, 3);
+               pentagon[3] = qVerts[1];
+               setupNBTri(qVerts, mid, qq, qm, 2, 1, 2);
+               getTriPgonVertex(pentagon[4], qq, qm, null, 3);
+               break;
+         }
       }
+#endif
    }
 
    Array<Pointd> getBaseRefinedVertices(bool crs84, int nDivisions)
@@ -2151,138 +2192,46 @@ private:
          Pointd iSrc[5], iDst[5];
          bool crossing[5] = { false, false, false, false, false };
          Pointd rQC;
-         int i;
+         int nPoints, i;
 
-         if(quintant >= 50)
-         {
-            // TODO: Polar caps
-            return null;
-         }
-         else if((quintant % 10) == 4)
-         {
-            // Northern interrupted triangles of the pentakis dodecahedron below polar caps
-            // For now handling interruption by computing in a different quintant then rotating
-            int rotations[5] = { -1, -1, -1, -1, -1 };
-            int aQuintant = quintant - 4;
-            int trr = aQuintant / 10;
-            int rr = trr == 0 ? 5 : trr;
+#if defined(SHOW_TRI_MID) || defined(SHOW_TRIANGLES) || defined(SHOW_IN_VERTS)
+         if(triCurve > 0) return null;
+#endif
 
-            switch(triCurve)
-            {
-               case 0:
-                  rotations[0] = -2, rotations[2] = -2, rotations[3] = -2, rotations[4] = -2;
-                  rotations[1] = -1;
-                  break;
-               case 1: rotations[4] = -2; break;
-               case 3:
-                  rotations[0] = -2, rotations[1] = -2, rotations[2] = -2, rotations[3] = -2;
-                  rotations[4] = -2;
-                  break;
-            }
+#ifdef TEST_QUINTANT
+         if(quintant != TEST_QUINTANT) return null;
+#endif
 
-            computeBasePgonVertices(pentagon, aQuintant, triCurve);
+#if defined(TEST_TRI) && !defined(SHOW_TRI_MID) && !defined(SHOW_TRIANGLES) && !defined(SHOW_IN_VERTS)
+         if(triCurve != TEST_TRI) return null;
+#endif
 
-            for(i = 0; i < 5; i++)
-            {
-               int j;
-               Pointd d;
-
-               for(j = 0; j < Abs(rotations[i]); j++)
-                  rotate5x6Offset(d,
-                     j == 0 ? pentagon[i].x - rr : d.x,
-                     j == 0 ? pentagon[i].y - rr : d.y, rotations[i] < 0);
-               pentagon[i] = { trr + d.x, trr + d.y };
-            }
-
-            if(triCurve == 0)
-            {
-               crossing[0] = true;
-               iSrc[0] = pentagon[0];
-               iDst[0] = { pentagon[0].x - 0.5, pentagon[0].y - 0.5 };
-
-               crossing[1] = true;
-               iSrc[1].x = 1    + (trr + 4) % 5;
-               iSrc[1].y = 0.75 + (trr + 4) % 5;
-               iDst[1].x = 1.25 + (trr + 4) % 5;
-               iDst[1].y = 1    + (trr + 4) % 5;
-            }
-            else if(triCurve == 1)
-            {
-               crossing[4] = true;
-               iSrc[4].x = 1.25 + (trr + 4) % 5;
-               iSrc[4].y = 1    + (trr + 4) % 5;
-               iDst[4].x = 1    + (trr + 4) % 5;
-               iDst[4].y = 0.75 + (trr + 4) % 5;
-            }
-         }
-         else if((quintant % 10) == 6)
-         {
-            // Southern interrupted triangles of the pentakis dodecahedron above polar caps
-            // For now handling interruption by computing in a different quintant then rotating
-            int rotations[5] = { 1, 1, 1, 1, 1 };
-            int aQuintant = quintant - 1;
-            int trr = ((aQuintant + 5) / 10);
-            int rr = (trr == 1 ? 6 : trr);
-
-            switch(triCurve)
-            {
-               case 0: rotations[1] = 2; break;
-               case 1:
-                  rotations[0] = 2; rotations[1] = 2; rotations[2] = 2; rotations[3] = 2;
-                  break;
-               case 2:
-                  rotations[0] = 2, rotations[1] = 2, rotations[2] = 2, rotations[3] = 2;
-                  rotations[4] = 2;
-                  break;
-            }
-
-            computeBasePgonVertices(pentagon, aQuintant, triCurve);
-
-            for(i = 0; i < 5; i++)
-            {
-               int j;
-               Pointd d;
-
-               for(j = 0; j < Abs(rotations[i]); j++)
-                  rotate5x6Offset(d,
-                     j == 0 ? pentagon[i].x - (rr - 1) : d.x,
-                     j == 0 ? pentagon[i].y - (rr) : d.y, rotations[i] < 0);
-               pentagon[i] = { trr - 1 + d.x, trr + d.y };
-            }
-
-            if(triCurve == 0)
-            {
-               crossing[0] = true;
-               iSrc[0] = pentagon[0];
-               iDst[0] = { pentagon[0].x + 0.5, pentagon[0].y + 0.5 };
-
-               crossing[1] = true;
-               iSrc[1].x = 1    + (trr + 3) % 5;
-               iSrc[1].y = 2.25 + (trr + 3) % 5;
-               iDst[1].x = 0.75 + (trr + 3) % 5;
-               iDst[1].y = 2    + (trr + 3) % 5;
-            }
-            else if(triCurve == 1)
-            {
-               crossing[4] = true;
-               iDst[4].x = 1    + (trr + 3) % 5;
-               iDst[4].y = 2.25 + (trr + 3) % 5;
-               iSrc[4].x = 0.75 + (trr + 3) % 5;
-               iSrc[4].y = 2    + (trr + 3) % 5;
-            }
-         }
-         else
-            //return null;
-            computeBasePgonVertices(pentagon, quintant, triCurve);
+         computeBasePgonVertices(pentagon, quintant, triCurve);
 
          // Keep most of pentagon within icosahedral net
-         computePgonCentroid(rQC, pentagon);
+#if defined(SHOW_TRI_MID) || defined(SHOW_TRIANGLES)
+         nPoints = 3;
+#elif defined(SHOW_IN_VERTS)
+         nPoints = 4;
+#else
+         nPoints = 5;
+#endif
+
+         for(i = 1; i < nPoints; i++)
+         {
+            if(pentagon[i].x - pentagon[0].x > 3 && pentagon[i].y - pentagon[0].y > 3)
+               pentagon[i].x -= 5, pentagon[i].y -= 5;
+            else if(pentagon[i].x - pentagon[0].x < -3 && pentagon[i].y - pentagon[0].y < -3)
+               pentagon[i].x += 5, pentagon[i].y += 5;
+         }
+         // compute5x6Centroid(rQC, pentagon, nPoints);
+         computePgonCentroid(rQC, pentagon, nPoints);
 
          if(rQC.x > 5.5 && rQC.y > 5.5)
             rQC.x -= 5, rQC.y -= 5;
          else if(rQC.x < -0.05 || rQC.y < -0.05)
             rQC.x += 5, rQC.y += 5;
-         for(i = 0; i < 5; i++)
+         for(i = 0; i < nPoints; i++)
          {
             if(pentagon[i].x - rQC.x > 3 && pentagon[i].y - rQC.y > 3)
                pentagon[i].x -= 5, pentagon[i].y -= 5;
@@ -2290,7 +2239,7 @@ private:
                pentagon[i].x += 5, pentagon[i].y += 5;
          }
 
-         for(i = 0; i < 5; i++)
+         for(i = 0; i < nPoints; i++)
          {
             if(crossing[i])
             {
@@ -2307,23 +2256,526 @@ private:
             }
          }
 
-         addIntermediatePoints(vertices, pentagon[0], pentagon[1], nDivisions, crossing[0] ? iSrc[0] : null, crossing[0] ? iDst[0] : null, crs84);
-         addIntermediatePoints(vertices, pentagon[1], pentagon[2], nDivisions, crossing[1] ? iSrc[1] : null, crossing[1] ? iDst[1] : null, crs84);
-         addIntermediatePoints(vertices, pentagon[2], pentagon[3], nDivisions, crossing[2] ? iSrc[2] : null, crossing[2] ? iDst[2] : null, crs84);
-         addIntermediatePoints(vertices, pentagon[3], pentagon[4], nDivisions, crossing[3] ? iSrc[3] : null, crossing[3] ? iDst[3] : null, crs84);
-         addIntermediatePoints(vertices, pentagon[4], pentagon[0], nDivisions, crossing[4] ? iSrc[4] : null, crossing[4] ? iDst[4] : null, crs84);
+#if defined(SHOW_IN_VERTS)
 
-         /*addIntermediatePoints(vertices, mid[0], mid[1], nDivisions, null, null, crs84);
-         addIntermediatePoints(vertices, mid[1], mid[2], nDivisions, null, null, crs84);
-         addIntermediatePoints(vertices, mid[2], mid[0], nDivisions, null, null, crs84);
-         */
-         /*
-         addIntermediatePoints(vertices, qVerts[0], qVerts[1], nDivisions, null, null, crs84);
-         addIntermediatePoints(vertices, qVerts[1], qVerts[2], nDivisions, null, null, crs84);
-         addIntermediatePoints(vertices, qVerts[2], qVerts[0], nDivisions, null, null, crs84);
-         */
+         add5x6Points(vertices, pentagon[0], pentagon[1], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[1], pentagon[2], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[2], pentagon[3], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[3], pentagon[0], nDivisions, crs84);
+#else
+         add5x6Points(vertices, pentagon[0], pentagon[1], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[1], pentagon[2], nDivisions, crs84);
+
+#if defined(SHOW_TRIANGLES) || defined(SHOW_TRI_MID)
+         add5x6Points(vertices, pentagon[2], pentagon[0], nDivisions, crs84);
+#else
+         add5x6Points(vertices, pentagon[2], pentagon[3], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[3], pentagon[4], nDivisions, crs84);
+         add5x6Points(vertices, pentagon[4], pentagon[0], nDivisions, crs84);
+#endif
+#endif
       }
       return vertices;
+   }
+
+   void ::getFace(const Pointd a, Point f, Pointd d, const Pointd nb)
+   {
+      Pointd c = a;
+      if(c.x < 0 && c.y < 1 + 1E-11)
+         c.x += 5, c.y += 5;
+
+      {
+         double cdx = c.x, cdy = c.y;
+         int cx, cy;
+
+         cdx += 1E-13;
+         cdy += 1E-13;
+
+         if(cdx < 0 && cdy < 1 + 1E-11)
+         {
+            cdx += 5, cdy += 5;
+            c.x += 5, c.y += 5;
+         }
+         if(cdx > 5 && cdy > 5 - 1E-11)
+         {
+            cdx -= 5, cdy -= 5;
+            c.x -= 5, c.y -= 5;
+         }
+         if(cdy < 0 && cdx < 1E-11)
+         {
+            cdx += 5, cdy += 5;
+            c.x += 5, c.y += 5;
+         }
+
+         if(cdx < 0) cdx = 0;
+         if(cdy < 0) cdy = 0;
+         if(cdx > 5) cdx = 5;
+         if(cdy > 6) cdy = 6;
+
+         cx = (int)floor(cdx);
+         cy = (int)floor(cdy);
+
+         if(cx - cy == 1 && cdx - cx < 1E-11) // && cdy - cy < 1E-11)
+            // North pole or right at left-side of northern interruption
+            cx--;
+         else if(cy - cx == 2 && cdy - cy < 1E-11) // && cdx - cx < 1E-11)
+            // South pole or right at keft-side of southern interruption
+            cy--;
+
+         f = { cx, cy };
+         d = { cdx - cx, cdy - cy };
+      }
+   }
+
+   // This function is intended to be a smarter version of addIntermediatePoints()
+   // automatically figuring out necessary interruption crossing
+   void ::add5x6Points(Array<Pointd> points, const Pointd _a, const Pointd _b, int nDivisions, bool crs84)
+   {
+      // NOTE: For now this will only handle points a and b in same or adjacent face
+      Point f1, f2;
+      Pointd d1, d2;
+      int dx, dy;
+      Pointd a = _a, b = _b;
+      bool aIsSouthPole = false, bIsSouthPole = false;
+      bool aIsNorthPole = false, bIsNorthPole = false;
+
+      getFace(a, f1, d1, b);
+      getFace(b, f2, d2, a);
+
+      dx = f2.x - f1.x, dy = f2.y - f1.y;
+      if(dx < -3 || dy < -3) dx += 5, dy += 5;
+      if(dx >  3 || dy >  3) dx -= 5, dy -= 5;
+
+      aIsNorthPole = f1.x - f1.y == 0 && d1.x > 1 - 1E-11 && d1.y < 1E-11;
+      bIsNorthPole = f2.x - f2.y == 0 && d2.x > 1 - 1E-11 && d2.y < 1E-11;
+
+      aIsSouthPole = f1.y - f1.x == 1 && d1.x < 1E-11 && d1.y > 1 - 1E-11;
+      bIsSouthPole = f2.y - f2.x == 1 && d2.x < 1E-11 && d2.y > 1 - 1E-11;
+
+      if(Abs(dx) > 1 || Abs(dy) > 1)
+      {
+         if(aIsNorthPole)
+         {
+            // Check if a is North pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f1.x + i) % 5, ny = nx;
+               int tdx = f2.x - nx, tdy = f2.y - ny;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     f1 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+         else if(bIsNorthPole)
+         {
+            // Check if b is North pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f2.x + i) % 5, ny = nx;
+               int tdx = nx - f1.x, tdy = ny - f1.y;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     f2 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+         else if(aIsSouthPole)
+         {
+            // Check if a is South pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f1.x + i) % 5, ny = nx + 1;
+               int tdx = f2.x - nx, tdy = f2.y - ny;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     f1 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                       break;
+                  }
+               }
+            }
+         }
+         else if(bIsSouthPole)
+         {
+            // Check if b is South pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f2.x + i) % 5, ny = nx + 1;
+               int tdx = nx - f1.x, tdy = ny - f1.y;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     f2 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+      }
+
+      if(Abs(dx) > 1 || Abs(dy) > 1)
+      {
+         getFace(a, f1, d1, b);
+         getFace(b, f2, d2, a);
+         // PrintLn("WARNING: add5x6Points() called with non-adjacent faces");
+      }
+      else if(!dx && !dy)
+         addIntermediatePoints(points, a, b, nDivisions, null, null, crs84);
+      else
+      {
+         int rotation = 0, i;
+         Pointd rb { };
+         Point pivot { dx > 0 || dy > 0 ? f2.x : f1.x, dx > 0 || dy > 0 ? f2.y : f1.y };
+         Pointd iSrc, iDst;
+         bool inNorth, crossing = false;
+         double ddx, ddy;
+         bool north = pivot.x >= pivot.y;
+         bool top = f1.x == f1.y;
+         bool noInterruptions = top ? dx <= 0 && dy >= 0 : dx >= 0 && dy <= 0;
+         bool aIsVertex = top ? fabs(a.y - a.x) < 1E-11 : fabs(a.y - a.x - 1) < 1E-11;
+
+         // REVIEW: Why this doesn't work here...
+         //if(noInterruptions || aIsVertex); else
+         switch(dx)
+         {
+            case -1:
+               switch(dy)
+               {
+                  case -1: rotation = north ? -1 : 1; break;
+                  case  0: rotation = north ?  1 : -1; break;
+                  case  1: rotation = 1; break;
+               }
+               break;
+            case 0:
+               switch(dy)
+               {
+                  case -1: rotation = north ? -1 : -1; break;
+
+                  case  1: rotation = 1; break;
+               }
+               break;
+            case 1:
+               switch(dy)
+               {
+                  case -1: rotation = 1; break;
+                  case  0: rotation = 1; break;
+                  case  1: rotation = north ? 1 : -1; break;
+               }
+               break;
+         }
+         if(pivot.x - b.x < -3)
+           pivot.x += 5, pivot.y += 5;
+
+         for(i = 0; i < Abs(rotation); i++)
+            rotate5x6Offset(rb,
+               i == 0 ? b.x - pivot.x : rb.x,
+               i == 0 ? b.y - pivot.y : rb.y, rotation < 0);
+
+         rb.x += pivot.x, rb.y += pivot.y;
+
+         ddx = rb.x - a.x, ddy = rb.y - a.y;
+
+         crossing = crosses5x6InterruptionV2Ex(a, ddx, ddy, iSrc, iDst, &inNorth, true, null);
+         if(crossing)
+         {
+            if(iSrc.x - a.x < -3 || iSrc.y - a.y < -3)
+               iSrc.x += 5, iSrc.y += 5;
+            else if(iSrc.x - a.x > 3 || iSrc.y - a.y > 3)
+               iSrc.x -= 5, iSrc.y -= 5;
+            if(iDst.x - a.x < -3 || iDst.y - a.y < -3)
+               iDst.x += 5, iDst.y += 5;
+            else if(iDst.x - a.x > 3 || iDst.y - a.y > 3)
+               iDst.x -= 5, iDst.y -= 5;
+            addIntermediatePoints(points, _a, _b, nDivisions, iSrc, iDst, crs84);
+         }
+         else
+         {
+            Pointd e;
+            double ex, ey;
+
+            if(noInterruptions) // || aIsVertex)
+               ddx = b.x - a.x, ddy = b.y - a.y;
+
+            e = { a.x + ddx, a.y + ddy };
+            ex = _b.x - e.x, ey = _b.y - e.y;
+
+            if(ex > 3 || ey > 3) ex -= 5, ey -= 5;
+            else if(ex < -3 || ey < -3) ex += 5, ey += 5;
+
+            if((fabs(ex) > 1E-11 || fabs(ey) > 1E-11) && !aIsVertex)
+            {
+               // This handles missing intermediate pole point
+               addIntermediatePoints(points, _a, e, nDivisions, null, null, crs84);
+               if(!crs84) // && (north || aIsSouthPole || bIsSouthPole))
+                  addIntermediatePoints(points, e, _b, nDivisions, null, null, crs84);
+            }
+            else
+               addIntermediatePoints(points, _a, _b, nDivisions, null, null, crs84);
+         }
+      }
+   }
+
+   void ::distance5x6(Pointd distance, Pointd bInAFrame, const Pointd _a, const Pointd _b, Pointd modA)
+   {
+      // NOTE: For now this will only handle points a and b in same or adjacent face
+      Point f1, f2;
+      Pointd d1, d2;
+      int dx, dy;
+      Pointd a = _a, b = _b;
+
+      getFace(a, f1, d1, b);
+      getFace(b, f2, d2, a);
+
+      dx = f2.x - f1.x, dy = f2.y - f1.y;
+      if(dx < -3 || dy < -3) dx += 5, dy += 5;
+      if(dx >  3 || dy >  3) dx -= 5, dy -= 5;
+
+      // if(Abs(dx) > 1 || Abs(dy) > 1)
+      if(Abs(dx) > 0 || Abs(dy) > 0)
+      {
+         if(f1.x - f1.y == 0 && d1.x > 1 - 1E-11 && d1.y < 1E-11)
+         {
+            // Check if a is North pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f1.x + i) % 5, ny = nx; // - 1;
+               int tdx = f2.x - nx, tdy = f2.y - ny;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     a.x += nx - f1.x;
+                     a.y += ny - f1.y;
+                     f1 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+         else if(f2.x - f2.y == 0 && d2.x > 1 - 1E-11 && d2.y < 1E-11)
+         {
+            // Check if b is North pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f2.x + i) % 5, ny = nx; // - 1;
+               int tdx = nx - f1.x, tdy = ny - f1.y;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     b.x += nx - f2.x;
+                     b.y += ny - f2.y;
+                     f2 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+         else if(f1.y - f1.x == 1 && d1.x < 1E-11 && d1.y > 1 - 1E-11)
+         {
+            // Check if a is South pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f1.x + i) % 5, ny = nx + 1;
+               int tdx = f2.x - nx, tdy = f2.y - ny;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     a.x += nx - f1.x;
+                     a.y += ny - f1.y;
+                     f1 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+         else if(f2.y - f2.x == 1 && d2.x < 1E-11 && d2.y > 1 - 1E-11)
+         {
+            // Check if b is South pole and can be rotated
+            int i;
+
+            for(i = 0; i < 5; i++)
+            {
+               int nx = (f2.x + i) % 5, ny = nx + 1;
+               int tdx = nx - f1.x, tdy = ny - f1.y;
+               if(tdx < -3 || tdy < -3) tdx += 5, tdy += 5;
+               if(tdy >  3 || tdy >  3) tdx -= 5, tdy -= 5;
+
+               if(Abs(tdx) <= 1 && Abs(tdy) <= 1)
+               {
+                  if(Abs(dx) > 1 || Abs(dy) > 1 || (Abs(tdx) < Abs(dx) && Abs(tdy) < Abs(dy)))
+                  {
+                     b.x += nx - f2.x;
+                     b.y += ny - f2.y;
+                     f2 = { nx, ny };
+                     dx = tdx, dy = tdy;
+                     if(!dx && !dy)
+                        break;
+                  }
+               }
+            }
+         }
+      }
+
+      if(Abs(dx) > 1 || Abs(dy) > 1)
+      {
+         getFace(a, f1, d1, b);
+         getFace(b, f2, d2, a);
+         //PrintLn("WARNING: distance5x6() called with non-adjacent faces");
+         distance = { };
+      }
+      else if(!dx && !dy)
+      {
+         distance.x = b.x - a.x;
+         distance.y = b.y - a.y;
+
+         if(distance.x < -3 || distance.y < -3)
+            distance.x += 5, distance.y += 5, b.x += 5, b.y += 5;
+         else if(distance.x > 3 || distance.y > 3)
+            distance.x -= 5, distance.y -= 5, b.x -= 5, b.y -= 5;
+
+         if(bInAFrame != null) bInAFrame = b;
+      }
+      else
+      {
+         int rotation = 0, i;
+         Pointd rb;
+         Point pivot { dx > 0 || dy > 0 ? f2.x : f1.x, dx > 0 || dy > 0 ? f2.y : f1.y };
+         double ddx, ddy;
+         Pointd iSrc, iDst;
+         bool crossing, inNorth;
+         bool north = pivot.x >= pivot.y;
+         bool top = f1.x == f1.y;
+         bool noInterruptions = top ? dx <= 0 && dy >= 0 : dx >= 0 && dy <= 0;
+         bool aIsVertex = top ? fabs(a.y - a.x) < 1E-11 : fabs(a.y - a.x - 1) < 1E-11;
+
+         if(!noInterruptions && !aIsVertex)
+            switch(dx)
+            {
+               case -1:
+                  switch(dy)
+                  {
+                     case -1: rotation = north ? -1 : 1; break;
+                     case  0: rotation = north ?  1 : -1; break;
+                     case  1: rotation = 1; break;
+                  }
+                  break;
+               case 0:
+                  switch(dy)
+                  {
+                     case -1: rotation = north ? -1 : -1; break;
+                     case  0: rotation = 1; break;
+                     case  1: rotation = 1; break;
+                  }
+                  break;
+               case 1:
+                  switch(dy)
+                  {
+                     case -1: rotation = 1; break;
+                     case  0: rotation = 1; break;
+                     case  1: rotation = north ? 1 : -1; break;
+                  }
+                  break;
+            }
+         if(pivot.x - b.x < -3)
+            pivot.x += 5, pivot.y += 5;
+
+         rb = { b.x - pivot.x, b.y - pivot.y };
+         for(i = 0; i < Abs(rotation); i++)
+            rotate5x6Offset(rb, rb.x, rb.y, rotation < 0);
+
+         rb.x += pivot.x, rb.y += pivot.y;
+
+         ddx = rb.x - a.x, ddy = rb.y - a.y;
+         if(ddx > 3 || ddy > 3)
+            ddx -= 5, ddy -= 5;
+         else if(ddx < -3 || ddy < -3)
+            ddx += 5, ddy += 5;
+
+         crossing = crosses5x6InterruptionV2Ex(a, ddx, ddy, iSrc, iDst, &inNorth, true, null);
+         if(!crossing)
+         {
+            if(noInterruptions || aIsVertex)
+               distance = { b.x - a.x, b.y - a.y };
+            else
+               distance = { ddx, ddy };
+
+            if(distance.x < -3 || distance.y < -3)
+               distance.x += 5, distance.y += 5, b.x += 5, b.y += 5;
+            else if(distance.x > 3 || distance.y > 3)
+               distance.x -= 5, distance.y -= 5, b.x -= 5, b.y -= 5;
+
+            if(bInAFrame != null) bInAFrame = b;
+         }
+         else
+         {
+            distance = { ddx, ddy };
+            if(bInAFrame != null) bInAFrame = rb;
+         }
+      }
+      if(modA != null)
+         modA = a;
    }
 
 #if 0
@@ -2468,6 +2920,7 @@ private:
                   if(isSouth && tri > 1)
                      tri++;
                   computeTriCentroid(value, v[tri], v[(tri+1) % (isSouth ? 6 : 5)], rc);
+                  //triCentroid5x6(value, v[tri], v[(tri+1) % (isSouth ? 6 : 5)], rc);
 
                   if(value.x < 0)
                      value.x += 5, value.y += 5;
@@ -2479,12 +2932,6 @@ private:
             // TODO: Proper centroid for higher levels...
             A5Zone root { 1, quintant, 0 };
             value = root.centroid;
-            /*
-            if(value.x > 5.5 && value.y > 5.5)
-               value.x -= 5, value.y -= 5;
-            else if(value.x < -0.05 || value.y < -0.05)
-               value.x += 5, value.y += 5;
-            */
          }
       }
    }
@@ -3013,7 +3460,7 @@ __attribute__((unused)) static void compactA5Zones(AVLTree<A5Zone> zones, int le
       }
 
       for(z : zones)
-      {
+      {                                        -
          A5Zone zone = z, cParents[2];
          int nCParents = zone.getParents(cParents), i;
          bool allIn = true;
@@ -3117,30 +3564,59 @@ static Array<Pointd> getIcoNetRefinedVertices(A5Zone zone, int edgeRefinement, b
 
 void mid5x6(Pointd out, const Pointd a, const Pointd b)
 {
-   Pointd d { b.x - a.x, b.y - a.y };
-   Pointd iSrc, iDst;
-   bool inNorth;
+   weight5x6(out, a, b, 0.5);
+}
 
-   if(d.x > 3) d.x -= 5, d.y -= 5;
-   if(d.x <-3) d.x += 5, d.y += 5;
+void weight5x6(Pointd out, const Pointd _a, const Pointd _b, double k)
+{
+   Pointd a = _a, b = _b, d, bInAFrame;
 
-   // TODO: Handling interruptions properly...
-   if(crosses5x6InterruptionV2(a, d.x, d.y, iSrc, iDst, &inNorth))
+   // REVIEW: move5x6() starting from 5,6 does not seem to work well
+   if(a.y > 5 && a.x > 5 - 1E-1)
+      a.x -= 5, a.y -= 5;
+
+   if(b.y > 5 && b.x > 5 - 1E-1)
+      b.x -= 5, b.y -= 5;
+
+   A5Zone::distance5x6(d, bInAFrame, a, b, a);
+
+#ifdef _DEBUG
+   if(Abs(d.x) > 1.5 || Abs(d.y) > 1.5)
    {
-      // Assuming the midpoint is exactly on interruption for now...
-      out = iSrc;
+      A5Zone::distance5x6(d, bInAFrame, a, b, a);
+      //PrintLn("WARNING: Large distance returned");
    }
-   else
-   {
-      out.x = a.x + d.x / 2;
-      out.y = a.y + d.y / 2;
-   }
-   /*
-   if(out.x > 5)
+#endif
+
+   d.x *= k;
+   d.y *= k;
+
+   move5x6(out, a, d.x, d.y, 1, null, null, true); // true here fixes Mids!
+
+   if(out.x > 5 || out.y > 6)
       out.x -= 5, out.y -= 5;
-   if(out.x < 0)
+   else if(out.x < 0 || out.y < 0)
       out.x += 5, out.y += 5;
-   */
+}
+
+void triCentroid5x6(Pointd out, const Pointd _a, const Pointd _b, const Pointd _c)
+{
+   Pointd a = _a, b = _b, c = _c, inFrame;
+   Pointd ab, ac, d;
+
+   A5Zone::distance5x6(ab, inFrame, a, b, a);
+   A5Zone::distance5x6(ac, inFrame, a, c, a);
+
+   d.x = ab.x + ac.x;
+   d.y = ab.y + ac.y;
+   d.x /= 3;
+   d.y /= 3;
+
+   // REVIEW: move5x6() starting from 5,6 does not seem to work well
+   if(a.y > 5 && a.x > 5 - 1E-1)
+      a.x -= 5, a.y -= 5;
+
+   move5x6(out, a, d.x, d.y, 1, null, null, true);
 }
 
 A5 a5DGGRS {};
