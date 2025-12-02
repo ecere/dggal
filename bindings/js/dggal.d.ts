@@ -95,7 +95,7 @@ export class DGGRS {
   getZoneCRSVertices(zone: DGGRSZone, crs: CRS): Pointd[]
   getZoneWGS84Vertices(zone: DGGRSZone): GeoPoint[]
   getZoneRefinedWGS84Vertices(zone: DGGRSZone, edgeRefinement: number): GeoPoint[]
-  getZoneRefinedCRSVertices(zone: DGGRSZone, edgeRefinement: number): Pointd[]
+  getZoneRefinedCRSVertices(zone: DGGRSZone, crs: CRS, edgeRefinement: number): Pointd[]
 
   // Sub-zone queries
   getSubZones(zone: DGGRSZone, depth: number): DGGRSZone[]

@@ -330,8 +330,8 @@ export class DGGRS {
     return this._readArrayGeoPoint(this.module._DGGAL_DGGRS_getZoneRefinedWGS84Vertices(this.dggrsPtr, zone, edgeRefinement));
   }
 
-  getZoneRefinedCRSVertices(zone, edgeRefinement) {
-    return this._readArrayPointd(this.module._DGGAL_DGGRS_getZoneRefinedCRSVertices(this.dggrsPtr, zone, edgeRefinement));
+  getZoneRefinedCRSVertices(zone, crs, edgeRefinement) {
+    return this._readArrayPointd(this.module._DGGAL_DGGRS_getZoneRefinedCRSVertices(this.dggrsPtr, zone, crs, edgeRefinement));
   }
 
   getSubZones(zone, depth) {
