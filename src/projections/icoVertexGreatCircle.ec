@@ -364,13 +364,50 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       int best3rd = 0, best6th = 0, i;
       double d, bestDot = -MAXDOUBLE;
       const Vector3D * c;
+      // This is the cosine of the half distance to the nearest centroid over all (which is on different icosahedron triangle)
+      // cos(15.4210090071508551/2)
+      // (sqrt(6)*sqrt(480 + 216*sqrt(5) + sqrt(3)*sqrt(2*sqrt(5) + 5)*(47*sqrt(5) + 109)))/(6*sqrt(80 + 36*sqrt(5) + sqrt(3)*sqrt(2*sqrt(5) + 5)*(8*sqrt(5) + 19)))
+
+      // This is the cosine of the half distance to the nearest centroid within the same icosahedron face
+      // cos(22.8025282605464/2)
+      // sqrt((5 + 5/sqrt(5) + 8*(1 + 2/sqrt(5))/sqrt(3 + 6/sqrt(5))) / (2*(3 + 2/sqrt(5) + 4*(1 + 2/sqrt(5))/sqrt(3 + 6/sqrt(5)))))
+      static const double earlyAccept3rd = 0.9802668134226932631948092150332116;
+
+      // Cosine of the half distance between the two sibling SDT's centroids (within same 1/3rd face)
+      // cos(21.2120235137118/2)
+      /*{ // These are symbological representations of that value using radicals (which unfortunately does not seem to simplify further)
+         double s5 = sqrt(5), r2 = sqrt(2), r3 = sqrt(3), r6 = sqrt(6), r10 = sqrt(10), r15 = sqrt(15), r30 = sqrt(30);
+         double A = sqrt(s5 + 5), B = sqrt(2*s5 + 5), C = sqrt(3*s5 + 7), D = sqrt(4*s5 + 9), E = sqrt(11*s5 + 25);
+         double G = sqrt(29*s5 + 65), H = sqrt((s5 + 3) * (s5 + 3) * (s5 + 3));
+         double tv1 = 3 * r2 * C, tv2 = r6 * H, tv3 = 3 * (r2 + r10) * C, tv4 = 2 * r6 * H;
+         double F1 = 6 * E + 12 * r2 * D + r6 * H * A;
+         double F2 = 3 * r2 * (r2 + r10) * E + 2 * r6 * H * A + 12 * r2 * (1 + s5) * D;
+         double L1 = 3 * r30 * E + 7 * r6 * E + 18 * s5 * B + 42 * B + 8 * r15 * D + 20 * r3 * D + 99 * s5 + 225;
+         double M1 = r6 * (s5 + 3) * A + 3 * r2 * G + 3 * r2 * (1 + s5) * C;
+         double M2 = s5 * A + 3 * A + 2 * r3 * C + r3 * G;
+         double P = 25 * 11 * 509 * s5 + 5 * 59 * 1061 + (4 * r6 * (199*s5 + 445)) * B * E
+              + 20 * D * ((r2 * (55*s5 + 123)) * E + (r3 * (110*s5 + 246)) * B)
+              + 60 * ((r6 * (72*s5 + 161)) * E + ((432*s5 + 2 * 3 * 7 * 23)) * B + (r3 * (199*s5 + 445)) * D);
+         double sqrtP = sqrt(P);
+         double P_quarter = sqrt(sqrt(P));
+         double S = r6 * r10 * (4 * (tv1 + tv2) * F1 + (tv3 + tv4) * F2);
+         double inner = S + 48 * (24 * sqrtP + (r6 * M1 * M2 * sqrtP) / L1);
+         double result = sqrt(inner) / (48 * P_quarter);
+         printf("Final result = %.15f\n", result);
+      }*/
+      // sqrt(sqrt(6)*(sqrt(10)*(4*(3*sqrt(2)*sqrt(3*sqrt(5) + 7) + sqrt(6)*(sqrt(5) + 3)^(1.5))*(6*sqrt(11*sqrt(5) + 25) + 12*sqrt(2)*sqrt(4*sqrt(5) + 9) + sqrt(6)*(sqrt(5) + 3)^(1.5)*sqrt(sqrt(5) + 5)) + (3*(sqrt(2) + sqrt(10))*sqrt(3*sqrt(5) + 7) + 2*sqrt(6)*(sqrt(5) + 3)^(1.5))*(3*sqrt(2)*(sqrt(2) + sqrt(10))*sqrt(11*sqrt(5) + 25) + 2*sqrt(6)*(sqrt(5) + 3)^(1.5)*sqrt(sqrt(5) + 5) + 12*sqrt(2)*(1 + sqrt(5))*sqrt(4*sqrt(5) + 9)))*(3*sqrt(30)*sqrt(11*sqrt(5) + 25) + 7*sqrt(6)*sqrt(11*sqrt(5) + 25) + 18*sqrt(5)*sqrt(2*sqrt(5) + 5) + 42*sqrt(2*sqrt(5) + 5) + 8*sqrt(15)*sqrt(4*sqrt(5) + 9) + 20*sqrt(3)*sqrt(4*sqrt(5) + 9) + 99*sqrt(5) + 225) + 48*(sqrt(6)*(sqrt(5) + 3)*sqrt(sqrt(5) + 5) + 3*sqrt(2)*sqrt(29*sqrt(5) + 65) + 3*sqrt(2)*(1 + sqrt(5))*sqrt(3*sqrt(5) + 7))*(sqrt(5)*sqrt(sqrt(5) + 5) + 3*sqrt(sqrt(5) + 5) + 2*sqrt(3)*sqrt(3*sqrt(5) + 7) + sqrt(3)*sqrt(29*sqrt(5) + 65))*sqrt(398*sqrt(5)*(11*sqrt(5) + 25) + 2388*sqrt(5)*(2*sqrt(5) + 5) + 1520*sqrt(5)*(4*sqrt(5) + 9) + 796*sqrt(30)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1780*sqrt(6)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1100*sqrt(10)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2460*sqrt(2)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2200*sqrt(15)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4920*sqrt(3)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4320*sqrt(30)*sqrt(11*sqrt(5) + 25) + 9660*sqrt(6)*sqrt(11*sqrt(5) + 25) + 25920*sqrt(5)*sqrt(2*sqrt(5) + 5) + 57960*sqrt(2*sqrt(5) + 5) + 11940*sqrt(15)*sqrt(4*sqrt(5) + 9) + 26700*sqrt(3)*sqrt(4*sqrt(5) + 9) + 104405*sqrt(5) + 236825)) + 1152*(3*sqrt(30)*sqrt(11*sqrt(5) + 25) + 7*sqrt(6)*sqrt(11*sqrt(5) + 25) + 18*sqrt(5)*sqrt(2*sqrt(5) + 5) + 42*sqrt(2*sqrt(5) + 5) + 8*sqrt(15)*sqrt(4*sqrt(5) + 9) + 20*sqrt(3)*sqrt(4*sqrt(5) + 9) + 99*sqrt(5) + 225)*sqrt(398*sqrt(5)*(11*sqrt(5) + 25) + 2388*sqrt(5)*(2*sqrt(5) + 5) + 1520*sqrt(5)*(4*sqrt(5) + 9) + 796*sqrt(30)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1780*sqrt(6)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1100*sqrt(10)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2460*sqrt(2)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2200*sqrt(15)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4920*sqrt(3)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4320*sqrt(30)*sqrt(11*sqrt(5) + 25) + 9660*sqrt(6)*sqrt(11*sqrt(5) + 25) + 25920*sqrt(5)*sqrt(2*sqrt(5) + 5) + 57960*sqrt(2*sqrt(5) + 5) + 11940*sqrt(15)*sqrt(4*sqrt(5) + 9) + 26700*sqrt(3)*sqrt(4*sqrt(5) + 9) + 104405*sqrt(5) + 236825))/(48*sqrt(3*sqrt(30)*sqrt(11*sqrt(5) + 25) + 7*sqrt(6)*sqrt(11*sqrt(5) + 25) + 18*sqrt(5)*sqrt(2*sqrt(5) + 5) + 42*sqrt(2*sqrt(5) + 5) + 8*sqrt(15)*sqrt(4*sqrt(5) + 9) + 20*sqrt(3)*sqrt(4*sqrt(5) + 9) + 99*sqrt(5) + 225)*(398*sqrt(5)*(11*sqrt(5) + 25) + 2388*sqrt(5)*(2*sqrt(5) + 5) + 1520*sqrt(5)*(4*sqrt(5) + 9) + 796*sqrt(30)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1780*sqrt(6)*sqrt(2*sqrt(5) + 5)*sqrt(11*sqrt(5) + 25) + 1100*sqrt(10)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2460*sqrt(2)*sqrt(4*sqrt(5) + 9)*sqrt(11*sqrt(5) + 25) + 2200*sqrt(15)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4920*sqrt(3)*sqrt(2*sqrt(5) + 5)*sqrt(4*sqrt(5) + 9) + 4320*sqrt(30)*sqrt(11*sqrt(5) + 25) + 9660*sqrt(6)*sqrt(11*sqrt(5) + 25) + 25920*sqrt(5)*sqrt(2*sqrt(5) + 5) + 57960*sqrt(2*sqrt(5) + 5) + 11940*sqrt(15)*sqrt(4*sqrt(5) + 9) + 26700*sqrt(3)*sqrt(4*sqrt(5) + 9) + 104405*sqrt(5) + 236825)^(0.25))
+      static const double earlyAccept6th = 0.9829160426524585629980328985973081873244;
 
       for(i = 0; i < 3; i++)
       {
          c = &ico3rdCentroids[face][i];
          d = c->x * v.x + c->y * v.y + c->z * v.z;
          if(d > bestDot)
+         {
             bestDot = d, best3rd = i;
+            if(d > earlyAccept3rd)
+               break;
+         }
       }
 
       bestDot = -MAXDOUBLE;
@@ -379,7 +416,11 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          c = &ico6thCentroids[face][best3rd][i];
          d = c->x * v.x + c->y * v.y + c->z * v.z;
          if(d > bestDot)
+         {
             bestDot = d, best6th = i;
+            if(d > earlyAccept6th)
+               break;
+         }
       }
       return 2 * best3rd + best6th;
    }

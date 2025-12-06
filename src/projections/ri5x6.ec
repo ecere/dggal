@@ -482,13 +482,25 @@ public class RI5x6Projection
    {
       int best = -1, i;
       double bestDot = -MAXDOUBLE;
+      const Vector3D * c = &icoVertices[0];
+      double poleDot = c->x * P.x + c->y * P.y + c->z * P.z;
+      static const int nMap[15] = {  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14 };
+      static const int sMap[15] = { 19, 18, 17, 16, 15, 14, 13, 12, 11, 10,  9,  8,  7,  6,  5 };
+      const int * map = poleDot > 0 ? nMap : sMap;
 
-      for(i = 0; i < 20; i++)
+      for(i = 0; i < 15; i++)
       {
-         const Vector3D * c = &icoCentroids[i];
+         int face = map[i];
+         const Vector3D * c = &icoCentroids[face];
          double d = c->x * P.x + c->y * P.y + c->z * P.z;
          if(d > bestDot)
-            bestDot = d, best = i;
+         {
+            static const double earlyAccept = 0.934172358962715696451118623548; // sqrt((3+sqrt(5))/6)
+
+            bestDot = d, best = face;
+            if(d > earlyAccept)
+               break;
+         }
       }
       return best;
    }
