@@ -16,7 +16,7 @@ public class BarycentricSphericalTriAreaProjection : RI5x6Projection
 
    __attribute__ ((unused))
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   void inverseIcoFace(const Pointd v,
+   void inverseIcoFace(int face, const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       Vector3D out)
@@ -59,7 +59,7 @@ public class BarycentricSphericalTriAreaProjection : RI5x6Projection
       out.Normalize(out);
    }
 
-   void forwardIcoFace(const Vector3D v, const Vector3D v1, const Vector3D v2, const Vector3D v3, const Pointd p1, const Pointd p2, const Pointd p3, Pointd out)
+   void forwardIcoFace(int face, const Vector3D v, const Vector3D v1, const Vector3D v2, const Vector3D v3, const Pointd p1, const Pointd p2, const Pointd p3, Pointd out)
    {
       double b[3];
       if(projectedGP)

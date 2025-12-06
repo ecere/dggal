@@ -1,3 +1,4 @@
+
 // This is the basis for defined projections from the WGS84 ellipsoid to the
 // Cartesian 5x6 icosahedral / rhombic space, where a 1x1 square correspond to
 // a root rhombus combining two triangular faces of an icosahedron
@@ -92,6 +93,10 @@ public class RI5x6Projection
    double sinOrientationLat, cosOrientationLat;
    Degrees vertex2Azimuth;
    Plane icoFacePlanes[20][3];
+   Vector3D icoCentroids[20], ico3rdCentroids[20][3], ico6thCentroids[20][3][2];
+   Vector3D ico3rdMids[20][3];
+   Pointd ico56Center[20], ico56Mids[20][6];
+
    // bool poleFixIVEA;
 
    RI5x6Projection()
@@ -116,6 +121,88 @@ public class RI5x6Projection
          icoFacePlanes[i][0].FromPoints({ 0, 0, 0 }, v1, v2);
          icoFacePlanes[i][1].FromPoints({ 0, 0, 0 }, v2, v3);
          icoFacePlanes[i][2].FromPoints({ 0, 0, 0 }, v3, v1);
+      }
+
+      for(i = 0; i < 20; i++)
+      {
+         uint16 * indices = icoIndices[i];
+         const Vector3D * v1 = &icoVertices[indices[0]];
+         const Vector3D * v2 = &icoVertices[indices[1]];
+         const Vector3D * v3 = &icoVertices[indices[2]];
+         Vector3D * c = &icoCentroids[i], * m;
+         const Pointd * p1 = &vertices5x6[i][0], * p2 = &vertices5x6[i][1], * p3 = &vertices5x6[i][2];
+         //Vector3D cr;
+
+         c->Normalize({
+            v1->x + v2->x + v3->x,
+            v1->y + v2->y + v3->y,
+            v1->z + v2->z + v3->z
+         });
+         /*cr.CrossProduct(v1, v2);
+         e[i][0].Normalize(cr);
+         cr.CrossProduct(v2, v3);
+         e[i][1].Normalize(cr);
+         cr.CrossProduct(v3, v1);
+         e[i][2].Normalize(cr);*/
+
+         ico56Center[i] = { (p1->x + p2->x + p3->x) / 3, (p1->y + p2->y + p3->y) / 3 };
+
+         ico3rdCentroids[i][0].Normalize({
+            c->x + v2->x + v3->x,
+            c->y + v2->y + v3->y,
+            c->z + v2->z + v3->z
+         });
+         m = &ico3rdMids[i][0];
+         m->Normalize({(v2->x + v3->x) / 2, (v2->y + v3->y) / 2, (v2->z + v3->z) / 2 });
+         ico56Mids[i][0] = { (p2->x + p3->x) / 2, (p2->y + p3->y) / 2 };
+         ico6thCentroids[i][0][0].Normalize({
+            c->x + m->x + v3->x,
+            c->y + m->y + v3->y,
+            c->z + m->z + v3->z
+         });
+         ico6thCentroids[i][0][1].Normalize({
+            c->x + m->x + v2->x,
+            c->y + m->y + v2->y,
+            c->z + m->z + v2->z
+         });
+
+         ico3rdCentroids[i][1].Normalize({
+            c->x + v3->x + v1->x,
+            c->y + v3->y + v1->y,
+            c->z + v3->z + v1->z
+         });
+         m = &ico3rdMids[i][1];
+         m->Normalize({ (v3->x + v1->x) / 2, (v3->y + v1->y) / 2, (v3->z + v1->z) / 2 });
+         ico56Mids[i][1] = { (p3->x + p1->x) / 2, (p3->y + p1->y) / 2 };
+         ico6thCentroids[i][1][0].Normalize({
+            c->x + m->x + v3->x,
+            c->y + m->y + v3->y,
+            c->z + m->z + v3->z
+         });
+         ico6thCentroids[i][1][1].Normalize({
+            c->x + m->x + v1->x,
+            c->y + m->y + v1->y,
+            c->z + m->z + v1->z
+         });
+
+         ico3rdCentroids[i][2].Normalize({
+            c->x + v1->x + v2->x,
+            c->y + v1->y + v2->y,
+            c->z + v1->z + v2->z
+         });
+         m = &ico3rdMids[i][2];
+         m->Normalize({ (v1->x + v2->x) / 2, (v1->y + v2->y) / 2, (v1->z + v2->z) / 2 });
+         ico56Mids[i][2] = { (p1->x + p2->x) / 2, (p1->y + p2->y) / 2 };
+         ico6thCentroids[i][2][0].Normalize({
+            c->x + m->x + v2->x,
+            c->y + m->y + v2->y,
+            c->z + m->z + v2->z
+         });
+         ico6thCentroids[i][2][1].Normalize({
+            c->x + m->x + v1->x,
+            c->y + m->y + v1->y,
+            c->z + m->z + v1->z
+         });
       }
    }
 
@@ -382,14 +469,29 @@ public class RI5x6Projection
       return true;
    }
 
-   virtual void inverseIcoFace(const Pointd v,
+   virtual void inverseIcoFace(int face, const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       Vector3D out);
-   virtual void forwardIcoFace(const Vector3D v,
+   virtual void forwardIcoFace(int face, const Vector3D v,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       const Pointd p1, const Pointd p2, const Pointd p3,
       Pointd out);
+
+   int findFace(const Vector3D P)
+   {
+      int best = -1, i;
+      double bestDot = -MAXDOUBLE;
+
+      for(i = 0; i < 20; i++)
+      {
+         const Vector3D * c = &icoCentroids[i];
+         double d = c->x * P.x + c->y * P.y + c->z * P.z;
+         if(d > bestDot)
+            bestDot = d, best = i;
+      }
+      return best;
+   }
 
    public virtual bool forward(const GeoPoint p, Pointd v)
    {
@@ -404,16 +506,18 @@ public class RI5x6Projection
 
       v = { };
       result = false;
-      // TODO: Directly determine face
-      for(face = 0; face < 20; face++)
+
+      face = findFace(v3D);
+
+      //for(face = (face == -1 ? 0 : face); face < 20; face++)
       {
          const Vector3D * v1 = &icoVertices[icoIndices[face][0]];
-         if(vertexWithinSphericalTriPlanes(v3D, icoFacePlanes[face], v1))
+         //if(vertexWithinSphericalTriPlanes(v3D, icoFacePlanes[face], v1))
          {
             const Vector3D * v2 = &icoVertices[icoIndices[face][1]];
             const Vector3D * v3 = &icoVertices[icoIndices[face][2]];
 
-            forwardIcoFace(v3D, v1, v2, v3, vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2], v);
+            forwardIcoFace(face, v3D, v1, v2, v3, vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2], v);
 
 #if 0 //def _DEBUG
             /*
@@ -448,7 +552,7 @@ public class RI5x6Projection
             }
 #endif
             result = true;
-            break;
+            //break;
          }
       }
 #ifdef _DEBUG
@@ -536,7 +640,7 @@ public class RI5x6Projection
          uint16 * indices = icoIndices[face];
          Vector3D p;
 
-         inverseIcoFace(v,
+         inverseIcoFace(face, v,
             vertices5x6[face][0], vertices5x6[face][1], vertices5x6[face][2],
             icoVertices[indices[0]], icoVertices[indices[1]], icoVertices[indices[2]],
             p);

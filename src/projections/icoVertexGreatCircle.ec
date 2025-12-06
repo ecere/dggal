@@ -269,66 +269,38 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
    }
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   void inverseIcoFace(const Pointd v,
+   void inverseIcoFace(int face, const Pointd v,
       const Pointd p1, const Pointd p2, const Pointd p3,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       Vector3D out)
    {
       double b[3];
-      Pointd pCenter {
-         (p1.x + p2.x + p3.x) / 3,
-         (p1.y + p2.y + p3.y) / 3
-      };
-      Pointd pMid;
-      Vector3D vCenter {
-         (v1.x + v2.x + v3.x) / 3,
-         (v1.y + v2.y + v3.y) / 3,
-         (v1.z + v2.z + v3.z) / 3
-      };
-      Vector3D vMid;
-      const Pointd * p5x6[3] = { &pMid, null, &pCenter };
-      const Vector3D * v3D[3] = { &vMid, null, &vCenter };
-      int subTri = 0;
-
       cartesianToBary(b, v, p1, p2, p3, -1);
-
-      if(b[0] <= b[1] && b[0] <= b[2])
       {
-         pMid = { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
-         vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
-
-         if(b[1] < b[2])
-            p5x6[1] = p3, v3D[1] = v3, subTri = 0;
-         else
-            p5x6[1] = p2, v3D[1] = v2, subTri = 1;
-      }
-      else if(b[1] <= b[0] && b[1] <= b[2])
-      {
-         pMid = { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
-         vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
-
-         if(b[0] < b[2])
-            p5x6[1] = p3, v3D[1] = v3, subTri = 2;
-         else
-            p5x6[1] = p1, v3D[1] = v1, subTri = 3;
-      }
-      else if(b[2] <= b[0] && b[2] <= b[1])
-      {
-         pMid = { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
-         vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
-
-         if(b[0] < b[1])
-            p5x6[1] = p2, v3D[1] = v2, subTri = 4;
-         else
-            p5x6[1] = p1, v3D[1] = v1, subTri = 5;
-      }
-      vCenter.Normalize(vCenter);
-      vMid.Normalize(vMid);
-
-      {
+         int subTri =
+            (b[0] <= b[1] && b[0] <= b[2]) ? (b[1] < b[2] ? 0 : 1) :
+            (b[1] <= b[0] && b[1] <= b[2]) ? (b[0] < b[2] ? 2 : 3) :
+          /*(b[2] <= b[0] && b[2] <= b[1]) ?*/b[0] < b[1] ? 4 : 5;
+         int tri3rd = subTri >> 1;
+         const Pointd * p5x6[3] =
+         {
+            &ico56Mids[face][tri3rd],
+            subTri == 0 || subTri == 2 ? p3 :
+            subTri == 1 || subTri == 4 ? p2 : p1, //subTri == 3 || subTri == 5
+            &ico56Center[face]
+         };
+         const Vector3D * v3D[3] =
+         {
+            &ico3rdMids[face][tri3rd],
+            subTri == 0 || subTri == 2 ? v3 :
+            subTri == 1 || subTri == 4 ? v2 : v1, //subTri == 3 || subTri == 5
+            &icoCentroids[face]
+         };
          bool bIsA = (radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4);
-         int a = vb, b = bIsA ? va : vc, c = bIsA ? vc : va;
-         inverseVector(v, p5x6[a], p5x6[b], p5x6[c], v3D[a], v3D[b], v3D[c], out, bIsA);
+         {
+            int a = vb, b = bIsA ? va : vc, c = bIsA ? vc : va;
+            inverseVector(v, p5x6[a], p5x6[b], p5x6[c], v3D[a], v3D[b], v3D[c], out, bIsA);
+         }
       }
    }
 
@@ -387,65 +359,53 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       baryToCartesian(b, out, pai, pbi, pci);
    }
 
-   __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
-   void forwardIcoFace(const Vector3D v,
+   private static inline int findSubTri(int face, const Vector3D v)
+   {
+      int best3rd = 0, best6th = 0, i;
+      double d, bestDot = -MAXDOUBLE;
+      const Vector3D * c;
+
+      for(i = 0; i < 3; i++)
+      {
+         c = &ico3rdCentroids[face][i];
+         d = c->x * v.x + c->y * v.y + c->z * v.z;
+         if(d > bestDot)
+            bestDot = d, best3rd = i;
+      }
+
+      bestDot = -MAXDOUBLE;
+      for(i = 0; i < 2; i++)
+      {
+         c = &ico6thCentroids[face][best3rd][i];
+         d = c->x * v.x + c->y * v.y + c->z * v.z;
+         if(d > bestDot)
+            bestDot = d, best6th = i;
+      }
+      return 2 * best3rd + best6th;
+   }
+
+   void forwardIcoFace(int face, const Vector3D v,
       const Vector3D v1, const Vector3D v2, const Vector3D v3,
       const Pointd p1, const Pointd p2, const Pointd p3,
       Pointd out)
    {
-      Pointd pCenter = {
-         (p1.x + p2.x + p3.x) / 3,
-         (p1.y + p2.y + p3.y) / 3
+      int subTri = findSubTri(face, v), tri3rd = subTri >> 1;
+      const Pointd * p5x6[3] =
+      {
+         &ico56Mids[face][tri3rd],
+         subTri == 0 || subTri == 2 ? p3 :
+         subTri == 1 || subTri == 4 ? p2 : p1, //subTri == 3 || subTri == 5
+         &ico56Center[face]
       };
-      Vector3D vCenter {
-         (v1.x + v2.x + v3.x) / 3,
-         (v1.y + v2.y + v3.y) / 3,
-         (v1.z + v2.z + v3.z) / 3
+      const Vector3D * v3D[3] =
+      {
+         &ico3rdMids[face][tri3rd],
+         subTri == 0 || subTri == 2 ? v3 :
+         subTri == 1 || subTri == 4 ? v2 : v1, //subTri == 3 || subTri == 5
+         &icoCentroids[face]
       };
-      Pointd pMid;
-      Vector3D vMid;
-      const Pointd * p5x6[3] = { &pMid, null, &pCenter };
-      const Vector3D * v3D[3] = { &vMid, null, &vCenter };
-      int subTri = 0;
-
-      // TODO: Pre-compute these planes as well
-      if(vertexWithinSphericalTri(v, vCenter, v2, v3))
-      {
-         pMid = { (p2.x + p3.x) / 2, (p2.y + p3.y) / 2 };
-         vMid = { (v2.x + v3.x) / 2, (v2.y + v3.y) / 2, (v2.z + v3.z) / 2 };
-
-         if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
-            v3D[1] = v3, p5x6[1] = p3, subTri = 0;
-         else
-            v3D[1] = v2, p5x6[1] = p2, subTri = 1;
-      }
-      else if(vertexWithinSphericalTri(v, vCenter, v3, v1))
-      {
-         pMid = { (p3.x + p1.x) / 2, (p3.y + p1.y) / 2 };
-         vMid = { (v3.x + v1.x) / 2, (v3.y + v1.y) / 2, (v3.z + v1.z) / 2 };
-
-         if(vertexWithinSphericalTri(v, vCenter, vMid, v3))
-            v3D[1] = v3, p5x6[1] = p3, subTri = 2;
-         else
-            v3D[1] = v1, p5x6[1] = p1, subTri = 3;
-      }
-      else if(vertexWithinSphericalTri(v, vCenter, v1, v2))
-      {
-         pMid = { (p1.x + p2.x) / 2, (p1.y + p2.y) / 2 };
-         vMid = { (v1.x + v2.x) / 2, (v1.y + v2.y) / 2, (v1.z + v2.z) / 2 };
-
-         if(vertexWithinSphericalTri(v, vCenter, vMid, v2))
-            v3D[1] = v2, p5x6[1] = p2, subTri = 4;
-         else
-            v3D[1] = v1, p5x6[1] = p1, subTri = 5;
-      }
-
-      vCenter.Normalize(vCenter);
-      vMid.Normalize(vMid);
-      {
-         bool bIsA = (radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4);
-         int a = vb, b = bIsA ? va : vc, c = bIsA ? vc : va;
-         forwardVector(v, v3D[a], v3D[b], v3D[c], p5x6[a], p5x6[b], p5x6[c], out);
-      }
+      bool bIsA = (radialVertex == ivea) ^ (subTri == 0 || subTri == 3 || subTri == 4);
+      int a = vb, b = bIsA ? va : vc, c = bIsA ? vc : va;
+      forwardVector(v, v3D[a], v3D[b], v3D[c], p5x6[a], p5x6[b], p5x6[c], out);
    }
 }
