@@ -132,7 +132,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AB = acos(sqrt((phi + 1)/3));
                AC = atan(1/phi);
                BC = atan(2/(phi*phi));
-               sinAlpha = 1, cosAlpha = 0;
                break;
             case ivea:
                va = 0, vb = 1, vc = 2;
@@ -142,7 +141,6 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AB = atan(1/phi);
                AC = acos(sqrt((phi + 1)/3));
                BC = atan(2/(phi*phi));
-               sinAlpha = 1, cosAlpha = 0;
                break;
             case rtea:
                va = 1, vb = 0, vc = 2;
@@ -152,13 +150,12 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
                AB = atan(1/phi);
                AC = atan(2/(phi*phi));
                BC = acos(sqrt((phi + 1)/3));
-               sinAlpha = sin(alpha), cosAlpha = cos(alpha);
                break;
          }
          // poleFixIVEA = value == ivea;
-         cosAB = cos(AB), sinAB = sin(AB);
-         tanHAB = tan(AB/2);
-         cosAC = cos(AC), sinAC = sin(AC);
+         cosAB = cos(AB);
+         cosAC = cos(AC);
+         sinAC = sin(AC);
          cosBC = cos(BC);
 
       }
@@ -166,8 +163,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
 
    Radians beta, gamma, alpha;
    Radians AB, AC, BC;
-   double cosAB, sinAB, tanHAB, cosAC, sinAC, cosBC;
-   double sinAlpha, cosAlpha;
+   double cosAB, sinAC, cosAC, cosBC;
    int va, vb, vc;
 
    __attribute__ ((optimize("-fno-unsafe-math-optimizations")))
@@ -195,27 +191,26 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          const double h = 1 - b[0];
          const double b2oh = b[2] / h;
          const Radians b2ohABC = b2oh * areaABC;
-         const double S = sin(b2ohABC);
+         const double halfC = sin(b2ohABC / 2);
+         const double halfC2 = halfC * halfC;
+         const double CC = 2 * halfC2; // Half-angle identity; 1 - sqrt(1 - S * S) is quite imprecise
+         const double S = 2 * halfC * sqrt(1 - halfC2);
          const double c01 = bIsA ? cosAB : cosBC; //A.x * B.x + A.y * B.y + A.z * B.z; //A.DotProduct(B);
          const double c12 = cosAC; //B.x * C.x + B.y * C.y + B.z * C.z; //B.DotProduct(C);
          const double c20 = bIsA ? cosBC : cosAB; //C.x * A.x + C.y * A.y + C.z * A.z; //C.DotProduct(A);
          const double s12 = sinAC; // also sqrt(1 - c12*c12) and c1.length
          const double V = A.x * c1.x + A.y * c1.y + A.z * c1.z; //A.DotProduct(c1); // Scalar triple-product of A, B, C; constant per spherical tri
-         const double halfC = sin(b2ohABC / 2);
-         const double CC = 2 * halfC * halfC; // Half-angle identity; 1 - sqrt(1 - S * S) is quite imprecise
          const double f = S * V + CC * (c01 * c12 - c20);
          const double g = CC * s12 * (1 + c01);
          const double f2 = f * f, g2 = g * g, gf = g * f;
-         const double term1 = s12 * (f2 - g2);
-         const double term2 = 2 * gf * c12;
+         const double numerator = s12 * (f2 - g2) - 2 * gf * c12;
          const double divisor = s12 * (f2 + g2);
-         const double diff = term1 - term2;
 
-         if((fabs(diff) > 1E-9 && fabs(divisor) > 1E-9))
+         if((fabs(numerator) > 1E-9 && fabs(divisor) > 1E-9))
          {
-            // Optimized trigonometry-free branch equivalent to 2 SLERPs for non-denerate cases
+            // Optimized trigonometry-free branch equivalent to 2 SLERPs for non-degnerate cases
             const double oODivisor = 1.0 / divisor;
-            const double ap = Max(0.0, (term1 - term2) * oODivisor);
+            const double ap = Max(0.0, numerator * oODivisor);
             const double bp = Min(1.0, 2 * gf * oODivisor);
             const Vector3D p
             {

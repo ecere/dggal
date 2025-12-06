@@ -338,7 +338,7 @@ public class RI5x6Projection
       int sgn = 0;
 
       // This function assumes spherical triangle with edges smaller than 90 degrees
-      if((Radians)angleBetweenUnitVectors(v3D, v1) > Pi/2)
+      if(v3D.x * v1.x + v3D.y * v1.y + v3D.z * v1.z < 0)
          return false;
 
       planes[0].FromPoints({ 0, 0, 0 }, v1, v2);
@@ -365,7 +365,7 @@ public class RI5x6Projection
       int sgn = 0;
 
       // This function assumes spherical triangle with edges smaller than 90 degrees
-      if((Radians)angleBetweenUnitVectors(v3D, v1) > Pi/2)
+      if(v3D.x * v1.x + v3D.y * v1.y + v3D.z * v1.z < 0)
          return false;
 
       for(i = 0; i < 3; i++)
