@@ -84,6 +84,7 @@ static define precisionPerDefinition = Degrees { 1e-5 };
 /*static */define invTriWidth = 0.000000130302362294123870772483295681045794621239; // 1 / triWidth
 /*static */define triWidthOver2 = 3837228.974186817588708390593582550750582603355645708023;
 /*static*/ define sqrt3 = 1.73205080756887729352744634150587236694280525381038; //sqrt(3);
+define parallelepipedV = 0.187592474085079899860139346907608784667343727831164; // sqrt((5-2*sqrt(5))/15)
 
 public class RI5x6Projection
 {

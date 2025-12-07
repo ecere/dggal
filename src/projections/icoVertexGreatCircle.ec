@@ -174,18 +174,12 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
    {
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
       double b[3];
-      Vector3D c1;
 
       cartesianToBary(b, pi, pai, pbi, pci, -6);
 
            if(b[0] > 1 - 1E-15) { P = A; return; }
       else if(b[1] > 1 - 1E-15) { P = B; return; }
       else if(b[2] > 1 - 1E-15) { P = C; return; }
-
-      // c1.CrossProduct(B, C); constant per spherical tri
-      c1.x = B.y * C.z - B.z * C.y;
-      c1.y = B.z * C.x - B.x * C.z;
-      c1.z = B.x * C.y - B.y * C.x;
 
       {
          const double h = 1 - b[0];
@@ -199,8 +193,7 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
          const double c12 = cosAC; //B.x * C.x + B.y * C.y + B.z * C.z; //B.DotProduct(C);
          const double c20 = bIsA ? cosBC : cosAB; //C.x * A.x + C.y * A.y + C.z * A.z; //C.DotProduct(A);
          const double s12 = sinAC; // also sqrt(1 - c12*c12) and c1.length
-         const double V = A.x * c1.x + A.y * c1.y + A.z * c1.z; //A.DotProduct(c1); // Scalar triple-product of A, B, C; constant per spherical tri
-         const double f = S * V + CC * (c01 * c12 - c20);
+         const double f = S * parallelepipedV + CC * (c01 * c12 - c20);
          const double g = CC * s12 * (1 + c01);
          const double f2 = f * f, g2 = g * g, gf = g * f;
          const double numerator = s12 * (f2 - g2) - 2 * gf * c12;
