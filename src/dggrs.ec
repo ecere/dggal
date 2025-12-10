@@ -263,6 +263,7 @@ public:
       }
       return level;
    }
+
    double getRefZoneArea(int level) // In meters squared
    {
       int maxLevel = getMaxDGGRSZoneLevel();
@@ -271,13 +272,11 @@ public:
       if(zoneCount)
       {
          if(!earthArea) earthArea = wholeWorld.geodeticArea;
-         if(level < maxLevel)
+         if(level <= maxLevel)
             return earthArea / zoneCount;
          else
          {
-            DGGRSZone testZone = getZoneFromWGS84Centroid(maxLevel, { 0, 10 });
-            int64 nSubZones = countSubZones(testZone, level - maxLevel);
-            return earthArea / (zoneCount * nSubZones);
+            return earthArea / (zoneCount * pow(getRefinementRatio(), level - maxLevel));
          }
       }
       return 0;
