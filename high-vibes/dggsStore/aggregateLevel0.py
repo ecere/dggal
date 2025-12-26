@@ -54,7 +54,7 @@ def _process_stored_root_aggregate(store, root_zone, depth, sub_index, subs, sum
       src_zones = dggrs.getSubZones(t, rel_depth)
       t_idx = sub_index.get(int(t))
       for s in src_zones:
-         idx = src_index[int(s)]
+         idx = src_index.get(int(s))
          if idx is not None:
             val = data[idx]
             if val is not None:

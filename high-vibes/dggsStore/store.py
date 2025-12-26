@@ -7,6 +7,7 @@ import gzip
 import threading
 import logging
 from typing import Any, Dict, List, Optional, Tuple, Iterable, TypedDict, Mapping, Sequence
+from types import MethodType
 import ubjson
 
 DGGS_JSON_SCHEMA_URI = "https://schemas.opengis.net/ogcapi/dggs/part1/1.0/openapi/schemas/dggrs-json/schema"
@@ -49,19 +50,63 @@ store_lock = threading.Lock()
 dggrs_cache: Dict[str, DGGRS] = {}
 dggrs_lock = threading.Lock()
 
+# We'll extend the DGGRS class with getZonePrimaryChildren() and getZonePrimaryParent() which are not yet part of DGGAL
+def getZonePrimaryChildren7H(self, zone):
+   children = self.getZoneChildren(zone)
+   if children is not None:
+      children.count = 7 # The first 7 children are the primary children for 7H
+   return children
+
+def getZonePrimaryChildren3H(self, zone):
+   # The 3H children are associated with the parent who is itself a centroid child (snowflake fractal)
+   return self.getZoneChildren(zone) if self.isZoneCentroidChild(zone) else [ self.getZoneCentroidChild(zone) ]
+
+def getZonePrimaryParent3H(self, zone):
+   parents = self.getZoneParents(zone)
+   nParents = 0 if parents is None else len(parents)
+   if nParents == 1:
+      return parents[0]
+   elif nParents > 0:
+      # NOTE: as of DGGAL 0.0.6, parents[0] is not always the primary parent for 3H
+      for p in parents:
+         if self.isZoneCentroidChild(p):
+            return p
+
+def getZonePrimaryParent0(self, zone):
+   parents = self.getZoneParents(zone)
+   if parents is not None and len(parents) > 0:
+      # NOTE: parents[0] should always be the primary parent for 7H
+      return parents[0]
+
 def get_or_create_dggrs(dggrsID: str) -> DGGRS:
    key = f"dggrs:{dggrsID}"
    with dggrs_lock:
-      inst = dggrs_cache.get(key)
-      if inst is not None:
-         return inst
+      dggrs = dggrs_cache.get(key)
+      if dggrs is not None:
+         return dggrs
       cls = globals().get(dggrsID)
       if cls is None:
          print(f"DGGRS class not found: {dggrsID!r}")
          return None
-      inst = cls()
-      dggrs_cache[key] = inst
-      return inst
+      dggrs = cls()
+
+      maxNB = dggrs.getMaxNeighbors()
+      if maxNB == 6: # This is only true for 3H and 7H as of DGGAL 0.0.6
+         # Hexagonal DGGRS
+         ratio = dggrs.getRefinementRatio()
+         if ratio == 3:
+            dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren3H, dggrs)
+            dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent3H, dggrs)
+         else:
+            dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren7H, dggrs)
+            dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
+      else:
+         # Fully nested DGGRS
+         dggrs.getZonePrimaryChildren = dggrs.getZoneChildren
+         dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
+
+      dggrs_cache[key] = dggrs
+      return dggrs
 
 def ensure_package_table(path: str) -> None:
    os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -209,10 +254,9 @@ class DGGSDataStore:
            if self._is_base_level(current_level):
                # prepend so final order is top -> ... -> deepest
                bases.insert(0, zone)
-           parents = dggrs.getZoneParents(zone)
-           if not parents:
+           zone = dggrs.getZonePrimaryParent(zone)
+           if zone is None:
                break
-           zone = parents[0]
            current_level = dggrs.getZoneLevel(zone)
 
        return bases
@@ -275,27 +319,20 @@ class DGGSDataStore:
       for lvl0 in seeds:
          yield lvl0
 
-   def iter_bases_under_lvl0(self, lvl0: DGGRSZone, base_level: int, up_to: bool = False, use_visited: bool = False,
+   def iter_bases_under_lvl0(self, lvl0: DGGRSZone, base_level: int, up_to: bool = False,
       in_extent_cb=None) -> Iterable[Tuple[DGGRSZone, List[DGGRSZone]]]:
       if base_level <= 0:
          return
       dggrs = self.dggrs
       stack: List[Tuple[DGGRSZone, List[DGGRSZone]]] = []
-      visited = set() if use_visited else None
 
       # start from lvl0's children (iter_bases yields lvl0 itself when appropriate)
-      children0 = dggrs.getZoneChildren(lvl0) or []
+      children0 = dggrs.getZonePrimaryChildren(lvl0) or []
       for child in children0:
          stack.append((child, [lvl0]))
 
       while stack:
          zone, base_ancestors = stack.pop()
-
-         if use_visited:
-            zid = int(zone)
-            if zid in visited:
-               continue
-            visited.add(zid)
 
          if in_extent_cb is not None and not in_extent_cb(zone):
             continue
@@ -316,13 +353,12 @@ class DGGSDataStore:
             continue
 
          # otherwise descend normally
-         children = dggrs.getZoneChildren(zone) or []
+         children = dggrs.getZonePrimaryChildren(zone) or []
          for child in children:
             stack.append((child, base_ancestors))
 
 
-   def iter_bases(self, base_level: int, up_to: bool = False, use_visited: bool = False,
-      in_extent_cb=None) -> Iterable[Tuple[DGGRSZone, List[DGGRSZone]]]:
+   def iter_bases(self, base_level: int, up_to: bool = False, in_extent_cb=None) -> Iterable[Tuple[DGGRSZone, List[DGGRSZone]]]:
       if not self._is_base_level(base_level):
          return
       dggrs = self.dggrs
@@ -340,12 +376,11 @@ class DGGSDataStore:
                lvl0,
                base_level,
                up_to=up_to,
-               use_visited=use_visited,
                in_extent_cb=in_extent_cb,
             ):
                yield (base_zone, base_ancestors)
 
-   def iter_roots_for_base(self, base_zone: DGGRSZone, level: int, up_to: bool=False, use_visited: bool=False, in_extent_cb=None) -> Iterable[DGGRSZone]:
+   def iter_roots_for_base(self, base_zone: DGGRSZone, level: int, up_to: bool=False, in_extent_cb=None) -> Iterable[DGGRSZone]:
       dggrs = self.dggrs
       base_level = dggrs.getZoneLevel(base_zone)
 
@@ -363,20 +398,13 @@ class DGGSDataStore:
          return
 
       stack: List[Tuple[DGGRSZone, int]] = []
-      children = dggrs.getZoneChildren(base_zone) or []
+      children = dggrs.getZonePrimaryChildren(base_zone) or []
       for child in children:
          stack.append((child, base_level + 1))
-
-      visited = set() if use_visited else None
 
       while stack:
          zone, ref = stack.pop()
          zid = int(zone)
-
-         if use_visited:
-            if zid in visited:
-               continue
-            visited.add(zid)
 
          # yield according to up_to vs exact semantics
          if up_to:
@@ -393,7 +421,7 @@ class DGGSDataStore:
 
          # only descend while ref < level (children would be ref+1)
          if ref < level:
-            children = dggrs.getZoneChildren(zone) or []
+            children = dggrs.getZonePrimaryChildren(zone) or []
             for child in children:
                stack.append((child, ref + 1))
 
