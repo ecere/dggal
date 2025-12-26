@@ -60,7 +60,7 @@ def dggs_zone_data(collectionId: str, dggrsId: str, zoneId: str):
          else:
             values_for_depth = assemble_zone_at_depth(store, zone, d)
          if values_for_depth is None:
-            collected_by_depth.clear()
+            collected_by_depth = None
             break
          collected_by_depth[d] = values_for_depth
       if collected_by_depth is not None:

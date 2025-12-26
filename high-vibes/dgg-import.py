@@ -39,7 +39,7 @@ def _coords_for_centroids(centroids, raster_crs: str):
          pts.append((xs[0], ys[0]))
    return pts
 
-def build_entry_for_root(dggrs, dggrs_name: str, ds, raster_crs: str, root_zone: DGGRSZone, data_level: int, depth: int, field_name: str) -> Dict[str, Any]:
+def build_entry_for_root(dggrs, dggrs_uri: str, ds, raster_crs: str, root_zone: DGGRSZone, data_level: int, depth: int, field_name: str) -> Dict[str, Any]:
    root_text = dggrs.getZoneTextID(root_zone)
    root_level = dggrs.getZoneLevel(root_zone)
    rel_depth = depth
@@ -69,13 +69,13 @@ def build_entry_for_root(dggrs, dggrs_name: str, ds, raster_crs: str, root_zone:
 
    depth_obj = { "depth": rel_depth, "shape": { "count": count_centroids, "subZones": count_centroids }, "data": sampled_values }
    return {
-      "dggrs": dggrs_name,
+      "dggrs": dggrs_uri,
       "zoneId": root_text,
       "depths": [rel_depth],
       "values": { field_name: [depth_obj] }
    }
 
-def process_batch_import(store: DGGSDataStore, ds, raster_crs: str, dggrs: DGGRS, dggrs_name: str,
+def process_batch_import(store: DGGSDataStore, ds, raster_crs: str, dggrs: DGGRS, dggrs_uri: str,
    zones: List[int], pkg_index: int, batch_num: int, base_ancestors: List[int], data_level: int, depth: int, field_name: str):
    if not zones:
       print(f"[PACKAGE {pkg_index} BATCH {batch_num}] empty batch, skipping", flush=True)
@@ -88,7 +88,7 @@ def process_batch_import(store: DGGSDataStore, ds, raster_crs: str, dggrs: DGGRS
 
    entries: Dict[int, Any] = {}
    for zid in zone_ids:
-      entry = build_entry_for_root(dggrs, dggrs_name, ds, raster_crs, zid, data_level, depth, field_name)
+      entry = build_entry_for_root(dggrs, dggrs_uri, ds, raster_crs, zid, data_level, depth, field_name)
       if entry:
          entries[zid] = entry
 
@@ -106,14 +106,12 @@ def process_batch_import(store: DGGSDataStore, ds, raster_crs: str, dggrs: DGGRS
 
 def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", collection_id: str | None = None,
    level: int | None = None, depth: int | None = None, fields: List[str] | None = None, batch_size: int = 32,
-   groupSize: int = 5, use_visited: bool = False):
+   groupSize: int = 5):
    if collection_id is None:
       collection_id = os.path.splitext(os.path.basename(tiff_path))[0]
 
    ds = rasterio.open(tiff_path)
    raster_crs = ds.crs.to_string() if ds.crs is not None else "EPSG:4326"
-
-   print(f"[IMPORT] Instantiating DGGSDataStore (minimal) groupSize={groupSize} dggrs={dggrs_name}", flush=True)
 
    # instantiate DGGRS implementation from globals (user-provided class name)
    dggrs_init = globals().get(dggrs_name)
@@ -159,6 +157,7 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
       "description": collection_id,
       "version": "1.0"
    }
+   dggrs_uri = f"[ogc-dggrs:{dggrs_name}]"
 
    base = os.path.join(data_root, collection_id)
    os.makedirs(base, exist_ok=True)
@@ -180,8 +179,8 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
    pkg_index = 0
    total_written = 0
 
-   for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True, use_visited=use_visited):
-      #print("inside for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True, use_visited=use_visited):")
+   for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True):
+      #print("inside for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True):")
       pkg_index += 1
       base_text = dggrs.getZoneTextID(int(base_zone))
 
@@ -200,7 +199,7 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
 
       print(f"[PACKAGE] #{pkg_index}: iterating roots up to level {max_root_level} (base_level={base_level}, package_max={package_max}, target={max_root_level})", flush=True)
 
-      roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=True, use_visited=use_visited)
+      roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=True)
 
       batch_num = 0
       batch_zones: List[int] = []
@@ -216,20 +215,22 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
             continue
 
          roots_seen_in_package += 1
-         print(f"[PACKAGE] #{pkg_index}: seen root #{roots_seen_in_package} -> {root_text} (root_level={root_level})", flush=True)
+         # print(f"[PACKAGE] #{pkg_index}: seen root #{roots_seen_in_package} -> {root_text} (root_level={root_level})", flush=True)
          batch_zones.append(zid)
 
          if len(batch_zones) >= batch_size:
             batch_num += 1
-            print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to write {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
-            written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_name, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
+            # print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to write {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
+            print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to import data for {len(batch_zones)} roots", flush=True)
+            written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_uri, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
             total_written += written
             batch_zones = []
 
       if batch_zones:
          batch_num += 1
-         print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: final write of {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
-         written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_name, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
+         # print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: final write of {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
+         print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to import data for {len(batch_zones)} roots", flush=True)
+         written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_uri, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
          total_written += written
 
       print(f"[PACKAGE] #{pkg_index} complete; total_written so far={total_written}", flush=True)
@@ -248,7 +249,6 @@ def main():
    p.add_argument("--fields", default="field0", help="comma-separated field names (only first used)")
    p.add_argument("--batch-size", type=int, default=32, help="Number of root zones per write batch")
    p.add_argument("--groupSize", type=int, default=5, help="Levels per package (default 5)")
-   p.add_argument("--visited", dest="use_visited", action="store_true", help="enable visited protection")
    args = p.parse_args()
 
    fields = [f.strip() for f in args.fields.split(",") if f.strip()]
@@ -263,7 +263,6 @@ def main():
       fields=fields,
       batch_size=args.batch_size,
       groupSize=args.groupSize,
-      use_visited=args.use_visited,
    )
 
 if __name__ == "__main__":

@@ -21,13 +21,12 @@ def parse_args():
    p.add_argument("--outdir", default="data", help="Output directory for packages (default data/)")
    p.add_argument("--groupSize", type=int, default=5, help="Levels per package (written to collection.json and passed to store)")
    p.add_argument("--depth", type=int, help="data depth (zone-depth) to request (default from DGGRS defaultDepth)")
-   p.add_argument("--max-res", type=int, default=24)
+   p.add_argument("--max-level", type=int, default=None, help="Maximum refinement level (default from server maxRefinementLevel)")
    p.add_argument("--batch-size", type=int, default=32, help="Number of root zones to request per HTTP call (default 32)")
    p.add_argument("--no-resume", action="store_true")
    p.add_argument("--resume-verbose", action="store_true", help="Show resume-related info for skipped roots")
    p.add_argument("--dry-run", action="store_true")
    p.add_argument("--debug", action="store_true", help="Enable debug logging")
-   p.add_argument("--max-packages", type=int, default=0, help="If >0, stop after this many packages (diagnostic)")
    return p.parse_args()
 
 
@@ -104,7 +103,16 @@ def main():
 
    dggrs_desc = dggs_client.get_dggrs_description(landing, collection, dggrs_id)
    depth = args.depth if args.depth is not None else int(dggrs_desc.get("defaultDepth", 8))
-   max_refinement = int(dggrs_desc.get("maxRefinementLevel", args.max_res))
+
+   # Use explicit --max-level if provided; otherwise prefer server's maxRefinementLevel; fallback to 24
+   server_max = dggrs_desc.get("maxRefinementLevel")
+   if args.max_level is not None:
+      max_refinement = int(args.max_level)
+   elif server_max is not None:
+      max_refinement = int(server_max)
+   else:
+      logger.error("Server did not provide maxRefinementLevel and --max-level not specified; aborting")
+      return
 
    coll_meta = dggs_client.get_collection_info(landing, collection)
    title = coll_meta.get("title") or coll_meta.get("name") or collection
@@ -146,9 +154,6 @@ def main():
 
    for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True):
       pkg_index += 1
-      if args.max_packages and pkg_index > args.max_packages:
-         logger.info("Reached --max-packages=%d, stopping", args.max_packages)
-         break
 
       base_text = dggrs.getZoneTextID(base_zone)
       pkg_path = store.compute_package_path_for_root_zone(base_zone, base_ancestors)
@@ -187,9 +192,6 @@ def main():
          batch_num += 1
          written = process_batch(store, batch_zones, pkg_index, batch_num, args, existing_ids, pkg_path, base_ancestors, per_package_workers, depth, landing, collection, dggrs_id)
          total_written += written
-
-      if args.max_packages and pkg_index >= args.max_packages:
-         break
 
    logger.info("all processing complete; total written=%d; output=%s", total_written, args.outdir)
 
