@@ -67,3 +67,6 @@ ehthumbs.db
 Icon
 Thumbs.db
 *.lnk
+
+# Python cache
+__pycache__/
