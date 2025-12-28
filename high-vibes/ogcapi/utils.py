@@ -100,13 +100,11 @@ def _is_primitive(v):
 def _serialize_primitive(v):
     return json.dumps(v, ensure_ascii=False)
 
-def pretty_json(obj, indent=0, indent_step=2):
-    """
-    Pretty-print JSON with:
-    - indentation
-    - arrays of primitives on one line
-    - nested arrays/objects expanded
-    """
+def pretty_json(obj, indent=0, indent_step=3):
+    #Pretty-print JSON with:
+    #- indentation
+    #- arrays of primitives on one line
+    #- nested arrays/objects expanded
     sp = " " * indent
     next_sp = " " * (indent + indent_step)
 

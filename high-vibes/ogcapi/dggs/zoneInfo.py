@@ -50,7 +50,7 @@ ZONE_HTML = """
 
     {% if zone.geometry is defined %}
       <div class="small">Geometry (Polygon):</div>
-      <pre style="background:#f8f8f8;padding:8px;border-radius:4px;overflow:auto;max-height:300px">{{ zone.geometry | tojson(indent=2) }}</pre>
+      <pre style="background:#f8f8f8;padding:8px;border-radius:4px;overflow:auto;max-height:300px">{{ zone.geometry | pretty_json }}</pre>
     {% endif %}
 
     <div style="height:8px"></div>
@@ -65,14 +65,12 @@ ZONE_HTML = """
 # ---------------- Helpers ----------------
 
 def polygon_geometry_from_zone(dggrs, zone):
-   """
-   Return a GeoJSON Polygon geometry for zone using DGGRS.getZoneRefinedWGS84Vertices.
-   - Calls dggrs.getZoneRefinedWGS84Vertices(zone, 0).
-   - Converts vertex objects to [lon, lat] float pairs.
-   - Ensures the ring is closed (last == first).
-   - Returns None if the vertex list is empty or None.
-   Note: returns the Polygon geometry directly (no Feature wrapper, no properties).
-   """
+   #Return a GeoJSON Polygon geometry for zone using DGGRS.getZoneRefinedWGS84Vertices.
+   #- Calls dggrs.getZoneRefinedWGS84Vertices(zone, 0).
+   #- Converts vertex objects to [lon, lat] float pairs.
+   #- Ensures the ring is closed (last == first).
+   #- Returns None if the vertex list is empty or None.
+   #Note: returns the Polygon geometry directly (no Feature wrapper, no properties).
    if zone is None:
       return None
    verts = dggrs.getZoneRefinedWGS84Vertices(zone, 0)
@@ -204,6 +202,7 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
    fmt, _ = negotiate_format(request, request.path)
 
    if fmt == "html":
+      app.jinja_env.filters['pretty_json'] = pretty_json
       # Render HTML with top_links and download links at the bottom; pass ubjson_self as well
       return html_response(
          ZONE_HTML,
