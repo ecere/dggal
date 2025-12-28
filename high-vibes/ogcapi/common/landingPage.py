@@ -70,8 +70,8 @@ def root_index():
       {"rel": "alternate", "type": "text/html", "href": html_self},
       {"rel": "data", "href": data_collections_href},
       {"rel": "conformance", "href": conformance_href},
-      {"rel": "service-doc", "href": api_doc_href},
-      {"rel": "service-desc", "href": openapi_href}
+      {"rel": "service-doc", "type" : "text/html", "href": api_doc_href},
+      {"rel": "service-desc", "type": "application/vnd.oai.openapi+json;version=3.0", "href": openapi_href}
    ]
 
    fmt, _ = negotiate_format(request, request.path)
