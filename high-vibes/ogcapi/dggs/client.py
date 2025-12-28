@@ -8,13 +8,13 @@ JSON_MIME = "application/json"
 # UBJSON_MIME = "application/ub+json"
 # GZIP_HEADER = "gzip"
 
+TIMEOUT = 120
+
 
 def parse_resource_url(resource_url: str) -> Tuple[str, str, str]:
-   """
-   Parse a resource URL like:
-     http://host/.../ogcapi/collections/{collectionId}/dggs/{dggrsId}
-   Returns (landing_base, collectionId, dggrsId).
-   """
+   # Parse a resource URL like:
+   #   http://host/.../ogcapi/collections/{collectionId}/dggs/{dggrsId}
+   # Returns (landing_base, collectionId, dggrsId).
    p = urlparse(resource_url)
    parts = p.path.strip("/").split("/")
    ci = parts.index("collections")
@@ -28,20 +28,16 @@ def parse_resource_url(resource_url: str) -> Tuple[str, str, str]:
    return landing_base, collectionId, dggrsId
 
 
-def get_collection_info(landing: str, collectionId: str, timeout: int = 30) -> Dict[str, Any]:
-   """
-   GET /collections/{collectionId} and return parsed JSON.
-   """
+def get_collection_info(landing: str, collectionId: str, timeout: int = TIMEOUT) -> Dict[str, Any]:
+   # GET /collections/{collectionId} and return parsed JSON.
    url = f"{landing.rstrip('/')}/collections/{collectionId}"
    r = requests.get(url, headers={"Accept": JSON_MIME}, timeout=timeout)
    r.raise_for_status()
    return r.json()
 
 
-def get_dggrs_description(landing: str, collectionId: str, dggrsId: str, timeout: int = 30) -> Dict[str, Any]:
-   """
-   GET /collections/{collectionId}/dggs/{dggrsId} and return parsed JSON.
-   """
+def get_dggrs_description(landing: str, collectionId: str, dggrsId: str, timeout: int = TIMEOUT) -> Dict[str, Any]:
+   # GET /collections/{collectionId}/dggs/{dggrsId} and return parsed JSON.
    url = f"{landing.rstrip('/')}/collections/{collectionId}/dggs/{dggrsId}"
    r = requests.get(url, headers={"Accept": JSON_MIME}, timeout=timeout)
    r.raise_for_status()
@@ -57,15 +53,13 @@ def fetch_zone_data_parallel(landing: str,
                              dggrsId: str,
                              zone_texts: List[str],
                              workers: int = 8,
-                             timeout: int = 30,
+                             timeout: int = TIMEOUT,
                              depth: Optional[int] = None,
                              use_ubjson: bool = False) -> Dict[str, Any]:
-   """
-   Fetch zone data objects in parallel.
-   Returns a dict mapping zone_text -> parsed object.
-   By default requests application/json. To request UBJSON+gzip set use_ubjson=True
-   and ensure server supports it (UBJSON handling is commented below).
-   """
+   # Fetch zone data objects in parallel.
+   # Returns a dict mapping zone_text -> parsed object.
+   # By default requests application/json. To request UBJSON+gzip set use_ubjson=True
+   # and ensure server supports it (UBJSON handling is commented below).
    headers = {
       "Accept": JSON_MIME,
       "User-Agent": "dgg-fetch/1.0"
