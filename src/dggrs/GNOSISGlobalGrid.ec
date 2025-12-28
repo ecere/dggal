@@ -432,7 +432,7 @@ public:
          GeoExtent extent = this.extent;
          int i = 0;
          Array<GeoPoint> centroids { size = (uint)nSubZones };
-         Array<GGGZone> subZones { };
+         Array<GGGZone> subZones { minAllocSize = (uint)nSubZones };
 
          // REVIEW: Optimize this
          listGGGZones(subZones, level, extent, 0);
@@ -701,7 +701,7 @@ static uint listGGGZones(Array<GGGZone> zones, int level, const GeoExtent extent
       else if(llLon > urLon + 0.000001)   // Turned a - into a + here as small extent caused date line to be true!
          dateLine = true;
 
-      if(zones)
+      if(zones && zones.minAllocSize < 8)
          zones.minAllocSize = 8;
       for(i = 0, extent.ur.lat = snapped.ur.lat; i < rowCount; i++)
       {
