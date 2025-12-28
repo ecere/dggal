@@ -356,6 +356,7 @@ public class GNOSISGlobalGrid : DGGRS
             default:
                delete centroids;
          }
+         delete geo;
          return centroids;
       }
       return null;
