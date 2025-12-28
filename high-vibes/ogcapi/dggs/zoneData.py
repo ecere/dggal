@@ -22,49 +22,49 @@ bp = Blueprint("dggs_zoneData", __name__, url_prefix="/collections/<collectionId
 @bp.route("/zones/<zoneId>/data.ubjson", methods=["GET"])
 def dggs_zone_data(collectionId: str, dggrsId: str, zoneId: str):
 
-   DATA_ROOT = data_root()
-   store = get_store(DATA_ROOT, collectionId)
-   dggrs_impl = store.dggrs
-   zone = dggrs_impl.getZoneFromTextID(zoneId)
-
-   path = request.path
-   fmt, gzip_ok = negotiate_format(request, path=path)
-   requested_depths = parse_zone_depths(request.args.get("zone-depth", str(store.depth)))
-
    payload_already_gzipped = False
    raw_blob: bytes | None = None
-   decoded_obj: object | None = None
    dggs_json: object | None = None
 
-   if len(requested_depths) == 1 and requested_depths[0] == store.depth:
-      pkg = store.compute_package_path_for_root_zone(zone)
-      if pkg is not None:
-         blob = store.read_zone_blob(pkg, zone)
-         if blob is not None:
-            if fmt == "ubjson":
-               if gzip_ok:
-                  raw_blob = blob
-                  payload_already_gzipped = True
+   DATA_ROOT = data_root()
+   store = get_store(DATA_ROOT, collectionId)
+   if store is not None:
+      dggrs_impl = store.dggrs
+      zone = dggrs_impl.getZoneFromTextID(zoneId)
+
+      path = request.path
+      fmt, gzip_ok = negotiate_format(request, path=path)
+      requested_depths = parse_zone_depths(request.args.get("zone-depth", str(store.depth)))
+
+      if len(requested_depths) == 1 and requested_depths[0] == store.depth:
+         pkg = store.compute_package_path_for_root_zone(zone)
+         if pkg is not None:
+            blob = store.read_zone_blob(pkg, zone)
+            if blob is not None:
+               if fmt == "ubjson":
+                  if gzip_ok:
+                     raw_blob = blob
+                     payload_already_gzipped = True
+                  else:
+                     raw_blob = decompress_blob(blob)
                else:
-                  raw_blob = decompress_blob(blob)
+                  dggs_json = decode_blob(blob)
+      else:
+         collected_by_depth: CollectedValues = {}
+         for d in requested_depths:
+            if d == store.depth:
+               pkg = store.compute_package_path_for_root_zone(zone)
+               blob = store.read_zone_blob(pkg, zone) if pkg is not None else None
+               obj = decode_blob(blob) if blob is not None else None
+               values_for_depth = obj["values"] if obj is not None else None
             else:
-               dggs_json = decode_blob(blob)
-   else:
-      collected_by_depth: CollectedValues = {}
-      for d in requested_depths:
-         if d == store.depth:
-            pkg = store.compute_package_path_for_root_zone(zone)
-            blob = store.read_zone_blob(pkg, zone) if pkg is not None else None
-            obj = decode_blob(blob) if blob is not None else None
-            values_for_depth = obj["values"] if obj is not None else None
-         else:
-            values_for_depth = assemble_zone_at_depth(store, zone, d)
-         if values_for_depth is None:
-            collected_by_depth = None
-            break
-         collected_by_depth[d] = values_for_depth
-      if collected_by_depth is not None:
-         dggs_json = build_dggs_json_from_values(store, zone, collected_by_depth)
+               values_for_depth = assemble_zone_at_depth(store, zone, d)
+            if values_for_depth is None:
+               collected_by_depth = None
+               break
+            collected_by_depth[d] = values_for_depth
+         if collected_by_depth is not None:
+            dggs_json = build_dggs_json_from_values(store, zone, collected_by_depth)
 
    response_headers = None
 

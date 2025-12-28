@@ -62,21 +62,70 @@ def getZonePrimaryChildren3H(self, zone):
    return self.getZoneChildren(zone) if self.isZoneCentroidChild(zone) else [ self.getZoneCentroidChild(zone) ]
 
 def getZonePrimaryParent3H(self, zone):
+   primaryParent = None
    parents = self.getZoneParents(zone)
    nParents = 0 if parents is None else len(parents)
    if nParents == 1:
-      return parents[0]
+      primaryParent = parents[0]
    elif nParents > 0:
       # NOTE: as of DGGAL 0.0.6, parents[0] is not always the primary parent for 3H
       for p in parents:
          if self.isZoneCentroidChild(p):
-            return p
+            primaryParent = p
+            break;
+   if parents is not None:
+      Instance.delete(parents)
+   return primaryParent
 
 def getZonePrimaryParent0(self, zone):
    parents = self.getZoneParents(zone)
-   if parents is not None and len(parents) > 0:
-      # NOTE: parents[0] should always be the primary parent for 7H
-      return parents[0]
+   # NOTE: parents[0] should always be the primary parent for 7H
+   primaryParent = parents[0] if parents is not None and len(parents) > 0 else None
+   if parents is not None:
+      Instance.delete(parents)
+   return primaryParent
+
+def getSubZoneWeights7H(self, zone: DGGRSZone, depth: int):
+   if depth != 1:
+      return None  # Relative depth > 1 not yet implemented
+
+   nEdges = self.countZoneEdges(zone)
+   if nEdges == 5: # Pentagon
+      return [
+         1/12.0,                             # 1
+         1/12.0, 11/12.0, 11/12.0, 1/12.0,   # 2-5
+         11/12.0, 1.0, 11/12.0,              # 6-8
+         1/12.0, 11/12.0, 1/12.0,            # 9-11
+      ]
+   else:           # Hexagon
+      return [
+         1/12.0,                             # 1
+         1/12.0, 11/12.0, 11/12.0, 1/12.0,   # 2-5
+         11/12.0, 1.0, 11/12.0,              # 6-8
+         1/12.0, 11/12.0, 11/12.0, 1/12.0,   # 9-12
+         1/12.0                              # 13
+      ]
+
+def getSubZoneWeights3H(self, zone: DGGRSZone, depth: int):
+   if depth != 1:
+      return None  # Relative depth > 1 not yet implemented
+
+   nEdges = self.countZoneEdges(zone)
+   if nEdges == 5: # Pentagon
+      return [
+         1/3.0, 1/3.0,       # 1-2
+         1/3.0, 1.0, 1/3.0,  # 3-5
+         1/3.0,              # 6
+      ]
+   else:           # Hexagon
+      return [
+         1/3.0, 1/3.0,       # 1-2
+         1/3.0, 1.0, 1/3.0,  # 3-5
+         1/3.0, 1/3.0        # 6-7
+      ]
+
+def getSubZoneWeightsNested(self, zone: DGGRSZone, depth: int):
+   return None  # Fully nested DGGRSs sub-zones have equal weighting
 
 def get_or_create_dggrs(dggrsID: str) -> DGGRS:
    key = f"dggrs:{dggrsID}"
@@ -97,13 +146,16 @@ def get_or_create_dggrs(dggrsID: str) -> DGGRS:
          if ratio == 3:
             dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren3H, dggrs)
             dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent3H, dggrs)
+            dggrs.getSubZoneWeights = MethodType(getSubZoneWeights3H, dggrs)
          else:
             dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren7H, dggrs)
             dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
+            dggrs.getSubZoneWeights = MethodType(getSubZoneWeights7H, dggrs)
       else:
          # Fully nested DGGRS
          dggrs.getZonePrimaryChildren = dggrs.getZoneChildren
          dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
+         dggrs.getSubZoneWeights = MethodType(getSubZoneWeightsNested, dggrs)
 
       dggrs_cache[key] = dggrs
       return dggrs
@@ -318,6 +370,7 @@ class DGGSDataStore:
          return
       for lvl0 in seeds:
          yield lvl0
+      Instance.delete(seeds)
 
    def iter_bases_under_lvl0(self, lvl0: DGGRSZone, base_level: int, up_to: bool = False,
       in_extent_cb=None) -> Iterable[Tuple[DGGRSZone, List[DGGRSZone]]]:
@@ -330,6 +383,8 @@ class DGGSDataStore:
       children0 = dggrs.getZonePrimaryChildren(lvl0) or []
       for child in children0:
          stack.append((child, [lvl0]))
+      if not isinstance(children0, list):
+         Instance.delete(children0)
 
       while stack:
          zone, base_ancestors = stack.pop()
@@ -356,7 +411,8 @@ class DGGSDataStore:
          children = dggrs.getZonePrimaryChildren(zone) or []
          for child in children:
             stack.append((child, base_ancestors))
-
+         if not isinstance(children, list):
+            Instance.delete(children)
 
    def iter_bases(self, base_level: int, up_to: bool = False, in_extent_cb=None) -> Iterable[Tuple[DGGRSZone, List[DGGRSZone]]]:
       if not self._is_base_level(base_level):
@@ -401,6 +457,8 @@ class DGGSDataStore:
       children = dggrs.getZonePrimaryChildren(base_zone) or []
       for child in children:
          stack.append((child, base_level + 1))
+      if not isinstance(children, list):
+         Instance.delete(children)
 
       while stack:
          zone, ref = stack.pop()
@@ -424,6 +482,8 @@ class DGGSDataStore:
             children = dggrs.getZonePrimaryChildren(zone) or []
             for child in children:
                stack.append((child, ref + 1))
+            if not isinstance(children, list):
+               Instance.delete(children)
 
    def list_zones_with_data_at_level(self, root_level: int, as_textIDs: bool = False) -> List[Any]:
       result: List[Any] = []
@@ -462,9 +522,6 @@ class DGGSDataStore:
          rows.append((zone_text, blob))
 
       pkg_dir = os.path.dirname(pkg_path)
-      if pkg_dir:
-         os.makedirs(pkg_dir, exist_ok=True)
-
       write_sqlite_two_col(pkg_path, rows)
 
 def get_store(data_root: str, collection: str, config: Optional[dict] = None) -> DGGSDataStore:
@@ -483,3 +540,44 @@ def close_all_stores() -> None:
       store_cache.clear()
    with dggrs_lock:
       dggrs_cache.clear()
+
+# Build a canonical DGGS-JSON envelope from a field-organized map.
+# - store: DGGSDataStore (provides dggrs and config)
+# - zone: DGGRSZone (zone object or int accepted by store.dggrs helpers)
+# - fields_map: Dict[fieldName, List[ValueEntry]] where each ValueEntry already
+#   contains "depth", "shape", and "data" and follows the contract.
+def make_dggs_json_blob(dggrs_uri: str, zone_text: str, fields_map: Dict[str, List[Dict[str, Any]]]) -> Dict[str, Any]:
+   depth_nums: List[int] = []
+   for fld_depths in fields_map.values():
+      for e in fld_depths:
+         dn = int(e["depth"])
+         if dn not in depth_nums:
+            depth_nums.append(dn)
+
+   envelope: Dict[str, Any] = {
+      "dggrs": dggrs_uri,
+      "zoneId": zone_text,
+      "depths": depth_nums,
+      "values": { fname: entries for fname, entries in fields_map.items() },
+      "$schema": DGGS_JSON_SCHEMA_URI
+   }
+   return envelope
+
+# Merge multiple per-depth ValuesObjects into a single field-organized envelope.
+# - collected_values: Dict[depth:int, ValuesObject] where ValuesObject is
+#   Dict[fieldName, List[ValueEntry]]
+# This function delegates to build_zone_blob_from_fields for the final envelope.
+def build_dggs_json_from_values(store, zone, collected_values: Dict[int, Dict[str, List[Dict[str, Any]]]]) -> Dict[str, Any]:
+   # Merge per-depth ValuesObjects into a single fields_map
+   merged_fields: Dict[str, List[Dict[str, Any]]] = {}
+   # iterate depths in canonical ascending order
+   for d in sorted(int(dk) for dk in collected_values.keys()):
+      values_obj = collected_values[d]
+      for prop_key, entries in values_obj.items():
+         # append entries in the order provided by each depth
+         merged_fields.setdefault(prop_key, []).extend(entries)
+
+   dggrs_id = store.config["dggrs"]
+   dggrs_uri = f"[ogc-dggrs:{dggrs_id}]"
+   zone_text = store.dggrs.getZoneTextID(zone)
+   return make_dggs_json_blob(dggrs_uri, zone_text, merged_fields)

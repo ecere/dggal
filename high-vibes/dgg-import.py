@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 # dgg-import.py
-
 # Import a GeoTIFF into a DGGS Data Store by sampling the GeoTIFF at DGGS sub-zone centroids
-# and writing results into the store via DGGSDataStore.write_zone_batch (same pattern as dgg-fetch).
+# and writing results into the store via DGGSDataStore.write_zone_batch.
 
 # Usage:
 #  python dgg-import.py input.tif --dggrs IVEA4R --data-root data --collection mycol
@@ -14,8 +13,12 @@
 # - Batching mirrors dgg-fetch: roots are grouped and written with write_zone_batch.
 from __future__ import annotations
 from dggal import *
-from typing import List, Dict, Any
-import argparse, json, os, sys
+from typing import List, Dict, Any, Optional
+import argparse
+import json
+import os
+import sys
+import math
 
 # initialize dggal runtime
 app = Application(appGlobals=globals()); pydggal_setup(app)
@@ -23,15 +26,20 @@ app = Application(appGlobals=globals()); pydggal_setup(app)
 import rasterio
 from rasterio.warp import transform
 from rasterio.sample import sample_gen
+from rasterio.transform import Affine
 
-from dggsStore.store import DGGSDataStore
+from dggsStore.store import *
+from dggsStore.customDepths import *
 
-def _coords_for_centroids(centroids, raster_crs: str):
+# ---------------------------------------------------------------------------
+# Low-level sampling / coordinate helpers
+# ---------------------------------------------------------------------------
+
+def _coords_for_centroids(centroids, raster_crs: str) -> List[tuple]:
+   # centroids: iterable of DGGRSZone centroid objects with .lon/.lat
    pts: List[tuple] = []
    is4326 = raster_crs == "EPSG:4326"
    for gp in centroids:
-      lon = gp.lon
-      lat = gp.lat
       if is4326:
          pts.append((gp.lon, gp.lat))
       else:
@@ -39,101 +47,250 @@ def _coords_for_centroids(centroids, raster_crs: str):
          pts.append((xs[0], ys[0]))
    return pts
 
-def build_entry_for_root(dggrs, dggrs_uri: str, ds, raster_crs: str, root_zone: DGGRSZone, data_level: int, depth: int, field_name: str) -> Dict[str, Any]:
-   root_text = dggrs.getZoneTextID(root_zone)
-   root_level = dggrs.getZoneLevel(root_zone)
-   rel_depth = depth
+def _sample_values_for_centroids(ds, coords: List[tuple], overview_factor: Optional[int]) -> List[Any]:
+   # Sample values for coords. If overview_factor > 1, read that overview via out_shape
+   vals: List[Any] = []
+   if not coords:
+      return vals
 
-   print(f"[IMPORT] processing root {root_text} (root_level={root_level} data_level={data_level} rel_depth={rel_depth})", flush=True)
-   if data_level - root_level < 0:
-      print(f"[IMPORT] skipping root {root_text} because data_level < root_level", flush=True)
-      return {}
+   if overview_factor and overview_factor > 1:
+      factor = overview_factor
+      out_h = max(1, int(ds.height / factor))
+      out_w = max(1, int(ds.width / factor))
+      arr = ds.read(1, out_shape=(out_h, out_w))
+      inv_transform = ~ds.transform
+      scale_x = ds.width / out_w
+      scale_y = ds.height / out_h
 
-   centroids = dggrs.getSubZoneWGS84Centroids(root_zone, rel_depth) or []
-   count_centroids = len(centroids)
-   print(f"[IMPORT] root {root_text} returned {count_centroids} centroids", flush=True)
+      for (x, y) in coords:
+         colf, rowf = inv_transform * (x, y)
+         col_o = int(colf / scale_x)
+         row_o = int(rowf / scale_y)
+         if 0 <= row_o < out_h and 0 <= col_o < out_w:
+            v = arr[row_o, col_o]
+            vals.append(None if v is None else float(v))
+         else:
+            vals.append(None)
+      return vals
 
-   coords = _coords_for_centroids(centroids, raster_crs)
+   # fallback: full-resolution sampling
+   for arr in ds.sample(coords):
+      vals.append(None if arr is None else float(arr[0]))
+   return vals
 
-   sampled_values: List[Any] = []
-   if coords:
-      for arr in sample_gen(ds, coords):
-         sampled_values.append(None if arr is None else float(arr[0]))
-      print(f"[IMPORT] root {root_text} sampled {len(sampled_values)} values", flush=True)
+# ---------------------------------------------------------------------------
+# Overview selection helpers (meters-per-subzone based)
+# ---------------------------------------------------------------------------
+
+def _meters_per_degree_at_lat(lat_deg: float) -> float:
+   # approximate meters per degree of longitude at given latitude
+   lat_rad = math.radians(lat_deg)
+   return 111320.0 * math.cos(lat_rad)
+
+def _choose_overview_factor_for_level(ds, dggrs, zone, root_level: int, relative_depth: int) -> int:
+   # Choose the overview factor whose effective meters/pixel best matches the DGGRS
+   # meters-per-subzone for (root_level, relative_depth).
+   target_m_per_subzone = dggrs.getMetersPerSubZoneFromLevel(root_level, relative_depth)
+
+   # dataset base pixel size in dataset CRS units (pixel width)
+   base_px = abs(ds.transform.a)
+
+   # determine whether raster CRS is geographic (degrees) or projected (meters)
+   is_geographic = (ds.crs is None) or (ds.crs.to_string() == "EPSG:4326")
+
+   # pick a representative latitude for conversion using the DGGRS centroid API
+   lat = dggrs.getZoneWGS84Centroid(zone).lat
+
+   # convert base pixel to meters if raster CRS is geographic
+   if is_geographic:
+      meters_per_degree = _meters_per_degree_at_lat(lat)
+      base_px_m = base_px * meters_per_degree
    else:
-      print(f"[IMPORT] root {root_text} has no valid coords to sample", flush=True)
+      base_px_m = base_px
 
-   if len(sampled_values) != count_centroids:
-      print(f"[IMPORT] count mismatch for {root_text}: sampled={len(sampled_values)} expected={count_centroids}; skipping root", flush=True)
-      return {}
+   # available overview factors (include 1)
+   overviews = ds.overviews(1) if ds.count >= 1 else []
+   candidates = [1] + list(overviews)
 
-   depth_obj = { "depth": rel_depth, "shape": { "count": count_centroids, "subZones": count_centroids }, "data": sampled_values }
+   # choose candidate whose effective meters/pixel (base_px_m * factor) is closest to target
+   best = 1
+   best_diff = float("inf")
+   for f in candidates:
+      eff_px_m = base_px_m * f
+      diff = abs(eff_px_m - target_m_per_subzone)
+      if diff < best_diff:
+         best_diff = diff
+         best = f
+
+   # progress print for overview selection
+   print(f"[OVERVIEW] zone={dggrs.getZoneTextID(zone)} root_level={root_level} depth={relative_depth} "
+         f"target_m_per_subzone={target_m_per_subzone:.3f} base_px_m={base_px_m:.6f} chosen_factor={best}",
+         flush=True)
+
+   return best
+
+# ---------------------------------------------------------------------------
+# Canonical blob construction helpers
+# ---------------------------------------------------------------------------
+
+def _make_depth_obj(depth: int, count_centroids: int, sampled_values: Any) -> Dict[str, Any]:
    return {
-      "dggrs": dggrs_uri,
-      "zoneId": root_text,
-      "depths": [rel_depth],
-      "values": { field_name: [depth_obj] }
+      "depth": depth,
+      "shape": {"count": count_centroids, "subZones": count_centroids},
+      "data": sampled_values
    }
 
-def process_batch_import(store: DGGSDataStore, ds, raster_crs: str, dggrs: DGGRS, dggrs_uri: str,
-   zones: List[int], pkg_index: int, batch_num: int, base_ancestors: List[int], data_level: int, depth: int, field_name: str):
-   if not zones:
-      print(f"[PACKAGE {pkg_index} BATCH {batch_num}] empty batch, skipping", flush=True)
+# ---------------------------------------------------------------------------
+# Sampling and aggregation builders (produce Dict[int, Dict])
+# ---------------------------------------------------------------------------
+
+def _sample_depth_obj_for_zone(store, ds, raster_crs: str, dggrs, zone, data_level: int,
+   depth: int, use_overviews: bool) -> Optional[Dict[str, Any]]:
+   root_level = dggrs.getZoneLevel(zone)
+   if data_level - root_level < 0:
+      return None
+
+   centroids = dggrs.getSubZoneWGS84Centroids(zone, depth) or []
+   count_centroids = len(centroids)
+
+   coords = _coords_for_centroids(centroids, raster_crs)
+   Instance.delete(centroids)
+   if not coords:
+      print(f"[SAMPLE] zone={dggrs.getZoneTextID(zone)} depth={depth} no coords after transform, skipping", flush=True)
+      return None
+
+   # compute overview factor appropriate for this root level using DGGRS meters-per-subzone
+   overview_factor: Optional[int] = None
+   if use_overviews:
+      factor = _choose_overview_factor_for_level(ds, dggrs, zone, root_level, depth)
+      if factor and factor > 1:
+         overview_factor = factor
+
+   # progress print before sampling
+   print(f"[SAMPLE] zone={dggrs.getZoneTextID(zone)} root_level={root_level} depth={depth} "
+         f"centroids={count_centroids} overview_factor={overview_factor}", flush=True)
+
+   sampled_values = _sample_values_for_centroids(ds, coords, overview_factor)
+   if len(sampled_values) != count_centroids:
+      print(f"[SAMPLE] zone={dggrs.getZoneTextID(zone)} depth={depth} count_mismatch sampled={len(sampled_values)} expected={count_centroids}, skipping",
+            flush=True)
+      return None
+
+   print(f"[SAMPLE] zone={dggrs.getZoneTextID(zone)} depth={depth} sampled_ok", flush=True)
+   return _make_depth_obj(depth, count_centroids, sampled_values)
+
+def _build_sample_blobs(store, ds, raster_crs: str, dggrs, dggrs_uri: str,
+   zones: List, data_level: int, depth: int, fields: List[str],
+   use_overviews: bool) -> Dict[int, Dict[str, Any]]:
+   blobs: Dict[int, Dict[str, Any]] = {}
+   for zone in zones:
+      fields_map: Dict[str, List[Dict[str, Any]]] = {}
+      for field_name in fields:
+         depth_obj = _sample_depth_obj_for_zone(store, ds, raster_crs, dggrs, zone, data_level, depth, use_overviews)
+         if not depth_obj:
+            continue
+         fields_map.setdefault(field_name, []).append(depth_obj)
+
+      if not fields_map:
+         print(f"[BUILD] zone={dggrs.getZoneTextID(zone)} no fields_map produced, skipping", flush=True)
+         continue
+
+      zone_text = dggrs.getZoneTextID(zone)
+      blobs[int(zone)] = make_dggs_json_blob(dggrs_uri, zone_text, fields_map)
+      print(f"[BUILD] zone={zone_text} blob_ready fields={list(fields_map.keys())}", flush=True)
+   return blobs
+
+def _build_agg_blobs(store, dggrs, dggrs_uri: str, zones: List, depth: int, fields: List[str]) -> Dict[int, Dict[str, Any]]:
+   blobs: Dict[int, Dict[str, Any]] = {}
+   for zone in zones:
+      # aggregate_zone_at_depth returns a fields_map (Mapping[str, List[ValueEntry]])
+      fields_map = aggregate_zone_at_depth(store, zone, depth)
+      if not fields_map:
+         print(f"[AGG] zone={dggrs.getZoneTextID(zone)} aggregate returned empty, skipping", flush=True)
+         continue
+
+      zone_text = dggrs.getZoneTextID(zone)
+      blobs[int(zone)] = make_dggs_json_blob(dggrs_uri, zone_text, fields_map)
+      print(f"[AGG] zone={zone_text} agg_blob_accepted", flush=True)
+   return blobs
+
+# ---------------------------------------------------------------------------
+# Coordinator: single write boundary
+# ---------------------------------------------------------------------------
+
+def _process_batch(store, ds, raster_crs: str, dggrs, dggrs_uri: str,
+   base_zone, batch_zones: List, base_ancestors: List,
+   data_level: int, depth: int, field_name: str, use_overviews: bool, aggregate: bool) -> int:
+   # Keep compatibility with existing single-field call sites
+   fields = [field_name]
+
+   if not batch_zones:
+      print("[BATCH] empty batch, skipping", flush=True)
       return 0
 
-   zone_ids = [int(z) for z in zones]
-   root_texts = [dggrs.getZoneTextID(zid) for zid in zone_ids]
-   print(f"[PACKAGE {pkg_index} BATCH {batch_num}] preparing entries for {len(zones)} roots", flush=True)
-   print(f"[PACKAGE {pkg_index} BATCH {batch_num}] roots in batch: {', '.join(root_texts)}", flush=True)
+   print(f"[BATCH] processing batch base_zone={dggrs.getZoneTextID(base_zone)} roots={len(batch_zones)} aggregate={aggregate}", flush=True)
 
-   entries: Dict[int, Any] = {}
-   for zid in zone_ids:
-      entry = build_entry_for_root(dggrs, dggrs_uri, ds, raster_crs, zid, data_level, depth, field_name)
-      if entry:
-         entries[zid] = entry
+   if aggregate:
+      entries = _build_agg_blobs(store, dggrs, dggrs_uri, batch_zones, depth, fields)
+   else:
+      entries = _build_sample_blobs(store, ds, raster_crs, dggrs, dggrs_uri,
+         batch_zones, data_level, depth, fields, use_overviews)
 
    if not entries:
-      print(f"[PACKAGE {pkg_index} BATCH {batch_num}] no entries built, skipping write", flush=True)
+      print("[BATCH] no entries produced for this batch, skipping write", flush=True)
       return 0
 
-   sizes = [len(e.get("values", {}).get(field_name, [])) for e in entries.values()]
-   total_values = sum(sizes)
+   print(f"[BATCH] writing {len(entries)} entries to store for base_zone={dggrs.getZoneTextID(base_zone)}", flush=True)
+   store.write_zone_batch(
+      base_zone=base_zone,
+      entries=entries,
+      base_ancestor_list=base_ancestors,
+      precompressed=False
+   )
+   print(f"[BATCH] write complete for base_zone={dggrs.getZoneTextID(base_zone)} wrote={len(entries)}", flush=True)
+   return len(entries)
 
-   store.write_zone_batch(base_zone=int(zone_ids[0]), entries=entries, base_ancestor_list=[int(x) for x in base_ancestors], precompressed=False)
-   written = len(entries)
-   print(f"[PACKAGE {pkg_index} BATCH {batch_num}] wrote {written} roots", flush=True)
-   return written
+# ---------------------------------------------------------------------------
+# Main import function (control flow preserved)
+# ---------------------------------------------------------------------------
 
-def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", collection_id: str | None = None,
-   level: int | None = None, depth: int | None = None, fields: List[str] | None = None, batch_size: int = 32,
-   groupSize: int = 5):
+def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data",
+   collection_id: str | None = None, level: int | None = None, depth: int | None = None,
+   fields: List[str] | None = None, batch_size: int = 32, groupSize: int = 5,
+   aggregate: bool | None = None):
    if collection_id is None:
       collection_id = os.path.splitext(os.path.basename(tiff_path))[0]
 
    ds = rasterio.open(tiff_path)
    raster_crs = ds.crs.to_string() if ds.crs is not None else "EPSG:4326"
 
-   # instantiate DGGRS implementation from globals (user-provided class name)
+   has_overviews = False
+   if ds.count >= 1:
+      has_overviews = bool(ds.overviews(1))
+
+   if aggregate is None:
+      aggregate = not has_overviews
+   print(f"[IMPORT] has_overviews={has_overviews} aggregate={aggregate}", flush=True)
+
+   use_overviews_for_sampling = (not aggregate) and has_overviews
+
    dggrs_init = globals().get(dggrs_name)
    if dggrs_init is None:
       print("Unsupported DGGRS:", dggrs_name, flush=True)
       return
    dggrs = dggrs_init()
 
-   # compute data level if not provided
    if level is None:
-      bounds = ds.bounds
+      b = ds.bounds
       if raster_crs != "EPSG:4326":
-         xs, ys = transform(raster_crs, "EPSG:4326", [bounds.left, bounds.right], [bounds.bottom, bounds.top])
+         xs, ys = transform(raster_crs, "EPSG:4326", [b.left, b.right], [b.bottom, b.top])
          min_lon, max_lon = min(xs[0], xs[1]), max(xs[0], xs[1])
          min_lat, max_lat = min(ys[0], ys[1]), max(ys[0], ys[1])
       else:
-         min_lon, max_lon = min(bounds.left, bounds.right), max(bounds.left, bounds.right)
-         min_lat, max_lat = min(bounds.bottom, bounds.top), max(bounds.bottom, bounds.top)
-
-      extent = GeoExtent((min_lat, min_lon), (max_lat, max_lon))
-      pixels = Point(ds.width, ds.height)
-      level = dggrs.getLevelFromPixelsAndExtent(extent, pixels, 0)
+         min_lon, max_lon = min(b.left, b.right), max(b.left, b.right)
+         min_lat, max_lat = min(b.bottom, b.top), max(b.bottom, b.top)
+      level = dggrs.getLevelFromPixelsAndExtent(GeoExtent((min_lat, min_lon), (max_lat, max_lon)),
+         Point(ds.width, ds.height), 0)
       print(f"[IMPORT] computed data level from raster: {level}", flush=True)
 
    if depth is None:
@@ -141,7 +298,6 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
       print(f"[IMPORT] using default depth (get64KDepth) = {depth}", flush=True)
 
    data_level = level
-   # deepest_root_level is the global target for root levels
    deepest_root_level = max(0, data_level - depth)
 
    if not fields:
@@ -149,94 +305,98 @@ def import_geotiff(tiff_path: str, dggrs_name: str, data_root: str = "data", col
    field_name = fields[0]
 
    coll_info = {
-      "dggrs": dggrs_name,
-      "maxRefinementLevel": data_level,
-      "depth": depth,
-      "groupSize": groupSize,
-      "title": collection_id,
-      "description": collection_id,
-      "version": "1.0"
+      "dggrs": dggrs_name, "maxRefinementLevel": data_level, "depth": depth,
+      "groupSize": groupSize, "title": collection_id, "description": collection_id, "version": "1.0"
    }
    dggrs_uri = f"[ogc-dggrs:{dggrs_name}]"
 
    base = os.path.join(data_root, collection_id)
    os.makedirs(base, exist_ok=True)
-   coll_json_path = os.path.join(base, "collection.json")
-   with open(coll_json_path, "w", encoding="utf-8") as fh:
+   with open(os.path.join(base, "collection.json"), "w", encoding="utf-8") as fh:
       json.dump(coll_info, fh, indent=2)
-   print(f"[IMPORT] Wrote collection config to {coll_json_path}", flush=True)
+   print(f"[IMPORT] Wrote collection config to {os.path.join(base, 'collection.json')}", flush=True)
 
-   # create store with full config so store constructs the DGGRS used for writes
-   print(f"[IMPORT] Creating DGGSDataStore with full config", flush=True)
    store = DGGSDataStore(data_root, collection_id, config=coll_info)
    dggrs = store.dggrs
-
-   deepest_root_level = max(0, data_level - depth)
    max_base_level = store._base_level_for_root(deepest_root_level)
-   print(f"[IMPORT] Computed levels: data_level={data_level} depth={depth} finest_root_level={deepest_root_level} max_base_level={max_base_level} batch_size={batch_size}", flush=True)
+   print(
+      f"[IMPORT] Computed levels: data_level={data_level} depth={depth} finest_root_level={deepest_root_level} "
+      f"max_base_level={max_base_level} batch_size={batch_size}", flush=True
+   )
    print(f"[DIAG] using groupSize={groupSize} (recommended default is 5)", flush=True)
 
    pkg_index = 0
    total_written = 0
+   finest_level_done = False
 
-   for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True):
-      #print("inside for base_zone, base_ancestors in store.iter_bases(max_base_level, up_to=True):")
-      pkg_index += 1
-      base_text = dggrs.getZoneTextID(int(base_zone))
+   for root_level in range(deepest_root_level, -1, -1):
+      base_level = store._base_level_for_root(root_level)
+      up_to = False
+      for base_zone, base_ancestors in store.iter_bases(base_level, up_to=up_to):
+         pkg_index += 1
+         base_text = dggrs.getZoneTextID(base_zone)
+         print(f"[LEVEL {root_level}] #{pkg_index}: base_zone={base_text}", flush=True)
 
-      print(f"[PACKAGE] #{pkg_index}: base_zone={base_text}", flush=True)
-
-      base_level = dggrs.getZoneLevel(int(base_zone))
-      package_group_levels = store.group0Size if base_level == 0 else store.groupSize
-      package_max = base_level + package_group_levels - 1
-
-      # compute max_root_level from global target (data_level - depth)
-      max_root_level = max(0, data_level - depth)
-
-      if base_level > max_root_level:
-         print(f"[SKIP] package base {base_text} (base_level={base_level}) deeper than target {max_root_level}", flush=True)
-         continue
-
-      print(f"[PACKAGE] #{pkg_index}: iterating roots up to level {max_root_level} (base_level={base_level}, package_max={package_max}, target={max_root_level})", flush=True)
-
-      roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=True)
-
-      batch_num = 0
-      batch_zones: List[int] = []
-      roots_seen_in_package = 0
-
-      for zone in roots_iter:
-         zid = int(zone)
-         root_text = dggrs.getZoneTextID(zid)
-
-         root_level = dggrs.getZoneLevel(zid)
-         if data_level - root_level < 0:
-            print(f"[IMPORT] skipping root {root_text} because data_level < root_level", flush=True)
+         base_level = dggrs.getZoneLevel(base_zone)
+         package_group_levels = store.group0Size if base_level == 0 else store.groupSize
+         package_max = base_level + package_group_levels - 1
+         max_root_level = root_level
+         if base_level > max_root_level:
+            print(f"[SKIP] package base {base_text} (base_level={base_level}) deeper than target {max_root_level}",
+               flush=True)
             continue
 
-         roots_seen_in_package += 1
-         # print(f"[PACKAGE] #{pkg_index}: seen root #{roots_seen_in_package} -> {root_text} (root_level={root_level})", flush=True)
-         batch_zones.append(zid)
+         print(
+            f"[LEVEL {root_level}] #{pkg_index}: iterating roots up to level {max_root_level} "
+            f"(base_level={base_level}, package_max={package_max}, target={max_root_level})",
+            flush=True
+         )
+         roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=up_to)
 
-         if len(batch_zones) >= batch_size:
+         batch_num = 0
+         batch_zones: List = []
+         for zone in roots_iter:
+            root_level = dggrs.getZoneLevel(zone)
+            if data_level - root_level < 0:
+               print(f"[IMPORT] skipping root {dggrs.getZoneTextID(zone)} because data_level < root_level",
+                  flush=True)
+               continue
+            batch_zones.append(zone)
+            if len(batch_zones) >= batch_size:
+               batch_num += 1
+               print(f"[LEVEL {root_level}] #{pkg_index} BATCH {batch_num}: handling {len(batch_zones)} roots",
+                  flush=True)
+               written = _process_batch(
+                  store, ds, raster_crs, dggrs, dggrs_uri, base_zone, batch_zones,
+                  base_ancestors, data_level, depth, field_name, use_overviews_for_sampling,
+                  aggregate and root_level < deepest_root_level
+               )
+               total_written += written
+               batch_zones = []
+
+         if batch_zones:
             batch_num += 1
-            # print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to write {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
-            print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to import data for {len(batch_zones)} roots", flush=True)
-            written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_uri, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
+            print(f"[LEVEL {root_level}] #{pkg_index} BATCH {batch_num}: handling {len(batch_zones)} roots",
+               flush=True)
+            written = _process_batch(
+               store, ds, raster_crs, dggrs, dggrs_uri, base_zone, batch_zones,
+               base_ancestors, data_level, depth, field_name, use_overviews_for_sampling,
+               aggregate and root_level < deepest_root_level
+            )
             total_written += written
-            batch_zones = []
 
-      if batch_zones:
-         batch_num += 1
-         # print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: final write of {len(batch_zones)} roots: {', '.join(dggrs.getZoneTextID(z) for z in batch_zones)}", flush=True)
-         print(f"[PACKAGE] #{pkg_index} BATCH {batch_num}: about to import data for {len(batch_zones)} roots", flush=True)
-         written = process_batch_import(store, ds, raster_crs, dggrs, dggrs_uri, batch_zones, pkg_index, batch_num, base_ancestors, data_level, depth, field_name)
-         total_written += written
+         print(f"[LEVEL {root_level}] #{pkg_index} complete; total_written so far={total_written}", flush=True)
 
-      print(f"[PACKAGE] #{pkg_index} complete; total_written so far={total_written}", flush=True)
+      if aggregate and not finest_level_done:
+         finest_level_done = True
+         store._compute_property_key()
 
    ds.close()
    print(f"[IMPORT] complete; total written={total_written}", flush=True)
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
 
 def main():
    p = argparse.ArgumentParser(prog="dgg-import")

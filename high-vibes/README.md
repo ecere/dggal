@@ -43,6 +43,5 @@ This code should all work with the last [0.0.6 DGGAL release](https://github.com
 This is a very early version with several limitations:
 - the tools currently support a single field / band,
 - the tools do not currently support additional dimensions (time, pressure...) but this is conceptually supported by DGGS-UBJSON and this DGGS Data Store layout,
-- the importer currently samples overviews rather than aggregate them as it should,
 - this is currently limited to raster (DGGS-JSON), but a future version should support DGGS-JSON-FG for a proper DGGS-quantized vector data store (not rasterising the vector data!) -- also supported by this DGGS Data Store layout,
 - a future version will likely introduce a DGGS-JSON (field value) quantization extension significantly reducing data size.

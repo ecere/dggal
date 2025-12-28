@@ -1,0 +1,82 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "high-vibes",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "high-vibes",
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "dggsExport",
+         "Files" : [
+            "raster.py",
+            "rasterZoneGrid.py"
+         ]
+      },
+      {
+         "Folder" : "dggsStore",
+         "Files" : [
+            "customDepths.py",
+            "store.py",
+            "aggregation.py"
+         ]
+      },
+      {
+         "Folder" : "ogcapi",
+         "Files" : [
+            {
+               "Folder" : "common",
+               "Files" : [
+                  "collections.py",
+                  "conformance.py",
+                  "landingPage.py"
+               ]
+            },
+            {
+               "Folder" : "dggs",
+               "Files" : [
+                  "client.py",
+                  "dggrs.py",
+                  "zoneData.py",
+                  "zoneInfo.py",
+                  "zones.py"
+               ]
+            },
+            "utils.py"
+         ]
+      },
+      "dgg-export.py",
+      "dgg-fetch.py",
+      "dgg-import.py",
+      "dgg-serve.py",
+      "../bindings/py/dggal.py",
+      "../../eC/bindings/py/ecrt.py"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

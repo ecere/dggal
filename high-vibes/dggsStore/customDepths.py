@@ -5,7 +5,7 @@ from typing import Dict, List, Optional, Mapping, Sequence, TypedDict, Union
 import logging
 
 from .store import *
-from .aggregateLevel0 import *
+from .aggregation import *
 
 logger = logging.getLogger("dggs-serve.customDepths")
 
@@ -41,86 +41,205 @@ def _paint_from_stored_root(store, root_zone, depth, sub_index, data):
    src_data = chosen["data"]
    dggrs = store.dggrs
    s_subs = dggrs.getSubZones(root_zone, depth)
-   count_s_subs = dggrs.countSubZones(root_zone, depth)
+   count_s_subs = len(s_subs)
    for idx in range(count_s_subs):
-      t = sub_index.get(int(s_subs[idx]))
+      sz = s_subs[idx]
+      t = sub_index.get(int(sz))
       if t is None:
          continue
       v = src_data[idx]
       if v is None:
          continue
       data[t] = float(v)
+   Instance.delete(s_subs)
 
-def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level):
+def _paint_from_stored_root_multi(store, stored_root, store_depth, sub_index, subs, target_map, fields):
+   # Decode the stored_root package once and update target_map for all fields.
+   # - target_map: Dict[field, List[Optional[float]]] (preallocated length = n)
+   # - fields: list of requested field names
    dggrs = store.dggrs
-   store_depth = store.depth
+
+   pkg = store.compute_package_path_for_root_zone(stored_root)
+   if not pkg:
+      return
+
+   decoded = store.read_and_decode_zone_blob(pkg, stored_root)
+   if not decoded:
+      return
+
+   source_subs = dggrs.getSubZones(stored_root, store_depth)
+   if not source_subs:
+      return
+   src_index = { int(source_subs[i]): i for i in range(len(source_subs)) }
+
+   # relative depth between source_subs and target subs
+   rel = dggrs.getZoneLevel(source_subs[0]) - dggrs.getZoneLevel(subs[0])
+
+   Instance.delete(source_subs)
+
+   # For each requested field, find the depth entry at store_depth and paint
+   for fname in fields:
+      entries = decoded["values"].get(fname)
+      if entries is None:
+         entries = decoded["values"].get(store.property_key)
+      if not entries:
+         continue
+      chosen = next(e for e in entries if int(e["depth"]) == store_depth)
+      src_data = chosen["data"]
+      tgt = target_map[fname]
+
+      # paint: first non-None contributor wins
+      for t in subs:
+         t_idx = sub_index.get(int(t))
+         if t_idx is None:
+            continue
+         if tgt[t_idx] is not None:
+            continue
+         src_zones = dggrs.getSubZones(t, rel)
+         for s in src_zones:
+            idx = src_index.get(int(s))
+            if idx is None:
+               continue
+            val = src_data[idx]
+            if val is not None:
+               tgt[t_idx] = float(val)
+               break
+         Instance.delete(src_zones)
+
+def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None):
+   dggrs = store.dggrs
+   if fields is None:
+      fields = [store.property_key]
+
+   store_depth = int(store.depth)
    n = dggrs.countSubZones(root_zone, zone_depth)
+   if n == 0:
+      return None
    subs = dggrs.getSubZones(root_zone, zone_depth)
    root_level = dggrs.getZoneLevel(root_zone)
+
    rel_depth = source_root_level - root_level
    descendants = dggrs.getSubZones(root_zone, rel_depth)
-   sub_index = { int(subs[i]): i for i in range(n) }
-   data = [None] * n
-   count_descendants = len(descendants)
-   for i in range(count_descendants):
-      _paint_from_stored_root(store, descendants[i], store_depth, sub_index, data)
-   return data, n
 
-def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level):
+   sub_index = { int(subs[i]): i for i in range(n) }
+   target_map = { fname: [None] * n for fname in fields }
+   for desc in descendants:
+      _paint_from_stored_root_multi(store, desc, store_depth, sub_index, subs, target_map, fields)
+
+   Instance.delete(subs)
+   Instance.delete(descendants)
+
+   values_obj = {}
+   any_data = False
+   for fname, arr in target_map.items():
+      if any(v is not None for v in arr):
+         any_data = True
+      entry = {"depth": zone_depth, "shape": {"count": n, "subZones": n}, "data": arr}
+      values_obj[fname] = [entry]
+
+   return values_obj if any_data else None
+
+# ValueEntry and ValuesObject assumed:
+# ValueEntry = {"depth": int, "shape": {"count": int, "subZones": int, ...}, "data": Sequence[Optional[float]]}
+# ValuesObject = Dict[str, List[ValueEntry]]
+
+def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    dggrs = store.dggrs
-   store_depth = store.depth
+   if fields is None:
+      fields = [store.property_key]
+
+   ancestors = collect_ancestors_at_level(dggrs, root_zone, source_root_level)
+   if not ancestors:
+      return None
+
    n = dggrs.countSubZones(root_zone, zone_depth)
+
    subs = dggrs.getSubZones(root_zone, zone_depth)
    sub_index = { int(subs[i]): i for i in range(n) }
-   data = [None] * n
-   root_level = dggrs.getZoneLevel(root_zone)
-   ancestors = collect_ancestors_at_level(dggrs, root_zone, source_root_level)
-   count_anc = len(ancestors)
-   for a in range(count_anc):
-      _paint_from_stored_root(store, ancestors[a], store_depth, sub_index, data)
-   return data, n
 
-# --- public API (at the end) ---
-def assemble_zone_at_depth(store, root_zone, zone_depth):
-   root_level = store.dggrs.getZoneLevel(root_zone)
+   # per-field arrays (initialized to None)
+   target_map: Dict[str, List[Optional[float]]] = { fname: [None] * n for fname in fields }
+
+   store_depth = int(store.depth)
+
+   for ancestor in ancestors:
+      pkg = store.compute_package_path_for_root_zone(ancestor)
+      if not pkg:
+         continue
+      decoded = store.read_and_decode_zone_blob(pkg, ancestor)
+      if not decoded:
+         continue
+
+      source_subs = dggrs.getSubZones(ancestor, store_depth)
+      src_index = { int(source_subs[i]): i for i in range(len(source_subs)) }
+      rel_depth = dggrs.getZoneLevel(source_subs[0]) - dggrs.getZoneLevel(subs[0])
+
+      # decode-once: extract all requested fields from this decoded blob
+      for fname in fields:
+         entries = decoded["values"].get(fname)
+         if entries is None:
+            entries = decoded["values"].get(store.property_key)
+         if not entries:
+            continue
+         chosen = next((e for e in entries if int(e["depth"]) == store_depth), None)
+         if not chosen:
+            continue
+         src_data = chosen["data"]
+         tgt = target_map[fname]
+
+         # paint: first non-None contributor wins
+         for t in subs:
+            t_idx = sub_index.get(int(t))
+            if t_idx is None:
+               continue
+            if tgt[t_idx] is not None:
+               continue
+            src_zones = dggrs.getSubZones(t, rel_depth)
+            for s in src_zones:
+               idx = src_index.get(int(s))
+               if idx is None:
+                  continue
+               val = src_data[idx]
+               if val is not None:
+                  tgt[t_idx] = float(val)
+                  break
+            Instance.delete(src_zones)
+      Instance.delete(source_subs)
+   Instance.delete(subs)
+
+   # build ValuesObject (one ValueEntry per field)
+   values_obj: Dict[str, List[Dict[str, Any]]] = {}
+   any_data = False
+   for fname, arr in target_map.items():
+      if any(v is not None for v in arr):
+         any_data = True
+      entry = {"depth": zone_depth, "shape": {"count": n, "subZones": n}, "data": arr}
+      values_obj[fname] = [entry]
+
+   return values_obj if any_data else None
+
+
+def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+   dggrs = store.dggrs
+   if fields is None:
+      fields = [store.property_key]
+
+   root_level = dggrs.getZoneLevel(root_zone)
    if root_level + zone_depth > store.maxRefinementLevel:
       return None
 
    source_root_level = root_level + zone_depth - store.depth
    if source_root_level == root_level:
-      # this function is only intended for building unavailable depths")
       return None
-
-   if source_root_level > root_level:
-      # Assemble requested depth from descendant root zones deeper than requested zone
-      data, n = _assemble_from_descendants(store, root_zone, zone_depth, source_root_level)
-   elif source_root_level < 0: # TOOD: Add check whether level zero root zone contain overview lower depths when implemented
-      # Assemble requested depth by aggregating data from level 0 zone's default depth
-      data, n = assemble_aggregate_from_level0(store, root_zone, zone_depth)
+   elif source_root_level < 0:
+      return assemble_aggregate_from_level0(store, root_zone, zone_depth, fields)
+   elif source_root_level > root_level:
+      return _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields)
    else:
-      # Assemble requested depth from ancestral root zones coarser than requested zone
-      data, n = _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level)
-   entry = {"depth": zone_depth, "shape": {"count": n, "subZones": n}, "data": data}
-   return {store.property_key: [entry]}
+      return _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields)
 
-def build_dggs_json_from_values(store: DGGSDataStore,
-                                zone: DGGRSZone,
-                                collected_values: CollectedValues) -> Dict[str, object]:
-   zone_depths = sorted(int(d) for d in collected_values.keys())
-   # Merge per-depth ValuesObjects into a single values map keyed by property name
-   merged_values: Dict[str, List[Dict[str, object]]] = {}
-   for d in zone_depths:
-      values_obj = collected_values[d]
-      for prop_key, entries in values_obj.items():
-         if prop_key not in merged_values:
-            merged_values[prop_key] = list(entries)
-         else:
-            merged_values[prop_key].extend(entries)
-   dggrsId = store.config["dggrs"]
-   return {
-      "dggrs": f"[ogc-dggrs:{dggrsId}]",
-      "zoneId": store.dggrs.getZoneTextID(zone),
-      "depths": zone_depths,
-      "values": merged_values,
-      "$schema": DGGS_JSON_SCHEMA_URI
-   }
+def aggregate_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+   if fields is None:
+      fields = [store.property_key]
+
+   return aggregate_from_children(store, root_zone, zone_depth, fields)
