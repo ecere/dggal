@@ -6,7 +6,7 @@
 
 #### dgg-import
 
-Create a Scalable UBJSON DGGS Data Store from a GeoTIFF (quantizing to a DGGRS) -- not yet optimized / multi-threaded:
+Create a Scalable UBJSON DGGS Data Store from a GeoTIFF (quantizing to a DGGRS)
 
 ```
 python dgg-import.py gebco.tiff --dggrs IVEA4R --fields Elevation

@@ -70,7 +70,7 @@ def main():
       ds.close()
       return 1
 
-   collection_id = args.collection if args.collection else os.path.splitext(os.path.basename(input_raster))[0]
+   collection_id = args.collection if args.collection else os.path.splitext(os.path.basename(args.input_raster))[0]
 
    rc = import_raster(
       ds=ds,

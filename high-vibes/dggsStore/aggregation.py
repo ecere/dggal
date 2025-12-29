@@ -4,7 +4,9 @@ from dggal import *
 from typing import Dict, List, Optional, Mapping, Sequence, TypedDict, Union, Any
 import logging
 
-from .store import DGGSDataStore
+ffi = dggal.ffi
+
+from .store import *
 
 logger = logging.getLogger("dggs-serve.aggregation")
 
@@ -52,8 +54,8 @@ def assemble_aggregate_from_level0(store, root_zone, zone_depth, fields: List[st
 
    # collect level-0 ancestors (roots at level 0 that cover this root_zone)
    ancestors = collect_ancestors_at_level(dggrs, root_zone, 0)
-   for ancestor in ancestors:
-      _process_stored_root_aggregate(store, ancestor, store_depth, sub_index, subs, sums_map, counts_map, fields)
+   #for ancestor in ancestors:
+   _process_stored_root_aggregate(store, ancestors, store_depth, sub_index, subs, sums_map, counts_map, fields)
 
    Instance.delete(subs)
 
@@ -93,9 +95,9 @@ def aggregate_from_children(store, root_zone, zone_depth, fields: List[str]):
    # print("   Aggregating from ", len(children), "children")
 
    #i = 0
-   for child_root in children:
+   #for child_root in children:
       # this painter must update sums_map and counts_map for all fields in one decode
-      _process_stored_root_aggregate(store, child_root, store_depth, sub_index, subs, sums_map, counts_map, fields)
+   _process_stored_root_aggregate(store, children, store_depth, sub_index, subs, sums_map, counts_map, fields)
       #i = i + 1
       #print("   ", i, " / ", len(children))
 
@@ -115,57 +117,100 @@ def aggregate_from_children(store, root_zone, zone_depth, fields: List[str]):
 
    return values_obj if any_data else None
 
-def _process_stored_root_aggregate(store, root_zone, depth, sub_index, subs,
+def _process_stored_root_aggregate(store, root_zones, depth, sub_index, subs,
    sums_map: Dict[str, List[float]],
    counts_map: Dict[str, List[float]],
    fields: List[str]):
    dggrs = store.dggrs
+   subs_ptr = ffi.cast("uint64_t *", subs.array)
+   gzc = dggal.lib.DGGRS_getZoneChildren
+   dggrs_impl = dggrs.impl
 
-   pkg = store.compute_package_path_for_root_zone(root_zone)
-   if not pkg:
-      return
+   fields_src_data = [None] * len(fields)
 
-   decoded = store.read_and_decode_zone_blob(pkg, root_zone)
-   if not decoded:
-      return
-
-   source_subs = dggrs.getSubZones(root_zone, depth)
-   src_index = { int(source_subs[i]): i for i in range(len(source_subs)) }
-
-   rel = dggrs.getZoneLevel(source_subs[0]) - dggrs.getZoneLevel(subs[0])
-
-   for fname in fields:
-      entries = decoded["values"].get(fname)
-      if not entries:
+   cBuf = None
+   for root_zone in root_zones:
+      pkg = store.compute_package_path_for_root_zone(root_zone)
+      decoded = None if not pkg else store.read_and_decode_zone_blob(pkg, root_zone)
+      if not decoded:
+         #print("WARNING: Could not decode blob for zone ", dggrs.getZoneTextID(root_zone))
          continue
+      source_subs = dggrs.getSubZones(root_zone, depth)
+      source_ptr = ffi.cast("uint64_t *", source_subs.array)
+      src_index = { int(source_ptr[i]): i for i in range(len(source_subs)) }
+      Instance.delete(source_subs)
 
-      chosen = next((e for e in entries if int(e["depth"]) == depth), None)
-      if not chosen:
-         continue
-      src_data = chosen["data"]
+      rel = dggrs.getZoneLevel(source_ptr[0]) - dggrs.getZoneLevel(subs_ptr[0])
 
-      sums = sums_map[fname]
-      counts = counts_map[fname]
+      fieldIX = 0
+      for fname in fields:
+         fData = None
+         entries = decoded["values"].get(fname)
+         if entries:
+            chosen = next((e for e in entries if int(e["depth"]) == depth), None)
+            if chosen:
+               fData = chosen["data"]
+         fields_src_data[fieldIX] = fData
+         fieldIX = fieldIX + 1
 
-      for t in subs:
+      if rel == 1 and not cBuf:
+         cBuf = ffi.new("uint64_t[13]")
+      for si in range(len(subs)):
+         t = subs_ptr[si]
          t_idx = sub_index.get(int(t))
          if t_idx is None:
             continue
 
-         src_zones = dggrs.getSubZones(t, rel)
-         weights = dggrs.getSubZoneWeights(t, rel)
+         if rel == 1:
+            n_z = gzc(dggrs_impl, t, cBuf)
+            weights = dggrs.getChildrenWeights(t)
+            zptr = cBuf
+         else:
+            src_zones = dggrs.getSubZones(t, rel)
+            weights = dggrs.getSubZoneWeights(t, rel)
+            n_z = len(src_zones)
+            zptr = ffi.cast("uint64_t *", src_zones.array)
 
-         for i, s in enumerate(src_zones):
-            idx = src_index.get(int(s))
-            if idx is None:
+         fieldIX = 0
+         for fname in fields:
+            src_data = fields_src_data[fieldIX]
+            fieldIX = fieldIX + 1
+            if src_data is None:
                continue
-            val = src_data[idx]
-            if val is None:
-               continue
 
-            weight = 1.0 if weights is None else float(weights[i])
-            sums[t_idx] += float(val) * weight
-            counts[t_idx] += weight
+            sums = sums_map[fname]
+            counts = counts_map[fname]
 
-         Instance.delete(src_zones)
-   Instance.delete(source_subs)
+            sum = sums[t_idx]
+            count = counts[t_idx]
+
+            if weights is None:
+               for i in range(n_z):
+                  idx = src_index.get(zptr[i])
+                  if idx is None:
+                     continue
+                  val = src_data[idx]
+                  if val is None:
+                     continue
+                  sum += val
+                  count += 1.0
+            else:
+               for i in range(n_z):
+                  idx = src_index.get(zptr[i])
+
+                  if idx is None:
+                     continue
+
+                  val = src_data[idx]
+
+                  if val is None:
+                     continue
+                  weight = weights[i]
+                  sum += val * weight
+                  count += weight
+
+            sums[t_idx] = sum
+            counts[t_idx] = count
+
+         if rel != 1:
+            Instance.delete(src_zones)

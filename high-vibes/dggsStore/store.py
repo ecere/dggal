@@ -6,12 +6,13 @@ import sqlite3
 import gzip
 import threading
 import logging
+import array
 from typing import Any, Dict, List, Optional, Tuple, Iterable, TypedDict, Mapping, Sequence
 from types import MethodType
 import ubjson
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-DGGS_JSON_SCHEMA_URI = "https://schemas.opengis.net/ogcapi/dggs/part1/1.0/openapi/schemas/dggrs-json/schema"
+DGGS_JSON_SCHEMA_URI = "https://schemas.opengis.net/ogcapi/dggs/1.0/core/schemas/dggs-json/dggs-json.json"
 
 # --- types ---
 class ShapeDict(TypedDict, total=False):
@@ -86,6 +87,8 @@ def getZonePrimaryParent0(self, zone):
       Instance.delete(parents)
    return primaryParent
 
+# These match the getSubZones() order
+
 def getSubZoneWeights7H(self, zone: DGGRSZone, depth: int):
    if depth != 1:
       return None  # Relative depth > 1 not yet implemented
@@ -96,7 +99,7 @@ def getSubZoneWeights7H(self, zone: DGGRSZone, depth: int):
          1/12.0,                             # 1
          1/12.0, 11/12.0, 11/12.0, 1/12.0,   # 2-5
          11/12.0, 1.0, 11/12.0,              # 6-8
-         1/12.0, 11/12.0, 1/12.0,            # 9-11
+         1/12.0, 11/12.0, 1/12.0             # 9-11
       ]
    else:           # Hexagon
       return [
@@ -116,7 +119,7 @@ def getSubZoneWeights3H(self, zone: DGGRSZone, depth: int):
       return [
          1/3.0, 1/3.0,       # 1-2
          1/3.0, 1.0, 1/3.0,  # 3-5
-         1/3.0,              # 6
+         1/3.0               # 6
       ]
    else:           # Hexagon
       return [
@@ -126,6 +129,50 @@ def getSubZoneWeights3H(self, zone: DGGRSZone, depth: int):
       ]
 
 def getSubZoneWeightsNested(self, zone: DGGRSZone, depth: int):
+   return None  # Fully nested DGGRSs sub-zones have equal weighting
+
+# These match the getZoneChildren() order
+
+_3H_CH_WEIGHTS = array.array('d', [1.0, 1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0/3.0, 1.0/3.0])
+_7H_CH_WEIGHTS = array.array('d', [1.0,
+   11/12.0, 11/12.0, 11/12.0, 11/12.0, 11/12.0, 11/12.0,
+    1/12.0,   1/12.0, 1/12.0,  1/12.0,  1/12.0,  1/12.0 ])
+
+def getChildrenWeights7H(self, zone: DGGRSZone):
+   return _7H_CH_WEIGHTS
+
+#def getChildrenWeights7H(self, zone: DGGRSZone):
+#   nEdges = self.countZoneEdges(zone)
+#   if nEdges == 5: # Pentagon
+#      return [
+#         1.0, # Centroid
+#         11/12.0, 11/12.0, 11/12.0, 11/12.0, 11/12.0,  # Primary Children
+#          1/12.0,  1/12.0,  1/12.0,  1/12.0,  1/12.0   # Secondary Children
+#      ]
+#   else:           # Hexagon
+#      return [
+#         1.0, # Centroid
+#         11/12.0, 11/12.0, 11/12.0, 11/12.0, 11/12.0, 11/12.0, # Primary Children
+#          1/12.0,  1/12.0,  1/12.0,  1/12.0,  1/12.0,  1/12.0  # Secondary Children
+#      ]
+
+def getChildrenWeights3H(self, zone: DGGRSZone):
+   return _3H_CH_WEIGHTS
+
+#def getChildrenWeights3H(self, zone: DGGRSZone):
+#   nEdges = self.countZoneEdges(zone)
+#   if nEdges == 5: # Pentagon
+#      return [
+#         1.0, # Centroid
+#         1/3.0, 1/3.0, 1/3.0, 1/3.0, 1/3.0        # Vertex Children
+#      ]
+#   else:           # Hexagon
+#      return [
+#         1.0, # Centroid
+#         1/3.0, 1/3.0, 1/3.0, 1/3.0, 1/3.0, 1/3.0 # Vertex Children
+#      ]
+
+def getChildrenWeightsNested(self, zone: DGGRSZone):
    return None  # Fully nested DGGRSs sub-zones have equal weighting
 
 def get_or_create_dggrs(dggrsID: str) -> DGGRS:
@@ -148,15 +195,18 @@ def get_or_create_dggrs(dggrsID: str) -> DGGRS:
             dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren3H, dggrs)
             dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent3H, dggrs)
             dggrs.getSubZoneWeights = MethodType(getSubZoneWeights3H, dggrs)
+            dggrs.getChildrenWeights = MethodType(getChildrenWeights3H, dggrs)
          else:
             dggrs.getZonePrimaryChildren = MethodType(getZonePrimaryChildren7H, dggrs)
             dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
             dggrs.getSubZoneWeights = MethodType(getSubZoneWeights7H, dggrs)
+            dggrs.getChidlrenWeights = MethodType(getChildrenWeights7H, dggrs)
       else:
          # Fully nested DGGRS
          dggrs.getZonePrimaryChildren = dggrs.getZoneChildren
          dggrs.getZonePrimaryParent = MethodType(getZonePrimaryParent0, dggrs)
          dggrs.getSubZoneWeights = MethodType(getSubZoneWeightsNested, dggrs)
+         dggrs.getChildrenWeights = MethodType(getChildrenWeightsNested, dggrs)
 
       dggrs_cache[key] = dggrs
       return dggrs
@@ -579,6 +629,7 @@ def make_dggs_json_blob(dggrs_uri: str, zone_text: str, fields_map: Dict[str, Li
       "values": { fname: entries for fname, entries in fields_map.items() },
       "$schema": DGGS_JSON_SCHEMA_URI
    }
+   # print("Value: ", envelope["values"]["field2"][0]["data"][0])
    return envelope
 
 def make_dggs_json_depth(depth: int, count_centroids: int, sampled_values: Any) -> Dict[str, Any]:

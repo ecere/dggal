@@ -27,17 +27,13 @@ from ogcapi.dggs.zoneInfo import bp as dggs_zoneinfo_bp
 from ogcapi.dggs.zoneData import bp as dggs_zoneData_bp
 
 # Import store lifecycle helpers so we can close stores on shutdown
-from dggsStore.store import close_all_stores
+from dggsStore.store import *
 
 # Create Flask app and register blueprints
 def create_app(data_root: str, dggrs_schema_uri: str = None) -> Flask:
     app = Flask(__name__)
     # Configuration
     app.config["DATA_ROOT"] = data_root
-    if dggrs_schema_uri:
-        app.config["DGGS_JSON_SCHEMA_URI"] = dggrs_schema_uri
-    else:
-        app.config["DGGS_JSON_SCHEMA_URI"] = "https://schemas.opengis.net/ogcapi/dggs/part1/1.0/openapi/schemas/dggrs-json/schema"
 
     # Register blueprints (they include their own url_prefix where appropriate)
     app.register_blueprint(landing_bp)            # root "/"
@@ -68,7 +64,6 @@ def parse_args():
     p.add_argument("--host", help="Host to bind", default="0.0.0.0")
     p.add_argument("--port", help="Port to listen on", type=int, default=int(os.environ.get("PORT", "8080")))
     p.add_argument("--debug", help="Enable debug mode", action="store_true")
-    p.add_argument("--schema-uri", help="DGGS JSON schema URI override", default=None)
     return p.parse_args()
 
 def dump_traces_and_exit(signum, frame):
@@ -85,7 +80,7 @@ def main():
         print(f"ERROR: DATA_ROOT directory does not exist: {DATA_ROOT!r}")
         return
     logger.info("Starting dgg-serve on %s:%d with data root: %s", args.host, args.port, DATA_ROOT)
-    app = create_app(DATA_ROOT, dggrs_schema_uri=args.schema_uri)
+    app = create_app(DATA_ROOT)
     atexit.register(lambda: (logger.info("Closing all stores..."), close_all_stores()))
     signal.signal(signal.SIGINT, dump_traces_and_exit)
     app.run(host=args.host, port=args.port, debug=args.debug, use_reloader=False, threaded=True)

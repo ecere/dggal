@@ -27,6 +27,8 @@ def main():
       logging.getLogger().setLevel(logging.DEBUG)
 
    store: DGGSDataStore = DGGSDataStore(args.datastore, args.collection)
+   if not hasattr(store, "dggrs"):
+      return
 
    out_fields = None
    if args.fields:

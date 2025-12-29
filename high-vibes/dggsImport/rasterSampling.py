@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional, Tuple
 import rasterio
 from rasterio.warp import transform
 from rasterio.sample import sample_gen
-from rasterio.transform import Affine
+from rasterio.transform import Affine, rowcol
 from rasterio.windows import Window
 from cffi import FFI
 from pyproj import Transformer
