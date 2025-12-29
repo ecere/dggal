@@ -235,10 +235,10 @@ class DGGSDataStore:
       self.maxRefinementLevel = int(maxRefinementLevel)
 
       self._compute_groups()
-      self._compute_property_key()
+      self._compute_fields()
 
-   def _compute_property_key(self):
-      self.property_key: Optional[str] = None
+   def _compute_fields(self):
+      self.fields: List[str] = None
       sample_pkg = None
       for root, _, names in os.walk(self.collection_dir):
          for n in names:
@@ -262,8 +262,8 @@ class DGGSDataStore:
                   raw = gzip.decompress(blob) if blob[:2] == b"\x1f\x8b" else blob
                   decoded = ubjson.loadb(raw)
                   values_map = decoded["values"]
-                  self.property_key = next(iter(values_map.keys()))
-      # print("Computed property key: ", self.property_key)
+                  self.fields = list(values_map.keys())
+      # print("Computed fields: ", self.fields)
 
    def _compute_groups(self) -> None:
        self.groupSize = self.config.get("groupSize", 1)
@@ -563,6 +563,13 @@ def make_dggs_json_blob(dggrs_uri: str, zone_text: str, fields_map: Dict[str, Li
    }
    return envelope
 
+def make_dggs_json_depth(depth: int, count_centroids: int, sampled_values: Any) -> Dict[str, Any]:
+   return {
+      "depth": depth,
+      "shape": {"count": count_centroids, "subZones": count_centroids},
+      "data": sampled_values
+   }
+
 # Merge multiple per-depth ValuesObjects into a single field-organized envelope.
 # - collected_values: Dict[depth:int, ValuesObject] where ValuesObject is
 #   Dict[fieldName, List[ValueEntry]]
@@ -573,9 +580,9 @@ def build_dggs_json_from_values(store, zone, collected_values: Dict[int, Dict[st
    # iterate depths in canonical ascending order
    for d in sorted(int(dk) for dk in collected_values.keys()):
       values_obj = collected_values[d]
-      for prop_key, entries in values_obj.items():
+      for field, entries in values_obj.items():
          # append entries in the order provided by each depth
-         merged_fields.setdefault(prop_key, []).extend(entries)
+         merged_fields.setdefault(field, []).extend(entries)
 
    dggrs_id = store.config["dggrs"]
    dggrs_uri = f"[ogc-dggrs:{dggrs_id}]"

@@ -36,7 +36,7 @@ def assemble_aggregate_from_level0(store, root_zone, zone_depth, fields: List[st
    # Returns a ValuesObject: field -> [ValueEntry]
    dggrs = store.dggrs
    if fields is None:
-      fields = [store.property_key]
+      fields = store.fields
 
    store_depth = store.depth
    n = dggrs.countSubZones(root_zone, zone_depth)
@@ -129,7 +129,7 @@ def _process_stored_root_aggregate(store, root_zone, depth, sub_index, subs,
    rel = dggrs.getZoneLevel(source_subs[0]) - dggrs.getZoneLevel(subs[0])
 
    for fname in fields:
-      entries = decoded["values"].get(fname) or decoded["values"].get(store.property_key)
+      entries = decoded["values"].get(fname)
       if not entries:
          continue
 

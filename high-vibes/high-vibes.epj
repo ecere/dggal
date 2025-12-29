@@ -68,6 +68,13 @@
             "utils.py"
          ]
       },
+      {
+         "Folder" : "dggsImport",
+         "Files" : [
+            "rasterSampling.py",
+            "rasterImport.py"
+         ]
+      },
       "dgg-export.py",
       "dgg-fetch.py",
       "dgg-import.py",

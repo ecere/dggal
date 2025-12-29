@@ -18,6 +18,7 @@ def parse_args():
    p.add_argument("--debug", action="store_true")
    p.add_argument("--nodata", type=float, default=3.4028235e+38)
    p.add_argument("--compress", default="lzw")
+   p.add_argument("--fields", help="comma-separated list of fields to include in output")
    return p.parse_args()
 
 def main():
@@ -27,6 +28,10 @@ def main():
 
    store: DGGSDataStore = DGGSDataStore(args.datastore, args.collection)
 
+   out_fields = None
+   if args.fields:
+      out_fields = [f.strip() for f in args.fields.split(",") if f.strip()]
+
    result = rasterize_to_geotiff(
       store,
       args.level,
@@ -34,7 +39,8 @@ def main():
       workers=args.workers,
       nodata=args.nodata,
       compress=args.compress,
-      debug=args.debug
+      debug=args.debug,
+      fields=out_fields
    )
    logging.info("done: elapsed=%.1f s", result["elapsed_seconds"])
 

@@ -40,8 +40,7 @@ python dgg-serve.py --data-root data --port 8080
 
 This code should all work with the last [0.0.6 DGGAL release](https://github.com/ecere/dggal/releases/tag/v0.0.6).
 
-This is a very early version with several limitations:
-- the tools currently support a single field / band,
+This is an early version with some limitations:
 - the tools do not currently support additional dimensions (time, pressure...) but this is conceptually supported by DGGS-UBJSON and this DGGS Data Store layout,
 - this is currently limited to raster (DGGS-JSON), but a future version should support DGGS-JSON-FG for a proper DGGS-quantized vector data store (not rasterising the vector data!) -- also supported by this DGGS Data Store layout,
 - a future version will likely introduce a DGGS-JSON (field value) quantization extension significantly reducing data size.

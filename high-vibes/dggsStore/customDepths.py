@@ -27,32 +27,6 @@ def parse_zone_depths(param: str) -> "List[int]":
 
 # --- helpers ---
 
-def _paint_from_stored_root(store, root_zone, depth, sub_index, data):
-   pkg = store.compute_package_path_for_root_zone(root_zone)
-   if not pkg:
-      return
-   decoded = store.read_and_decode_zone_blob(pkg, root_zone)
-   if not decoded:
-      return
-   prop_key = store.property_key
-   chosen = next((e for e in decoded["values"][prop_key] if int(e["depth"]) == depth), None)
-   if chosen is None:
-      return
-   src_data = chosen["data"]
-   dggrs = store.dggrs
-   s_subs = dggrs.getSubZones(root_zone, depth)
-   count_s_subs = len(s_subs)
-   for idx in range(count_s_subs):
-      sz = s_subs[idx]
-      t = sub_index.get(int(sz))
-      if t is None:
-         continue
-      v = src_data[idx]
-      if v is None:
-         continue
-      data[t] = float(v)
-   Instance.delete(s_subs)
-
 def _paint_from_stored_root_multi(store, stored_root, store_depth, sub_index, subs, target_map, fields):
    # Decode the stored_root package once and update target_map for all fields.
    # - target_map: Dict[field, List[Optional[float]]] (preallocated length = n)
@@ -80,8 +54,6 @@ def _paint_from_stored_root_multi(store, stored_root, store_depth, sub_index, su
    # For each requested field, find the depth entry at store_depth and paint
    for fname in fields:
       entries = decoded["values"].get(fname)
-      if entries is None:
-         entries = decoded["values"].get(store.property_key)
       if not entries:
          continue
       chosen = next(e for e in entries if int(e["depth"]) == store_depth)
@@ -109,7 +81,7 @@ def _paint_from_stored_root_multi(store, stored_root, store_depth, sub_index, su
 def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None):
    dggrs = store.dggrs
    if fields is None:
-      fields = [store.property_key]
+      fields = store.fields
 
    store_depth = int(store.depth)
    n = dggrs.countSubZones(root_zone, zone_depth)
@@ -146,7 +118,7 @@ def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, 
 def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    dggrs = store.dggrs
    if fields is None:
-      fields = [store.property_key]
+      fields = store.fields
 
    ancestors = collect_ancestors_at_level(dggrs, root_zone, source_root_level)
    if not ancestors:
@@ -177,8 +149,6 @@ def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fi
       # decode-once: extract all requested fields from this decoded blob
       for fname in fields:
          entries = decoded["values"].get(fname)
-         if entries is None:
-            entries = decoded["values"].get(store.property_key)
          if not entries:
             continue
          chosen = next((e for e in entries if int(e["depth"]) == store_depth), None)
@@ -222,7 +192,7 @@ def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fi
 def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    dggrs = store.dggrs
    if fields is None:
-      fields = [store.property_key]
+      fields = store.fields
 
    root_level = dggrs.getZoneLevel(root_zone)
    if root_level + zone_depth > store.maxRefinementLevel:
@@ -240,6 +210,6 @@ def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | Non
 
 def aggregate_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    if fields is None:
-      fields = [store.property_key]
+      fields = store.fields
 
    return aggregate_from_children(store, root_zone, zone_depth, fields)

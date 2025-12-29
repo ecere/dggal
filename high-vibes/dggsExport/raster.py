@@ -23,6 +23,7 @@ from rasterio.transform import from_origin
 import os
 
 from .rasterZoneGrid import create_shared_zone_grid, prefill_zone_grid
+from multiprocessing import shared_memory as _shm
 
 # FFI handle
 dggal_ffi = dggal.ffi
@@ -49,28 +50,35 @@ def _lon_ranges_for_extent(min_lon: float, max_lon: float) -> List[Tuple[float, 
    if max_lon < min_lon:
       return [(min_lon, 180.0), (-180.0, max_lon)]
    return [(min_lon, max_lon)]
-
-# prepare_root: runs in worker process; expects store and dggrs available there
 def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
-                 depth: int, deg_per_pixel: float, width: int, height: int):
+   depth: int, deg_per_pixel: float, width: int, height: int, nodata: float,
+   fields: List[str]
+   ) -> Tuple[Dict[str, np.ndarray], np.ndarray, Dict[int,int], List[Tuple[float,float]], int, int, float]:
    t0 = time.time()
    decoded = store.read_and_decode_zone_blob(pkg_path, zone)
    decode_s = time.time() - t0
 
-   prop_key = store.property_key
-   prop_list = decoded["values"][prop_key]
-   chosen = next(e for e in prop_list if int(e["depth"]) == depth)
+   # Build a dict of field -> numpy array for the requested depth
+   values_map: Dict[str, np.ndarray] = {}
+   for field in fields:
+      values = decoded["values"].get(field)
+      chosen = next((e for e in values if int(e["depth"]) == depth), None) if values is not None else None
+      if chosen is None:
+         values_map[field] = np.full(0, nodata, dtype=np.float64)
+         continue
+      raw = list(chosen["data"])
+      values_map[field] = np.array([nodata if v is None else float(v) for v in raw],
+         dtype=np.float64, copy=True)
 
-   values = np.array(list(chosen["data"]), dtype=np.float64, copy=True)
-
+   # Subzone index mapping
    subs_obj = dggrs.getSubZones(zone, depth)
    n = subs_obj.count
    raw = dggal_ffi.buffer(subs_obj.array, n * 8)
    subs_array = np.frombuffer(raw, dtype=np.uint64)
 
-   # idx_map semantics: zero-based indices into values; 0 is valid
    idx_map = {int(z): i for i, z in enumerate(subs_array)}
 
+   # Extent and pixel row bounds
    ext = GeoExtent()
    dggrs.getZoneWGS84Extent(zone, ext)
    ll_lon = float(ext.ll.lon); ll_lat = float(ext.ll.lat)
@@ -81,24 +89,25 @@ def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
    min_y = max(0, int(math.floor((90.0 - ur_lat) / deg_per_pixel - 0.5)))
    max_y = min(height - 1, int(math.floor((90.0 - ll_lat) / deg_per_pixel - 0.5)))
 
-   return values, subs_array, idx_map, lon_ranges, min_y, max_y, decode_s
+   return values_map, subs_array, idx_map, lon_ranges, min_y, max_y, decode_s
 
 # paint worker: maps shared memory and writes values
 def _paint_worker(shm_zone_name: str, shm_out_name: str,
-                  width: int, height: int,
-                  deg_per_pixel: float,
-                  lon_ranges: List[Tuple[float,float]],
-                  min_y: int, max_y: int,
-                  subs_array: np.ndarray, values: np.ndarray,
-                  nodata: float, null_zone_int: int,
-                  idx_map: Dict[int,int]):
-   from multiprocessing import shared_memory as _shm
+   width: int, height: int,
+   deg_per_pixel: float,
+   lon_ranges: List[Tuple[float,float]],
+   min_y: int, max_y: int,
+   subs_array: np.ndarray, values: np.ndarray,
+   nodata: float, null_zone_int: int,
+   idx_map: Dict[int,int],
+   band_index: int, n_fields: int):
 
    shm_zone = _shm.SharedMemory(name=shm_zone_name)
    zone_grid = np.ndarray((height, width), dtype=np.uint64, buffer=shm_zone.buf)
 
    shm_out = _shm.SharedMemory(name=shm_out_name)
-   out_arr = np.ndarray((height, width), dtype=np.float32, buffer=shm_out.buf)
+   out_all = np.ndarray((n_fields, height, width), dtype=np.float32, buffer=shm_out.buf)
+   out_band = out_all[band_index]
 
    nz = int(null_zone_int)
    nod = nodata
@@ -141,11 +150,12 @@ def _paint_worker(shm_zone_name: str, shm_out_name: str,
 
       rows_idx = final_positions // cols
       cols_idx = final_positions % cols
-      out_arr[min_y + rows_idx, min_x + cols_idx] = final_values
+      out_band[min_y + rows_idx, min_x + cols_idx] = final_values
 
    shm_zone.close()
    shm_out.close()
    return None
+
 
 # iter_packages yields primitive ids only (no CFFI objects)
 def iter_packages(store: DGGSDataStore, root_level: int) -> Iterator[Tuple[str, int, List[int]]]:
@@ -158,20 +168,23 @@ def iter_packages(store: DGGSDataStore, root_level: int) -> Iterator[Tuple[str, 
       base_ancestors_ids = [int(b) for b in base_ancestors]
       yield pkg_path, base_zone_id, base_ancestors_ids
 
+
 # per-package worker: reconstruct store and DGGRSZone from ids inside worker
 def _paint_package_worker(pkg_path: str,
-                          base_zone_id: int,
-                          base_ancestors_ids: List[int],
-                          worker_config: dict,
-                          root_level: int,
-                          depth: int,
-                          deg_per_pixel: float,
-                          width: int,
-                          height: int,
-                          shm_zone_name: str,
-                          shm_out_name: str,
-                          nodata: float,
-                          null_zone_int: int):
+   base_zone_id: int,
+   base_ancestors_ids: List[int],
+   worker_config: dict,
+   root_level: int,
+   depth: int,
+   deg_per_pixel: float,
+   width: int,
+   height: int,
+   shm_zone_name: str,
+   shm_out_name: str,
+   nodata: float,
+   null_zone_int: int,
+   fields: List[str],
+   n_fields: int):
    data_root = worker_config["_data_root"]
    collection = worker_config["collection"]
    collection_config = worker_config["collection_config"]
@@ -179,34 +192,32 @@ def _paint_package_worker(pkg_path: str,
    store = DGGSDataStore(data_root, collection, config=collection_config)
    dggrs = store.dggrs
 
-   # reconstruct base_zone as DGGRSZone inside worker
-   # prefer dggrs API if available, otherwise use DGGRSZone constructor
-   if hasattr(dggrs, "zoneFromId"):
-      base_zone = dggrs.zoneFromId(base_zone_id)
-   else:
-      base_zone = DGGRSZone(base_zone_id)
+   base_zone = DGGRSZone(base_zone_id)
 
    for root_zone in store.iter_roots_for_base(base_zone, root_level, up_to=False):
-      values, subs_array, idx_map, lon_ranges, min_y, max_y, _decode_s = prepare_root(
-         store, dggrs, pkg_path, root_zone, depth, deg_per_pixel, width, height
+      values_map, subs_array, idx_map, lon_ranges, min_y, max_y, _decode_s = prepare_root(
+         store, dggrs, pkg_path, root_zone, depth, deg_per_pixel, width, height, nodata, fields
       )
 
-      if values.size == 0 or subs_array.size == 0:
-         continue
+      for band_index, field in enumerate(fields):
+         values = values_map.get(field)
+         if values is None or values.size == 0:
+            continue
+         _paint_worker(shm_zone_name, shm_out_name,
+            width, height,
+            deg_per_pixel,
+            lon_ranges,
+            min_y, max_y,
+            subs_array, values,
+            nodata, null_zone_int,
+            idx_map,
+            band_index, n_fields)
 
-      _paint_worker(shm_zone_name, shm_out_name,
-                    width, height,
-                    deg_per_pixel,
-                    lon_ranges,
-                    min_y, max_y,
-                    subs_array, values,
-                    nodata, null_zone_int,
-                    idx_map)
 
 # top-level rasterize: streaming, no materialization of all roots
 def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers: int = 8,
-                         nodata: float = np.finfo(np.float32).max, compress: str = "lzw",
-                         debug: bool = False, max_packages: int = 0) -> dict:
+   nodata: float = np.finfo(np.float32).max, compress: str = "lzw",
+   debug: bool = False, max_packages: int = 0, fields: Optional[List[str]] = None) -> dict:
    start = time.time()
    logger.info("rasterize start level=%d workers=%d", level, workers)
 
@@ -218,14 +229,20 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
    logger.info("Allocating shared global zone_grid %dx%d (uint64) and out buffer (float32)", width, height)
    zone_grid, shm_zone = create_shared_zone_grid(width, height, int(nullZone))
 
-   from multiprocessing import shared_memory as _shm
-   size_out = width * height * np.dtype(np.float32).itemsize
+   # determine which fields to include in output
+   out_fields = list(fields) if fields is not None else store.fields
+   n_fields = len(out_fields)
+
+   itemsize = np.dtype(np.float32).itemsize
+   size_out = n_fields * width * height * itemsize
    shm_out = _shm.SharedMemory(create=True, size=size_out)
-   out_shared = np.ndarray((height, width), dtype=np.float32, buffer=shm_out.buf)
+   out_shared = np.ndarray((n_fields, height, width), dtype=np.float32, buffer=shm_out.buf)
    out_shared.fill(nodata)
 
    # prefill zone grid in parent
    prefill_zone_grid(shm_zone.name, dggrs, level, deg_per_pixel, workers=workers)
+
+   logger.info("zone grid fill complete")
 
    root_level = max(0, level - depth)
 
@@ -251,7 +268,8 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
             worker_config, root_level, depth,
             deg_per_pixel, width, height,
             shm_zone.name, shm_out.name,
-            float(nodata), null_zone_int
+            float(nodata), null_zone_int,
+            out_fields, n_fields
          )
          futures.append(fut)
 
@@ -265,7 +283,7 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
       "driver": "GTiff",
       "height": height,
       "width": width,
-      "count": 1,
+      "count": n_fields,
       "dtype": "float32",
       "crs": "EPSG:4326",
       "transform": transform,
@@ -275,7 +293,7 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
 
    os.makedirs(os.path.dirname(outfile) or ".", exist_ok=True)
    with rasterio.open(outfile, "w", **profile) as dst:
-      dst.write(out_shared, 1)
+      dst.write(out_shared)
 
    # cleanup shared memory handles
    shm_out.close()
@@ -284,14 +302,3 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
    shm_zone.unlink()
 
    return {"elapsed_seconds": elapsed}
-
-# legacy build_package_map (kept for compatibility)
-def build_package_map(store: DGGSDataStore, root_level: int):
-   pkg_map = {}
-   root_count = 0
-   for base_zone, base_ancestors in store.iter_bases(store._base_level_for_root(root_level), up_to=False):
-      pkg_path = store.compute_package_path_for_root_zone(root_level, base_ancestor_list=base_ancestors)
-      for zone in store.iter_roots_for_base(base_zone, root_level, up_to=False):
-         pkg_map.setdefault(pkg_path, []).append(zone)
-         root_count += 1
-   return pkg_map, root_count
