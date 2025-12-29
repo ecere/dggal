@@ -81,9 +81,7 @@ def label_for_link(link):
 
 
 def html_response(body_template: str, **ctx):
-    """
-    Render HTML using the base template.
-    """
+    # Render HTML using the base template.
     full = BASE_HTML.replace("{% block content %}{% endblock %}", body_template)
     return Response(
         render_template_string(full, base=BASE_HTML, **ctx),

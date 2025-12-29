@@ -87,12 +87,11 @@ def polygon_geometry_from_zone(dggrs, zone):
 
 @bp.route("/zones/<zoneId>", methods=["GET"])
 def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
-   """
-   Zone info endpoint that relies only on the DGGRS implementation for zone metadata.
-   The incoming path parameter is a text identifier; resolve it to a DGGRSZone using
-   dggrs.getZoneFromTextID(zoneId). All subsequent DGGRS calls use that DGGRSZone value.
-   Produces JSON / UBJSON / HTML.
-   """
+   # Zone info endpoint that relies only on the DGGRS implementation for zone metadata.
+   # The incoming path parameter is a text identifier; resolve it to a DGGRSZone using
+   # dggrs.getZoneFromTextID(zoneId). All subsequent DGGRS calls use that DGGRSZone value.
+   # Produces JSON / UBJSON / HTML.
+
    app = current_app._get_current_object() if hasattr(current_app, "_get_current_object") else current_app
 
    # Obtain DGGRS implementation instance by name
@@ -106,13 +105,15 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
             {"href": request.path + "?f=json", "title": "JSON"},
             {"href": request.path + "?f=ubjson", "title": "UBJSON"}
          ]
-         return html_response("<div class='card'><h2>DGGRS not available</h2></div>", {"title": "DGGRS not available", "top_links": top_links}, status=404)
+         return html_response("<div class='card'><h2>DGGRS not available</h2></div>",
+            #{"title": "DGGRS not available", "top_links": top_links},
+            status=404)
       return Response(pretty_json(payload) + "\n", status=404, mimetype="application/json; charset=utf-8")
 
    # Resolve the incoming text identifier to the DGGRSZone (internal 64-bit identifier)
    zone = dggrs.getZoneFromTextID(zoneId)
-   if zone is None:
-      payload = {"error": "Zone not found", "zone": zoneId}
+   if zone == nullZone:
+      payload = {"error": "Invalid zone", "zone": zoneId}
       fmt, _ = negotiate_format(request, request.path)
       if fmt == "html":
          top_links = [
@@ -120,7 +121,9 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
             {"href": request.path + "?f=json", "title": "JSON"},
             {"href": request.path + "?f=ubjson", "title": "UBJSON"}
          ]
-         return html_response("<div class='card'><h2>Zone not found</h2></div>", {"title": "Zone not found", "top_links": top_links}, status=404)
+         return html_response("<div class='card'><h2>Invalid zone</h2></div>",
+            #{"title": "Zone not found", "top_links": top_links},
+            status=404)
       return Response(pretty_json(payload) + "\n", status=404, mimetype="application/json; charset=utf-8")
 
    # canonical text id for presentation / links (DGGRS provides text id)
