@@ -456,6 +456,8 @@ class DGGSDataStore:
             children = dggrs.getZoneChildren(zone) or []
             for child in children:
                stack.append((child, base_ancestors + [zone]))
+            if not isinstance(children, list):
+               Instance.delete(children)
             continue
 
          # otherwise descend normally

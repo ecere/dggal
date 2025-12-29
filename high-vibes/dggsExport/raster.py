@@ -50,6 +50,7 @@ def _lon_ranges_for_extent(min_lon: float, max_lon: float) -> List[Tuple[float, 
    if max_lon < min_lon:
       return [(min_lon, 180.0), (-180.0, max_lon)]
    return [(min_lon, max_lon)]
+
 def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
    depth: int, deg_per_pixel: float, width: int, height: int, nodata: float,
    fields: List[str]
