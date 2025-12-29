@@ -212,4 +212,8 @@ def aggregate_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | No
    if fields is None:
       fields = store.fields
 
-   return aggregate_from_children(store, root_zone, zone_depth, fields)
+   t = store.dggrs.getZoneTextID(root_zone)
+   # print("Aggregating for zone", t, "at depth", zone_depth)
+   r = aggregate_from_children(store, root_zone, zone_depth, fields)
+   # print("... done aggregating for zone", t, "at depth", zone_depth)
+   return r

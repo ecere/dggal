@@ -89,9 +89,15 @@ def aggregate_from_children(store, root_zone, zone_depth, fields: List[str]):
    counts_map = { fname: [0] * n for fname in fields }
 
    children = dggrs.getZoneChildren(root_zone)
+
+   # print("   Aggregating from ", len(children), "children")
+
+   #i = 0
    for child_root in children:
       # this painter must update sums_map and counts_map for all fields in one decode
       _process_stored_root_aggregate(store, child_root, store_depth, sub_index, subs, sums_map, counts_map, fields)
+      #i = i + 1
+      #print("   ", i, " / ", len(children))
 
    Instance.delete(subs)
 

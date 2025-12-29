@@ -1,10 +1,15 @@
 from dggal import *
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 
 import rasterio
 from rasterio.warp import transform
 from rasterio.sample import sample_gen
 from rasterio.transform import Affine
+from rasterio.windows import Window
+from cffi import FFI
+from pyproj import Transformer
+
+import numpy as np
 
 from dggsStore.store import make_dggs_json_depth
 
@@ -12,76 +17,120 @@ from dggsStore.store import make_dggs_json_depth
 # Low-level sampling / coordinate helpers
 # ---------------------------------------------------------------------------
 
-def _coords_for_centroids(centroids, raster_crs: str) -> List[tuple]:
-   # centroids: iterable of DGGRSZone centroid objects with .lon/.lat
-   pts: List[tuple] = []
-   is4326 = raster_crs == "EPSG:4326"
-   for gp in centroids:
-      if is4326:
-         pts.append((gp.lon, gp.lat))
-      else:
-         xs, ys = transform("EPSG:4326", raster_crs, [gp.lon], [gp.lat])
-         pts.append((xs[0], ys[0]))
-   return pts
+def _coords_for_centroids(centroids, raster_crs: str) -> List[Tuple[float, float]]:
+   ffi = FFI()
+   n = centroids.count
+   ptr = ffi.cast("double *", centroids.array)
+   buf = ffi.buffer(ptr, n * 2 * ffi.sizeof("double"))
+   arr = np.frombuffer(buf, dtype=np.float64).reshape((n, 2))   # columns: [lat_rad, lon_rad]
+
+   lat_rad = arr[:, 0]
+   lon_rad = arr[:, 1]
+
+   # If raster CRS is geographic degrees, we must supply degrees to rasterio.
+   if raster_crs == "EPSG:4326":
+      # convert radians -> degrees (fast vectorized)
+      lon_deg = np.degrees(lon_rad)
+      lat_deg = np.degrees(lat_rad)
+      coords = np.column_stack((lon_deg, lat_deg))
+   else:
+      # Otherwise transform directly from radians -> target CRS units without explicit deg conversion
+      transformer = Transformer.from_crs("EPSG:4326", raster_crs, always_xy=True)
+      # transformer.transform accepts arrays and the radians flag
+      xs, ys = transformer.transform(lon_rad, lat_rad, radians=True)
+      coords = np.column_stack((xs, ys))
+   return [ (float(x), float(y)) for x, y in coords ]
 
 def _sample_values_for_centroids(ds, coords: List[tuple], overview_factor: Optional[int], bands: List[int]) -> List[List[Optional[float]]]:
-   # Preallocate per-field lists and write by index. Return per_field_values[band_index][centroid_index].
-   # - No exceptions, no defensive introspection, minimal inner-loop work.
-   # - Nodata handling is computed once up front; NaN nodata is detected via `nod != nod`.
+   # Vectorized sampling: one read covering all coords, then NumPy advanced indexing.
+   # Returns per_field_values[band_index][centroid_index] with None for nodata/missing.
    if not coords:
       return []
 
    n = len(coords)
    bcount = len(bands)
 
-   # preallocate per-field lists (bcount lists each of length n)
-   per_field_values: List[List[Optional[float]]] = [[None] * n for _ in range(bcount)]
+   # preallocate numpy result with NaN sentinel
+   result_np = np.full((bcount, n), np.nan, dtype=np.float64)
 
    # nodata values per band (1-based band numbers)
    nodata_vals = ds.nodatavals
    if not nodata_vals:
       nodata_vals = tuple([ds.nodata] * ds.count)
+   nodata_for_bands = np.array([nodata_vals[b - 1] if (b - 1) < len(nodata_vals) else None for b in bands], dtype=object)
+   nodata_is_nan = np.array([(nod is not None and nod != nod) for nod in nodata_for_bands], dtype=bool)
 
-   # align nodata values with requested bands and precompute NaN flags
-   nodata_for_bands = [nodata_vals[b - 1] if (b - 1) < len(nodata_vals) else None for b in bands]
-   nodata_is_nan = [(nod is not None and nod != nod) for nod in nodata_for_bands]
+   # split coords into arrays
+   xs = np.array([c[0] for c in coords], dtype=float)
+   ys = np.array([c[1] for c in coords], dtype=float)
 
+   # compute pixel row/col indices at dataset resolution (vectorized)
+   rows_all, cols_all = rowcol(ds.transform, xs, ys, op=int)
+
+   # determine bounding window in pixel coordinates (clamped to dataset)
+   min_row = int(max(0, rows_all.min()))
+   max_row = int(min(ds.height - 1, rows_all.max()))
+   min_col = int(max(0, cols_all.min()))
+   max_col = int(min(ds.width - 1, cols_all.max()))
+
+   # if all points outside dataset bounds, return lists of None
+   if min_row > max_row or min_col > max_col:
+      return [[None] * n for _ in range(bcount)]
+
+   win_row_off = min_row
+   win_col_off = min_col
+   win_height = max_row - min_row + 1
+   win_width = max_col - min_col + 1
+
+   # overview/downsampled read if requested
    if overview_factor and overview_factor > 1:
       factor = overview_factor
-      out_h = max(1, int(ds.height / factor))
-      out_w = max(1, int(ds.width / factor))
-      arr = ds.read(bands, out_shape=(bcount, out_h, out_w))
-      inv_transform = ~ds.transform
-      scale_x = ds.width / out_w
-      scale_y = ds.height / out_h
-
-      for i, (x, y) in enumerate(coords):
-         colf, rowf = inv_transform * (x, y)
-         col_o = int(colf / scale_x)
-         row_o = int(rowf / scale_y)
-         if 0 <= row_o < out_h and 0 <= col_o < out_w:
-            for bi in range(bcount):
-               v = arr[bi, row_o, col_o]
-               nod = nodata_for_bands[bi]
-               per_field_values[bi][i] = None if (
-                  v is None
-                  or (nod is not None and (nodata_is_nan[bi] and v != v or (not nodata_is_nan[bi] and v == nod)))
-               ) else float(v)
-         else:
-            # leave None for missing
-            pass
+      out_h = max(1, int(win_height / factor))
+      out_w = max(1, int(win_width / factor))
+      arr = ds.read(bands, window=Window(win_col_off, win_row_off, win_width, win_height), out_shape=(bcount, out_h, out_w))
+      # relative positions inside window
+      rel_rows = rows_all - win_row_off
+      rel_cols = cols_all - win_col_off
+      # map to overview indices (vectorized)
+      row_o = np.floor_divide(rel_rows * out_h, max(1, win_height)).astype(int)
+      col_o = np.floor_divide(rel_cols * out_w, max(1, win_width)).astype(int)
+      valid_mask = (row_o >= 0) & (row_o < out_h) & (col_o >= 0) & (col_o < out_w)
+      if valid_mask.any():
+         valid_indices = np.nonzero(valid_mask)[0]
+         vals = arr[:, row_o[valid_mask], col_o[valid_mask]]   # shape (bcount, n_valid)
+         result_np[:, valid_indices] = vals
    else:
-      # full-resolution sampling: request only requested bands from rasterio.sample
-      for i, arr in enumerate(ds.sample(coords, indexes=tuple(bands))):
-         if arr is None:
-            continue
-         for j in range(bcount):
-            v = arr[j] if j < len(arr) else None
-            nod = nodata_for_bands[j]
-            per_field_values[j][i] = None if (
-               v is None
-               or (nod is not None and (nodata_is_nan[j] and v != v or (not nodata_is_nan[j] and v == nod)))
-            ) else float(v)
+      # full-resolution read of the single window
+      arr = ds.read(bands, window=Window(win_col_off, win_row_off, win_width, win_height))
+      rel_rows = rows_all - win_row_off
+      rel_cols = cols_all - win_col_off
+      valid_mask = (rel_rows >= 0) & (rel_rows < win_height) & (rel_cols >= 0) & (rel_cols < win_width)
+      if valid_mask.any():
+         valid_indices = np.nonzero(valid_mask)[0]
+         vals = arr[:, rel_rows[valid_mask], rel_cols[valid_mask]]   # shape (bcount, n_valid)
+         result_np[:, valid_indices] = vals
+
+   # vectorized nodata handling per band
+   for bi in range(bcount):
+      nod = nodata_for_bands[bi]
+      if nod is None:
+         # ensure non-finite values are NaN
+         mask = ~np.isfinite(result_np[bi])
+         result_np[bi, mask] = np.nan
+      else:
+         if nodata_is_nan[bi]:
+            mask = np.isnan(result_np[bi])
+            result_np[bi, mask] = np.nan
+         else:
+            finite_mask = np.isfinite(result_np[bi])
+            eq_mask = finite_mask & (result_np[bi] == float(nod))
+            result_np[bi, eq_mask] = np.nan
+
+   # convert to per-field Python lists with None for NaN
+   per_field_values: List[List[Optional[float]]] = []
+   for bi in range(bcount):
+      row = result_np[bi]
+      per_field_values.append([None if not np.isfinite(x) else float(x) for x in row])
 
    return per_field_values
 

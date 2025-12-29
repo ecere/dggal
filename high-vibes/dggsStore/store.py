@@ -9,6 +9,7 @@ import logging
 from typing import Any, Dict, List, Optional, Tuple, Iterable, TypedDict, Mapping, Sequence
 from types import MethodType
 import ubjson
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 DGGS_JSON_SCHEMA_URI = "https://schemas.opengis.net/ogcapi/dggs/part1/1.0/openapi/schemas/dggrs-json/schema"
 
@@ -508,21 +509,38 @@ class DGGSDataStore:
                         entries: Dict['DGGRSZone', Any],
                         base_ancestor_list: Optional[List['DGGRSZone']] = None,
                         pkg_path: Optional[str] = None,
-                        precompressed: bool = False) -> None:
+                        precompressed: bool = False,
+                        max_workers: int = 8) -> None:
       dggrs = self.dggrs
-      # determine package path (use provided pkg_path or compute from base_zone)
+
       if pkg_path is None:
          pkg_path = self.compute_package_path_for_root_zone(base_zone, base_ancestor_list=base_ancestor_list)
 
-      # prepare rows for sqlite: (root_zone_text, blob)
-      rows: List[Tuple[str, bytes]] = []
+      items: List[Tuple[str, Any]] = []
       for zone_obj, data_obj in entries.items():
          zone_text = dggrs.getZoneTextID(zone_obj)
-         blob = data_obj if precompressed else to_blob(data_obj)
-         rows.append((zone_text, blob))
+         items.append((zone_text, data_obj))
+
+      output_rows: List[Tuple[str, bytes]] = []
+
+      if items:
+         if precompressed:
+            for zone_text, data_obj in items:
+               output_rows.append((zone_text, data_obj))
+         else:
+            workers = min(max_workers, max(1, len(items)))
+            with ThreadPoolExecutor(max_workers=workers) as ex:
+               fut_map = {}
+               for zone_text, data_obj in items:
+                  fut = ex.submit(to_blob, data_obj)
+                  fut_map[fut] = zone_text
+
+               for fut in as_completed(fut_map):
+                  zone_text = fut_map[fut]
+                  output_rows.append((zone_text, fut.result()))
 
       pkg_dir = os.path.dirname(pkg_path)
-      write_sqlite_two_col(pkg_path, rows)
+      write_sqlite_two_col(pkg_path, output_rows)
 
 def get_store(data_root: str, collection: str, config: Optional[dict] = None) -> DGGSDataStore:
    key = f"{data_root}::{collection}"
