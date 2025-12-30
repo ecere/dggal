@@ -227,15 +227,23 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
 
    meters_per_subzone, deg_per_pixel, width, height, transform = compute_raster_dimensions(dggrs, level)
 
-   logger.info("Allocating shared global zone_grid %dx%d (uint64) and out buffer (float32)", width, height)
-   zone_grid, shm_zone = create_shared_zone_grid(width, height, int(nullZone))
-
    # determine which fields to include in output
    out_fields = list(fields) if fields is not None else store.fields
    n_fields = len(out_fields)
 
+   MAX_ALLOC_BYTES = 7 * 1024**3
+
    itemsize = np.dtype(np.float32).itemsize
    size_out = n_fields * width * height * itemsize
+
+   if size_out > MAX_ALLOC_BYTES:
+      print(f"Output raster is {size_out:,} bytes; cap is {MAX_ALLOC_BYTES:,} bytes", flush=True)
+      return {"elapsed_seconds": 0}
+
+   logger.info("Allocating shared global zone_grid %dx%d (uint64) and out buffer (float32)", width, height)
+   zone_grid, shm_zone = create_shared_zone_grid(width, height, int(nullZone))
+
+   logger.info("Allocating float32 buffer %dx%d for %d fields", width, height, n_fields)
    shm_out = _shm.SharedMemory(create=True, size=size_out)
    out_shared = np.ndarray((n_fields, height, width), dtype=np.float32, buffer=shm_out.buf)
    out_shared.fill(nodata)
