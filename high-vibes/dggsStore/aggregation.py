@@ -11,6 +11,7 @@ from .store import *
 logger = logging.getLogger("dggs-serve.aggregation")
 
 def collect_ancestors_at_level(dggrs, start_zone, target_level):
+   nested: bool = dggrs.getMaxNeighbors() != 6
    out = []
    stack = [start_zone]
    seen = set()
@@ -28,6 +29,8 @@ def collect_ancestors_at_level(dggrs, start_zone, target_level):
          continue
       parents = dggrs.getZoneParents(n)
       for p in parents:
+         if nested == False and not dggrs.zoneHasSubZone(p, start_zone):
+            continue # Skip ancestors not overlapping the sub-zone
          stack.append(p)
       if parents is not None:
          Instance.delete(parents)
