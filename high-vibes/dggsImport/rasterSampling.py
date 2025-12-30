@@ -1,6 +1,6 @@
 from dggal import *
 from typing import List, Dict, Any, Optional, Tuple
-
+import itertools
 import rasterio
 from rasterio.warp import transform
 from rasterio.sample import sample_gen
@@ -144,46 +144,36 @@ def _meters_per_degree_at_lat(lat_deg: float) -> float:
    return 111320.0 * math.cos(lat_rad)
 
 def _choose_overview_factor_for_level(ds, dggrs, zone, root_level: int, relative_depth: int) -> int:
-   # Choose the overview factor whose effective meters/pixel best matches the DGGRS
-   # meters-per-subzone for (root_level, relative_depth).
-   target_m_per_subzone = dggrs.getMetersPerSubZoneFromLevel(root_level, relative_depth)
+   target = dggrs.getMetersPerSubZoneFromLevel(root_level, relative_depth)
+   px_x = abs(ds.transform.a); px_y = abs(ds.transform.e)
+   is_geo = (ds.crs is None) or (ds.crs.to_string() == "EPSG:4326")
+   max_allowed = target * (1.0 + 0.01) # 1% tolerance
 
-   # dataset base pixel size in dataset CRS units (pixel width)
-   base_px = abs(ds.transform.a)
-
-   # determine whether raster CRS is geographic (degrees) or projected (meters)
-   is_geographic = (ds.crs is None) or (ds.crs.to_string() == "EPSG:4326")
-
-   # pick a representative latitude for conversion using the DGGRS centroid API
-   lat = dggrs.getZoneWGS84Centroid(zone).lat
-
-   # convert base pixel to meters if raster CRS is geographic
-   if is_geographic:
-      meters_per_degree = _meters_per_degree_at_lat(lat)
-      base_px_m = base_px * meters_per_degree
+   if is_geo:
+      base_x = None
+      base_y = px_y * 111132.92  # m/degrees
    else:
-      base_px_m = base_px
+      base_x = px_x
+      base_y = px_y
 
-   # available overview factors (include 1)
-   overviews = ds.overviews(1) if ds.count >= 1 else []
-   candidates = [1] + list(overviews)
-
-   # choose candidate whose effective meters/pixel (base_px_m * factor) is closest to target
    best = 1
-   best_diff = float("inf")
-   for f in candidates:
-      eff_px_m = base_px_m * f
-      diff = abs(eff_px_m - target_m_per_subzone)
-      if diff < best_diff:
-         best_diff = diff
-         best = f
+   best_eff = 0.0
+
+   factors = itertools.chain([1], ds.overviews(1) if ds.count >= 1 else [])
+   for f in factors:
+      eff_x = (base_x * f) if (base_x is not None) else 0.0
+      eff_y = base_y * f
+
+      candidate_eff = eff_x if eff_x >= eff_y else eff_y
+      if candidate_eff <= max_allowed and candidate_eff > best_eff:
+         best, best_eff = f, candidate_eff
 
    # progress print for overview selection
    print(f"[OVERVIEW] zone={dggrs.getZoneTextID(zone)} root_level={root_level} depth={relative_depth} "
-         f"target_m_per_subzone={target_m_per_subzone:.3f} base_px_m={base_px_m:.6f} chosen_factor={best}",
+         f"target_m_per_subzone={target:.3f} overview_px_m={best_eff:.6f} chosen_factor={best}",
          flush=True)
 
-   return best
+   return 1 if best_eff == 0.0 else best
 
 # ---------------------------------------------------------------------------
 # Sampling and aggregation builders (produce Dict[int, Dict])
