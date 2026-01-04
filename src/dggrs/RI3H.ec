@@ -98,7 +98,19 @@ public class RhombicIcosahedral3H : DGGRS
          switch(crs)
          {
             case 0: case CRS { ogc, 153456 }:
-               return I3HZone::fromCentroid(level, centroid);
+            {
+               I3HZone z = I3HZone::fromCentroid(level, centroid);
+#ifdef _DEBUG
+               if(z == nullZone)
+               {
+                  GeoPoint geo;
+                  if(pj.inverse(centroid, geo, false))
+                     PrintLn("BUG: failure to identify 3H zone at 5x6 coordinates ",
+                        centroid, " (WGS84: ", geo, ")");
+               }
+#endif
+               return z;
+            }
             case CRS { ogc, 1534 }:
             {
                Pointd c5x6;
@@ -992,10 +1004,15 @@ private:
             else
             {
                int row, col, level = rootRhombus < 10 ? iLRCFromLRtI((char)('A' + levelI9R), rootRhombus, rhombusIX, &row, &col) : (rootRhombus <= 12 && !rhombusIX ? levelI9R : -1);
-               uint64 p = POW3(level);
-               uint64 r = rhombusIX / p, c = rhombusIX % p;
-               uint rm3 = (uint)(r % 3), cm3 = (uint)(c % 3);
-               key = fromI9R(level - 1, row / 3, col / 3, (char)('A' + (rootRhombus > 9 ? 1 : (cm3 > 1 ? 2 : rm3 > 1 ? 3 : 1))), rootRhombus > 9 ? rootRhombus : 0);
+               if(level == -1)
+                  key = nullZone;
+               else
+               {
+                  uint64 p = POW3(level);
+                  uint64 r = rhombusIX / p, c = rhombusIX % p;
+                  uint rm3 = (uint)(r % 3), cm3 = (uint)(c % 3);
+                  key = fromI9R(level - 1, row / 3, col / 3, (char)('A' + (rootRhombus > 9 ? 1 : (cm3 > 1 ? 2 : rm3 > 1 ? 3 : 1))), rootRhombus > 9 ? rootRhombus : 0);
+               }
             }
             return key;
          }
@@ -1364,8 +1381,9 @@ private:
       {
          int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
          uint root = cx + cy;
-         uint64 x = (uint64)((c.x - cx) * p + 1E-6 /*11*/); // Row and Column within root rhombus
-         uint64 y = (uint64)((c.y - cy) * p + 1E-6 /*11*/);
+         double lOffset = 1E-6 * d;
+         uint64 x = (uint64)((c.x - cx) * p + lOffset /*1E-6 /*11*/); // Row and Column within root rhombus
+         uint64 y = (uint64)((c.y - cy) * p + lOffset /*1E-6 /*11*/);
          uint64 rix;
          double xd, yd;
          uint sh;
@@ -1373,13 +1391,50 @@ private:
          // REVIEW: Valid scenarios where x == p or y == p are currently possible, yet the code further below assumed it was not
          if(y == p) // REVIEW: IVEA3H B1-2-A
          {
+            bool crossing = cy > cx;
+
+            if(crossing) // ivea3h zone 4.843213269127947,5.999999999833763 10 -crs 5x6
+            {
+               if(x == 0)
+                  isSouthPole = true;
+
+               // This is crossing a Southern interruption to the right
+               c.y = cy + (cx + 1) - c.x;
+               c.x = cx + 1;
+               x = (uint64)((c.x - cx) * p + lOffset /*1E-6 /*11*/);
+               y = (uint64)((c.y - cy) * p + lOffset /*1E-6 /*11*/);
+            }
             cy++;
             root++;
-            y -= p;
+            if(root == 10)
+            {
+               cx -= 5;
+               cy -= 5;
+               root = 0;
+            }
+            if(!crossing)
+               y -= p;
+            c.x = cx + (double)x / p;
             c.y = cy + (double)y / p;
          }
          if(x == p) // REVIEW: IVEA3H B4-6-A
          {
+            bool crossing = cy == cx;
+
+            if(crossing) // ivea3h zone 4.999999999833763,4.843213269127947 10 -crs 5x6
+            {
+               if(y == 0)
+                  isNorthPole = true;
+
+               // This is crossing a Nothern interruption to the right
+               c.x = cx + (cy + 1) - c.y;
+               c.y = cy;
+               x = (uint64)((c.x - cx) * p + lOffset /*1E-6 /*11*/);
+               y = (uint64)((c.y - cy) * p + lOffset /*1E-6 /*11*/);
+               cy++;
+               root++;
+            }
+
             cx++;
             root++;
             if(root == 10)
@@ -1387,12 +1442,18 @@ private:
                cx -= 5;
                cy -= 5;
                root = 0;
-               c.y = cy + (double)y / p;
             }
 
-            x -= p;
+            if(!crossing)
+               x -= p;
             c.x = cx + (double)x / p;
+            c.y = cy + (double)y / p;
          }
+
+         // REVIEW: This previous attempt at handling interruptions was not handling all cases
+         //         and may no longer be necessary...
+         //         However, the unit tests seemed to pass without it and without the improved
+         //         handling, so not sure exactly what related to these zones this was fixing.
          if(cy - cx > 1 && !y) // REVIEW: IVEA3H B9-3-A, C9-12-A
          {
             cx++;
@@ -1411,6 +1472,7 @@ private:
             c.x = cx + (double)x / p;
             c.y = cy;
          }
+         //////////////////
 
          rix = y * p + x;  // Index within root rhombus
          xd = (c.x - cx) * p - x;
@@ -1667,6 +1729,8 @@ private:
                }
             }
          }
+         if(root >= 0xA && rix)
+            return nullZone;
          return { l9r, root, rix, sh };
       }
    }
