@@ -75,6 +75,14 @@
             "rasterImport.py"
          ]
       },
+      {
+         "Folder" : "clipping",
+         "Files" : [
+            "clipping.py",
+            "clippingCore.py",
+            "clipUtils.py"
+         ]
+      },
       "dgg-export.py",
       "dgg-fetch.py",
       "dgg-import.py",
