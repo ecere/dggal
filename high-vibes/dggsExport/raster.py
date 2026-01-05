@@ -73,11 +73,10 @@ def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
 
    # Subzone index mapping
    subs_obj = dggrs.getSubZones(zone, depth)
-   n = subs_obj.count
-   raw = dggal_ffi.buffer(subs_obj.array, n * 8)
-   subs_array = np.frombuffer(raw, dtype=np.uint64)
-
-   idx_map = {int(z): i for i, z in enumerate(subs_array)}
+   subs_count = subs_obj.count
+   subs_ptr = ffi.cast("uint64_t *", subs_obj.array)
+   idx_map = { int(subs_ptr[i]): i for i in range(subs_count) }
+   Instance.delete(subs_obj)
 
    # Extent and pixel row bounds
    ext = GeoExtent()
@@ -90,7 +89,7 @@ def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
    min_y = max(0, int(math.floor((90.0 - ur_lat) / deg_per_pixel - 0.5)))
    max_y = min(height - 1, int(math.floor((90.0 - ll_lat) / deg_per_pixel - 0.5)))
 
-   return values_map, subs_array, idx_map, lon_ranges, min_y, max_y, decode_s
+   return values_map, subs_ptr, idx_map, lon_ranges, min_y, max_y, decode_s
 
 # paint worker: maps shared memory and writes values
 def _paint_worker(shm_zone_name: str, shm_out_name: str,
