@@ -62,10 +62,8 @@ def negotiate_format(req, path=None):
 
 
 def make_link(href, rel=None, title=None, type=None):
-    """
-    Create a link object. Nothing more.
-    You decide where it goes (JSON, HTML top, HTML bottom).
-    """
+    # Create a link object. Nothing more.
+    # You decide where it goes (JSON, HTML top, HTML bottom).
     link = {"href": href}
     if rel:
         link["rel"] = rel

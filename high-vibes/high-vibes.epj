@@ -76,6 +76,22 @@
          ]
       },
       {
+         "Folder" : "fg",
+         "Files" : [
+            "fix_topology_5x6.py",
+            "reproj.py",
+            "sutherlandHodgman.py",
+            "dggsJSONFG.py",
+            "faces.py",
+            "distance.py",
+            "interruption.py",
+            "fixWGS84.py",
+            "dgToGeoMulti.py",
+            "unprojectToWGS84.py",
+            "clippingShapely.py"
+         ]
+      },
+      {
          "Folder" : "clipping",
          "Files" : [
             "clipping.py",
@@ -88,7 +104,8 @@
       "dgg-import.py",
       "dgg-serve.py",
       "../bindings/py/dggal.py",
-      "../../eC/bindings/py/ecrt.py"
+      "../../eC/bindings/py/ecrt.py",
+      "dgg-fg.py"
    ],
    "ResourcesPath" : "",
    "Resources" : [

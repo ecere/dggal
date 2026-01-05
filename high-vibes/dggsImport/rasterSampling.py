@@ -212,7 +212,6 @@ def sample_depth_obj_for_zone(store, ds, raster_crs: str, dggrs, zone, data_leve
    # get per-field arrays: per_field_values[band_index][centroid_index]
    per_field_values = _sample_values_for_centroids(ds, coords, overview_factor, bands_to_sample)
 
-   # minimal shape validation (no defensive inner-loop checks)
    if not per_field_values or len(per_field_values) != bcount or any(len(pv) != count_centroids for pv in per_field_values):
       print(f"[SAMPLE] zone={dggrs.getZoneTextID(zone)} depth={depth} shape_mismatch sampled_bands={len(per_field_values) if per_field_values else 0} expected_bands={bcount} or centroid_count_mismatch, skipping", flush=True)
       return None

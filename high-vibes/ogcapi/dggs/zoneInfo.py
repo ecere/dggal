@@ -160,7 +160,6 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
       {"href": ubjson_self, "title": "UBJSON"}
    ]
 
-   # Assemble zone dict using DGGRS methods only (no defensive probing)
    zone_payload: Dict[str, Any] = {"id": zid_text, "links": json_links, "crs": "[OGC:CRS84]"}
 
    # level

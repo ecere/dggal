@@ -166,7 +166,7 @@ def import_raster(ds, collection_id: str, dggrs_name: str, data_root: str = "dat
    fields: List[str] | None = None, bands: List[int] | None = None,
    batch_size: int = 32, groupSize: int = 5, aggregate: bool | None = None):
 
-   # Uses provided open rasterio dataset `ds`. No defensive constructs; closes ds on every return.
+   # Uses provided open rasterio dataset `ds`. closes ds on every return.
    # Returns 0 on success, 1 on error.
 
    raster_crs = ds.crs.to_string() if ds.crs is not None else "EPSG:4326"

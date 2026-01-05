@@ -65,7 +65,7 @@ def fetch_zone_data_parallel(landing: str,
       "User-Agent": "dgg-fetch/1.0"
    }
 
-   # If you want UBJSON + gzip from servers that support it, uncomment:
+   # For UBJSON + gzip from servers that support it, uncomment:
    # headers = {
    #    "Accept": UBJSON_MIME,
    #    "Accept-Encoding": GZIP_HEADER,
