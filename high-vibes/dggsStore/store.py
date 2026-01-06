@@ -183,7 +183,7 @@ def get_or_create_dggrs(dggrsID: str) -> DGGRS:
          return dggrs
       cls = globals().get(dggrsID)
       if cls is None:
-         print(f"DGGRS class not found: {dggrsID!r}")
+         print(f"DGGRS class not found: {dggrsID}")
          return None
       dggrs = cls()
 
@@ -648,6 +648,7 @@ class DGGSDataStore:
          for k, v in props.items():
             if k in keys:
                continue
+            if v is None: continue;
             if isinstance(v, str):
                keys[k] = "text"
             elif isinstance(v, bool):
@@ -681,13 +682,19 @@ class DGGSDataStore:
          else:
             cols.append(f"\"{k}\" TEXT")          # JSON text
 
-      cur.execute(f"CREATE TABLE IF NOT EXISTS attributes({', '.join(cols)})")
-
+      cur.execute("CREATE TABLE IF NOT EXISTS attributes(feature_id INTEGER PRIMARY KEY)")
+      cur.execute("PRAGMA table_info(attributes)")
+      existing = {r[1] for r in cur.fetchall()}
+      for col_def in cols[1:]:                       # skip feature_id already created
+          col_name = col_def.split()[0].strip('"')
+          if col_name not in existing:
+              cur.execute(f"ALTER TABLE attributes ADD COLUMN {col_def}")
       # prepare inserts: allocate feature ids if needed, insert lookup values, then insert attributes row
       rows = []
       for feat in features:
          fid = feat.get("id")
          if not isinstance(fid, int) or fid == 0:
+            conn.commit()
             cur.execute("BEGIN IMMEDIATE")
             cur.execute("SELECT value FROM attr_seq WHERE name='feature_id'")
             v = cur.fetchone()[0]
@@ -698,11 +705,12 @@ class DGGSDataStore:
          row = {"feature_id": int(fid)}
          for k, t in keys.items():
             v = props.get(k)
+            if v is None: continue
             if t == "text":
                if v is None:
                   row[k] = None
                else:
-                  lk = '"' + f"attr_{c}_lk" + '"'
+                  lk = f"attr_{k}_lk"
                   cur.execute(f"INSERT OR IGNORE INTO {lk}(value) VALUES(?)", (v,))
                   cur.execute(f"SELECT id FROM {lk} WHERE value = ?", (v,))
                   row[k] = cur.fetchone()[0]

@@ -42,5 +42,5 @@ This code should all work with the last [0.0.6 DGGAL release](https://github.com
 
 This is an early version with some limitations:
 - the tools do not currently support additional dimensions (time, pressure...) but this is conceptually supported by DGGS-UBJSON and this DGGS Data Store layout,
-- this is currently limited to raster (DGGS-JSON), but a future version should support DGGS-JSON-FG for a proper DGGS-quantized vector data store (not rasterising the vector data!) -- also supported by this DGGS Data Store layout,
+- Vector stores are currently limited to icosahedral equal-area projections (IVEA, ISEA, RTEA) DGGRSs and have only been tested with IVEA3H and polygons so far,
 - a future version will likely introduce a DGGS-JSON (field value) quantization extension significantly reducing data size.

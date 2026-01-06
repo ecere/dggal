@@ -57,6 +57,12 @@ def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
    ) -> Tuple[Dict[str, np.ndarray], np.ndarray, Dict[int,int], List[Tuple[float,float]], int, int, float]:
    t0 = time.time()
    decoded = store.read_and_decode_zone_blob(pkg_path, zone)
+   if decoded is None:
+      #if not os.path.exists(pkg_path):
+      #   print("WARNING: reading from non-existing package", pkg_path)
+      #else:
+      #   print("WARNING: failure to read or decode blob for zone", dggrs.getZoneTextID(zone), "in package", pkg_path)
+      return None, None, None, None, None, None, None
    decode_s = time.time() - t0
 
    # Build a dict of field -> numpy array for the requested depth
@@ -186,6 +192,7 @@ def _paint_package_worker(pkg_path: str,
       values_map, subs_array, idx_map, lon_ranges, min_y, max_y, _decode_s = prepare_root(
          store, dggrs, pkg_path, root_zone, depth, deg_per_pixel, width, height, nodata, fields
       )
+      if values_map is None: continue
 
       for band_index, field in enumerate(fields):
          values = values_map.get(field)

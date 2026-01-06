@@ -33,6 +33,10 @@ def main():
    if not hasattr(store, "dggrs"):
       return
 
+   if args.level > store.maxRefinementLevel:
+      print("INFO:Clamping level to store's maximum refinement level:", store.maxRefinementLevel)
+      args.level = store.maxRefinementLevel
+
    out_fields = None
    if args.fields:
       out_fields = [f.strip() for f in args.fields.split(",") if f.strip()]

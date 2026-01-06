@@ -79,7 +79,10 @@ def fetch_zone_data_parallel(landing: str,
    def _fetch(ztext: str):
       url = _zone_data_url(landing, collectionId, dggrsId, ztext)
       r = requests.get(url, params=params, headers=headers, timeout=timeout)
-      r.raise_for_status()
+
+      if r.status_code in (400, 404):
+         return ztext, None
+      r.raise_for_status()   # It's normal to get some NODATA...
       # If UBJSON response handling is desired and server returns UBJSON bytes:
       # if use_ubjson:
       #    import gzip, ubjson

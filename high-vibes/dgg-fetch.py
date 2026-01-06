@@ -29,6 +29,20 @@ def parse_args():
    p.add_argument("--debug", action="store_true", help="Enable debug logging")
    return p.parse_args()
 
+# Top-level helper functions (no nested functions, no exception handlers)
+def _extract_props_and_strip(features, feature_props):
+   # Mutates parsed in-place: strips "properties" from features and collects them
+   for feat in features:
+      fid = feat.get("id")
+      if isinstance(fid, int):
+         fid_int = fid
+      else:
+         fid_int = int(fid)
+      props = feat.get("properties", None)
+      feature_props[fid_int] = props
+      if props is not None:
+         del feat["properties"]
+
 
 def process_batch(
    store: DGGSDataStore,
@@ -71,19 +85,43 @@ def process_batch(
          logger.info("DRY %s <- %s%s", pkg_path, url, params)
       return 0
 
+   # Fetch raw zone data (may be dicts or bytes)
    fetched = dggs_client.fetch_zone_data_parallel(landing, collection, dggrs_id, to_fetch_texts, workers=per_package_workers, depth=depth)
 
+   # Build entries mapping zone_id -> stripped payload (dict)
    entries: Dict[int, Any] = {}
+   # Collect properties per feature id (last-one-wins)
+   feature_props: Dict[int, Dict[str, Any]] = None
+
    for ztext in to_fetch_texts:
-      if ztext in fetched:
-         zone = zone_by_text[ztext]
-         zone_id = int(zone)
-         entries[zone_id] = fetched[ztext]
+      if ztext not in fetched: continue
+      raw = fetched[ztext]
+      if not raw or not isinstance(raw, Dict): continue
+
+      # Collect and strip properties for DGGS-JSON-FG
+      features = raw.get('features', None)
+      if isinstance(features, list):
+         if feature_props is None: feature_props = {}
+         _extract_props_and_strip(features, feature_props)
+      zone = zone_by_text[ztext]
+      zone_id = int(zone)
+      entries[zone_id] = raw
 
    if not entries:
       logger.info("PACKAGE #%d BATCH %d: no fetched entries", pkg_index, batch_num)
       return 0
 
+   # If we collected any feature properties, write them into the store attributes DB
+   if feature_props:
+      # build a GeoJSON-style features list from the id->properties map
+      features_list = []
+      for fid, props in feature_props.items():
+         features_list.append({"id": int(fid), "properties": props})
+
+      store.write_collection_attributes(features_list)
+      logger.info("PACKAGE #%d BATCH %d: wrote %d feature attributes to attributes DB", pkg_index, batch_num, len(feature_props))
+
+   # Write the stripped zone payloads into the store
    store.write_zone_batch(base_zone=zones[0], entries=entries, base_ancestor_list=bases_stack, precompressed=False)
    written = len(entries)
    logger.info("PACKAGE #%d: wrote %d roots (batch %d) to %s", pkg_index, written, batch_num, pkg_path)
