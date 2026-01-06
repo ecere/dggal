@@ -307,6 +307,7 @@ class DGGSDataStore:
                self.fields = cols
          else:
             conn.close()
+         self.is_vector = True
       else:
          # attributes.sqlite not present -> inspect package .sqlite files
          sample_pkg = None
@@ -335,6 +336,7 @@ class DGGSDataStore:
                      values_map = decoded.get("values") if isinstance(decoded, dict) else None
                      if isinstance(values_map, dict):
                         self.fields = list(values_map.keys())
+         self.is_vector = False
       # print("Computed fields: ", self.fields)
 
    def _compute_groups(self) -> None:

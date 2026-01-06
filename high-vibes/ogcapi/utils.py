@@ -3,6 +3,7 @@
 
 import os
 import json
+from typing import Iterable
 from flask import current_app, request, render_template_string, Response
 
 BASE_HTML = """<!doctype html>
@@ -36,30 +37,60 @@ BASE_HTML = """<!doctype html>
 def data_root():
     return current_app.config.get("DATA_ROOT", os.getcwd())
 
-
 def negotiate_format(req, path=None):
-    """
-    Decide whether the client wants HTML or JSON.
-    """
+    # Decide whether the client wants HTML or JSON.
     p = (path or req.path or "").lower()
 
-    if p.endswith(".json"):
-        return "json", False
-    if p.endswith(".ubjson"):
-        return "ubjson", False
+    if p.endswith(".json"):      return "json",       False
+    if p.endswith(".ubjson"):    return "ubjson",     False
+    if p.endswith(".geojson"):   return "geojson",    False
+    if p.endswith(".geoubjson"): return "geoubjson",  False
 
     f = (req.args.get("f") or "").lower()
-    if f in ("json", "ubjson", "html"):
+    if f in ("json", "ubjson", "geojson", "geoubjson", "html"):
         fmt = f
     else:
         accept = (req.headers.get("Accept") or "").lower()
-        fmt = "html" if "text/html" in accept else "json"
+        if "text/html" in accept: fmt = "html"
+        elif "application/json"        in accept: fmt = "json"
+        elif "application/ubjson"      in accept: fmt = "ubjson"
+        elif "application/geo+json"    in accept: fmt = "geojson"
+        elif "application/geo+ubjson"  in accept: fmt = "geoubjson"
+        else:                                     fmt = "json"
 
     ae = (req.headers.get("Accept-Encoding") or "").lower()
     gzip_ok = "gzip" in ae or "*" in ae
 
     return fmt, gzip_ok
 
+GEOJSON_PROFILES = {"rfc7946", "jsonfg", "jsonfg-plus"}
+DGGSFG_PROFILES = {"jsonfg-dggs", "jsonfg-dggs-plus", "jsonfg-dggs-zoneids", "jsonfg-dggs-zoneids-plus"}
+
+def negotiate_profile(request, fmt, default_profile=None):
+   # collect profile tokens from Accept-Profile header and profile query param
+   profile_tokens = []
+   accept_profile_hdr = request.headers.get("Accept-Profile", "")
+   if accept_profile_hdr:
+      for part in accept_profile_hdr.split(","):
+         token = part.split(";", 1)[0].strip()
+         if token:
+            profile_tokens.append(token)
+   profile_q = request.args.get("profile", "")
+   if profile_q:
+      for part in profile_q.split(","):
+         token = part.split(";", 1)[0].strip()
+         if token:
+            profile_tokens.append(token)
+
+   profile = default_profile
+   if profile_tokens:
+      if fmt == "geojson" or fmt == "geoubjson":
+         if any(profile_token_matches(tok, DGGSFG_PROFILES) for tok in profile_tokens):
+            profile = "jsonfg-dggs"
+         elif any(profile_token_matches(tok, GEOJSON_PROFILES) for tok in profile_tokens):
+            profile = "rfc7946"
+
+   return profile
 
 def make_link(href, rel=None, title=None, type=None):
     # Create a link object. Nothing more.
@@ -130,3 +161,36 @@ def pretty_json(obj, indent=0, indent_step=3):
         return "{\n" + ",\n".join(parts) + "\n" + sp + "}"
 
     return json.dumps(obj, ensure_ascii=False)
+
+def profile_token_matches(token: str, short_names: Iterable[str]) -> bool:
+   # Return True when the profile token matches any of the provided short_names.
+   # Supported token forms:
+   # - short name (e.g., "jsonfg-dggs")
+   # - CURIE form "ogc-profile:NAME"
+   # - full URI forms "https://www.opengis.net/def/profile/ogc/0/NAME"
+   #  and "http://www.opengis.net/def/profile/ogc/0/NAME"
+   if not token:
+      return False
+   tok = token.strip()
+   if not tok:
+      return False
+
+   # direct short-name match
+   if tok in short_names:
+      return True
+
+   # CURIE form ogc-profile:NAME
+   if tok.startswith("ogc-profile:"):
+      name = tok.split(":", 1)[1]
+      if name in short_names:
+         return True
+
+   # full URI forms
+   for prefix in ("https://www.opengis.net/def/profile/ogc/0/",
+                  "http://www.opengis.net/def/profile/ogc/0/"):
+      if tok.startswith(prefix):
+         name = tok[len(prefix):]
+         if name in short_names:
+            return True
+
+   return False
