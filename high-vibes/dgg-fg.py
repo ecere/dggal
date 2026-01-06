@@ -15,7 +15,7 @@ from shapely.geometry import shape, mapping, Polygon, MultiPolygon, LineString, 
 
 from fg.reproj import *
 from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology, fix_geojson_file_5x6_topology
-from fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg
+from fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg_file
 from fg.dgToGeoMulti import togeo_multi_mode
 from fg.clippingShapely import clip_featurecollection_to_zone
 
@@ -261,13 +261,6 @@ def main(argv):
 
       return
 
-   #if args.cmd == "togeo":
-   #   obj = read_dggs_json_fg(args.input)
-   #   with open(args.output, "w", encoding="utf-8") as fh:
-   #      fh.write(pretty_json(obj))
-   #      fh.write("\n")
-   #   return 0
-
    if args.cmd == "togeo":
       paths = args.paths
       if len(paths) < 2:
@@ -283,7 +276,7 @@ def main(argv):
             single_input = True
 
       if single_input:
-         obj = read_dggs_json_fg(input_args[0])
+         obj = read_dggs_json_fg_file(input_args[0])
          with open(output_path, "w", encoding="utf-8") as fh:
             fh.write(pretty_json(obj))
             fh.write("\n")

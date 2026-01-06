@@ -1,6 +1,6 @@
 # dgToGeoMulti.py
 # Parallel reader -> WKB aggregator -> rehydrate & union -> write GeoJSON
-# - Workers read one DGGS-UBJSON-FG file each via read_dggs_json_fg(path)
+# - Workers read one DGGS-UBJSON-FG file each via read_dggs_json_fg_file(path)
 # - Workers convert GeoJSON geometries to WKB bytes and return tuples:
 #     (key, wkb_bytes_or_None, props, raw_id, kind_or_None)
 # - Main process aggregates WKB lists per key, rehydrates WKB -> Shapely only
@@ -26,7 +26,7 @@ from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, Mult
 from shapely.geometry.base import BaseGeometry
 
 from ogcapi.utils import pretty_json
-from fg.dggsJSONFG import read_dggs_json_fg
+from fg.dggsJSONFG import read_dggs_json_fg_file
 
 # number of worker processes to use by default
 WORKERS = 16
@@ -59,11 +59,6 @@ def expand_input_paths(args_list: Sequence[str]) -> Iterable[str]:
         for p in expand_input_paths_from_arg(a):
             yield p
 
-# Required names must exist in the module:
-# shape, mapping, shapely, _wkb
-# Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
-# read_dggs_json_fg, expand_input_paths, pretty_json, WORKERS
-
 def numeric_key(k: str):
    try:
       return (0, int(k))
@@ -80,7 +75,7 @@ def numeric_key(k: str):
 # (key, wkb_bytes_or_None, props, raw_id, kind_or_None)
 def _worker_read_file(path: str) -> List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]]:
    out: List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]] = []
-   obj = read_dggs_json_fg(path)
+   obj = read_dggs_json_fg_file(path)
    feats = obj.get("features", []) or []
    for feat in feats:
       geom_json = feat.get("geometry")

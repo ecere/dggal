@@ -7,7 +7,7 @@ import gzip
 import threading
 import logging
 import array
-from typing import Any, Dict, List, Optional, Tuple, Iterable, TypedDict, Mapping, Sequence
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Iterator, TypedDict, Mapping, Sequence
 from types import MethodType
 import ubjson
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -238,7 +238,7 @@ def write_sqlite_two_col(path: str, entries: List[Tuple[str, bytes]]) -> int:
 def read_package_root_ids_from_sqlite(pkg_path: str, limit: Optional[int] = None) -> List[str]:
    if not pkg_path or not os.path.exists(pkg_path):
       return []
-   conn = sqlite3.connect(pkg_path)
+   conn = sqlite3.connect(f"file:{os.path.abspath(pkg_path)}?mode=ro&immutable=1", uri=True, check_same_thread=False)
    conn.row_factory = sqlite3.Row
    if limit is None:
       cur = conn.execute("SELECT root_zone_id FROM zone_data")
@@ -262,7 +262,7 @@ class DGGSDataStore:
             print(f"Collection directory not found: {self.collection_dir!r}")
             return
          cfg_path = os.path.join(self.collection_dir, "collection.json")
-         logger.info("Loading collection config from %s", cfg_path)
+         # logger.info("Loading collection config from %s", cfg_path)
          if not os.path.isfile(cfg_path):
             print(f"collection.json not found at {cfg_path!r}")
             return
@@ -295,7 +295,7 @@ class DGGSDataStore:
 
       attr_path = self._attributes_db_path()
       if os.path.exists(attr_path):
-         conn = sqlite3.connect(f"file:{os.path.abspath(attr_path)}?mode=ro", uri=True, check_same_thread=False)
+         conn = sqlite3.connect(f"file:{os.path.abspath(attr_path)}?mode=ro&immutable=1", uri=True, check_same_thread=False)
          cur = conn.cursor()
          cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='attributes'")
          if cur.fetchone():
@@ -322,7 +322,7 @@ class DGGSDataStore:
             root_ids = read_package_root_ids_from_sqlite(sample_pkg, limit=1)
             if root_ids:
                sample_root = root_ids[0]
-               conn2 = sqlite3.connect(sample_pkg)
+               conn2 = sqlite3.connect(f"file:{os.path.abspath(sample_pkg)}?mode=ro&immutable=1", uri=True, check_same_thread=False)
                conn2.row_factory = sqlite3.Row
                cur2 = conn2.execute("SELECT data FROM zone_data WHERE root_zone_id = ?", (sample_root,))
                r2 = cur2.fetchone()
@@ -418,13 +418,13 @@ class DGGSDataStore:
       if not os.path.isfile(pkg_path):
          return None
       zone_text = self.dggrs.getZoneTextID(zone)
-      conn = sqlite3.connect(pkg_path)
+      conn = sqlite3.connect(f"file:{os.path.abspath(pkg_path)}?mode=ro&immutable=1", uri=True, check_same_thread=False)
       conn.row_factory = sqlite3.Row
       cur = conn.execute("SELECT data FROM zone_data WHERE root_zone_id = ?", (zone_text,))
       row = cur.fetchone()
       conn.close()
       if not row:
-         logger.warning("read_zone_blob: package=%s missing root_zone_id=%s", pkg_path, zone_text)
+         # logger.warning("read_zone_blob: package=%s missing root_zone_id=%s", pkg_path, zone_text)
          return None
       return row["data"]
 
@@ -700,7 +700,7 @@ class DGGSDataStore:
                if v is None:
                   row[k] = None
                else:
-                  lk = f"attr_{k}_lk"
+                  lk = '"' + f"attr_{c}_lk" + '"'
                   cur.execute(f"INSERT OR IGNORE INTO {lk}(value) VALUES(?)", (v,))
                   cur.execute(f"SELECT id FROM {lk} WHERE value = ?", (v,))
                   row[k] = cur.fetchone()[0]
@@ -729,15 +729,16 @@ class DGGSDataStore:
       # returns mapping feature_id -> {attr: value} with text FKs resolved to strings
       if not ids:
          return {}
-      self._ensure_attributes_db()
+      # self._ensure_attributes_db()
       path = self._attributes_db_path()
-      conn = sqlite3.connect(path)
+      conn = sqlite3.connect(f"file:{os.path.abspath(path)}?mode=ro&immutable=1", uri=True, check_same_thread=False)
       cur = conn.cursor()
 
       q = ",".join("?" for _ in ids)
       cur.execute(f"PRAGMA table_info(attributes)")
       cols = [r[1] for r in cur.fetchall()]  # column names
-      cur.execute(f"SELECT {', '.join(cols)} FROM attributes WHERE feature_id IN ({q})", tuple(ids))
+      cols_quoted = ",".join(f'"{c}"' for c in cols)
+      cur.execute(f"SELECT {cols_quoted} FROM attributes WHERE feature_id IN ({q})", tuple(ids))
       rows = cur.fetchall()
       out = {}
       # find text FK columns by checking for corresponding lookup table existence
@@ -758,7 +759,7 @@ class DGGSDataStore:
             if val is None:
                rec[c] = None
             elif c in text_cols:
-               lk = f"attr_{c}_lk"
+               lk = '"' + f"attr_{c}_lk" + '"'
                cur.execute(f"SELECT value FROM {lk} WHERE id = ?", (int(val),))
                rec[c] = cur.fetchone()[0]
             else:
@@ -862,3 +863,14 @@ def build_dggs_json_from_values(store, zone, collected_values: Dict[int, Dict[st
    dggrs_uri = f"[ogc-dggrs:{dggrs_id}]"
    zone_text = store.dggrs.getZoneTextID(zone)
    return make_dggs_json_blob(dggrs_uri, zone_text, merged_fields)
+
+# iter_packages yields primitive ids only (no CFFI objects)
+def iter_packages(store: DGGSDataStore, root_level: int) -> Iterator[Tuple[str, int, List[int]]]:
+   base_level = store._base_level_for_root(root_level)
+   for base_zone, base_ancestors in store.iter_bases(base_level, up_to=False):
+      pkg_path = store.compute_package_path_for_root_zone(root_level, base_ancestor_list=base_ancestors)
+      if not pkg_path:
+         continue
+      base_zone_id = int(base_zone)
+      base_ancestors_ids = [int(b) for b in base_ancestors]
+      yield pkg_path, base_zone_id, base_ancestors_ids

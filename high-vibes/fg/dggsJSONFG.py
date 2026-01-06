@@ -225,7 +225,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
       out_feature: Dict[str, Any] = {
          "type": "Feature",
          "id": fid,
-         "properties": props,
+         "properties": props if props else {},
          "geometry": None,
          "place": None,
          "time": None,
@@ -397,12 +397,16 @@ def finalize_result(projection, extent, converted, fid):
 
    return converted
 
-# read a DGGS-JSON-FG file and convert index-based geometries to numeric coordinates
-# Returns the top-level object in the same shape it was read (geometry, Feature, or FeatureCollection)
-def read_dggs_json_fg(path: str) -> Dict[str, Any]:
+def read_dggs_json_fg_file(path: str) -> Dict[str, Any]:
    with open(path, "r", encoding="utf-8") as fh:
       data = json.load(fh)
+      if data:
+         return read_dggs_json_fg(data)
+   return None
 
+# read a DGGS-JSON-FG file and convert index-based geometries to numeric coordinates
+# Returns the top-level object in the same shape it was read (geometry, Feature, or FeatureCollection)
+def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
    curie = data["dggrs"]
    token = "-dggrs:"
    start = curie.find(token) + len(token)
@@ -446,7 +450,7 @@ def read_dggs_json_fg(path: str) -> Dict[str, Any]:
                "dggrs": curie,
                "zoneId": zone_text,
                "depth": depth,
-               **props
+               **(props or {})
             },
             "geometry": finalize_result(projection, extent, converted, id)
          }

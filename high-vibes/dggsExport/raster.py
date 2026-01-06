@@ -10,7 +10,7 @@
 from __future__ import annotations
 from dggal import *
 import dggal
-from dggsStore.store import DGGSDataStore
+from dggsStore.store import DGGSDataStore, iter_packages
 import time
 import math
 import logging
@@ -155,18 +155,6 @@ def _paint_worker(shm_zone_name: str, shm_out_name: str,
    shm_zone.close()
    shm_out.close()
    return None
-
-
-# iter_packages yields primitive ids only (no CFFI objects)
-def iter_packages(store: DGGSDataStore, root_level: int) -> Iterator[Tuple[str, int, List[int]]]:
-   base_level = store._base_level_for_root(root_level)
-   for base_zone, base_ancestors in store.iter_bases(base_level, up_to=False):
-      pkg_path = store.compute_package_path_for_root_zone(root_level, base_ancestor_list=base_ancestors)
-      if not pkg_path:
-         continue
-      base_zone_id = int(base_zone)
-      base_ancestors_ids = [int(b) for b in base_ancestors]
-      yield pkg_path, base_zone_id, base_ancestors_ids
 
 
 # per-package worker: reconstruct store and DGGRSZone from ids inside worker

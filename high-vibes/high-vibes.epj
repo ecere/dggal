@@ -33,7 +33,8 @@
          "Folder" : "dggsExport",
          "Files" : [
             "raster.py",
-            "rasterZoneGrid.py"
+            "rasterZoneGrid.py",
+            "exportFeatures.py"
          ]
       },
       {
