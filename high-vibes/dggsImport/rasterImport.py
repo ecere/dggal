@@ -164,7 +164,7 @@ def _process_batch(store, ds, raster_crs: str, dggrs, dggrs_uri: str,
 def import_raster(ds, collection_id: str, dggrs_name: str, data_root: str = "data",
    level: int | None = None, depth: int | None = None,
    fields: List[str] | None = None, bands: List[int] | None = None,
-   batch_size: int = 32, groupSize: int = 5, aggregate: bool | None = None):
+   batch_size: int = 32, groupSize: int = 5, aggregate: bool | None = None, max_workers: int = 16):
 
    # Uses provided open rasterio dataset `ds`. closes ds on every return.
    # Returns 0 on success, 1 on error.
@@ -275,7 +275,8 @@ def import_raster(ds, collection_id: str, dggrs_name: str, data_root: str = "dat
                written = _process_batch(
                   store, ds, raster_crs, dggrs, dggrs_uri, base_zone, batch_zones,
                   base_ancestors, data_level, depth, fields, use_overviews_for_sampling,
-                  aggregate and root_level < deepest_root_level, bands_used
+                  aggregate and root_level < deepest_root_level, bands_used,
+                  max_workers = max_workers
                )
                total_written += written
                batch_zones = []

@@ -109,7 +109,6 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
 
 def write_dggs_json_fg(out_fc: Dict[str, Any],
                        features_rings_entry_exit_indices: Dict[str, Any],
-                       output_path: str,
                        dggrs,
                        root_zone,
                        depth: int,
@@ -118,7 +117,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    centroid_pointd = dggrs.getZoneCRSCentroid(root_zone, CRS(0))
 
    features = out_fc.get("features", []) or []
-   print(f"write_dggs_json_fg: features_in={len(features)}, entry_exits_items={len(features_rings_entry_exit_indices)}, output_path={output_path}")
+   print(f"write_dggs_json_fg: features_in={len(features)}, entry_exits_items={len(features_rings_entry_exit_indices)}")
 
    dggrs_name = dggrs.__class__.__name__
    dggs_obj: Dict[str, Any] = {
@@ -236,9 +235,24 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
       print(f"processed feature {fi} id={fid}")
 
    print(f"write_dggs_json_fg: finished features={len(dggs_obj['features'])}")
-   with open(output_path, "w", encoding="utf-8") as fh:
-      fh.write(pretty_json(dggs_obj))
-      fh.write("\n")
+
+   return dggs_obj
+
+def write_dggs_json_fg_to_file(out_fc: Dict[str, Any],
+                       features_rings_entry_exit_indices: Dict[str, Any],
+                       output_path: str,
+                       dggrs,
+                       root_zone,
+                       depth: int,
+                       profile_uri: str = "https://www.opengis.net/def/profile/ogc/0/jsonfg-dggs"):
+
+   dggs_obj = write_dggs_json_fg(out_fc, features_rings_entry_exit_indices, dggrs, root_zone,
+      depth, profile_uri)
+
+   if dggs_obj is not None:
+      with open(output_path, "w", encoding="utf-8") as fh:
+         fh.write(pretty_json(dggs_obj))
+         fh.write("\n")
 
 # map a single integer index to an [x,y] coordinate using centroids list
 def _index_to_xy(idx: int, centroids: List[Pointd]) -> List[float]:

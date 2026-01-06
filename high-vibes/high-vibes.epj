@@ -72,7 +72,8 @@
          "Folder" : "dggsImport",
          "Files" : [
             "rasterSampling.py",
-            "rasterImport.py"
+            "rasterImport.py",
+            "vectorImport.py"
          ]
       },
       {
@@ -88,7 +89,8 @@
             "fixWGS84.py",
             "dgToGeoMulti.py",
             "unprojectToWGS84.py",
-            "clippingShapely.py"
+            "clippingShapely.py",
+            "wkbc.py"
          ]
       },
       {

@@ -289,31 +289,52 @@ class DGGSDataStore:
       self._compute_fields()
 
    def _compute_fields(self):
+      # Prefer collection-level attributes.sqlite (vector collection) first,
+      # otherwise inspect a package .sqlite (raster case).
       self.fields: List[str] = None
-      sample_pkg = None
-      for root, _, names in os.walk(self.collection_dir):
-         for n in names:
-            if n.endswith(".sqlite"):
-               sample_pkg = os.path.join(root, n)
+
+      attr_path = self._attributes_db_path()
+      if os.path.exists(attr_path):
+         conn = sqlite3.connect(f"file:{os.path.abspath(attr_path)}?mode=ro", uri=True, check_same_thread=False)
+         cur = conn.cursor()
+         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='attributes'")
+         if cur.fetchone():
+            cur.execute("PRAGMA table_info(attributes)")
+            cols = [r[1] for r in cur.fetchall()]
+            conn.close()
+            cols = [c for c in cols if c != "feature_id"]
+            if cols:
+               self.fields = cols
+         else:
+            conn.close()
+      else:
+         # attributes.sqlite not present -> inspect package .sqlite files
+         sample_pkg = None
+         for root, _, names in os.walk(self.collection_dir):
+            for n in names:
+               if n.endswith(".sqlite"):
+                  sample_pkg = os.path.join(root, n)
+                  break
+            if sample_pkg:
                break
+
          if sample_pkg:
-            break
-      if sample_pkg:
-         root_ids = read_package_root_ids_from_sqlite(sample_pkg, limit=1)
-         if root_ids:
-            sample_root = root_ids[0]
-            conn2 = sqlite3.connect(sample_pkg)
-            conn2.row_factory = sqlite3.Row
-            cur2 = conn2.execute("SELECT data FROM zone_data WHERE root_zone_id = ?", (sample_root,))
-            r2 = cur2.fetchone()
-            conn2.close()
-            if r2:
-               blob = r2["data"]
-               if blob:
-                  raw = gzip.decompress(blob) if blob[:2] == b"\x1f\x8b" else blob
-                  decoded = ubjson.loadb(raw)
-                  values_map = decoded["values"]
-                  self.fields = list(values_map.keys())
+            root_ids = read_package_root_ids_from_sqlite(sample_pkg, limit=1)
+            if root_ids:
+               sample_root = root_ids[0]
+               conn2 = sqlite3.connect(sample_pkg)
+               conn2.row_factory = sqlite3.Row
+               cur2 = conn2.execute("SELECT data FROM zone_data WHERE root_zone_id = ?", (sample_root,))
+               r2 = cur2.fetchone()
+               conn2.close()
+               if r2:
+                  blob = r2["data"]
+                  if blob:
+                     raw = gzip.decompress(blob) if blob[:2] == b"\x1f\x8b" else blob
+                     decoded = ubjson.loadb(raw)
+                     values_map = decoded.get("values") if isinstance(decoded, dict) else None
+                     if isinstance(values_map, dict):
+                        self.fields = list(values_map.keys())
       # print("Computed fields: ", self.fields)
 
    def _compute_groups(self) -> None:
@@ -593,6 +614,188 @@ class DGGSDataStore:
 
       pkg_dir = os.path.dirname(pkg_path)
       write_sqlite_two_col(pkg_path, output_rows)
+
+   # Vector Attributes DB
+   def _attributes_db_path(self) -> str:
+      return os.path.join(self.collection_dir, "attributes.sqlite")
+
+   def _ensure_attributes_db(self) -> None:
+      path = self._attributes_db_path()
+      os.makedirs(self.collection_dir, exist_ok=True)
+      conn = sqlite3.connect(path)
+      conn.execute("PRAGMA journal_mode = WAL")
+      conn.commit()
+      conn.close()
+
+   def write_collection_attributes(self, features: List[Dict[str, Any]]) -> None:
+      # features: list of {"id": int_or_str, "properties": {...}}
+      # Normalize feature ids to integers; allocate numeric ids if missing or non-integer.
+      self._ensure_attributes_db()
+      path = self._attributes_db_path()
+      conn = sqlite3.connect(path)
+      cur = conn.cursor()
+
+      # sequence table for generated ids
+      cur.execute("CREATE TABLE IF NOT EXISTS attr_seq(name TEXT PRIMARY KEY, value INTEGER NOT NULL)")
+      cur.execute("INSERT OR IGNORE INTO attr_seq(name, value) VALUES('feature_id', 1)")
+
+      # collect attribute keys and sample types
+      keys = {}
+      for feat in features:
+         props = feat.get("properties", {}) or {}
+         for k, v in props.items():
+            if k in keys:
+               continue
+            if isinstance(v, str):
+               keys[k] = "text"
+            elif isinstance(v, bool):
+               keys[k] = "bool"
+            elif isinstance(v, (int, float)):
+               keys[k] = "number"
+            else:
+               # arrays and objects -> JSON
+               keys[k] = "json"
+
+      # create lookup tables for text attributes
+      for k, t in keys.items():
+         if t == "text":
+            lk = f"attr_{k}_lk"
+            cur.execute(
+               f"CREATE TABLE IF NOT EXISTS {lk}("
+               " id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               " value TEXT UNIQUE"
+               ")"
+            )
+
+      # create main attributes table with dynamic columns
+      cols = ["feature_id INTEGER PRIMARY KEY"]
+      for k, t in keys.items():
+         if t == "text":
+            cols.append(f"\"{k}\" INTEGER")        # FK to attr_<k>_lk
+         elif t == "number":
+            cols.append(f"\"{k}\" REAL")
+         elif t == "bool":
+            cols.append(f"\"{k}\" INTEGER")
+         else:
+            cols.append(f"\"{k}\" TEXT")          # JSON text
+
+      cur.execute(f"CREATE TABLE IF NOT EXISTS attributes({', '.join(cols)})")
+
+      # prepare inserts: allocate feature ids if needed, insert lookup values, then insert attributes row
+      rows = []
+      for feat in features:
+         fid = feat.get("id")
+         if not isinstance(fid, int) or fid == 0:
+            cur.execute("BEGIN IMMEDIATE")
+            cur.execute("SELECT value FROM attr_seq WHERE name='feature_id'")
+            v = cur.fetchone()[0]
+            fid = int(v)
+            cur.execute("UPDATE attr_seq SET value = ? WHERE name = 'feature_id'", (v + 1,))
+            conn.commit()
+         props = feat.get("properties", {}) or {}
+         row = {"feature_id": int(fid)}
+         for k, t in keys.items():
+            v = props.get(k)
+            if t == "text":
+               if v is None:
+                  row[k] = None
+               else:
+                  lk = f"attr_{k}_lk"
+                  cur.execute(f"INSERT OR IGNORE INTO {lk}(value) VALUES(?)", (v,))
+                  cur.execute(f"SELECT id FROM {lk} WHERE value = ?", (v,))
+                  row[k] = cur.fetchone()[0]
+            elif t == "number":
+               row[k] = float(v) if v is not None else None
+            elif t == "bool":
+               row[k] = 1 if v else 0 if v is not None else None
+            else:
+               row[k] = json.dumps(v, separators=(",", ":")) if v is not None else None
+         rows.append(row)
+
+      # bulk upsert rows
+      if rows:
+         col_names = ["feature_id"] + [k for k in keys.keys()]
+         placeholders = ",".join("?" for _ in col_names)
+         insert_sql = f"INSERT OR REPLACE INTO attributes({', '.join('\"'+c+'\"' for c in col_names)}) VALUES({placeholders})"
+         params = []
+         for r in rows:
+            params.append(tuple(r.get(c) for c in col_names))
+         cur.executemany(insert_sql, params)
+
+      conn.commit()
+      conn.close()
+
+   def get_attributes_for_feature_ids(self, ids: List[int]) -> Dict[int, Dict[str, Any]]:
+      # returns mapping feature_id -> {attr: value} with text FKs resolved to strings
+      if not ids:
+         return {}
+      self._ensure_attributes_db()
+      path = self._attributes_db_path()
+      conn = sqlite3.connect(path)
+      cur = conn.cursor()
+
+      q = ",".join("?" for _ in ids)
+      cur.execute(f"PRAGMA table_info(attributes)")
+      cols = [r[1] for r in cur.fetchall()]  # column names
+      cur.execute(f"SELECT {', '.join(cols)} FROM attributes WHERE feature_id IN ({q})", tuple(ids))
+      rows = cur.fetchall()
+      out = {}
+      # find text FK columns by checking for corresponding lookup table existence
+      text_cols = []
+      for c in cols:
+         lk = f"attr_{c}_lk"
+         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name = ?", (lk,))
+         if cur.fetchone():
+            text_cols.append(c)
+
+      for r in rows:
+         rec = {}
+         for ci, c in enumerate(cols):
+            if c == "feature_id":
+               fid = int(r[ci])
+               continue
+            val = r[ci]
+            if val is None:
+               rec[c] = None
+            elif c in text_cols:
+               lk = f"attr_{c}_lk"
+               cur.execute(f"SELECT value FROM {lk} WHERE id = ?", (int(val),))
+               rec[c] = cur.fetchone()[0]
+            else:
+               # attempt to parse JSON for json columns, otherwise return numeric/bool as-is
+               try:
+                  rec[c] = json.loads(val) if isinstance(val, str) else val
+               except Exception:
+                  rec[c] = val
+         out[int(fid)] = rec
+      conn.close()
+      return out
+
+   def delete_feature_attributes(self, feature_id: int) -> None:
+      # Remove a feature's attributes (collection-level). Also cleanup orphaned lookup values.
+      path = self._attributes_db_path()
+      self._ensure_attributes_db()
+      conn = sqlite3.connect(path)
+      cur = conn.cursor()
+      # remove the attributes row for the feature
+      cur.execute("BEGIN IMMEDIATE")
+      cur.execute("DELETE FROM attributes WHERE feature_id = ?", (int(feature_id),))
+      # find all attr_*_lk tables and remove any lookup rows no longer referenced
+      cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'attr\\_%\\_lk' ESCAPE '\\'")
+      lk_tables = [r[0] for r in cur.fetchall()]
+      for lk in lk_tables:
+         # delete lookup rows not referenced by any attributes row
+         # derive attribute column name from lookup table name: attr_<col>_lk -> "<col>"
+         col = lk[len("attr_"):-len("_lk")]
+         # only attempt cleanup if the attributes table has that column
+         cur.execute("PRAGMA table_info(attributes)")
+         cols = [r[1] for r in cur.fetchall()]
+         if col in cols:
+            cur.execute(
+               f"DELETE FROM {lk} WHERE id NOT IN (SELECT DISTINCT \"{col}\" FROM attributes WHERE \"{col}\" IS NOT NULL)"
+            )
+      conn.commit()
+      conn.close()
 
 def get_store(data_root: str, collection: str, config: Optional[dict] = None) -> DGGSDataStore:
    key = f"{data_root}::{collection}"

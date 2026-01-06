@@ -26,7 +26,7 @@ from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, Mult
 from shapely.geometry.base import BaseGeometry
 
 from ogcapi.utils import pretty_json
-from fg.dggsJSONFG import write_dggs_json_fg, read_dggs_json_fg
+from fg.dggsJSONFG import read_dggs_json_fg
 
 # number of worker processes to use by default
 WORKERS = 16

@@ -15,7 +15,7 @@ from shapely.geometry import shape, mapping, Polygon, MultiPolygon, LineString, 
 
 from fg.reproj import *
 from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology, fix_geojson_file_5x6_topology
-from fg.dggsJSONFG import write_dggs_json_fg, read_dggs_json_fg
+from fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg
 from fg.dgToGeoMulti import togeo_multi_mode
 from fg.clippingShapely import clip_featurecollection_to_zone
 
@@ -192,7 +192,7 @@ def main(argv):
 
       depth_val = args.depth if args.depth is not None else 2 * dggrs.get64KDepth()
       out_fc, feature_entry_exit_indices = clip_featurecollection_to_zone(src, dggrs, zone, refined=args.refined, ico=args.ico)
-      write_dggs_json_fg(out_fc, feature_entry_exit_indices, output_path, dggrs, zone, depth_val)
+      write_dggs_json_fg_to_file(out_fc, feature_entry_exit_indices, output_path, dggrs, zone, depth_val)
       return
 
    if args.cmd == "tile":
@@ -257,7 +257,7 @@ def main(argv):
          out_fc, feature_entry_exit_indices = clip_featurecollection_to_zone(src, dggrs, zone, refined=args.refined, ico=args.ico)
          out_path = os.path.join(outdir, f"{textid}.dggs.json")
 
-         write_dggs_json_fg(out_fc, feature_entry_exit_indices, out_path, dggrs, zone, depth_val)
+         write_dggs_json_fg_to_file(out_fc, feature_entry_exit_indices, out_path, dggrs, zone, depth_val)
 
       return
 
