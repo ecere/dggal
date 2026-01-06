@@ -56,7 +56,9 @@ ZONE_HTML = """
     <div style="height:8px"></div>
 
     <div class="small">Download data for this zone:
-      <a href="{{ data_json }}">JSON</a> · <a href="{{ data_ubjson }}">UBJSON</a>
+      {% for dl in data_links %}
+        <a href="{{ dl.href }}">{{ dl.title }}</a>{% if not loop.last %} · {% endif %}
+      {% endfor %}
     </div>
   </div>
 {% endblock %}
@@ -138,7 +140,7 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
       return Response(pretty_json(payload) + "\n", status=404, mimetype="application/json; charset=utf-8")
 
    # canonical text id for presentation / links (DGGRS provides text id)
-   zid_text = dggrs.getZoneTextID(zone) or zoneId
+   zone_id = dggrs.getZoneTextID(zone)
 
    # Titles for H2
    dggrs_title = dggrsId
@@ -148,17 +150,67 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
    up_href = f"/collections/{collectionId}/dggs/{dggrsId}/zones"
    json_self = request.path + "?f=json"
    ubjson_self = request.path + "?f=ubjson"
-   data_json = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zid_text}/data?f=json"
-   data_ubjson = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zid_text}/data?f=ubjson"
 
-   # Links presented in JSON responses: include UBJSON alternate for the resource and bracketed OGC rels for data
+   is_vector = store.is_vector
+   data_links: List[Dict[str, Any]]
+   data_json = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zone_id}/data?f=json"
+   data_ubjson = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zone_id}/data?f=ubjson"
+   if is_vector:
+      data_geojson = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zone_id}/data?f=geojson"
+      data_geoubjson = f"/collections/{collectionId}/dggs/{dggrsId}/zones/{zone_id}/data?f=geoubjson"
+      data_links = [
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "DGGS-JSON-FG",
+            "type": "application/geo+json",
+            "profile": "[ogc-profile:jsonfg-dggs]",
+            "href": data_json
+         },
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "DGGS-UBJSON-FG",
+            "type": "application/geo+ubjson",
+            "profile": "[ogc-profile:jsonfg-dggs]",
+            "href": data_ubjson
+         },
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "GeoJSON",
+            "type": "application/geo+json",
+            "profile": "[ogc-profile:rfc7946]",
+            "href": data_geojson
+         },
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "GeoUBJSON",
+            "type": "application/geo+ubjson",
+            "profile": "[ogc-profile:rfc7946]",
+            "href": data_geoubjson
+         }
+      ]
+   else:
+      data_links = [
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "DGGS-JSON",
+            "type": "application/json",
+            "href": data_json
+         },
+         {
+            "rel": "[ogc-rel:dggrs-zone-data]",
+            "title": "DGGS-UBJSON",
+            "type": "application/ubjson",
+            "href": data_ubjson
+         }
+      ]
+
+   # Links presented in JSON responses: base resource links plus the canonical data links
    json_links: List[Dict[str, Any]] = [
       {"rel": "self", "type": "application/json", "href": json_self},
       {"rel": "alternate", "type": "text/html", "href": request.path + "?f=html"},
       {"rel": "alternate", "type": "application/ub+json", "href": ubjson_self},
-      {"rel": "[ogc-rel:dggrs-zone-data]", "type": "application/json", "href": data_json},
-      {"rel": "[ogc-rel:dggrs-zone-data]", "type": "application/ub+json", "href": data_ubjson}
    ]
+   json_links.extend(data_links)
 
    # Top links for HTML: Back to zones then JSON and UBJSON alternates for this resource
    top_links = [
@@ -167,7 +219,7 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
       {"href": ubjson_self, "title": "UBJSON"}
    ]
 
-   zone_payload: Dict[str, Any] = {"id": zid_text, "links": json_links, "crs": "[OGC:CRS84]"}
+   zone_payload: Dict[str, Any] = {"id": zone_id, "links": json_links, "crs": "[OGC:CRS84]"}
 
    # level
    lvl = dggrs.getZoneLevel(zone)
@@ -176,14 +228,10 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
 
    # shape type derived from edge count (only 3-6 handled)
    edges = dggrs.countZoneEdges(zone)
-   if edges == 3:
-      zone_payload["shapeType"] = "triangle"
-   elif edges == 4:
-      zone_payload["shapeType"] = "quadrilateral"
-   elif edges == 5:
-      zone_payload["shapeType"] = "pentagon"
-   elif edges == 6:
-      zone_payload["shapeType"] = "hexagon"
+   if edges == 3:    zone_payload["shapeType"] = "triangle"
+   elif edges == 4:  zone_payload["shapeType"] = "quadrilateral"
+   elif edges == 5:  zone_payload["shapeType"] = "pentagon"
+   elif edges == 6:  zone_payload["shapeType"] = "hexagon"
 
    # geometry included for response only (build Polygon geometry from refined WGS84 vertices)
    polygon_geom = polygon_geometry_from_zone(dggrs, zone)
@@ -215,15 +263,14 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
       # Render HTML with top_links and download links at the bottom; pass ubjson_self as well
       return html_response(
          ZONE_HTML,
-         title=f"Zone {zid_text}",
+         title=f"Zone {zone_id}",
          zone=zone_payload,
          collectionId=collectionId,
          dggrsId=dggrsId,
          dggrsTitle=dggrs_title,
          collectionTitle=collection_title,
          top_links=top_links,
-         data_json=data_json,
-         data_ubjson=data_ubjson,
+         data_links=data_links,
          ubjson_self=ubjson_self
       )
 
