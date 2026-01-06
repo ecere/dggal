@@ -63,7 +63,7 @@ def list_zones(collectionId, dggrsId):
    DATA_ROOT = current_app.config.get("DATA_ROOT")
 
    store = get_store(DATA_ROOT, collectionId)
-   if store is not None:
+   if store is not None and store.config['dggrs'] == dggrsId:
       dggrs = store.dggrs
 
       # DGGS level is fixed for now

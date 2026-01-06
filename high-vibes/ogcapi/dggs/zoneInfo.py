@@ -94,8 +94,19 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
 
    app = current_app._get_current_object() if hasattr(current_app, "_get_current_object") else current_app
 
+   # Use store to obtain collection title
+   root = data_root()
+   store = get_store(root, collectionId)
+
+   if store is None:
+      payload = {"error": f"Invalid collection {collectionId}" }
+      fmt, _ = negotiate_format(request, request.path)
+      if fmt == "html":
+         return html_response(f"<div class='card'><h2>Invalid collection: {collectionId}</h2></div>", status=404)
+      return Response(pretty_json(payload) + "\n", status=404, mimetype="application/json; charset=utf-8")
+
    # Obtain DGGRS implementation instance by name
-   dggrs = get_or_create_dggrs(dggrsId)
+   dggrs = store.dggrs if store.config['dggrs'] == dggrsId else None #get_or_create_dggrs(dggrsId)
    if dggrs is None:
       payload = {"error": "DGGRS implementation not available", "dggrs": dggrsId}
       fmt, _ = negotiate_format(request, request.path)
@@ -128,10 +139,6 @@ def get_zone_info(collectionId: str, dggrsId: str, zoneId: str):
 
    # canonical text id for presentation / links (DGGRS provides text id)
    zid_text = dggrs.getZoneTextID(zone) or zoneId
-
-   # Use store to obtain collection title
-   root = data_root()
-   store = get_store(root, collectionId)
 
    # Titles for H2
    dggrs_title = dggrsId

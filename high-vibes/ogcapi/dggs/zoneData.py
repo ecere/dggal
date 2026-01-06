@@ -29,7 +29,7 @@ def dggs_zone_data(collectionId: str, dggrsId: str, zoneId: str):
 
    DATA_ROOT = data_root()
    store = get_store(DATA_ROOT, collectionId)
-   if store is not None:
+   if store is not None and store.config['dggrs'] == dggrsId:
       is_vector = store.is_vector
       dggrs_impl = store.dggrs
       zone = dggrs_impl.getZoneFromTextID(zoneId)
