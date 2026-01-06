@@ -385,9 +385,9 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
       return None
    return geom
 
-def finalize_result(projection, extent, converted, fid):
+def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None):
    if converted:
-      converted = unproject_geojson_to_wgs84(converted, projection, extent) #, False)
+      converted = unproject_geojson_to_wgs84(converted, projection, extent, refine_wgs84=refine_wgs84)
 
    if converted:
       dlon = extent[2] - extent[0]
@@ -397,16 +397,16 @@ def finalize_result(projection, extent, converted, fid):
 
    return converted
 
-def read_dggs_json_fg_file(path: str) -> Dict[str, Any]:
+def read_dggs_json_fg_file(path: str, unproject = True, refine_wgs84=None) -> Dict[str, Any]:
    with open(path, "r", encoding="utf-8") as fh:
       data = json.load(fh)
       if data:
-         return read_dggs_json_fg(data)
+         return read_dggs_json_fg(data, unproject=unproject, refine_wgs84=refine_wgs84)
    return None
 
 # read a DGGS-JSON-FG file and convert index-based geometries to numeric coordinates
 # Returns the top-level object in the same shape it was read (geometry, Feature, or FeatureCollection)
-def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
+def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None) -> Dict[str, Any]:
    curie = data["dggrs"]
    token = "-dggrs:"
    start = curie.find(token) + len(token)
@@ -415,21 +415,24 @@ def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
 
    dggrs = get_dggrs(dggrs_id)
 
-   projection = instantiate_projection_for_dggrs_name(dggrs_id)
-
    zone_text = data["zoneId"]
    depth = int(data["depth"])
-   ge = GeoExtent()
 
    root_zone = dggrs.getZoneFromTextID(zone_text)
-   dggrs.getZoneWGS84Extent(root_zone, ge)
-   extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
+
+   if unproject:
+      ge = GeoExtent()
+      projection = instantiate_projection_for_dggrs_name(dggrs_id)
+      dggrs.getZoneWGS84Extent(root_zone, ge)
+      extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
+   else:
+      projection = None
 
    # centroids: List[GeoPoint] = dggrs.getSubZoneWGS84Centroids(root_zone, depth)
    centroids: List[Pointd] = dggrs.getSubZoneCRSCentroids(root_zone, CRS(0), depth)
 
-   print("Converting DGGS-JSON-FG for level", dggrs.getZoneLevel(root_zone),
-      "root zone", zone_text, "of DGGRS", dggrs_id, "at sub-zone depth", depth)
+   #print("Converting DGGS-JSON-FG for level", dggrs.getZoneLevel(root_zone),
+   #   "root zone", zone_text, "of DGGRS", dggrs_id, "at sub-zone depth", depth)
 
    #print("Done calculating centroids.")
 
@@ -443,6 +446,7 @@ def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
          props = feat.get("properties", {})
          id = feat.get("id", None)
          converted = convert_geometry_indexed(geom, centroids, id)
+         if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
          feature = {
             "type": "Feature",
             "id": id,
@@ -452,7 +456,7 @@ def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
                "depth": depth,
                **(props or {})
             },
-            "geometry": finalize_result(projection, extent, converted, id)
+            "geometry": converted
          }
          out_feats.append(feature)
       result = {"type": "FeatureCollection", "features": out_feats}
@@ -460,6 +464,7 @@ def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
       geom = data["dggsPlace"]
       props = data.get("properties", {})
       converted = convert_geometry_indexed(geom, centroids, id)
+      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
       feature = {
          "type": "Feature",
          "properties": {
@@ -468,15 +473,17 @@ def read_dggs_json_fg(data: Dict[str, Any]) -> Dict[str, Any]:
             "depth": depth,
             **props
          },
-         "geometry": finalize_result(projection, extent, converted)
+         "geometry": converted
       }
       result = feature
    else:
       geom = data
-      result = finalize_result(projection, extent, convert_geometry_indexed(geom, centroids, id), id)
+      converted = convert_geometry_indexed(geom, centroids, id)
+      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
+      result = converted
 
    Instance.delete(centroids)
-   Instance.delete(projection)
+   if projection: Instance.delete(projection)
    Instance.delete(dggrs)
 
    return result

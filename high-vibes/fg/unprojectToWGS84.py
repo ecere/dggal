@@ -29,41 +29,11 @@ def _segment_near_pole_by_crs(p: Tuple[float, float], n: Tuple[float, float]) ->
 
    return False
 
-def _insert_intermediate_points_crs_segment_1(p: Tuple[float, float], n: Tuple[float, float]) -> List[Tuple[float, float]]:
-   # If not a pole-interruption, do nothing (preserve original coordinates)
-   interruption = _segment_near_pole_by_crs(p, n)
-   if not interruption:
-      return [p]
-
-   # When interruption detected, perform interpolation in 5x6 space using distance5x6/move5x6
-   divs = _DEFAULT_SUBDIV
-   out: List[Tuple[float, float]] = []
-   out.append((p[0], p[1]))
-
-   # distance5x6 returns (d, *unused) where d has .x and .y displacement in 5x6 units
-   d, *unused = distance5x6(Pointd(p[0], p[1]), Pointd(n[0], n[1]))
-
-   #dest = move5x6((p[0], p[1]), d.x, d.y, 1, finalCross = True)
-   #print("Full move arrives at", dest)
-
-   #print("distance is", d)
-   for j in range(1, divs):
-      interpolation_factor = j / float(divs)
-      dx = d.x * interpolation_factor
-      dy = d.y * interpolation_factor
-      moved = move5x6((p[0], p[1]), dx, dy, 1)
-      #if dx: print("   ", dx / d.x * 100, "% of d.x")
-      #if dy: print("   ", dy / d.y * 100, "% of d.y")
-      #print(moved)
-      out.append((moved.x, moved.y))
-   return out
-
 def _choose_twin_point_for_segment(p: Tuple[float, float], n: Tuple[float, float], eps: float = 0.05) -> Tuple[float, float] | None:
-   """
-   Return the twin/pole point (in 5x6 CRS coords) relevant to segment p->n,
-   or None if no known twin is close enough.
-   eps is a loose proximity threshold in CRS units.
-   """
+   # Return the twin/pole point (in 5x6 CRS coords) relevant to segment p->n,
+   # or None if no known twin is close enough.
+   # eps is a loose proximity threshold in CRS units.
+
    # Known seam/twin coordinates (5x6 CRS)
    SOUTH_TWIN_A = (2.0, 3.5)   # main south seam
    SOUTH_TWIN_B = (1.5, 3.0)   # alternate south twin
@@ -100,16 +70,28 @@ def _interpolate_between_5x6(a: Tuple[float, float], b: Tuple[float, float], div
    # note: this returns points that lie strictly between a and b; callers decide whether to include endpoints
    return out
 
-def _insert_intermediate_points_crs_segment(p: Tuple[float, float], n: Tuple[float, float]) -> List[Tuple[float, float]]:
-   # If not a pole-interruption, preserve original behaviour (return [p])
-   interruption = _segment_near_pole_by_crs(p, n)
-   if not interruption:
-      return [(float(p[0]), float(p[1]))]
+def _insert_intermediate_points_crs_segment(p: Tuple[float, float], n: Tuple[float, float],
+   refine_wgs84 = None) -> List[Tuple[float, float]]:
+
+   # always start with p
+   out: List[Tuple[float, float]] = [(float(p[0]), float(p[1]))]
+
+   near_pole = _segment_near_pole_by_crs(p, n)
+
+   if not near_pole:
+      # REVIEW: Improve on automatic refinement
+      if refine_wgs84:
+         max_5x6_distance = refine_wgs84
+         d, *unused = distance5x6(Pointd(p[0], p[1]), Pointd(n[0], n[1]))
+         md = abs(d.x) + abs(d.y)
+         if md > max_5x6_distance:
+            divs = int(floor(md / max_5x6_distance))
+            # print("Interpolating with divisions:", divs)
+            inter = _interpolate_between_5x6(p, n, divs)
+            out.extend(inter)
+      return out
 
    divs = _DEFAULT_SUBDIV
-   out: List[Tuple[float, float]] = []
-   # always start with p
-   out.append((float(p[0]), float(p[1])))
 
    # choose the twin/pole point relevant to this segment
    twin = _choose_twin_point_for_segment(p, n)
@@ -169,7 +151,7 @@ def intersects_extent_deg(a: Sequence[float], b: Sequence[float], deg_epsilon: f
     )
 
 def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, zone_extent,
-   pin: Pointd, gp: GeoPoint) -> List[Tuple[float, float]]:
+   pin: Pointd, gp: GeoPoint, refine_wgs84=None) -> List[Tuple[float, float]]:
    closed = list(ring_crs)
    if closed[0] != closed[-1]:
       closed.append(closed[0])
@@ -178,7 +160,7 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
    for i in range(L):
       p = closed[i]
       n = closed[i + 1]
-      seg_pts = _insert_intermediate_points_crs_segment(p, n)
+      seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
       for (x_crs, y_crs) in seg_pts:
          pin.x = x_crs
          pin.y = y_crs
@@ -197,21 +179,21 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
       out_coords.append(out_coords[0])
    return out_coords
 
-def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent) -> Dict[str, Any]:
+def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refine_wgs84=None) -> Dict[str, Any]:
    pin = Pointd()
    gp = GeoPoint()
 
-   def _process_geom(geom: Dict[str, Any], zone_extent) -> Dict[str, Any]:
+   def _process_geom(geom: Dict[str, Any], zone_extent, refine_wgs84 = None) -> Dict[str, Any]:
       gtype = geom["type"]
       if gtype == "Polygon":
          if not geom["coordinates"]:
             raise InvalidPolygonGeometry
          exterior = geom["coordinates"][0]
          holes = geom["coordinates"][1:] if len(geom["coordinates"]) > 1 else []
-         ext_wgs = _process_ring_crs_to_wgs84(exterior, proj, zone_extent, pin, gp)
+         ext_wgs = _process_ring_crs_to_wgs84(exterior, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
          holes_wgs = []
          for h in holes:
-            hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp)
+            hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
             if hw:
                holes_wgs.append(hw)
          return {"type": "Polygon", "coordinates": [ext_wgs] + holes_wgs}
@@ -220,10 +202,10 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent) -> D
          for poly in geom["coordinates"]:
             ext = poly[0]
             holes = poly[1:] if len(poly) > 1 else []
-            ext_wgs = _process_ring_crs_to_wgs84(ext, proj, zone_extent, pin, gp)
+            ext_wgs = _process_ring_crs_to_wgs84(ext, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
             holes_wgs = []
             for h in holes:
-               hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp)
+               hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
                if hw:
                   holes_wgs.append(hw)
             if ext_wgs:
@@ -235,7 +217,7 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent) -> D
          for i in range(len(coords) - 1):
             p = coords[i]
             n = coords[i + 1]
-            seg_pts = _insert_intermediate_points_crs_segment(p, n)
+            seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
             for (x_crs, y_crs) in seg_pts:
                pin.x = x_crs
                pin.y = y_crs
@@ -253,7 +235,7 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent) -> D
             for i in range(len(line) - 1):
                p = line[i]
                n = line[i + 1]
-               seg_pts = _insert_intermediate_points_crs_segment(p, n)
+               seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
                for (x_crs, y_crs) in seg_pts:
                   pin.x = x_crs
                   pin.y = y_crs
@@ -288,15 +270,15 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent) -> D
          if geom is None:
             out["features"].append(dict(feat))
             continue
-         new_geom = _process_geom(geom, zone_extent)
+         new_geom = _process_geom(geom, zone_extent, refine_wgs84=refine_wgs84)
          new_feat = dict(feat)
          new_feat["geometry"] = new_geom
          out["features"].append(new_feat)
       return out
    if typ == "Feature":
       geom = obj["geometry"]
-      new_geom = _process_geom(geom, zone_extent) if geom is not None else None
+      new_geom = _process_geom(geom, zone_extent, refine_wgs84=refine_wgs84) if geom is not None else None
       out = dict(obj)
       out["geometry"] = new_geom
       return out
-   return _process_geom(obj, zone_extent)
+   return _process_geom(obj, zone_extent, refine_wgs84=refine_wgs84)

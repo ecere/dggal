@@ -3,6 +3,8 @@
 # - worker re-opens DGGSDataStore by path and collection and returns a dict mapping fid -> WKB
 # - main thread merges package results, unions geometries with shapely, then populates attributes
 
+from dggal import *
+
 from typing import Dict, Any, List, Optional, Iterable
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
@@ -16,6 +18,8 @@ from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, Mult
 from ogcapi.utils import pretty_json
 from fg.dggsJSONFG import read_dggs_json_fg
 from dggsStore.store import DGGSDataStore, iter_packages
+from fg.reproj import instantiate_projection_for_dggrs_name
+from fg.dggsJSONFG import unproject_and_fix
 
 GRID_SIZE_DEFAULT = 1e-2
 WORKERS = 16
@@ -138,14 +142,14 @@ def _worker_process_package(
    grid_size: float = GRID_SIZE_DEFAULT
 ) -> Dict[int, bytes]:
    store = DGGSDataStore(datastore_path, collection)
-   print(f'worker start: pkg={pkg_path} pid={os.getpid()}', flush=True)
+   print(f'Processing root zones of level {root_level} under base zone {store.dggrs.getZoneTextID(base_zone_id)} in process {os.getpid()}', flush=True)
 
    # accumulate GeoJSON geometries per feature id (string keys while reading)
    features: Dict[int, List[Dict[str, Any]]] = {}
 
    for root_zone in store.iter_roots_for_base(base_zone_id, root_level, up_to=False):
       dggsubjson = store.read_and_decode_zone_blob(pkg_path, root_zone)
-      geojson = read_dggs_json_fg(dggsubjson) if dggsubjson else None
+      geojson = read_dggs_json_fg(dggsubjson, unproject=False, refine_wgs84=None) if dggsubjson else None
       if geojson:
          feats = geojson.get('features', []) or []
          for feat in feats:
@@ -163,12 +167,22 @@ def _worker_process_package(
                features[fid].append(geom_json)
 
    # merge per-feature and serialize to WKB; worker does NOT run final buffer cleanup
+   projection = instantiate_projection_for_dggrs_name(store.config['dggrs'])
+   ge = GeoExtent()
+   store.dggrs.getZoneWGS84Extent(base_zone_id, ge)
+   extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
+
    result: Dict[int, bytes] = {}
    for fid, geoms in features.items():
       merged_geojson = combine_geojson_geometries(geoms)
       if merged_geojson is None: continue
       # free memory for this entry
       geoms.clear()
+
+      if merged_geojson:
+         merged_geojson = unproject_and_fix(projection, extent, merged_geojson, fid, refine_wgs84=None) #1e-2)
+
+      if merged_geojson is None: continue
 
       shp = shape(merged_geojson)
       if shp is None: continue
@@ -180,6 +194,8 @@ def _worker_process_package(
       # serialize to WKB (binary) and store under integer feature id
       result[fid] = _wkb.dumps(merged_shp, hex=False)
 
+   Instance.delete(projection)
+
    gc.collect()
    return result
 
@@ -188,6 +204,7 @@ def _worker_process_package(
 # converts final Shapely geometry to GeoJSON mapping
 def orchestrator_finalize(
    package_results: List[Dict[int, bytes]],
+   projection,
    *,
    grid_size: float = GRID_SIZE_DEFAULT
 ) -> Dict[int, dict]:
@@ -201,12 +218,17 @@ def orchestrator_finalize(
 
    # merge per-feature across workers, perform final buffer cleanup, convert to GeoJSON
    final_geoms: Dict[int, dict] = {}
+   #extent = [-180,-90,180,90]
    for fid, wkb_list in agg.items():
       # rehydrate all WKBs to Shapely geometries
       shps = [_wkb.loads(b) for b in wkb_list]
       # merge across workers and perform final cleanup (do_buffer=True)
       merged = merge_shapely_geometries(shps, do_buffer=True, grid_size=grid_size)
-      final_geoms[fid] = mapping(merged) if merged else None
+      geojson = mapping(merged) if merged else None
+      # REVIEW: It would be ideal to unproject at the end, but it currently runs into topology issues
+      #if geojson:
+      #   geojson = unproject_and_fix(projection, extent, geojson, fid, refine_wgs84=1e-2)
+      final_geoms[fid] = geojson
 
    return final_geoms
 
@@ -247,6 +269,8 @@ def export_to_geojson(
    package_results: List[Dict[int, bytes]] = []
    submitted = 0
 
+   projection = None #instantiate_projection_for_dggrs_name(store.config['dggrs'])
+
    with ProcessPoolExecutor(max_workers=worker_count) as ex:
       for pkg_path, base_zone_id, base_ancestors_ids in pkg_iter:
          if max_packages and submitted >= max_packages:
@@ -277,7 +301,10 @@ def export_to_geojson(
 
    # aggregate and finalize geometries from workers
    print("All zone data processed, merging final features...")
-   final_geoms: Dict[int, dict] = orchestrator_finalize(package_results, grid_size=grid_size)
+   final_geoms: Dict[int, dict] = orchestrator_finalize(package_results, projection, grid_size=grid_size)
+
+   if projection:
+      Instance.delete(projection)
 
    # build feature list from finalized geometries (workers do not return props)
    out_features: List[Dict[str, Any]] = []

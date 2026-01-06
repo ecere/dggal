@@ -276,7 +276,7 @@ def main(argv):
             single_input = True
 
       if single_input:
-         obj = read_dggs_json_fg_file(input_args[0])
+         obj = read_dggs_json_fg_file(input_args[0], refine_wgs84=None)
          with open(output_path, "w", encoding="utf-8") as fh:
             fh.write(pretty_json(obj))
             fh.write("\n")

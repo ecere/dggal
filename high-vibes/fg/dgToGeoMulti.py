@@ -75,7 +75,7 @@ def numeric_key(k: str):
 # (key, wkb_bytes_or_None, props, raw_id, kind_or_None)
 def _worker_read_file(path: str) -> List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]]:
    out: List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]] = []
-   obj = read_dggs_json_fg_file(path)
+   obj = read_dggs_json_fg_file(path, refine_wgs84=None)
    feats = obj.get("features", []) or []
    for feat in feats:
       geom_json = feat.get("geometry")
