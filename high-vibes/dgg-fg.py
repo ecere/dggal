@@ -132,6 +132,7 @@ def main(argv):
    tg = sub.add_parser("togeo", help="Convert DGGS-JSON-FG to GeoJSON")
    tg.add_argument("paths", nargs="+", help="Input files/dirs/glob/.lst and output file (last argument is output)")
    tg.add_argument("--grid-size", dest="grid_size", default=GRID_SIZE)
+   tg.add_argument("--wgs84-refine", dest="wgs84_refine", type=float, default=None, help="maximum 5x6 distance between points before unprojecting to WGS84 (might currently cause issues)")
 
    args = p.parse_args(argv)
    skip_reproj = getattr(args, 'skip_reproj', False) or getattr(args, 'skip_fix', False)
@@ -276,7 +277,7 @@ def main(argv):
             single_input = True
 
       if single_input:
-         obj = read_dggs_json_fg_file(input_args[0], refine_wgs84=None)
+         obj = read_dggs_json_fg_file(input_args[0], refine_wgs84=args.wgs84_refine)
          with open(output_path, "w", encoding="utf-8") as fh:
             fh.write(pretty_json(obj))
             fh.write("\n")
@@ -284,7 +285,7 @@ def main(argv):
          # Level 0 spacing / depth 16 gives ~0.00979 degrees so 0.01 makes sense here
          # Derive from use dggrs.getMetersPerSubZoneFromLevel(root_zone_level, depth) ?
          # multi-file mode: expand inputs (each arg may be a file, dir, glob, or .lst)
-         togeo_multi_mode(input_args, output_path, grid_size=float(args.grid_size))
+         togeo_multi_mode(input_args, output_path, grid_size=float(args.grid_size), refine_wgs84=args.wgs84_refine)
       return 0
 
 if __name__ == "__main__":

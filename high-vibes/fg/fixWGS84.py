@@ -21,7 +21,7 @@ from shapely.validation import explain_validity
 import shapely
 
 # ---------- simple file-level debug flag (hardcoded) ----------
-DEBUG = True
+DEBUG = False # True
 _DEBUG_OUT_DIR = "wgs84_debug_tiles"   # directory where per-tile debug files will be written
 
 # ---------- constants ----------

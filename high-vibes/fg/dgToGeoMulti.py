@@ -73,7 +73,7 @@ def numeric_key(k: str):
 
 # Worker: read one file and emit list of tuples:
 # (key, wkb_bytes_or_None, props, raw_id, kind_or_None)
-def _worker_read_file(path: str) -> List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]]:
+def _worker_read_file(path: str, refine_wgs84=None) -> List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]]:
    out: List[Tuple[str, Optional[bytes], Dict[str, Any], Any, Optional[str]]] = []
    obj = read_dggs_json_fg_file(path, refine_wgs84=None)
    feats = obj.get("features", []) or []
@@ -123,7 +123,7 @@ def _worker_read_file(path: str) -> List[Tuple[str, Optional[bytes], Dict[str, A
    gc.collect()
    return out
 
-def togeo_multi_mode(input_args: Sequence[str], output_path: str, grid_size: float = 1e-10) -> None:
+def togeo_multi_mode(input_args: Sequence[str], output_path: str, grid_size: float = 1e-10, refine_wgs84 = None) -> None:
    if not isinstance(grid_size, float):
       raise ValueError(f"grid_size must be numeric, got {type(grid_size).__name__}")
 
@@ -132,7 +132,7 @@ def togeo_multi_mode(input_args: Sequence[str], output_path: str, grid_size: flo
    workers = min(WORKERS, max(1, (mp.cpu_count() or 1)))
 
    with mp.Pool(processes=workers) as pool:
-      results = pool.map(_worker_read_file, paths, chunksize=1)
+      results = pool.map(_worker_read_file, paths, chunksize=1, refine_wgs84=refine_wgs84)
 
    # features: Dict[id, {"props": Dict[str,Any], "geoms": List[Shapely geometry]}]
    features: Dict[str, Dict[str, Any]] = {}
