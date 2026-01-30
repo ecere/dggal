@@ -122,7 +122,7 @@ def main():
       bands=bands,
       batch_size=args.batch_size,
       groupSize=args.groupSize,
-      max_workers=max_workers
+      max_workers=args.max_workers
    )
 
    return rc
