@@ -29,7 +29,7 @@ This implementation preserves coordinate precision and does not perform snapping
 from typing import Optional, Tuple
 import math
 
-from fg.faces import Point, Pointd
+from .faces import Point, Pointd
 
 # Tolerances copied from the original eC code
 _EPS_EDGE = 1e-11

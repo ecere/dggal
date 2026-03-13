@@ -23,8 +23,8 @@ Notes:
 from typing import Optional, Tuple, Sequence, Union
 import math
 
-from fg.faces import Point, Pointd, get_face
-from fg.interruption import rotate5x6_offset, crosses5x6_interruption_v2_ex
+from .faces import Point, Pointd, get_face
+from .interruption import rotate5x6_offset, crosses5x6_interruption_v2_ex
 
 def sgn(v: float) -> int:
     if v > 0: return 1

@@ -1,6 +1,11 @@
 from flask import Blueprint, request, url_for, Response, current_app
 import logging
-from dggsStore.store import get_store
+
+try:
+   from dggsStore.store import get_store
+except(ImportError):
+   from ...dggsStore.store import get_store
+
 from ..utils import negotiate_format, html_response, pretty_json
 
 logger = logging.getLogger("dgg-serve.dggrs")

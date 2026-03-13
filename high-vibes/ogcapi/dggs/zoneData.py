@@ -6,9 +6,14 @@ import json
 import ubjson
 from typing import Any, Dict, List
 
-from dggsStore.store import *
-from dggsStore.customDepths import assemble_zone_at_depth, parse_zone_depths, build_dggs_json_from_values
-from fg.dggsJSONFG import read_dggs_json_fg
+try:
+   from dggsStore.store import *
+   from dggsStore.customDepths import assemble_zone_at_depth, parse_zone_depths, build_dggs_json_from_values
+   from fg.dggsJSONFG import read_dggs_json_fg
+except(ImportError):
+   from ...dggsStore.store import *
+   from ...dggsStore.customDepths import assemble_zone_at_depth, parse_zone_depths, build_dggs_json_from_values
+   from ...fg.dggsJSONFG import read_dggs_json_fg
 
 from ..utils import *
 

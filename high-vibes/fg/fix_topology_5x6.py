@@ -16,9 +16,9 @@ from shapely.ops import unary_union
 from shapely.affinity import rotate
 import shapely
 
-from fg.faces import Pointd
-from fg.distance import distance5x6
-from fg.sutherlandHodgman import *
+from .faces import Pointd
+from .distance import distance5x6
+from .sutherlandHodgman import *
 
 # Configuration (kept as in working version)
 _PERIOD = 5.0

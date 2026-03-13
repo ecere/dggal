@@ -3,8 +3,12 @@ from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 
-from dggsStore.store import *
-from dggsStore.customDepths import *
+try:
+   from dggsStore.store import *
+   from dggsStore.customDepths import *
+except(ImportError):
+   from ..dggsStore.store import *
+   from ..dggsStore.customDepths import *
 
 from .rasterSampling import *
 

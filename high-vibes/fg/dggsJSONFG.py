@@ -5,11 +5,16 @@ from dggal import *
 import json
 from typing import Dict, Any, List, Sequence, Set
 from shapely.geometry import shape
-from ogcapi.utils import *
-from fg.distance import *
-from fg.reproj import get_dggrs, instantiate_projection_for_dggrs_name
-from fg.unprojectToWGS84 import *
-from fg.fixWGS84 import *
+
+try:
+   from ogcapi.utils import *
+except(ImportError):
+   from ..ogcapi.utils import *
+
+from .distance import *
+from .reproj import get_dggrs, instantiate_projection_for_dggrs_name
+from .unprojectToWGS84 import *
+from .fixWGS84 import *
 
 dggal_ffi = dggal.ffi
 

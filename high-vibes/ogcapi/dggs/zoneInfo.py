@@ -1,7 +1,12 @@
 # ogcapi_dggs_zoneInfo.py
 # Zone info endpoint (relies only on DGGRS implementation; no DGGS store access)
 from dggal import *
-from dggsStore.store import *
+
+try:
+   from dggsStore.store import *
+except(ImportError):
+   from ...dggsStore.store import *
+
 from ..utils import *
 from flask import Blueprint, request, url_for, Response, current_app
 from typing import Any, Dict, List

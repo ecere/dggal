@@ -1,5 +1,5 @@
 from dggal import *
-from fg.distance import distance5x6, move5x6
+from .distance import distance5x6, move5x6
 from typing import Any, Dict, List, Tuple, Sequence
 
 _DEFAULT_SUBDIV = 50 #300

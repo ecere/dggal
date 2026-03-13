@@ -3,7 +3,12 @@
 
 from flask import Blueprint, request, url_for, Response
 import os
-from dggsStore.store import get_store
+
+try:
+   from dggsStore.store import get_store
+except(ImportError):
+   from ...dggsStore.store import get_store
+
 from ..utils import (
    data_root,
    negotiate_format,

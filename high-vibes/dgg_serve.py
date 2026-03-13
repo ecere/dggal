@@ -18,16 +18,25 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger("dgg-serve")
 
 # Import the modular blueprints
-from ogcapi.common.landingPage import bp as landing_bp
-from ogcapi.common.conformance import bp as conformance_bp
-from ogcapi.common.collections import bp as collections_bp
-from ogcapi.dggs.dggrs import bp as dggrs_bp
-from ogcapi.dggs.zones import bp as dggs_zones_bp
-from ogcapi.dggs.zoneInfo import bp as dggs_zoneinfo_bp
-from ogcapi.dggs.zoneData import bp as dggs_zoneData_bp
-
 # Import store lifecycle helpers so we can close stores on shutdown
-from dggsStore.store import *
+if not __package__:
+   from ogcapi.common.landingPage import bp as landing_bp
+   from ogcapi.common.conformance import bp as conformance_bp
+   from ogcapi.common.collections import bp as collections_bp
+   from ogcapi.dggs.dggrs import bp as dggrs_bp
+   from ogcapi.dggs.zones import bp as dggs_zones_bp
+   from ogcapi.dggs.zoneInfo import bp as dggs_zoneinfo_bp
+   from ogcapi.dggs.zoneData import bp as dggs_zoneData_bp
+   from dggsStore.store import *
+else:
+   from .ogcapi.common.landingPage import bp as landing_bp
+   from .ogcapi.common.conformance import bp as conformance_bp
+   from .ogcapi.common.collections import bp as collections_bp
+   from .ogcapi.dggs.dggrs import bp as dggrs_bp
+   from .ogcapi.dggs.zones import bp as dggs_zones_bp
+   from .ogcapi.dggs.zoneInfo import bp as dggs_zoneinfo_bp
+   from .ogcapi.dggs.zoneData import bp as dggs_zoneData_bp
+   from .dggsStore.store import *
 
 # Create Flask app and register blueprints
 def create_app(data_root: str, dggrs_schema_uri: str = None) -> Flask:

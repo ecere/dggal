@@ -2,10 +2,15 @@
 import argparse
 import logging
 from dggal import *
-from dggsStore.store import DGGSDataStore
-from dggsExport.raster import rasterize_to_geotiff
-# add GeoJSON exporter
-from dggsExport.exportFeatures import export_to_geojson
+
+if not __package__:
+   from dggsStore.store import DGGSDataStore
+   from dggsExport.raster import rasterize_to_geotiff
+   from dggsExport.exportFeatures import export_to_geojson
+else:
+   from .dggsStore.store import DGGSDataStore
+   from .dggsExport.raster import rasterize_to_geotiff
+   from .dggsExport.exportFeatures import export_to_geojson
 
 app = Application(appGlobals=globals()); pydggal_setup(app)
 

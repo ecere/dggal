@@ -13,11 +13,18 @@ import shapely
 import gc
 from shapely.geometry import shape, mapping, Polygon, MultiPolygon, LineString, MultiLineString, Point, MultiPoint, GeometryCollection
 
-from fg.reproj import *
-from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology, fix_geojson_file_5x6_topology
-from fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg_file
-from fg.dgToGeoMulti import togeo_multi_mode
-from fg.clippingShapely import clip_featurecollection_to_zone
+if not __package__:
+   from fg.reproj import *
+   from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology, fix_geojson_file_5x6_topology
+   from fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg_file
+   from fg.dgToGeoMulti import togeo_multi_mode
+   from fg.clippingShapely import clip_featurecollection_to_zone
+else:
+   from .fg.reproj import *
+   from .fg.fix_topology_5x6 import fix_feature_collection_5x6_topology, fix_geojson_file_5x6_topology
+   from .fg.dggsJSONFG import write_dggs_json_fg_to_file, read_dggs_json_fg_file
+   from .fg.dgToGeoMulti import togeo_multi_mode
+   from .fg.clippingShapely import clip_featurecollection_to_zone
 
 GRID_SIZE=1e-2
 
@@ -45,7 +52,7 @@ def _prepare_input_pipeline(input_path: str, dggrs_name: str, ico: bool, skip_re
 
    return src
 
-def main(argv):
+def main():
    p = argparse.ArgumentParser(prog="dgg-fg")
    sub = p.add_subparsers(dest="cmd", required=True)
 
@@ -134,7 +141,7 @@ def main(argv):
    tg.add_argument("--grid-size", dest="grid_size", default=GRID_SIZE)
    tg.add_argument("--wgs84-refine", dest="wgs84_refine", type=float, default=None, help="maximum 5x6 distance between points before unprojecting to WGS84 (might currently cause issues)")
 
-   args = p.parse_args(argv)
+   args = p.parse_args()
    skip_reproj = getattr(args, 'skip_reproj', False) or getattr(args, 'skip_fix', False)
 
    if args.cmd == "reproj":
@@ -289,4 +296,4 @@ def main(argv):
       return 0
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+   main()

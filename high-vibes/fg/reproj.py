@@ -3,7 +3,10 @@ import sys
 import json
 import argparse
 
-from ogcapi.utils import *
+try:
+   from ogcapi.utils import *
+except(ImportError):
+   from ..ogcapi.utils import *
 
 # 3-space indent style throughout this file
 

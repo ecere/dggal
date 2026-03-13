@@ -10,7 +10,12 @@
 from __future__ import annotations
 from dggal import *
 import dggal
-from dggsStore.store import DGGSDataStore, iter_packages
+
+try:
+   from dggsStore.store import DGGSDataStore, iter_packages
+except(ImportError):
+   from ..dggsStore.store import DGGSDataStore, iter_packages
+
 import time
 import math
 import logging

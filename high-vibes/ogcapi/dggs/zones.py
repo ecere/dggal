@@ -5,7 +5,11 @@
 from flask import Blueprint, request, Response, current_app
 import logging
 
-from dggsStore.store import get_store
+try:
+   from dggsStore.store import get_store
+except(ImportError):
+   from ...dggsStore.store import *
+
 from ..utils import pretty_json, html_response
 
 ZONE_QUERY_LEVEL = 2

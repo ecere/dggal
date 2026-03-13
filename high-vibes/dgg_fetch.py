@@ -5,8 +5,12 @@ from typing import List, Any, Dict, Iterator, Iterable, Optional, Tuple
 import os, logging, argparse, json, sys
 from itertools import islice
 
-from ogcapi.dggs import client as dggs_client
-from dggsStore.store import DGGSDataStore, read_package_root_ids_from_sqlite
+if not __package__:
+   from ogcapi.dggs import client as dggs_client
+   from dggsStore.store import DGGSDataStore, read_package_root_ids_from_sqlite
+else:
+   from .ogcapi.dggs import client as dggs_client
+   from .dggsStore.store import DGGSDataStore, read_package_root_ids_from_sqlite
 
 app = Application(appGlobals=globals()); pydggal_setup(app)
 

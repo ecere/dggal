@@ -1,10 +1,11 @@
-from fg.sutherlandHodgman import *
-from fg.fix_topology_5x6 import collapse_near_duplicates
+from .sutherlandHodgman import *
+from .fix_topology_5x6 import collapse_near_duplicates
 
 import json
 import os
 from math import floor
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Sequence
+
 from shapely.geometry import (
    Point,
    MultiPoint,
@@ -190,8 +191,6 @@ def _debug_write_files() -> None:
          json.dump(fc, fh, ensure_ascii=False, indent=2)
 
 EPS_ZONE_TILE = 1e-3
-
-from typing import Sequence
 
 def intersects_extent_deg(a: Sequence[float], b: Sequence[float], deg_epsilon: float = 1e-12) -> bool:
     # Test intersection of axis-aligned geographic extents in degrees.

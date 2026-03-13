@@ -11,7 +11,10 @@ from pyproj import Transformer
 
 import numpy as np
 
-from dggsStore.store import make_dggs_json_depth
+try:
+   from dggsStore.store import make_dggs_json_depth
+except(ImportError):
+   from ..dggsStore.store import make_dggs_json_depth
 
 # ---------------------------------------------------------------------------
 # Low-level sampling / coordinate helpers

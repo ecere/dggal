@@ -17,12 +17,20 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
 import ubjson
 
-from dggsStore.store import DGGSDataStore
-from fg.reproj import geojson_load, instantiate_projection_for_dggrs_name, reproject_featurecollection
-from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology
-from fg.clippingShapely import clip_featurecollection_to_zone
-from fg.dggsJSONFG import write_dggs_json_fg
-from fg.wkbc import write_wkb_collection_file, read_wkb_collection_file
+try:
+   from dggsStore.store import DGGSDataStore
+   from fg.reproj import geojson_load, instantiate_projection_for_dggrs_name, reproject_featurecollection
+   from fg.fix_topology_5x6 import fix_feature_collection_5x6_topology
+   from fg.clippingShapely import clip_featurecollection_to_zone
+   from fg.dggsJSONFG import write_dggs_json_fg
+   from fg.wkbc import write_wkb_collection_file, read_wkb_collection_file
+except(ImportError):
+   from ..dggsStore.store import DGGSDataStore
+   from ..fg.reproj import geojson_load, instantiate_projection_for_dggrs_name, reproject_featurecollection
+   from ..fg.fix_topology_5x6 import fix_feature_collection_5x6_topology
+   from ..fg.clippingShapely import clip_featurecollection_to_zone
+   from ..fg.dggsJSONFG import write_dggs_json_fg
+   from ..fg.wkbc import write_wkb_collection_file, read_wkb_collection_file
 
 # prepare input pipeline (reproj + fix) executed once in parent
 def _prepare_input_pipeline(input_path: str, dggrs_name: str, skip_reproj: bool, skip_fix: bool):

@@ -6,8 +6,8 @@ from shapely.validation import make_valid
 import json
 import os
 
-import fg.fix_topology_5x6 as topo
-from fg.sutherlandHodgman import *
+from . import fix_topology_5x6 as topo
+from .sutherlandHodgman import *
 
 # Helper: write zone polygon GeoJSON for debugging
 def write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir: str = "debug_out") -> None:

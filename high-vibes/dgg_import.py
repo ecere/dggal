@@ -18,8 +18,12 @@ import os
 import rasterio
 import sys
 
-from dggsImport.rasterImport import *
-from dggsImport.vectorImport import import_vector
+if not __package__:
+   from dggsImport.rasterImport import *
+   from dggsImport.vectorImport import import_vector
+else:
+   from .dggsImport.rasterImport import *
+   from .dggsImport.vectorImport import import_vector
 
 # initialize dggal runtime
 app = Application(appGlobals=globals()); pydggal_setup(app)

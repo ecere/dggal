@@ -15,11 +15,18 @@ import shapely
 from shapely import wkb as _wkb
 from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
 
-from ogcapi.utils import pretty_json
-from fg.dggsJSONFG import read_dggs_json_fg
-from dggsStore.store import DGGSDataStore, iter_packages
-from fg.reproj import instantiate_projection_for_dggrs_name
-from fg.dggsJSONFG import unproject_and_fix
+try:
+   from ogcapi.utils import pretty_json
+   from fg.dggsJSONFG import read_dggs_json_fg
+   from dggsStore.store import DGGSDataStore, iter_packages
+   from fg.reproj import instantiate_projection_for_dggrs_name
+   from fg.dggsJSONFG import unproject_and_fix
+except(ImportError):
+   from ..ogcapi.utils import pretty_json
+   from ..fg.dggsJSONFG import read_dggs_json_fg
+   from ..dggsStore.store import DGGSDataStore, iter_packages
+   from ..fg.reproj import instantiate_projection_for_dggrs_name
+   from ..fg.dggsJSONFG import unproject_and_fix
 
 GRID_SIZE_DEFAULT = 1e-2
 WORKERS = 16
