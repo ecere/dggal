@@ -47,7 +47,13 @@ ext = '.so' if get_config_var('EXT_SUFFIX') is None else get_config_var('EXT_SUF
 try:
    # pkg_resources is deprecated in setuptools >= 81
    # ecdev_location = os.path.join(pkg_resources.get_distribution("ecdev").location, 'ecdev')
-   ecdev_location = os.path.join(distribution("ecdev").locate_file(""), "ecdev")
+   # This works around messy cp38 / macos-latest / arm64 build which is confused with x86_64
+   arm64_packages = os.environ.get("ARM64_PACKAGES")
+   if arm64_packages:
+      ecdev_location = os.path.join(arm64_packages, "ecdev")
+   else:
+      ecdev_location = os.path.join(distribution("ecdev").locate_file(""), "ecdev")
+
    ecrt_bindings_py_dir = os.path.join(ecdev_location, 'include')
    incdir_ecrt = os.path.join(ecdev_location, 'include')
    ecrt_location = os.path.join(ecdev_location, syslibdir)
