@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 from dggal import *
 
-from typing import Dict, List, Optional, Mapping, Sequence, TypedDict, Union
+from typing import Dict, List, Optional, Mapping, Sequence, Union
 import logging
+
+try:
+   from typing import TypedDict
+except(ImportError):
+   from typing_extensions import TypedDict
 
 from .store import *
 from .aggregation import *
@@ -136,8 +141,8 @@ def _paint_from_stored_root_multi(store, target_root_zone : DGGRSZone, target_de
 # ValueEntry and ValuesObject assumed:
 # ValueEntry = {"depth": int, "shape": {"count": int, "subZones": int, ...}, "data": Sequence[Optional[float]]}
 # ValuesObject = Dict[str, List[ValueEntry]]
-
-def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None):
+                                                                                                  #| None
+def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields: List[str]  = None):
    dggrs = store.dggrs
    if fields is None:
       fields = store.fields
@@ -151,8 +156,8 @@ def _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, 
    Instance.delete(descendants)
 
    return values_obj
-
-def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+                                                                                                #| None
+def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields: List[str] = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    dggrs = store.dggrs
    if fields is None:
       fields = store.fields
@@ -160,8 +165,8 @@ def _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fi
    if not ancestors:
       return None
    return _paint_from_stored_root_multi(store, root_zone, zone_depth, ancestors, store.depth, fields)
-
-def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+                                                                           #| None
+def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str]  = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    dggrs = store.dggrs
    if fields is None:
       fields = store.fields
@@ -180,8 +185,8 @@ def assemble_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | Non
       return _assemble_from_descendants(store, root_zone, zone_depth, source_root_level, fields)
    else:
       return _assemble_from_ancestors(store, root_zone, zone_depth, source_root_level, fields)
-
-def aggregate_zone_at_depth(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+                                                                            #| None
+def aggregate_zone_at_depth(store, root_zone, zone_depth, fields: List[str] = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    if fields is None:
       fields = store.fields
 

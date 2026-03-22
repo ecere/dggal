@@ -7,10 +7,15 @@ import gzip
 import threading
 import logging
 import array
-from typing import Any, Dict, List, Optional, Tuple, Iterable, Iterator, TypedDict, Mapping, Sequence
+from typing import Any, Dict, List, Optional, Tuple, Iterable, Iterator, Mapping, Sequence
 from types import MethodType
 import ubjson
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+try:
+   from typing import TypedDict
+except(ImportError):
+   from typing_extensions import TypedDict
 
 DGGS_JSON_SCHEMA_URI = "https://schemas.opengis.net/ogcapi/dggs/1.0/core/schemas/dggs-json/dggs-json.json"
 
@@ -430,7 +435,7 @@ class DGGSDataStore:
          return None
       return row["data"]
 
-   def read_and_decode_zone_blob(self, pkg_path: str, zone: DGGRSZone) -> dict | None:
+   def read_and_decode_zone_blob(self, pkg_path: str, zone: DGGRSZone) -> dict: # | None:
       return decode_blob(self.read_zone_blob(pkg_path, zone))
 
    def read_package_root_ids(self, pkg_path: str, limit: Optional[int] = None) -> set:
@@ -726,7 +731,8 @@ class DGGSDataStore:
       if rows:
          col_names = ["feature_id"] + [k for k in keys.keys()]
          placeholders = ",".join("?" for _ in col_names)
-         insert_sql = f"INSERT OR REPLACE INTO attributes({', '.join('\"'+c+'\"' for c in col_names)}) VALUES({placeholders})"
+         #insert_sql = f"INSERT OR REPLACE INTO attributes({', '.join('\"'+c+'\"' for c in col_names)}) VALUES({placeholders})"
+         insert_sql = "INSERT OR REPLACE INTO attributes({}) VALUES({})".format(', '.join('\\' + c + '\\' for c in col_names), placeholders)
          params = []
          for r in rows:
             params.append(tuple(r.get(c) for c in col_names))

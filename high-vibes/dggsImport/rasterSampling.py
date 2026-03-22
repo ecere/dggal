@@ -68,7 +68,7 @@ def _sample_values_for_centroids(ds, coords: List[tuple], overview_factor: Optio
    ys = np.array([c[1] for c in coords], dtype=float)
 
    # compute pixel row/col indices at dataset resolution (vectorized)
-   rows_all, cols_all = rowcol(ds.transform, xs, ys, op=int)
+   rows_all, cols_all = np.array(rowcol(ds.transform, xs, ys, op=int))
 
    # determine bounding window in pixel coordinates (clamped to dataset)
    min_row = int(max(0, rows_all.min()))
@@ -183,8 +183,8 @@ def _choose_overview_factor_for_level(ds, dggrs, zone, root_level: int, relative
 # ---------------------------------------------------------------------------
 
 def sample_depth_obj_for_zone(store, ds, raster_crs: str, dggrs, zone, data_level: int,
-   depth: int, use_overviews: bool, fields: List[str], bands: List[int] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
-   # Sample centroids for `zone` at `depth` and return fields_map:
+   depth: int, use_overviews: bool, fields: List[str], bands: List[int] = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+   # Sample centroids for `zone` at `depth` and return fields_map:      # | None
    #  { field_name: [ depth_entry ] }
    # Assumes caller's `fields` corresponds to requested `bands`.
    root_level = dggrs.getZoneLevel(zone)

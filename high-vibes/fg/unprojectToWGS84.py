@@ -28,8 +28,8 @@ def _segment_near_pole_by_crs(p: Tuple[float, float], n: Tuple[float, float]) ->
       return True
 
    return False
-
-def _choose_twin_point_for_segment(p: Tuple[float, float], n: Tuple[float, float], eps: float = 0.05) -> Tuple[float, float] | None:
+                                                                                                                            #| None
+def _choose_twin_point_for_segment(p: Tuple[float, float], n: Tuple[float, float], eps: float = 0.05) -> Tuple[float, float]:
    # Return the twin/pole point (in 5x6 CRS coords) relevant to segment p->n,
    # or None if no known twin is close enough.
    # eps is a loose proximity threshold in CRS units.

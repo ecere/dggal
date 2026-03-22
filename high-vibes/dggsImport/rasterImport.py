@@ -117,7 +117,7 @@ def _build_blobs_processes(
 # ---------------------------------------------------------------------------
 def _process_batch(store, ds, raster_crs: str, dggrs, dggrs_uri: str,
    base_zone, batch_zones: List, base_ancestors: List,
-   data_level: int, depth: int, fields: List[str], use_overviews: bool, aggregate: bool, bands: List[int] | None = None,
+   data_level: int, depth: int, fields: List[str], use_overviews: bool, aggregate: bool, bands: List[int] = None,
    max_workers: int = 16) -> int:
    if not batch_zones:
       print("[BATCH] empty batch, skipping", flush=True)
@@ -166,9 +166,9 @@ def _process_batch(store, ds, raster_crs: str, dggrs, dggrs_uri: str,
 # ---------------------------------------------------------------------------
 
 def import_raster(ds, collection_id: str, dggrs_name: str, data_root: str = "data",
-   level: int | None = None, depth: int | None = None,
-   fields: List[str] | None = None, bands: List[int] | None = None,
-   batch_size: int = 32, groupSize: int = 5, aggregate: bool | None = None, max_workers: int = 16):
+   level: int = None, depth: int = None,
+   fields: List[str] = None, bands: List[int] = None,
+   batch_size: int = 32, groupSize: int = 5, aggregate: bool = None, max_workers: int = 16):
 
    # Uses provided open rasterio dataset `ds`. closes ds on every return.
    # Returns 0 on success, 1 on error.

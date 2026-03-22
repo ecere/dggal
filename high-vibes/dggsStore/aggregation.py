@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 from dggal import *
 
-from typing import Dict, List, Optional, Mapping, Sequence, TypedDict, Union, Any
+from typing import Dict, List, Optional, Mapping, Sequence, Union, Any
 import logging
+
+try:
+   from typing import TypedDict
+except(ImportError):
+   from typing_extensions import TypedDict
 
 ffi = dggal.ffi
 
@@ -35,8 +40,8 @@ def collect_ancestors_at_level(dggrs, start_zone, target_level):
       if parents is not None:
          Instance.delete(parents)
    return out
-
-def assemble_aggregate_from_level0(store, root_zone, zone_depth, fields: List[str] | None = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
+                                                                                   # | None
+def assemble_aggregate_from_level0(store, root_zone, zone_depth, fields: List[str] = None) -> Optional[Dict[str, List[Dict[str, Any]]]]:
    # Returns a ValuesObject: field -> [ValueEntry]
    # collect level-0 ancestors (roots at level 0 that cover this root_zone)
    # paint their values (at store's depth) onto the target root zone at target depth
