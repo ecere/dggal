@@ -44,6 +44,10 @@ def _prepare_input_pipeline(input_path: str, dggrs_name: str, skip_reproj: bool,
       src = fix_feature_collection_5x6_topology(src)
    return src
 
+def _initialize_dggal_worker():
+   app = Application(appGlobals=globals());
+   pydggal_setup(app)
+
 # worker: build a single FG blob for a root zone (picklable top-level)
 def _vector_package_worker(wkbc_path: str,
    zone_id: int,
@@ -94,7 +98,7 @@ def _build_vector_blobs_processes(
       return {}
    workers = min(max_workers, max(1, len(zones)))
    blobs: Dict[int, bytes] = {}
-   with ProcessPoolExecutor(max_workers=workers) as ex:
+   with ProcessPoolExecutor(max_workers=workers, initializer=_initialize_dggal_worker) as ex:
       futures = {}
       for z in zones:
          fut = ex.submit(_vector_package_worker, wkbc_path, int(z), store_worker_config, dggrs.__class__.__name__, depth)

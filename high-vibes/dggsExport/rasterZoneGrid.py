@@ -30,6 +30,9 @@ def _proc_initializer(dggrs_impl_addr: int, dggrs_id: Optional[str], shape: Tupl
    import dggal as _dggal
    ffi_local = _dggal.ffi
 
+   app = Application(appGlobals=globals());
+   pydggal_setup(app)
+
    if dggrs_impl_addr:
       # uintptr_t path: cast integer back to void*
       impl = ffi_local.cast("void *", dggrs_impl_addr)

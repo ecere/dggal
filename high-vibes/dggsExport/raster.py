@@ -102,6 +102,10 @@ def prepare_root(store: DGGSDataStore, dggrs, pkg_path: str, zone: DGGRSZone,
 
    return values_map, subs_ptr, idx_map, lon_ranges, min_y, max_y, decode_s
 
+def _initialize_dggal_worker():
+   app = Application(appGlobals=globals());
+   pydggal_setup(app)
+
 # paint worker: maps shared memory and writes values
 def _paint_worker(shm_zone_name: str, shm_out_name: str,
    width: int, height: int,
@@ -265,7 +269,7 @@ def rasterize_to_geotiff(store: DGGSDataStore, level: int, outfile: str, workers
    submitted = 0
    null_zone_int = int(nullZone)
 
-   with ProcessPoolExecutor(max_workers=workers) as ex:
+   with ProcessPoolExecutor(max_workers=workers, initializer=_initialize_dggal_worker) as ex:
       for pkg_path, base_zone_id, base_ancestors_ids in iter_packages(store, root_level):
          if max_packages and submitted >= max_packages:
             break

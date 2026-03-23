@@ -17,6 +17,10 @@ from typing import List, Dict, Any, Optional
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
 import rasterio
 
+def _initialize_dggal_worker():
+   app = Application(appGlobals=globals());
+   pydggal_setup(app)
+
 # top-level process worker (must be picklable)
 def _sample_package_worker(ds_path: str,
    zone_id: int,
@@ -77,7 +81,7 @@ def _build_blobs_processes(
    workers = min(max_workers, max(1, len(zones)))
    blobs: Dict[int, Dict[str, Any]] = {}
 
-   with ProcessPoolExecutor(max_workers=workers) as ex:
+   with ProcessPoolExecutor(max_workers=workers, initializer=_initialize_dggal_worker) as ex:
       futures = {}
       if aggregate:
          # submit the aggregate wrapper that reconstructs the store in the child
