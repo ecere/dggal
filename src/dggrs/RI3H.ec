@@ -148,6 +148,29 @@ public class RhombicIcosahedral3H : DGGRS
       return zone.getParents(parents);
    }
 
+   I3HZone getZonePrimaryParent(I3HZone zone)
+   {
+      I3HZone primaryParent = nullZone, parents[3];
+      int n = zone.getParents(parents);
+
+      if(n == 1)
+         primaryParent = parents[0];
+      else if(n > 0)
+      {
+         int i;
+
+         for(i = 0; i < n; i++)
+         {
+            if(parents[i].isCentroidChild)
+            {
+               primaryParent = parents[i];
+               break;
+            }
+         }
+      }
+      return primaryParent;
+   }
+
    int getZoneChildren(I3HZone zone, I3HZone * children)
    {
       return zone.getChildren(children);
