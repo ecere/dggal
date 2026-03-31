@@ -23,7 +23,7 @@ def parse_args():
    p.add_argument("--level", type=int, required=True, help="DGGS level to sample")
    p.add_argument("--workers", type=int, default=16)
    p.add_argument("--debug", action="store_true")
-   p.add_argument("--nodata", type=float, default=3.4028235e+38)
+   p.add_argument("--nodata", type=float, default=3.402823e+38)
    p.add_argument("--compress", default="lzw")
    p.add_argument("--fields", help="comma-separated list of fields to include in output")
    p.add_argument("--grid-size", default=1e-2, help="grid size for Shapely union when merging vector output")
