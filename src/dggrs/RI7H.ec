@@ -147,6 +147,11 @@ public class RhombicIcosahedral7H : DGGRS
       return zone.getParents(parents);
    }
 
+   I7HZone getZonePrimaryParent(I7HZone zone)
+   {
+      return zone.parent0;
+   }
+
    int getZoneChildren(I7HZone zone, I7HZone * children)
    {
       return zone.getChildren(children);

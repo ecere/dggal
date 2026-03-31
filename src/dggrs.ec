@@ -84,6 +84,8 @@ public:
    virtual double getZoneArea(DGGRSZone zone) { return 0; } // In meters square
 
    virtual int getZoneParents(DGGRSZone zone, DGGRSZone * parents) { return 0; }
+   virtual DGGRSZone getZonePrimaryParent(DGGRSZone zone) { return nullZone; }
+
    virtual int getZoneNeighbors(DGGRSZone zone, DGGRSZone * neighbors, int * nbType) { return 0; }
    virtual int getZoneChildren(DGGRSZone zone, DGGRSZone * children) { return 0; }
 
