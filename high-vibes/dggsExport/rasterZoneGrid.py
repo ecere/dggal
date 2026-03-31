@@ -28,9 +28,14 @@ _WORKER_SHAPE: Tuple[int,int] = None
 # initargs layout: (dggrs_impl_addr:int, dggrs_id:Optional[str], shape:Tuple[int,int])
 def _proc_initializer(dggrs_impl_addr: int, dggrs_id: Optional[str], shape: Tuple[int,int]):
    import dggal as _dggal
+   try:
+      from dggsStore.store import get_or_create_dggrs
+   except(ImportError):
+      from ..dggsStore.store import get_or_create_dggrs
+
    ffi_local = _dggal.ffi
 
-   app = Application(appGlobals=globals());
+   app = Application(appGlobals=globals())
    pydggal_setup(app)
 
    if dggrs_impl_addr:
@@ -38,8 +43,7 @@ def _proc_initializer(dggrs_impl_addr: int, dggrs_id: Optional[str], shape: Tupl
       impl = ffi_local.cast("void *", dggrs_impl_addr)
    else:
       # id path: recreate DGGRS in worker and take its impl
-      # expects dggal to expose get_or_create_dggrs(dggrs_id)
-      dggrs_obj = _dggal.get_or_create_dggrs(dggrs_id)
+      dggrs_obj = get_or_create_dggrs(dggrs_id)
       impl = dggrs_obj.impl
 
    globals()["_WORKER_DGGRS_IMPL"] = impl
@@ -136,7 +140,7 @@ def prefill_zone_grid(shm_name: str, dggrs, level: int, deg_per_pixel: float,
       initargs = (addr, None, (height, width))
    else:
       # pass DGGRS id and let workers recreate DGGRS (portable)
-      dggrs_id = getattr(dggrs, "id", None)
+      dggrs_id = type(dggrs).__name__
       initargs = (0, dggrs_id, (height, width))
 
    with ProcessPoolExecutor(max_workers=workers, initializer=_proc_initializer, initargs=initargs) as ex:
