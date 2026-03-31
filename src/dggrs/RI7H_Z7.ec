@@ -480,6 +480,19 @@ private:
          zoneID[2 + l] = 0;
       }
    }
+
+   property Z7Zone parent0
+   {
+      get
+      {
+         int l = level;
+         if(this == nullZone || l <= 0)
+            return nullZone;
+         else
+            // Set bits of last active digit at (19 - (l - 1)) * 3 to 7
+            return { rootPentagon = rootPentagon, ancestry = ancestry | (7LL << ((20 - l) * 3)) };
+      }
+   }
 }
 
 static define POW_EPSILON = 0.1;
@@ -553,6 +566,11 @@ public class RI7H_Z7 : RhombicIcosahedral7H
       for(i = 0; i < n; i++)
          parents[i] = Z7Zone::from7H((I7HZone)parents[i]);
       return n;
+   }
+
+   Z7Zone getZonePrimaryParent(Z7Zone zone)
+   {
+      return zone.parent0;
    }
 
    int getZoneChildren(Z7Zone zone, Z7Zone * children)

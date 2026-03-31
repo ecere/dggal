@@ -533,6 +533,7 @@ public class DGGSUnitTest : eTest
                DGGRSZone zone = z;
                DGGRSZone parents[3];
                int n = dggrs.getZoneParents(zone, parents), i, j;
+               DGGRSZone primaryParent = dggrs.getZonePrimaryParent(zone);
 
                for(i = 0; i < n; i++)
                {
@@ -564,6 +565,26 @@ public class DGGSUnitTest : eTest
                }
                if(i < n)
                   fail("DGGS parents", thisTest, "of non-reciprocal parents / children for zone");
+
+               if(primaryParent != nullZone)
+               {
+                  DGGRSZone children[13];
+                  int np = dggrs.getZoneChildren(primaryParent, children);
+
+                  for(j = 0; j < np; j++)
+                     if(children[j] == zone)
+                        break;
+                  if(j == np)
+                  {
+                     char zID[256], pID[256];
+                     dggrs.getZoneTextID(zone, zID);
+                     dggrs.getZoneTextID(primaryParent, pID);
+                     PrintLn("Non reciprocal child / primaryParent: ", zID, " and ", pID);
+                     break;
+                  }
+                  if(i < n)
+                     fail("DGGS parents", thisTest, "of non-reciprocal parents / children for zone");
+               }
             }
 
             PrintLn("Testing reciprocity of level ", pLevel, " zone centroid / from centroid");
