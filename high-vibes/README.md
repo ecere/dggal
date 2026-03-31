@@ -6,7 +6,7 @@
 
 #### dgg-import
 
-Create a Scalable UBJSON DGGS Data Store from a GeoTIFF (quantizing to a DGGRS)
+Create a Scalable UBJSON DGGS Data Store from a raster (e.g., GeoTIFF) or GeoJSON (quantizing to a DGGRS)
 
 ```
 python dgg-import.py gebco.tiff --dggrs IVEA4R --fields Elevation
@@ -22,7 +22,7 @@ python dgg-fetch.py http://localhost:8080/collections/gebco/dggs/IVEA4R
 
 #### dgg-export
 
-Export a GeoTIFF from a Scalable UBJSON DGGS Data Store (relatively well optimized):
+Export a GeoTIFF or GeoJSON from a Scalable UBJSON DGGS Data Store:
 
 ```
 python dgg-export.py data out.tif --collection gebco --level 10
@@ -38,7 +38,7 @@ python dgg-serve.py --data-root data --port 8080
 
 ### Limitations
 
-This code should all work with the last [0.0.6 DGGAL release](https://github.com/ecere/dggal/releases/tag/v0.0.6).
+This code should all work with the last [0.0.7 DGGAL release](https://github.com/ecere/dggal/releases/tag/v0.0.7).
 
 This is an early version with some limitations:
 - the tools do not currently support additional dimensions (time, pressure...) but this is conceptually supported by DGGS-UBJSON and this DGGS Data Store layout,
