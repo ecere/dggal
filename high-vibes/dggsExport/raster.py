@@ -28,7 +28,14 @@ from rasterio.transform import from_origin
 import os
 
 from .rasterZoneGrid import create_shared_zone_grid, prefill_zone_grid
-from multiprocessing import shared_memory as _shm
+try:
+   from multiprocessing import shared_memory as _shm # NOTE: This requires Python 3.8+
+except ImportError:
+    try:
+        import shared_memory
+        _shm = shared_memory
+    except ImportError:
+        raise ImportError("Please run 'pip install shared-memory38' for Python 3.7 support.")
 
 # FFI handle
 dggal_ffi = dggal.ffi

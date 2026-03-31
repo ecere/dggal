@@ -13,8 +13,16 @@ from dggal import *
 import os
 import math
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from multiprocessing import shared_memory, get_start_method
+from multiprocessing import get_start_method
 from typing import Tuple, Optional
+try:
+   from multiprocessing import shared_memory as _shm # NOTE: This requires Python 3.8+
+except ImportError:
+    try:
+        import shared_memory
+        _shm = shared_memory
+    except ImportError:
+        raise ImportError("Please run 'pip install shared-memory38' for Python 3.7 support.")
 
 import numpy as np
 
@@ -55,7 +63,6 @@ def _proc_fill_tile(shm_name: str, level: int, deg_per_pixel: float,
    import math as _math
    import dggal as _dggal
    from dggal import GeoPoint as _GeoPoint
-   from multiprocessing import shared_memory as _shm
 
    _WORKER_DGGRS_IMPL = globals()["_WORKER_DGGRS_IMPL"]
    _WORKER_SHAPE = globals()["_WORKER_SHAPE"]
@@ -92,7 +99,7 @@ def create_shared_zone_grid(width: int, height: int, null_zone_int: int):
    # Create a shared-memory uint64 array shaped (height, width) and initialize to null_zone_int.
    # Returns (zone_grid, shm) where shm is the SharedMemory object (caller must close/unlink).
    size = width * height * np.dtype(np.uint64).itemsize
-   shm = shared_memory.SharedMemory(create=True, size=size)
+   shm = _shm.SharedMemory(create=True, size=size)
    zone_grid = np.ndarray((height, width), dtype=np.uint64, buffer=shm.buf)
    zone_grid.fill(int(null_zone_int))
    return zone_grid, shm
