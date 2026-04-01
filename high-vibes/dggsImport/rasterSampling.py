@@ -16,6 +16,11 @@ try:
 except(ImportError):
    from ..dggsStore.store import make_dggs_json_depth
 
+# In some environments, radians=True flag gets ignored
+_test_tf = Transformer.from_crs("EPSG:4326", "EPSG:4326", always_xy=True)
+_lon, _ = _test_tf.transform(1.0, 0.0, radians=True)
+_TRANSFORMER_RAD_BUG = (_lon < 2.0)
+
 # ---------------------------------------------------------------------------
 # Low-level sampling / coordinate helpers
 # ---------------------------------------------------------------------------
@@ -40,7 +45,11 @@ def _coords_for_centroids(centroids, raster_crs: str) -> List[Tuple[float, float
       # Otherwise transform directly from radians -> target CRS units without explicit deg conversion
       transformer = Transformer.from_crs("EPSG:4326", raster_crs, always_xy=True)
       # transformer.transform accepts arrays and the radians flag
-      xs, ys = transformer.transform(lon_rad, lat_rad, radians=True)
+      if _TRANSFORMER_RAD_BUG:
+         xs, ys = transformer.transform(lon_rad * 180 / np.pi, lat_rad * 180 / np.pi)
+      else:
+         xs, ys = transformer.transform(lon_rad, lat_rad, radians=True)
+
       coords = np.column_stack((xs, ys))
    return [ (float(x), float(y)) for x, y in coords ]
 
