@@ -9,7 +9,8 @@
 Create a Scalable UBJSON DGGS Data Store from a raster (e.g., GeoTIFF) or GeoJSON (quantizing to a DGGRS)
 
 ```
-python dgg-import.py gebco.tiff --dggrs IVEA4R --fields Elevation
+dgg-import gebco.tiff --dggrs IVEA4R --fields Elevation
+dgg-import countries.geojson --dggrs IVEA3H --level 19 --depth 14
 ```
 
 #### dgg-fetch
@@ -17,7 +18,7 @@ python dgg-import.py gebco.tiff --dggrs IVEA4R --fields Elevation
 Create a Scalable UBJSON DGGS Data Store from an OGC API - DGGS deployment (implementing an OGC API - DGGS client):
 
 ```
-python dgg-fetch.py http://localhost:8080/collections/gebco/dggs/IVEA4R
+dgg-fetch http://localhost:8080/collections/gebco/dggs/IVEA4R
 ```
 
 #### dgg-export
@@ -25,7 +26,8 @@ python dgg-fetch.py http://localhost:8080/collections/gebco/dggs/IVEA4R
 Export a GeoTIFF or GeoJSON from a Scalable UBJSON DGGS Data Store:
 
 ```
-python dgg-export.py data out.tif --collection gebco --level 10
+dgg-export data out.tif --collection gebco --level 10
+dgg-export data out.geojson --collection countries --level 19
 ```
 
 #### dgg-serve
@@ -33,12 +35,12 @@ python dgg-export.py data out.tif --collection gebco --level 10
 Deploy an OGC API - DGGS interface to DGGS-quantized collections in Scalable UBJSON DGGS Data Stores through OGC API - DGGS with DGGAL High Vibes (implementation of an OGC API - DGGS server):
 
 ```
-python dgg-serve.py --data-root data --port 8080
+dgg-serve --data-root data --port 8080
 ```
 
 ### Limitations
 
-This code should all work with the last [0.0.7 DGGAL release](https://github.com/ecere/dggal/releases/tag/v0.0.7).
+This code should all work with the latest [0.0.7 DGGAL release](https://github.com/ecere/dggal/releases/tag/v0.0.7).
 
 This is an early version with some limitations:
 - the tools do not currently support additional dimensions (time, pressure...) but this is conceptually supported by DGGS-UBJSON and this DGGS Data Store layout,
