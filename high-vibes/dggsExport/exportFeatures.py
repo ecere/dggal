@@ -282,7 +282,7 @@ def export_to_geojson(
 
    projection = None #instantiate_projection_for_dggrs_name(store.config['dggrs'])
 
-   with ProcessPoolExecutor(max_workers=worker_count, initializer=_init_dggal_worker) as ex:
+   with ProcessPoolExecutor(max_workers=worker_count, initializer=_initialize_dggal_worker) as ex:
       for pkg_path, base_zone_id, base_ancestors_ids in pkg_iter:
          if max_packages and submitted >= max_packages:
             break
