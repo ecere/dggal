@@ -732,7 +732,7 @@ class DGGSDataStore:
          col_names = ["feature_id"] + [k for k in keys.keys()]
          placeholders = ",".join("?" for _ in col_names)
          #insert_sql = f"INSERT OR REPLACE INTO attributes({', '.join('\"'+c+'\"' for c in col_names)}) VALUES({placeholders})"
-         insert_sql = "INSERT OR REPLACE INTO attributes({}) VALUES({})".format(', '.join('\\' + c + '\\' for c in col_names), placeholders)
+         insert_sql = "INSERT OR REPLACE INTO attributes({}) VALUES({})".format(', '.join('\"' + c + '\"' for c in col_names), placeholders)
          params = []
          for r in rows:
             params.append(tuple(r.get(c) for c in col_names))
