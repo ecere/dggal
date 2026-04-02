@@ -1,6 +1,5 @@
 from dggal import *
 from typing import List, Dict, Any, Optional
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import json
 
 try:
@@ -14,14 +13,29 @@ from .rasterSampling import *
 
 import threading
 from typing import List, Dict, Any, Optional
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import rasterio
+
+from functools import wraps
+
+def report_exceptions(func):
+   @wraps(func)
+   def wrapper(*args, **kwargs):
+      try:
+         return func(*args, **kwargs)
+      except Exception:
+         # Force print full traceback to stderr
+         print(f"--- ERROR in {func.__name__} ---", file=sys.stderr)
+         traceback.print_exc()
+      raise # Re-raising ensures the parent still gets the correct exit code
+   return wrapper
 
 def _initialize_dggal_worker():
    app = Application(appGlobals=globals());
    pydggal_setup(app)
 
 # top-level process worker (must be picklable)
+@report_exceptions
 def _sample_package_worker(ds_path: str,
    zone_id: int,
    worker_config: dict,
@@ -44,6 +58,7 @@ def _sample_package_worker(ds_path: str,
          data_level, depth, use_overviews, fields, bands)
 
 # top-level aggregate worker (must be picklable)
+@report_exceptions
 def _aggregate_package_worker(worker_config: dict,
    zone_id: int,
    zone_depth: int,
