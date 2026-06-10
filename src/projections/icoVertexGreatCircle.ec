@@ -173,91 +173,60 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       Vector3D P, bool bIsA)
    {
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
-      double b[3];
+      double beta[3];
 
-      cartesianToBary(b, pi, pai, pbi, pci, -6);
+      cartesianToBary(beta, pi, pai, pbi, pci, -6);
 
-           if(b[0] > 1 - 1E-15) { P = A; return; }
-      else if(b[1] > 1 - 1E-15) { P = B; return; }
-      else if(b[2] > 1 - 1E-15) { P = C; return; }
-
+      if(beta[0] > 1 - 1E-15)
+         P = A;
+      else
       {
-         const double h = 1 - b[0];
-         const double b2oh = b[2] / h;
-         const Radians b2ohABC = b2oh * areaABC;
-         const double halfC = sin(b2ohABC / 2);
-         const double halfC2 = halfC * halfC;
-         const double CC = 2 * halfC2; // Half-angle identity; 1 - sqrt(1 - S * S) is quite imprecise
-         const double S = 2 * halfC * sqrt(1 - halfC2);
-         const double c01 = bIsA ? cosAB : cosBC; //A.x * B.x + A.y * B.y + A.z * B.z; //A.DotProduct(B);
-         const double c12 = cosAC; //B.x * C.x + B.y * C.y + B.z * C.z; //B.DotProduct(C);
-         const double c20 = bIsA ? cosBC : cosAB; //C.x * A.x + C.y * A.y + C.z * A.z; //C.DotProduct(A);
-         const double s12 = sinAC; // also sqrt(1 - c12*c12) and c1.length
-         const double f = S * parallelepipedV + CC * (c01 * c12 - c20);
-         const double g = CC * s12 * (1 + c01);
-         const double f2 = f * f, g2 = g * g, gf = g * f;
-         const double numerator = s12 * (f2 - g2) - 2 * gf * c12;
-         const double divisor = s12 * (f2 + g2);
+         double rho = 1 - beta[0]; // Also = b[1] + b[2]
+         double alpha = (beta[2] / rho) * areaABC;
 
-         if((fabs(numerator) > 1E-9 && fabs(divisor) > 1E-9))
-         {
-            // Optimized trigonometry-free branch equivalent to 2 SLERPs for non-degnerate cases
-            const double oODivisor = 1.0 / divisor;
-            const double ap = Max(0.0, numerator * oODivisor);
-            const double bp = Min(1.0, 2 * gf * oODivisor);
-            const Vector3D p
-            {
-               ap * B.x + bp * C.x,
-               ap * B.y + bp * C.y,
-               ap * B.z + bp * C.z
-            };
+         // Note that these could be pre-computed per SDT
+         double c1 = parallelepipedV * parallelepipedV;
+         double v2dotv0 = C.x * A.x + C.y * A.y + C.z * A.z;
+         double v1dotv2 = B.x * C.x + B.y * C.y + B.z * C.z;
+         double v0dotv1 = A.x * B.x + A.y * B.y + A.z * B.z;
+         double v0dotv1tv1dotv2mv2dotv0 = v0dotv1 * v1dotv2 - v2dotv0;
+         double v2dotv0pv1dotv2 = v2dotv0 + v1dotv2;
+         double v0dotv1p1 = v0dotv1 + 1, v0dotv1p1s = v0dotv1p1 * v0dotv1p1;
+         double c2 = v2dotv0pv1dotv2 * v2dotv0pv1dotv2 - v0dotv1p1s;
+         double c3 = 2 * v0dotv1p1 * v0dotv1tv1dotv2mv2dotv0;
+         double c4 = (1 - v1dotv2 * v1dotv2) * v0dotv1p1s +
+            v0dotv1tv1dotv2mv2dotv0 * v0dotv1tv1dotv2mv2dotv0;
+         double c1o = c1 + c2, c2o = c3;
+         double cMo = c1 + c4;
+         double c1c = c1 - c2;
+         double c2c = -c3;
+         double cMc = c1 - c4;
+         double c1s = -2 * parallelepipedV * v2dotv0pv1dotv2;
+         double c2s =  2 * parallelepipedV * v0dotv1p1;
+         double cMs =  2 * parallelepipedV * v0dotv1tv1dotv2mv2dotv0;
+         /////// end of per SDT pre-computables
 
-            const double av = A.x * p.x + A.y * p.y + A.z * p.z; //A.DotProduct(p);
-            const double bv = 1 + h*h * (av - 1);
-            const double bvp = h * sqrt((1 + bv) / (1 + av));
-            const double avp = bv - av * bvp;
+         double cosAlpha = cos(alpha), sinAlpha = sin(alpha);
+         double N1 = c1o + c1c * cosAlpha + c1s * sinAlpha;
+         double N2 = c2o + c2c * cosAlpha + c2s * sinAlpha;
+         double M  = cMo + cMc * cosAlpha + cMs * sinAlpha;
+         double ooM = 1.0 / M;
+         double N1oM = ooM * N1, N2oM = ooM * N2;
+         Vector3D Dv {
+            N1oM * B.x + N2oM * C.x,
+            N1oM * B.y + N2oM * C.y,
+            N1oM * B.z + N2oM * C.z
+         };
+         double a = A.x * Dv.x + A.y * Dv.y + A.z * Dv.z;
+         double b = 1 + rho * rho * (a - 1);
+         double bp = rho * sqrt((1 + b)/(1 + a));
+         double ap = b - a * bp;
 
-            P =
-            {
-               avp * A.x + bvp * p.x,
-               avp * A.y + bvp * p.y,
-               avp * A.z + bvp * p.z
-            };
-         }
-         else
-         {
-            // 2-SLERPs fallback for the degenerate cases where the optimized linear algebra version breaks down
-            Vector3D D;
-            const Radians areaABC = Degrees { 6 }; //beta + gamma + alpha - Pi;
-            const double b1pb2 = b[1] + b[2];
-            const double upOverupPvp = b1pb2 < 1E-11 ? 0 : b[bIsA ? 1 : 2] / b1pb2;
-            const Radians rhoPlusDelta = beta + gamma - upOverupPvp * areaABC; //(beta + gamma + alpha - Pi);
-            const Radians areaABD = rhoPlusDelta + alpha - Pi;  // T-U = rho + delta + alpha - Pi
-            Radians BD, x;
-
-            if(fabs(areaABD) < 1E-11)
-            {
-               // (B or C) vertex at angle alpha (90 degrees for ISEA and IVEA)
-               if(bIsA) D = B; else D = C;
-               BD = AB;
-            }
-            else if(fabs(areaABD - areaABC) < 1E-13)
-            {
-               // (B or C) vertex at angle gamma
-               if(bIsA) D = C; else D = B;
-               BD = BC;
-            }
-            else
-            {
-               Radians AD = 2 * atan2(g, f);
-               slerpAngle(D, B, C, AC, AD);
-               BD = acos(Max(-1.0, Min(1.0, A.x * D.x + A.y * D.y + A.z * D.z)));
-            }
-
-            // A is the vertex from which great circles radiate (angle beta)
-            x = 2 * asin((1 - b[0]) * sin(BD/2)); // x' / (x' + y') = 1 - b_0
-            slerpAngle(P, A, D, BD, x);
-         }
+         P = {
+            ap * A.x + bp * Dv.x,
+            ap * A.y + bp * Dv.y,
+            ap * A.z + bp * Dv.z
+         };
       }
    }
 
@@ -319,36 +288,35 @@ public class SliceAndDiceGreatCircleIcosahedralProjection : RI5x6Projection
       const Pointd pai, const Pointd pbi, const Pointd pci,
       Pointd out)
    {
-      Vector3D c1, c2, p;
-      double h, b[3];
        // The SDT triangle area is always 6 degrees
       static const Radians areaABC = Degrees { 6 }; //sphericalTriArea(A, B, C);
-      Radians areaABp;
+      // P is v, A is v0, B is v1, C is v2
+      // NOTE: c2 could be pre-computed for a given SDT...
+      Vector3D c2 {
+         B.y * C.z - B.z * C.y,
+         B.z * C.x - B.x * C.z,
+         B.x * C.y - B.y * C.x
+      };
+      double c2dotv = c2.x * v.x + c2.y * v.y + c2.z * v.z;
+      Vector3D D0 {
+         parallelepipedV * v.x - c2dotv * A.x,
+         parallelepipedV * v.y - c2dotv * A.y,
+         parallelepipedV * v.z - c2dotv * A.z
+      };
+      double D = D0.length, ooD = D ? 1.0 / D : 1;
+      Vector3D Dv { D0.x * ooD, D0.y * ooD, D0.z * ooD };
+      Radians areaABp = Max(0.0, sphericalTriArea(A, B, Dv));
+      double alpha = areaABp / areaABC;
+      double rho = D / parallelepipedV * sqrt(
+         (1 + A.x * Dv.x + A.y * Dv.y + A.z * Dv.z) /
+         (1 + A.x *  v.x + A.y *  v.y + A.z *  v.z)
+      );
+      double b[3] = {
+         1 - rho,
+         rho * (1 - alpha),
+         alpha * rho
+      };
 
-      // c1.CrossProduct(A, v);
-      c1.x = A.y * v.z - A.z * v.y;
-      c1.y = A.z * v.x - A.x * v.z;
-      c1.z = A.x * v.y - A.y * v.x;
-
-      // c2.CrossProduct(B, C);
-      c2.x = B.y * C.z - B.z * C.y;
-      c2.y = B.z * C.x - B.x * C.z;
-      c2.z = B.x * C.y - B.y * C.x;
-
-      // p.CrossProduct(c1, c2);
-      p.x = c1.y * c2.z - c1.z * c2.y;
-      p.y = c1.z * c2.x - c1.x * c2.z;
-      p.z = c1.x * c2.y - c1.y * c2.x;
-
-      p.Normalize(p);
-
-      areaABp = Max(0.0, sphericalTriArea(A, B, p));
-
-      h = sqrtOneMinusDotOver2(A, v) / sqrtOneMinusDotOver2(A, p);
-
-      b[0] = 1 - h;
-      b[2] = Min(h, h * areaABp / areaABC);
-      b[1] = h - b[2];
       baryToCartesian(b, out, pai, pbi, pci);
    }
 
