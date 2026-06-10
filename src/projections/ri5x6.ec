@@ -315,9 +315,9 @@ public class RI5x6Projection
       // https://brsr.github.io/2021/05/01/vector-spherical-geometry.html
       Vector3D midAB, midBC, midCA, cross;
 
-      midAB.Normalize({ (A.x + B.x) / 2, (A.y + B.y) / 2, (A.z + B.z) / 2 });
-      midBC.Normalize({ (B.x + C.x) / 2, (B.y + C.y) / 2, (B.z + C.z) / 2 });
-      midCA.Normalize({ (C.x + A.x) / 2, (C.y + A.y) / 2, (C.z + A.z) / 2 });
+      midAB.Normalize({ A.x + B.x, A.y + B.y, A.z + B.z });
+      midBC.Normalize({ B.x + C.x, B.y + C.y, B.z + C.z });
+      midCA.Normalize({ C.x + A.x, C.y + A.y, C.z + A.z });
       cross.CrossProduct(midBC, midCA);
       return asin(Max(-1.0, Min(1.0, midAB.DotProduct(cross)))) * 2;
    }
