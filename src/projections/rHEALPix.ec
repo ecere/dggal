@@ -136,7 +136,7 @@ public class rHEALPixProjection : HEALPixProjection
       if(y <= Pi/4 + 1E-15)
          // Equatorial region
          r = HEALPixProjection::inverse(v, result, oddGrid);
-      else if(v.x <= -Pi/2)
+      else if(v.x <= -Pi/2 + 1E-15)
       {
          // Polar caps
          double dx = Pi + v.x, dy = 3*Pi/4 - y, mdx = Pi/2 - dx;

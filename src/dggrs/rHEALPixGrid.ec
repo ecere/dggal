@@ -435,7 +435,7 @@ public class rHEALPix : DGGRS
    int getZoneWGS84Vertices(RHPZone zone, GeoPoint * vertices)
    {
       CRSExtent extent = zone.rhpExtent;
-      Pointd v5x6[4] =
+      Pointd vRHP[4] =
       {
          extent.tl,
          { extent.tl.x, extent.br.y },
@@ -444,7 +444,15 @@ public class rHEALPix : DGGRS
       };
       uint count = 4, i;
       for(i = 0; i < count; i++)
-         pj.inverse(v5x6[i], vertices[i], false);
+      {
+         if(!pj.inverse(vRHP[i], vertices[i], false))
+         {
+#ifdef _DEBUG
+            PrintLn("WARNING: Failed to unproject ", vRHP[i]);
+#endif
+            vertices[i] = { -999, -999 };
+         }
+      }
       return count;
    }
 
