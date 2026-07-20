@@ -874,7 +874,7 @@ public:
    uint rootRhombus:4:54; // 0 .. 9; 10 and 11 for North and South poles
    uint64 rhombusIX:51:3; // 51 bits  0..1,628,413,597,910,448
    uint subHex:3:0;       //  3 bits  0: A     -- even level
-                          //             B     -- odd level centroid child, C..H: vertez child
+                          //             B     -- odd level centroid child, C..H: vertex child
 
    int OnCompare(I7HZone b)
    {
@@ -1433,6 +1433,147 @@ private:
       return I7HZone { l49r, root, cix, 0 };
    }
 
+   private static inline void ::getOddLevelIJKInt(int64 idx, int64 idy, int * ri, int * rj, int * rk)
+   {
+      int64 u =  2 * idx - 3 * idy;
+      int64 v =  1 * idx + 2 * idy;
+      int64 w = -3 * idx + 1 * idy;
+      int64 i = (u + (u >= 0 ? (1LL << 31) : -(1LL << 31))) / (1LL << 32);
+      int64 j = (v + (v >= 0 ? (1LL << 31) : -(1LL << 31))) / (1LL << 32);
+      int64 k = (w + (w >= 0 ? (1LL << 31) : -(1LL << 31))) / (1LL << 32);
+      int64 du = Abs((i * (1LL << 32)) - u);
+      int64 dv = Abs((j * (1LL << 32)) - v);
+      int64 dw = Abs((k * (1LL << 32)) - w);
+
+      if (du > dv && du > dw)
+         i = -j - k;
+      else if (dv > dw)
+         j = -i - k;
+      else
+         k = -i - j;
+
+      *ri = (int)i, *rj = (int)j, *rk = (int)k;
+   }
+
+   private static inline void ::resolveSubHex(int i, int j, int k, uint *localQuadIdx, uint *subHex)
+   {
+      #define _ MAXDWORD
+      static const uint quads[4][6] =
+      {// -3 -2 -1  0  1  2
+         { _, _, _, 0, 0, _ }, // 0
+         { _, 2, 0, 0, 1, 1 }, // 1
+         { 2, 2, 3, 3, 1, _ }, // 2
+         { _, 3, 3, _, _, _ }  // 3
+      };
+      static const uint hexes[4][6] =
+      {// -3 -2 -1  0  1  2
+         { _, _, _, 1, 7, _ }, // 0
+         { _, 2, 5, 6, 4, 1 }, // 1
+         { 1, 7, 3, 2, 5, _ }, // 2
+         { _, 4, 1, _, _, _ }  // 3
+      };
+      uint quad = i < -3 || i > 2 || j < 0 || j > 3 ? _ : quads[j][i + 3];
+      if(quad == _)
+      {
+         *localQuadIdx = 0, *subHex = 0;
+         PrintLn("WARNING: Assertion failed resolving sub-hex");
+      }
+      else
+         *localQuadIdx = quad, *subHex = hexes[j][i + 3];
+      #undef _
+   }
+
+   private static inline uint64 ::getSubRhombus(int64 p, int64 row, int64 col, uint root, uint quad, uint * qRoot)
+   {
+      bool lastCol = (col == p - 1), lastRow = (row == p - 1);
+      int64 q[4] = { row * p + col };
+      int r[4] = { root, root, root, root };
+
+      if(!lastCol && !lastRow)
+         q[1] = q[0] + 1, q[2] = q[0] + p, q[3] = q[2] + 1;
+      else if(root & 1) // Southern Rhombuses
+      {
+         if(lastCol)
+         {
+            q[1] = row * p, r[1] = (root + 1) % 10;
+            if(lastRow)
+               q[2] = p > 1 ? p : 0, q[3] = 0, r[3] = (root + 2) % 10, r[2] = p == 1 ? 11 : r[3];
+            else
+               q[2] = q[0] + p, q[3] = (row + 1) * p, r[3] = (root + 1) % 10;
+         }
+         else
+         {
+            q[1] = q[0] + 1, q[2] = col ? (p - col) * p : 0, q[3] = col ? q[2] - p : row * p;
+            r[3] = (root + 2) % 10;
+            r[2] = col ? r[3] : 11;
+         }
+      }
+      else // Northern Rhombuses
+      {
+         if(lastCol)
+         {
+            q[1] = row && p > 0 ? p - row : 0, r[3] = (root + 2) % 10, r[1] = row && p > 1 ? r[3] : 10;
+            if(lastRow)
+               q[2] = p - 1, q[3] = 0, r[2] = (root + 1) % 10;
+            else
+               q[2] = q[0] + p, q[3] = col - row;
+         }
+         else
+            q[1] = q[0] + 1, q[2] = col, q[3] = col + 1, r[2] = r[3] = (root + 1) % 10;
+      }
+
+      *qRoot = r[quad];
+      return q[quad];
+   }
+
+   private static inline int ::rotateSubHex(int64 p, int64 row, int64 col, int root, int64 quad, int subHex)
+   {
+      int delta = 0;
+
+      if(subHex < 2) // No rotation
+         return subHex;
+      else if(root & 1) // Southern Hemisphere
+      {
+         if(col == 0)
+         {
+            if(quad == 0 && subHex >= 5 && subHex <= 7)
+               delta = -1;
+            else if(quad == 2 && (subHex == 2 || subHex == 7))
+            {
+               if(row == p - 1)
+               {
+                  if(root > 1)
+                     delta = -((root / 2) + 1);
+                  else if(root == 1 && subHex == 7)
+                     delta = -1;
+               }
+               else
+                  delta = -1;
+            }
+         }
+      }
+      else // Northern Hemisphere
+      {
+         if(row == p - 1 && col == 0 && quad == 2 && subHex == 7)
+            delta = -1;
+         else if(row == 0)
+         {
+            if(quad == 0 && subHex >= 5 && subHex <= 7 && (col > 0 || subHex == 7))
+               delta = 1;
+            else if(quad == 1 && subHex >= 4 && subHex <= 5)
+            {
+               if(col == p - 1)
+                  delta = (root == 8 && subHex == 5) ? -3 : (root / 2) - 2;
+               else
+                  delta = 1;
+            }
+         }
+      }
+      if(delta)
+         subHex = 2 + ((subHex + delta + 4) % 6);
+      return subHex;
+   }
+
    I7HZone ::fromCentroid(uint level, const Pointd centroid) // in RI5x6
    {
       int l49r = level / 2;
@@ -1476,10 +1617,6 @@ private:
          int cx = Min(4, (int)(c.x + 1E-11)), cy = Min(5, (int)(c.y + 1E-11));  // Coordinate of root rhombus
          uint root = cx + cy;
          double x = c.x - cx, y = c.y - cy;
-         int64 col = Max(0, (int64)(x * p + 0.5));
-         int64 row = Max(0, (int64)(y * p + 0.5));
-         double dx = x * p + 0.5 - col;
-         double dy = y * p + 0.5 - row;
          uint64 cix;
          bool southRhombus = (root & 1);
          // Review where this should be used...
@@ -1490,116 +1627,38 @@ private:
 
          if(level & 1)
          {
-            // Odd level -- currently using a rather brute-force approach
-            I7HZone zone = nullZone;
+            // Odd level -- using new IJK approach
+            I7HZone zone;
+
             if(northPole)
                zone = { l49r, 0xA, 0, 1 };
             else if(southPole)
                zone = { l49r, 0xB, 0, 1 };
             else
             {
-               I7HZone candidateParents[7];
-               int i;
+               int64 scaledX = Max(0LL, (int64)(x * p * (1LL << 32))), scaledY = Max(0LL, (int64)(y * p * (1LL << 32)));
+               int64 col = scaledX >> 32, row = scaledY >> 32;
+               int64 idx = (scaledX & 0xFFFFFFFF), idy = (scaledY & 0xFFFFFFFF);
+               uint quad, subHex, qRoot;
+               int i, j, k;
+               uint64 subRhombus;
 
-               if(north && row == 0 && col == p)
-                  candidateParents[0] = { l49r, 0xA, 0, 0 };
-               else if(south && row == p && col == 0)
-                  candidateParents[0] = { l49r, 0xB, 0, 0 };
-               else
-               {
-                  // candidateParents[0] = { l49r, 2 + root * (p * p) + row * p + col, 0 };
-
-                  candidateParents[0] = calcCandidateParent(l49r, root, row, col, 0, 0);
-               }
-
-#if 0 //def _DEBUG
-               {
-                  char pID[128];
-                  candidateParents[0].getZoneID(pID);
-
-                  // PrintLn("Main candidate parent: ", pID);
-               }
-#endif
-
-               // Top (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[1] = calcCandidateParent(l49r, root, row, col, 0, -1);
-               // Bottom (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[2] = calcCandidateParent(l49r, root, row, col, 0, 1);
-               // Right (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[3] = calcCandidateParent(l49r, root, row, col, 1, 0);
-               // Left (2 potential children including 1 secondary child of prime candidate)
-               candidateParents[4] = calcCandidateParent(l49r, root, row, col, -1, 0);
-               // Top-Left (1 potential child including 1 secondary child of prime candidate)
-               candidateParents[5] = calcCandidateParent(l49r, root, row, col, -1, -1);
-               // Bottom-Right (1 potential child including 1 secondary child of prime candidate)
-               candidateParents[6] = calcCandidateParent(l49r, root, row, col, 1, 1);
-
-               // int numMatches = 0;
-               for(i = 0; i < 7; i++)
-               {
-                  I7HZone children[7];
-                  int n, j;
-#if 0 //def _DEBUG
-                  char pID[128];
-                  candidateParents[i].getZoneID(pID);
-                  if(candidateParents[i] != fromZoneID(pID))
-                  {
-                     PrintLn("ERROR: Invalid candidate parent zone: ", pID);
-                     candidateParents[1] = calcCandidateParent(l49r, root, row, col, 0, -1);
-                  }
-                  // PrintLn("Generating primary children for ", pID);
-#endif
-
-                  n = candidateParents[i].getPrimaryChildren(children);
-
-                  for(j = 0; j < n; j++)
-                  {
-#if 0 //def _DEBUG
-                     char zID[128];
-                     children[j].getZoneID(zID);
-                     if(children[j] != fromZoneID(zID))
-                     {
-                        PrintLn("ERROR: Invalid zone generated: ", zID);
-
-                        children[j].getZoneID(zID);
-                        fromZoneID(zID);
-
-                        candidateParents[i].getPrimaryChildren(children);
-                     }
-
-                     // PrintLn("Testing whether child ", zID, " contains point ", centroid.x, ", ", centroid.y);
-#endif
-                     if(children[j].containsPoint(c))
-                     {
-                        zone = children[j];
-                        // numMatches ++;
-                        break;
-                     }
-                  }
-                  if(zone != nullZone)
-                     break;
-               }
-               // PrintLn("matches: ", numMatches);
+               getOddLevelIJKInt(idx, idy, &i, &j, &k);
+               resolveSubHex(i, j, k, &quad, &subHex);
+               subRhombus = getSubRhombus(p, row, col, root, quad, &qRoot);
+               subHex = rotateSubHex(p, row, col, root, quad, subHex);
+               zone = { l49r, qRoot, subRhombus, subHex };
             }
-
-#if 0 //def _DEBUG
-            if(zone == nullZone)
-               PrintLn("WARNING: Unable to resolve zone for ", centroid.x, ", ", centroid.y);
-
-            if(zone != nullZone)
-            {
-               char id[256];
-               I7HZone z;
-               zone.getZoneID(id);
-               z = fromZoneID(id);
-               if(z != zone)
-                  PrintLn("ERROR: Invalid zone returned");
-            }
-#endif
             return zone;
          }
          else
          {
+            // NOTE: For even levels, we are currently using 0.5 offset sub-rhombuses centered on even hexagons
+            int64 col = Max(0, (int64)(x * p + 0.5));
+            int64 row = Max(0, (int64)(y * p + 0.5));
+            double dx = x * p + 0.5 - col;
+            double dy = y * p + 0.5 - row;
+
             if(northPole)
                return { l49r, 0xA, 0, 0 };
             else if(southPole)

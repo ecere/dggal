@@ -314,9 +314,6 @@ public class DGGSUnitTest : eTest
                      int i;
                      for(i = 0; i < subZones.count; i++)
                      {
-                        char szID[256];
-                        dggrs.getZoneTextID(subZones[i], szID);
-
                         if(subZones[i] == nullZone)
                         {
                            PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone ", zoneID, ": null sub-zone at index ", i);
@@ -333,6 +330,9 @@ public class DGGSUnitTest : eTest
                         }
                         else if(depth > 0 && !dggrs.zoneHasSubZone(zone, subZones[i]))
                         {
+                           char szID[256];
+                           dggrs.getZoneTextID(subZones[i], szID);
+
                            PrintLn("Parent Level ", pLevel, ", Depth ", depth, ", Zone ", zoneID, ": sub-zone ", szID, " not recognized");
                            fail("DGGS sub-zones", thisTest, "of undetected sub-zone");
                            // dggrs.zoneHasSubZone(zone, subZones[i]);
