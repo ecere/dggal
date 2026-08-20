@@ -216,10 +216,12 @@ def distance5x6(
 
     if pivot.x - b.x < -3:
         pivot = Point(pivot.x + 5, pivot.y + 5)
+        # REVIEW: This solved some wrapping issues
+        rb = Pointd(b.x - pivot.x, b.y - pivot.y)
 
     # apply rotation offset rotation times
     tmp_rb = Pointd(rb.x, rb.y)
-    for _ in range(abs(rotation)):
+    for i in range(abs(rotation)):
         rotate5x6_offset(tmp_rb, tmp_rb.x, tmp_rb.y, rotation < 0)
     rb = Pointd(tmp_rb.x + pivot.x, tmp_rb.y + pivot.y)
 
