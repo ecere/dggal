@@ -568,6 +568,7 @@ class DGGSDataStore:
 
    def list_zones_with_data_at_level(self, root_level: int, as_textIDs: bool = False) -> List[Any]:
       result: List[Any] = []
+      seen_ids = set()  # Prevent duplicate zone IDs
       dggrs = self.dggrs
       base_level = self._base_level_for_root(root_level)
 
@@ -581,7 +582,9 @@ class DGGSDataStore:
          for root_zone in self.iter_roots_for_base(base_zone, root_level, up_to=False):
             zid_text = dggrs.getZoneTextID(root_zone)
             if zid_text and zid_text in root_ids:
-               result.append(zid_text if as_textIDs else root_zone)
+               if zid_text not in seen_ids:
+                  seen_ids.add(zid_text)
+                  result.append(zid_text if as_textIDs else root_zone)
       return result
 
    def write_zone_batch(self,
