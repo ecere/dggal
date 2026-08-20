@@ -639,45 +639,8 @@ def fix_feature_collection_5x6_topology(gj: Dict[str,Any]) -> Dict[str,Any]:
          out_gj["features"].extend(out)
    return out_gj
 
-# ---------------------------
-# Feature processing pipeline (emit tiles option)
-# This mirrors the original pipeline but expands MultiPolygon parts and includes holes.
-# ---------------------------
-def _process_feature(feature: Dict[str,Any], emit_tiles: bool) -> List[Dict[str,Any]]:
-   geom_json = feature.get("geometry")
-   if geom_json is None:
-      return [feature]
-   shp = shape(geom_json)
-   fid = feature.get("id") or feature.get("properties",{}).get("id") or "0"
-   props = feature.get("properties", {})
 
-   all_kept_pieces: List[Dict[str,Any]] = []
 
-   if shp.geom_type == "Polygon":
-      parts = [(list(shp.exterior.coords), [list(h.coords) for h in shp.interiors])]
-   elif shp.geom_type == "MultiPolygon":
-      parts = []
-      for p in shp.geoms:
-         if isinstance(p, Polygon):
-            parts.append((list(p.exterior.coords), [list(h.coords) for h in p.interiors]))
-   else:
-      return [feature]
-
-   for pidx, (coords, holes) in enumerate(parts):
-      inserted_coords, seg_debug_store = _insert_ring_coords(coords, fid, pidx)
-      kept = _tile_and_filter_staircase(inserted_coords, holes, fid, pidx)
-      all_kept_pieces.extend(kept)
-
-   if emit_tiles:
-      out_feats: List[Dict[str,Any]] = []
-      for p in all_kept_pieces:
-         geom = p["geom"]
-         out_feats.append({"type":"Feature","id": f"{fid}_p{p['part_idx']}_t{p['tile_x']}_{p['tile_y']}",
-                           "properties": {"tile_x": p["tile_x"], "tile_y": p["tile_y"], "orig_fid": fid, "part_idx": p["part_idx"]},
-                           "geometry": mapping(geom)})
-      return out_feats
-
-   return _assemble_feature_from_pieces(all_kept_pieces, fid, props)
 
 def fix_geojson_file_5x6_topology(input_path: str, output_path: str):
    # Load GeoJSON FeatureCollection from input_path, run the high-level
