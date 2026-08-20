@@ -16,6 +16,7 @@ from shapely.geometry import (
    GeometryCollection,
    box,
    mapping,
+   shape
 )
 from shapely.ops import unary_union, linemerge
 from shapely.validation import explain_validity
@@ -714,13 +715,14 @@ def fix_WGS84_geometry(obj: Any, zone_extent: List[float], eps_zone_tile = EPS_Z
             for p in pieces:
                tile_geoms.append(p["geom"])
       else:
+         shp = shape(geom)
          for xmin, ymin, xmax, ymax in TILES_4:
-            tile_center = 0.5 * (xmin + xmax)
-            shp = _geom_to_shapely_shifted(geom, tile_center)
             tile_box = box(xmin, ymin, xmax, ymax)
-            inter = shp.intersection(tile_box)
-            if not inter.is_empty:
-               tile_geoms.append(inter)
+            # Only process if the feature naturally intersects this tile frame
+            if shp.intersects(tile_box):
+               inter = shp.intersection(tile_box)
+               if not inter.is_empty:
+                  tile_geoms.append(inter)
 
       if not tile_geoms:
          return None

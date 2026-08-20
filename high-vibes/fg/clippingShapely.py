@@ -30,7 +30,7 @@ def write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir: str = "debug_out
       json.dump(fc, fh, ensure_ascii=False, indent=3)
 
 
-def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False) -> Optional[Polygon]:
+def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, unclipped: bool = False) -> Optional[Polygon]:
    # Build the raw zone polygon (refined=False => 5 or 6 vertices), run the
    # same insertion/localize/clip pipeline used for features across all
    # candidate tiles the zone touches, then union the clipped pieces and
@@ -51,6 +51,10 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False) -> O
       coords = coords + [coords[0]]
 
    raw_ring = coords
+
+   if unclipped:
+      return Polygon(raw_ring)
+
    #print(raw_ring)
 
    # 2) run distance5x6 insertion on the raw ring (same routine used for features)
@@ -138,40 +142,9 @@ def _collect_boundary_points(shp) -> List[tuple]:
       return pts
    return pts
 
-def _coerce_to_polygonal(g) -> Optional[Polygon]:
-   if g is None or g.is_empty:
-      return None
-   if g.geom_type in ("Polygon", "MultiPolygon"):
-      return g
-   lines: List[LineString] = []
-   if g.geom_type == "LineString":
-      lines = [g]
-   elif g.geom_type == "MultiLineString":
-      lines = list(g.geoms)
-   elif g.geom_type == "GeometryCollection":
-      for m in getattr(g, "geoms", []) or []:
-         if m.geom_type == "LineString":
-            lines.append(m)
-         elif m.geom_type == "MultiLineString":
-            lines.extend(list(m.geoms))
-   else:
-      return None
-
-   if not lines:
-      return None
-
-   merged = unary_union(lines)
-   polys = list(polygonize(merged))
-   if not polys:
-      return None
-   if len(polys) == 1:
-      return polys[0]
-   return MultiPolygon(polys)
-
 # Assumed available in the module:
 # - get_zone_polygon(dggrs, zone, refined=False, ico=False)
 # - write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
-# - _coerce_to_polygonal(geom) -> returns a polygonal/linear/point geometry or None
 # - _collect_boundary_points(shp) -> Iterable[(x,y)] of original source boundary points
 
 def _entry_exit_indices_for_ring(seq: Sequence[Sequence[float]], orig_set: set) -> List[int]:
@@ -272,8 +245,12 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
    Points and MultiPoint features do not contribute entry/exit indices (an empty list is appended
    to preserve 1:1 alignment but they never contain markers).
    """
-   zone_poly = get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
-   write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
+   zone_poly = None # get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
+   zone_poly_lines = None # get_zone_polygon(dggrs, zone, refined=refined, ico=ico, unclipped=True)
+   #if not zone_poly.is_valid:
+   #   zone_poly = make_valid(zone_poly)
+
+   #write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
 
    out_fc: Dict[str, Any] = {"type": "FeatureCollection", "features": []}
    features_entry_exit_indices: List[Any] = []
@@ -286,16 +263,53 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
       if geom is None:
          continue
 
+      geom_type = geom.get("type")
+
+      if geom_type in ("LineString", "MultiLineString"):
+         if zone_poly_lines is None:
+            zone_poly_lines = get_zone_polygon(dggrs, zone, refined=refined, ico=ico, unclipped=True)
+      else:
+         if zone_poly is None:
+            zone_poly = get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
+            if not zone_poly.is_valid:
+               zone_poly = make_valid(zone_poly)
+
       src_shp = shape(geom)
 
       if not src_shp.is_valid:
          src_shp = make_valid(src_shp)
-      if not zone_poly.is_valid:
-         zone_poly = make_valid(zone_poly)
 
-      clipped = src_shp.intersection(zone_poly)
-      poly_clipped = _coerce_to_polygonal(clipped)
-      if poly_clipped is None:
+      if geom_type in ("LineString", "MultiLineString"):
+         clipped = src_shp.intersection(zone_poly_lines)
+      else:
+         clipped = src_shp.intersection(zone_poly)
+
+      if clipped is None or clipped.is_empty:
+         continue
+
+      # Keep only parts matching the original geometry class, discarding cross-dimension artifacts.
+      if geom_type in ("Polygon", "MultiPolygon"):
+         if clipped.geom_type in ("Polygon", "MultiPolygon"):
+            poly_clipped = clipped
+         elif clipped.geom_type == "GeometryCollection":
+            polys = [g for g in clipped.geoms if g.geom_type in ("Polygon", "MultiPolygon")]
+            poly_clipped = polys[0] if len(polys) == 1 else MultiPolygon(polys) if polys else None
+         else:
+            poly_clipped = None
+
+      elif geom_type in ("LineString", "MultiLineString"):
+         if clipped.geom_type in ("LineString", "MultiLineString"):
+            poly_clipped = clipped
+         elif clipped.geom_type == "GeometryCollection":
+            lines = [g for g in clipped.geoms if g.geom_type in ("LineString", "MultiLineString")]
+            poly_clipped = lines[0] if len(lines) == 1 else MultiLineString(lines) if lines else None
+         else:
+            poly_clipped = None
+
+      else: # Points / MultiPoints
+         poly_clipped = clipped
+
+      if poly_clipped is None or poly_clipped.is_empty:
          continue
 
       out_geom = mapping(poly_clipped)

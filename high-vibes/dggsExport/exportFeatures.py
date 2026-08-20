@@ -127,10 +127,25 @@ def merge_shapely_geometries(
 
    # optional cleanup: single buffer when grid_size == 0, otherwise buffer(grid).buffer(-grid)
    if do_buffer:
-      if grid_size == 0:
-         merged = merged.buffer(0)
-      else:
-         merged = merged.buffer(grid_size).buffer(-grid_size)
+      if merged.geom_type in ("Polygon", "MultiPolygon"):
+         if grid_size == 0:
+            merged = merged.buffer(0)
+         else:
+            merged = merged.buffer(grid_size).buffer(-grid_size)
+
+      elif merged.geom_type in ("LineString", "MultiLineString", "GeometryCollection"):
+         if grid_size > 0:
+            merged = shapely.snap(merged, merged, tolerance=grid_size)
+
+         if merged.geom_type == "GeometryCollection":
+            lines = [g for g in merged.geoms if g.geom_type in ("LineString", "MultiLineString")]
+         elif merged.geom_type == "MultiLineString":
+            lines = list(merged.geoms)
+         else:
+            lines = [merged]
+
+         if lines:
+            merged = lines[0] if len(lines) == 1 else shapely.ops.linemerge(lines)
 
    # return merged Shapely geometry
    return merged
@@ -191,7 +206,7 @@ def _worker_process_package(
       geoms.clear()
 
       if merged_geojson:
-         merged_geojson = unproject_and_fix(projection, extent, merged_geojson, fid, refine_wgs84=None) #1e-2)
+         merged_geojson = unproject_and_fix(projection, extent, merged_geojson, fid, refine_wgs84=None, fix_geom=True) #1e-2)
 
       if merged_geojson is None: continue
 

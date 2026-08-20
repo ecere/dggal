@@ -11,7 +11,7 @@ import json
 import math
 import sys
 
-from shapely.geometry import shape, mapping, Polygon, MultiPolygon
+from shapely.geometry import shape, mapping, Polygon, MultiPolygon, LineString, MultiLineString, box
 from shapely.ops import unary_union
 from shapely.affinity import rotate
 import shapely
@@ -140,8 +140,11 @@ def _insert_segment_exact(a: Tuple[float,float], b: Tuple[float,float],
    seg_debug_store[seg_index] = per_debug
    return out_pts
 
-def _insert_ring_coords(coords: List[Tuple[float,float]], fid: str, part_idx: int) -> Tuple[List[Tuple[float,float]], Dict[int, List[Dict[str,Any]]]]:
+def _insert_coords(coords: List[Tuple[float,float]], fid: str, part_idx: int, is_line: bool = False) -> Tuple[List[Tuple[float,float]], Dict[int, List[Dict[str,Any]]]]:
    seg_debug_store: Dict[int, List[Dict[str,Any]]] = {}
+   if not coords:
+      return [], seg_debug_store
+
    out_coords: List[Tuple[float,float]] = [coords[0]]
    for i in range(len(coords)-1):
       a = coords[i]; b = coords[i+1]
@@ -150,7 +153,8 @@ def _insert_ring_coords(coords: List[Tuple[float,float]], fid: str, part_idx: in
          if out_coords and (abs(out_coords[-1][0]-p[0]) < _TINY and abs(out_coords[-1][1]-p[1]) < _TINY):
             continue
          out_coords.append(p)
-   if out_coords and (out_coords[0] != out_coords[-1]):
+
+   if not is_line and out_coords and (out_coords[0] != out_coords[-1]):
       out_coords.append(out_coords[0])
    return out_coords, seg_debug_store
 
@@ -182,20 +186,21 @@ from typing import List, Tuple, Optional
 def _choose_shifts_prev_vertex(coords: List[Tuple[float, float]],
                                tx: int,
                                ty: int,
-                               fid_for_debug: Optional[str] = None) -> List[float]:
+                               fid_for_debug: Optional[str] = None,
+                               is_line: bool = False) -> List[float]:
     SHIFT = _PERIOD
     EPS_TIE = _EPS_TIE
     cx = tx + 0.5
     cy = ty + 0.5
 
     ring = list(coords)
-    if ring and ring[0] != ring[-1]:
+    if not is_line and ring and ring[0] != ring[-1]:
         ring.append(ring[0])
     n = len(ring)
     if n == 0:
         return []
 
-    closed = (ring[0] == ring[-1])
+    closed = (ring[0] == ring[-1]) if not is_line else False
     m = n - 1 if closed else n  # number of unique vertices
 
     def l1(p, qx, qy):
@@ -229,23 +234,23 @@ def _choose_shifts_prev_vertex(coords: List[Tuple[float, float]],
             anchor = i
 
     # --- conditional uniform-seed shortcut (only when anchor is first and span test) ---
-    try:
-        poly_orig = Polygon(ring)
-    except Exception:
-        poly_orig = None
-    if best_single_shift[anchor] == 0.0 and poly_orig is not None and poly_orig.is_valid and len(poly_orig.interiors) == 0 and poly_orig.area > _AREA_EPS:
-        xs = [p[0] for p in ring[:m]]
-        if xs:
-            if (max(xs) - min(xs)) > 3:
-                seed = best_single_shift[anchor]
-                shifted_coords = [(x + seed, y + seed) for (x, y) in ring]
-                try:
-                    poly_shifted = Polygon(shifted_coords)
-                except Exception:
-                    poly_shifted = None
-                if poly_shifted is not None and poly_shifted.is_valid and len(poly_shifted.interiors) == 0 and poly_shifted.area > _AREA_EPS:
-                    return [float(seed) for _ in range(n)]
-    # ------------------------------------------------------------------------------
+    if not is_line:
+        try:
+            poly_orig = Polygon(ring)
+        except Exception:
+            poly_orig = None
+        if best_single_shift[anchor] == 0.0 and poly_orig is not None and poly_orig.is_valid and len(poly_orig.interiors) == 0 and poly_orig.area > _AREA_EPS:
+            xs = [p[0] for p in ring[:m]]
+            if xs:
+                if (max(xs) - min(xs)) > 3:
+                    seed = best_single_shift[anchor]
+                    shifted_coords = [(x + seed, y + seed) for (x, y) in ring]
+                    try:
+                        poly_shifted = Polygon(shifted_coords)
+                    except Exception:
+                        poly_shifted = None
+                    if poly_shifted is not None and poly_shifted.is_valid and len(poly_shifted.interiors) == 0 and poly_shifted.area > _AREA_EPS:
+                        return [float(seed) for _ in range(n)]
 
     # seed anchor with its best single shift
     shifts[anchor] = best_single_shift[anchor]
@@ -287,7 +292,7 @@ def _choose_shifts_prev_vertex(coords: List[Tuple[float, float]],
         shifts[i] = best_s if best_s is not None else 0.0
 
     # n >= 3 special-case pass (preserve continuity across closure) using Manhattan metrics
-    if n >= 3:
+    if not is_line and n >= 3:
         first_x, first_y = ring[0][0] + shifts[0], ring[0][1] + shifts[0]
         last_idx = n - 1
         last_x, last_y = ring[last_idx][0] + shifts[last_idx], ring[last_idx][1] + shifts[last_idx]
@@ -320,18 +325,78 @@ def _choose_shifts_prev_vertex(coords: List[Tuple[float, float]],
 # ---------------------------
 # Localize ring using chosen shifts
 # ---------------------------
-def _localized_ring_on_the_fly(coords, tx, ty, fid=""):
+def _localized_ring_on_the_fly(coords, tx, ty, fid="", is_line: bool = False):
    ring = list(coords)
-   if ring and ring[0] != ring[-1]:
+   # Only apply ring closure rule for polygon rings
+   if not is_line and ring and ring[0] != ring[-1]:
       ring.append(ring[0])
-   shifts = _choose_shifts_prev_vertex(ring, tx, ty, fid_for_debug=fid)
+   shifts = _choose_shifts_prev_vertex(ring, tx, ty, fid_for_debug=fid, is_line=False) #is_line)
    localized = []
    for i, (x, y) in enumerate(ring):
       s = shifts[i] if i < len(shifts) else 0.0
       localized.append((x + s, y + s))
-   if localized and localized[0] != localized[-1]:
+   if not is_line and localized and localized[0] != localized[-1]:
       localized.append(localized[0])
    return localized, None
+
+def _tile_and_filter_staircase_line(
+    topology_fixed_coords: List[Tuple[float, float]],
+    fid: str,
+    part_idx: int
+) -> List[Dict[str, Any]]:
+    if not topology_fixed_coords or len(topology_fixed_coords) < 2:
+        return []
+
+    candidates = _candidate_tiles_from_vertices(topology_fixed_coords, margin_neighbors=1)
+    pieces: List[Dict[str, Any]] = []
+
+    for tx, ty in candidates:
+        if not (ty == tx or ty == tx + 1):
+            continue
+
+        # Use the standard on-the-fly localization utility directly
+        localized_line, _ = _localized_ring_on_the_fly(
+            coords=topology_fixed_coords,
+            tx=tx,
+            ty=ty,
+            fid=str(fid),
+            is_line=True
+        )
+
+        if not localized_line or len(localized_line) < 2:
+            continue
+
+        shifted_shp = LineString(localized_line)
+
+        if not shifted_shp.is_empty and shifted_shp.is_valid:
+            tile_box = box(tx, ty, tx + 1.0, ty + 1.0)
+            clipped = shifted_shp.intersection(tile_box)
+
+            if clipped is not None and not clipped.is_empty:
+                geom_type = clipped.geom_type
+
+                if geom_type in ("LineString", "MultiLineString"):
+                    pieces.append({
+                        "tile_x": tx,
+                        "tile_y": ty,
+                        "geom": clipped,
+                        "orig_fid": fid,
+                        "part_idx": part_idx
+                    })
+
+                elif geom_type == "GeometryCollection":
+                    line_parts = [g for g in getattr(clipped, "geoms", []) if g.geom_type == "LineString"]
+                    if line_parts:
+                        unified = MultiLineString(line_parts) if len(line_parts) > 1 else line_parts[0]
+                        pieces.append({
+                            "tile_x": tx,
+                            "tile_y": ty,
+                            "geom": unified,
+                            "orig_fid": fid,
+                            "part_idx": part_idx
+                        })
+
+    return pieces
 
 # ---------------------------
 # Tile clipping and assembly (core behavior)
@@ -478,32 +543,21 @@ def _tile_and_filter_staircase_polygon(exterior_coords: List[Tuple[float,float]]
          pieces.append({"tile_x": tx, "tile_y": ty, "geom": geom, "orig_fid": fid, "part_idx": part_idx})
    return pieces
 
-# Wrapper that accepts exterior+holes or a Polygon/MultiPolygon shapely object
-def _tile_and_filter_staircase(exterior_or_poly, holes_coords: Optional[List[List[Tuple[float,float]]]], fid: str, part_idx: int) -> List[Dict[str,Any]]:
-   """
-   Accepts either:
-    - exterior_or_poly: list of exterior coords and holes_coords provided separately, or
-    - exterior_or_poly: a shapely Polygon or MultiPolygon (in which case holes are extracted)
-   For compatibility with the original pipeline we support both call styles.
-   """
-   # If caller passed a shapely Polygon, extract rings
-   if isinstance(exterior_or_poly, Polygon):
-      ext = list(exterior_or_poly.exterior.coords)
-      holes = [list(h.coords) for h in exterior_or_poly.interiors]
-      return _tile_and_filter_staircase_polygon(ext, holes, fid, part_idx)
-   if isinstance(exterior_or_poly, MultiPolygon):
-      pieces: List[Dict[str,Any]] = []
-      for idx, sub in enumerate(getattr(exterior_or_poly, "geoms", []) or []):
-         if isinstance(sub, Polygon):
-            pieces.extend(_tile_and_filter_staircase_polygon(list(sub.exterior.coords),
-                                                            [list(h.coords) for h in sub.interiors],
-                                                            fid, part_idx))
-      return pieces
-   # otherwise assume exterior_or_poly is exterior coords list and holes_coords provided
-   if isinstance(exterior_or_poly, list):
-      return _tile_and_filter_staircase_polygon(exterior_or_poly, holes_coords or [], fid, part_idx)
-   raise ValueError("_tile_and_filter_staircase expects exterior coords list or shapely Polygon/MultiPolygon")
+# Wrapper that accepts exterior+holes, or a Polygon/MultiPolygon/LineString/MultiLineString shapely object
+def _tile_and_filter_staircase(
+    coords: List[Tuple[float, float]],
+    holes_coords: Optional[List[List[Tuple[float, float]]]],
+    fid: str,
+    part_idx: int,
+    is_line: bool = False
+) -> List[Dict[str, Any]]:
+    # Accepts raw coordinate lists and routes them to the correct staircasing logic.
+    if is_line:
+        pieces = _tile_and_filter_staircase_line(coords, fid, part_idx)
+    else:
+        pieces = _tile_and_filter_staircase_polygon(coords, holes_coords or [], fid, part_idx)
 
+    return pieces
 # ---------------------------
 # Validation, repair, staged union, assembly
 # ---------------------------
@@ -535,112 +589,150 @@ def _staged_union_polygons(polys: List[Polygon], fid: str):
       #result = MultiPolygon(polys)
    return result, []
 
-def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str,Any]], fid: str, props: Dict[str,Any]) -> List[Dict[str,Any]]:
-   polys = []
-   for p in all_kept_pieces:
-      g = p["geom"]
-      if isinstance(g, Polygon):
-         polys.append(g)
-      elif isinstance(g, MultiPolygon):
-         for sub in g.geoms:
-            polys.append(sub)
-      else:
-         for sub in getattr(g, "geoms", []) or []:
-            if isinstance(sub, Polygon):
-               polys.append(sub)
-   valid_polys = []
-   invalid_indices = []
-   for i, p in enumerate(polys):
-      if _validate_geom(p):
-         valid_polys.append(p)
-      else:
-         rp = _repair_geom(p)
-         if _validate_geom(rp):
-            valid_polys.append(rp)
-         else:
-            invalid_indices.append(i)
-   merged, skipped = _staged_union_polygons(valid_polys, fid)
-   out_features = []
-   if merged is None:
-      for i, p in enumerate(valid_polys):
-         out_features.append({"type":"Feature","id": f"{fid}_part_{i}","properties": props,"geometry": mapping(p)})
+def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str, Any]], fid: str, props: Dict[str, Any], is_line: bool = False) -> Dict[str, Any]:
+   out_feature = {}
+
+   if is_line:
+      lines = []
+      for p in all_kept_pieces:
+         g = p["geom"]
+         if isinstance(g, LineString):
+            lines.append(g)
+         elif isinstance(g, MultiLineString):
+            for sub in g.geoms:
+               lines.append(sub)
+
+      if lines:
+         from shapely.ops import unary_union
+         merged_lines = unary_union(lines)
+         out_feature = {
+            "type": "Feature",
+            "id": fid,
+            "properties": props,
+            "geometry": mapping(merged_lines)
+         }
+
    else:
-      if isinstance(merged, Polygon):
-         out_features.append({"type":"Feature","id": fid,"properties": props,"geometry": mapping(merged)})
-      elif isinstance(merged, MultiPolygon):
-         out_features.append({"type":"Feature","id": fid,"properties": props,"geometry": mapping(merged)})
-      else:
-         polys2 = []
-         for g in getattr(merged, "geoms", []) or []:
-            if isinstance(g, Polygon):
-               polys2.append(g)
-            elif isinstance(g, MultiPolygon):
-               for sub in g.geoms:
-                  polys2.append(sub)
-         if not polys2:
-            out_features.append({"type":"Feature","id": fid,"properties": props,"geometry": mapping(Polygon())})
-         elif len(polys2) == 1:
-            out_features.append({"type":"Feature","id": fid,"properties": props,"geometry": mapping(polys2[0])})
+      polys = []
+      for p in all_kept_pieces:
+         g = p["geom"]
+         if isinstance(g, Polygon):
+            polys.append(g)
+         elif isinstance(g, MultiPolygon):
+            for sub in g.geoms:
+               polys.append(sub)
          else:
-            out_features.append({"type":"Feature","id": fid,"properties": props,"geometry": mapping(MultiPolygon(polys2))})
-   return out_features
+            for sub in getattr(g, "geoms", []) or []:
+               if isinstance(sub, Polygon):
+                  polys.append(sub)
+
+      valid_polys = []
+      invalid_indices = []
+      for i, p in enumerate(polys):
+         if _validate_geom(p):
+            valid_polys.append(p)
+         else:
+            rp = _repair_geom(p)
+            if _validate_geom(rp):
+               valid_polys.append(rp)
+            else:
+               invalid_indices.append(i)
+
+      merged, skipped = _staged_union_polygons(valid_polys, fid)
+
+      if merged is None:
+         # Fallback to geometry collection or empty polygon if union completely fails
+         out_feature = {
+            "type": "Feature",
+            "id": fid,
+            "properties": props,
+            "geometry": mapping(Polygon())
+         }
+      else:
+         if isinstance(merged, Polygon):
+            out_feature = {"type": "Feature", "id": fid, "properties": props, "geometry": mapping(merged)}
+         elif isinstance(merged, MultiPolygon):
+            out_feature = {"type": "Feature", "id": fid, "properties": props, "geometry": mapping(merged)}
+         else:
+            polys2 = []
+            for g in getattr(merged, "geoms", []) or []:
+               if isinstance(g, Polygon):
+                  polys2.append(g)
+               elif isinstance(g, MultiPolygon):
+                  for sub in g.geoms:
+                     polys2.append(sub)
+
+            if not polys2:
+               out_feature = {"type": "Feature", "id": fid, "properties": props, "geometry": mapping(Polygon())}
+            elif len(polys2) == 1:
+               out_feature = {"type": "Feature", "id": fid, "properties": props, "geometry": mapping(polys2[0])}
+            else:
+               out_feature = {"type": "Feature", "id": fid, "properties": props, "geometry": mapping(MultiPolygon(polys2))}
+
+   return out_feature
 
 # ---------------------------
 # High-level feature processing (preserve original flow)
 # This version expands MultiPolygon into polygon parts and passes exterior+holes to the tileper-part function.
 # ---------------------------
-def fix_feature_5x6_topology(feature: Dict[str,Any]) -> List[Dict[str,Any]]:
+def fix_feature_5x6_topology(feature: Dict[str, Any]) -> Dict[str, Any]:
+   # Takes a single feature dictionary and returns a single, topology-fixed feature dictionary object.
+   out_feature = {}
    geom_json = feature.get("geometry")
-   if geom_json is None:
-      return []
-   shp = shape(geom_json)
-   fid = feature.get("id") or feature.get("properties",{}).get("id") or "0"
-   props = feature.get("properties", {})
-   out_features: List[Dict[str,Any]] = []
 
-   parts = []
-   # parts will be list of tuples: (exterior_coords, [hole_coords...])
-   if shp.geom_type == "Polygon":
-      ext = list(shp.exterior.coords)
-      holes = [list(h.coords) for h in shp.interiors]
-      parts = [(ext, holes)]
-   elif shp.geom_type == "MultiPolygon":
-      parts = []
-      for p in shp.geoms:
-         if isinstance(p, Polygon):
-            ext = list(p.exterior.coords)
-            holes = [list(h.coords) for h in p.interiors]
-            parts.append((ext, holes))
-   else:
-      return []
+   if geom_json is not None:
+      shp = shape(geom_json)
+      fid = feature.get("id") or feature.get("properties", {}).get("id") or "0"
+      geom_type = geom_json.get("type")
 
-   all_kept_pieces: List[Dict[str,Any]] = []
-   for pidx, (ext_ring, hole_rings) in enumerate(parts):
-      inserted_coords, seg_debug = _insert_ring_coords(ext_ring, fid, pidx)
-      pieces = _tile_and_filter_staircase(inserted_coords, hole_rings, fid, pidx)
-      all_kept_pieces.extend(pieces)
+      if geom_type in ["Point", "MultiPoint"]:
+         out_feature = feature
+      else:
+         is_line = ("Line" in geom_type)
+         parts = []
 
-   if not all_kept_pieces:
-      return []
+         if geom_type == "LineString":
+            parts.append((list(shp.coords), []))
+         elif geom_type == "MultiLineString":
+            for p in shp.geoms:
+               parts.append((list(p.coords), []))
+         elif geom_type == "Polygon":
+            parts.append((list(shp.exterior.coords), [list(h.coords) for h in shp.interiors]))
+         elif geom_type == "MultiPolygon":
+            for p in shp.geoms:
+               if isinstance(p, Polygon):
+                  parts.append((list(p.exterior.coords), [list(h.coords) for h in p.interiors]))
 
-   assembled = _assemble_feature_from_pieces(all_kept_pieces, fid, props)
-   return assembled
+         all_kept_pieces = []
+         for pidx, (main_coords, hole_rings) in enumerate(parts):
+            inserted_coords, seg_debug = _insert_coords(main_coords, fid, pidx, is_line=is_line)
+            pieces = _tile_and_filter_staircase(inserted_coords, hole_rings, fid, pidx, is_line = is_line)
+            all_kept_pieces.extend(pieces)
+
+         if all_kept_pieces:
+            # Captures the singular feature dictionary object natively from the assembler
+            out_feature = _assemble_feature_from_pieces(
+               all_kept_pieces, fid, feature.get("properties", {}), is_line=is_line
+            )
+
+   return out_feature
 
 # ---------------------------
 # FeatureCollection processing
 # ---------------------------
-def fix_feature_collection_5x6_topology(gj: Dict[str,Any]) -> Dict[str,Any]:
-   if gj.get("type") != "FeatureCollection":
-      return {"type":"FeatureCollection","features":[]}
-   out_gj = {"type":"FeatureCollection", "features": []}
-   for feat in gj.get("features", []):
-      out = fix_feature_5x6_topology(feat)
-      if out:
-         out_gj["features"].extend(out)
+def fix_feature_collection_5x6_topology(gj: Dict[str, Any]) -> Dict[str, Any]:
+   # Processes an entire FeatureCollection by shifting each singular
+   # feature through the 5x6 topology engine.
+   out_gj = {"type": "FeatureCollection", "features": []}
+
+   if gj.get("type") == "FeatureCollection":
+      for feat in gj.get("features", []):
+         out = fix_feature_5x6_topology(feat)
+
+         if out:
+            out_gj["features"].append(out)
+
    return out_gj
-
-
-
 
 def fix_geojson_file_5x6_topology(input_path: str, output_path: str):
    # Load GeoJSON FeatureCollection from input_path, run the high-level

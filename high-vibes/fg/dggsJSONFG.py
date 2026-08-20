@@ -18,12 +18,14 @@ from .fixWGS84 import *
 
 dggal_ffi = dggal.ffi
 
-def _resolve_point_to_subzone_index(shp, dggrs, root_zone, sz_level, sub_indices,
+class BadNudge(Exception):
+    pass
+
+def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_level, sub_indices,
    centroid_pointd, nudge_factor = 1e-8) -> int:
    cx = centroid_pointd.x
    cy = centroid_pointd.y
    defaultCRS = CRS(0)
-   px = shp.x; py = shp.y
    #dx = cx - px; dy = cy - py
    #if dx > 3:
    #   dx = dx - 5; dy = dy - 5
@@ -202,7 +204,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
          elif shp.geom_type == "LineString":
             coords = list(shp.coords)
             ls, count = _ring_to_dggs_indices(coords, entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-            dggs_place = {"type": "LineString", "coordinates": ring if ring and count >= 2 else None }
+            dggs_place = {"type": "LineString", "coordinates": ls if ls and count >= 2 else None }
 
          elif shp.geom_type == "MultiLineString":
             lines_coords = []
@@ -215,14 +217,14 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
             dggs_place = {"type": "MultiLineString", "coordinates": lines_coords if lines_coords else None}
 
          elif shp.geom_type == "Point":
-            idx = _resolve_point_to_subzone_index(shp, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
+            idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
             dggs_place = {"type": "Point", "coordinates": idx if idx != -1 else None }
 
          elif shp.geom_type == "MultiPoint":
             # MultiPoint -> resolve each point to a subzone index; preserve order
             pts_coords: List[Any] = []
             for p in shp.geoms:
-               idx = _resolve_vertex_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
+               idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
                if idx != -1:
                   pts_coords.append(idx)
             dggs_place = {"type": "MultiPoint", "coordinates": pts_coords if pts_coords else None}
@@ -390,11 +392,11 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
       return None
    return geom
 
-def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None):
+def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None, fix_geom=True):
    if converted:
       converted = unproject_geojson_to_wgs84(converted, projection, extent, refine_wgs84=refine_wgs84)
 
-   if converted:
+   if fix_geom and converted:
       dlon = extent[2] - extent[0]
       if dlon > 180: dlon = dlon - 360
       eps_zone_tile =  abs(dlon) / 20.0 / 100000.0
@@ -442,7 +444,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
    #print("Done calculating centroids.")
 
    top_type = data["type"]
-
+   fix_geom = True # REVIEW: Do we also want to run this for LineStrings?
    if top_type == "FeatureCollection":
       feats = data["features"]
       out_feats: List[Dict[str, Any]] = []
@@ -451,7 +453,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
          props = feat.get("properties", {})
          id = feat.get("id", None)
          converted = convert_geometry_indexed(geom, centroids, id)
-         if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
+         if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
          feature = {
             "type": "Feature",
             "id": id,
@@ -469,7 +471,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
       geom = data["dggsPlace"]
       props = data.get("properties", {})
       converted = convert_geometry_indexed(geom, centroids, id)
-      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
+      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
       feature = {
          "type": "Feature",
          "properties": {
@@ -484,7 +486,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
    else:
       geom = data
       converted = convert_geometry_indexed(geom, centroids, id)
-      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84)
+      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
       result = converted
 
    Instance.delete(centroids)
