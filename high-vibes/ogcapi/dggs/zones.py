@@ -70,18 +70,20 @@ def list_zones(collectionId, dggrsId):
    if store is not None and store.config['dggrs'] == dggrsId:
       dggrs = store.dggrs
 
-      # DGGS level is fixed for now
-      level = ZONE_QUERY_LEVEL
+      # zone-level Query Parameter
+      level_arg = request.args.get("zone-level")
+      level = int(level_arg) if level_arg and level_arg.isdigit() else ZONE_QUERY_LEVEL
 
       # Get zones as TEXT IDs
       zones = store.list_zones_with_data_at_level(level, as_textIDs=True)
 
       # Base href (no ?f=)
       zones_href = f"/collections/{collectionId}/dggs/{dggrsId}/zones"
+      level_suffix = f"&zone-level={level}" if level_arg else ""
 
       # Typed links (explicit representations)
-      zones_href_json = zones_href + "?f=json"
-      zones_href_html = zones_href + "?f=html"
+      zones_href_json = zones_href + "?f=json" + level_suffix
+      zones_href_html = zones_href + "?f=html" + level_suffix
 
       #
       # JSON REPRESENTATION
