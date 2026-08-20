@@ -99,7 +99,7 @@ def dggs_zone_data(collectionId: str, dggrsId: str, zoneId: str):
                   fid = feat.get("id")
                   feat["properties"] = attrs_map.get(fid, {}) or {}
             if not return_dggs_fg:
-               dggs_json = read_dggs_json_fg(dggs_json, refine_wgs84=1e-2)
+               dggs_json = read_dggs_json_fg(dggs_json, refine_wgs84=None) #1e-2)   # This WGS84 refinement here was generating bad geometry
 
    response_headers = None
 
