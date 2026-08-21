@@ -164,17 +164,25 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
       for (x_crs, y_crs) in seg_pts:
          pin.x = x_crs
          pin.y = y_crs
-         proj.inverse(pin, gp, False)
-         lat = float(gp.lat)
-         lon = float(gp.lon)
+         if proj:
+            proj.inverse(pin, gp, False)
+            lat = float(gp.lat)
+            lon = float(gp.lon)
+         else:
+            gp = pin
+            lat = float(gp.x * 180 / Pi)
+            lon = float(gp.y * 180 / Pi)
          if 90 - abs(lat) < 1e-10 and not intersects_extent_deg((lon, lat, lon, lat), zone_extent):
             continue
          out_coords.append((lon, lat))
    last_x, last_y = closed[-1]
    pin.x = last_x
    pin.y = last_y
-   proj.inverse(pin, gp, False)
-   out_coords.append((float(gp.lon), float(gp.lat)))
+   if proj:
+      proj.inverse(pin, gp, False)
+      out_coords.append((float(gp.lon), float(gp.lat)))
+   else:
+      out_coords.append((float(gp.y * 180 / Pi), float(gp.x * 180 / Pi)))
    if out_coords[0] != out_coords[-1]:
       out_coords.append(out_coords[0])
    return out_coords
@@ -191,10 +199,16 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
          exterior = geom["coordinates"][0]
          holes = geom["coordinates"][1:] if len(geom["coordinates"]) > 1 else []
          ext_wgs = _process_ring_crs_to_wgs84(exterior, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+
+         # Prune if exterior ring lacks 3 valid vertices + closure point
+         if not ext_wgs or len(ext_wgs) < 4:
+            return None
+
          holes_wgs = []
          for h in holes:
             hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
-            if hw:
+            # Prune invalid inner hole rings
+            if hw and len(hw) >= 4:
                holes_wgs.append(hw)
          return {"type": "Polygon", "coordinates": [ext_wgs] + holes_wgs}
       if gtype == "MultiPolygon":
@@ -203,13 +217,21 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             ext = poly[0]
             holes = poly[1:] if len(poly) > 1 else []
             ext_wgs = _process_ring_crs_to_wgs84(ext, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+
+            # Skip this sub-polygon component if its shell is invalid
+            if not ext_wgs or len(ext_wgs) < 4:
+               continue
+
             holes_wgs = []
             for h in holes:
                hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
-               if hw:
+               # Prune invalid inner holes inside the multi-component
+               if hw and len(hw) >= 4:
                   holes_wgs.append(hw)
-            if ext_wgs:
-               new_polys.append([ext_wgs] + holes_wgs)
+            new_polys.append([ext_wgs] + holes_wgs)
+
+         if not new_polys:
+            return None
          return {"type": "MultiPolygon", "coordinates": new_polys}
       if gtype == "LineString":
          coords = geom["coordinates"]
@@ -221,12 +243,18 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             for (x_crs, y_crs) in seg_pts:
                pin.x = x_crs
                pin.y = y_crs
-               proj.inverse(pin, gp, False)
-               out_coords.append((float(gp.lon), float(gp.lat)))
+               if proj:
+                  proj.inverse(pin, gp, False)
+                  out_coords.append((float(gp.lon), float(gp.lat)))
+               else:
+                  out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
          pin.x = coords[-1][0]
          pin.y = coords[-1][1]
-         proj.inverse(pin, gp, False)
-         out_coords.append((float(gp.lon), float(gp.lat)))
+         if proj:
+            proj.inverse(pin, gp, False)
+            out_coords.append((float(gp.lon), float(gp.lat)))
+         else:
+            out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
          return {"type": "LineString", "coordinates": out_coords}
       if gtype == "MultiLineString":
          new_lines = []
@@ -239,26 +267,39 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
                for (x_crs, y_crs) in seg_pts:
                   pin.x = x_crs
                   pin.y = y_crs
-                  proj.inverse(pin, gp, False)
-                  out_coords.append((float(gp.lon), float(gp.lat)))
+                  if proj:
+                     proj.inverse(pin, gp, False)
+                     out_coords.append((float(gp.lon), float(gp.lat)))
+                  else:
+                     out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
             pin.x = line[-1][0]
             pin.y = line[-1][1]
-            proj.inverse(pin, gp, False)
-            out_coords.append((float(gp.lon), float(gp.lat)))
+            if proj:
+               proj.inverse(pin, gp, False)
+               out_coords.append((float(gp.lon), float(gp.lat)))
+            else:
+               out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
             new_lines.append(out_coords)
          return {"type": "MultiLineString", "coordinates": new_lines}
       if gtype == "Point":
          pin.x = geom["coordinates"][0]
          pin.y = geom["coordinates"][1]
-         proj.inverse(pin, gp, False)
-         return {"type": "Point", "coordinates": (float(gp.lon), float(gp.lat))}
+         if proj:
+            proj.inverse(pin, gp, False)
+            coords = (float(gp.lon), float(gp.lat))
+         else:
+            coords = (float(pin.y * 180 / Pi), float(pin.x * 180 / Pi))
+         return {"type": "Point", "coordinates": coords }
       if gtype == "MultiPoint":
          pts = []
          for (x_crs, y_crs) in geom["coordinates"]:
             pin.x = x_crs
             pin.y = y_crs
-            proj.inverse(pin, gp, False)
-            pts.append((float(gp.lon), float(gp.lat)))
+            if proj:
+               proj.inverse(pin, gp, False)
+               pts.append((float(gp.lon), float(gp.lat)))
+            else:
+               pts.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
          return {"type": "MultiPoint", "coordinates": pts}
       return geom
 
@@ -271,6 +312,11 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             out["features"].append(dict(feat))
             continue
          new_geom = _process_geom(geom, zone_extent, refine_wgs84=refine_wgs84)
+
+         # Skip feature entirely if the geometry collapsed to None
+         if new_geom is None:
+            continue
+
          new_feat = dict(feat)
          new_feat["geometry"] = new_geom
          out["features"].append(new_feat)
@@ -278,6 +324,8 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
    if typ == "Feature":
       geom = obj["geometry"]
       new_geom = _process_geom(geom, zone_extent, refine_wgs84=refine_wgs84) if geom is not None else None
+
+      # If single feature collapses to None, drop geometry payload cleanly
       out = dict(obj)
       out["geometry"] = new_geom
       return out

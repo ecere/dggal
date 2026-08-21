@@ -32,6 +32,9 @@ except(ImportError):
    from ..fg.dggsJSONFG import write_dggs_json_fg
    from ..fg.wkbc import write_wkb_collection_file, read_wkb_collection_file
 
+def _is_dggrs_5x6(name):
+   return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
+
 # prepare input pipeline (reproj + fix) executed once in parent
 def _prepare_input_pipeline(input_path: str, dggrs_name: str, skip_reproj: bool, skip_fix: bool):
    src = geojson_load(input_path)
@@ -40,8 +43,9 @@ def _prepare_input_pipeline(input_path: str, dggrs_name: str, skip_reproj: bool,
       print("Reprojecting to native CRS of", dggrs_name, "...")
       src = reproject_featurecollection(src, proj)
    if not skip_fix:
-      print("Fixing reprojected features topology...")
-      src = fix_feature_collection_5x6_topology(src)
+      if _is_dggrs_5x6(dggrs_name):
+         print("Fixing reprojected features topology...")
+         src = fix_feature_collection_5x6_topology(src)
    return src
 
 def _initialize_dggal_worker():

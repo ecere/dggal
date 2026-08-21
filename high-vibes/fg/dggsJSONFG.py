@@ -33,9 +33,13 @@ def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_l
    #   dx = dx + 5; dy = dy + 5
    #szCentroid = dggal.Pointd(px + dx * nudge_factor, py + dy * nudge_factor)
 
-   d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
-   szCentroid = move5x6((px, py), sgn(d.x) * nudge_factor, sgn(d.y) * nudge_factor, 1)
-   szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
+   if is5x6:
+      d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
+      szCentroid = move5x6((px, py), sgn(d.x) * nudge_factor, sgn(d.y) * nudge_factor, 1)
+      szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
+   else:
+      dx = sgn(centroid_pointd.x - px) * nudge_factor; dy = sgn(centroid_pointd.y - py) * nudge_factor
+      szCentroid = dggal.Pointd(px + dx, py + dy)
 
    sub_zone = dggrs.getZoneFromCRSCentroid(sz_level, defaultCRS, szCentroid)
    if nullZone == nullZone:
@@ -52,10 +56,15 @@ def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_l
          px, ",", py)
    return idx
 
+def _is_dggrs_5x6(name):
+   return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
+
 def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_indices: Set[int],
                           dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor = 1e-8) -> List[int]:
    out: List[int] = []
    print("Processing ring with ", len(ring_coords), "vertices")
+
+   is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
 
    lastIX = None
    count = 0
@@ -79,10 +88,14 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
       #   dx = dx + 5; dy = dy + 5
       #szCentroid = Pointd(px + dx * nudge_factor, py + dy * nudge_factor)
 
-      d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
-      dx = d.x * nudge_factor; dy = d.y * nudge_factor
-      szCentroid = move5x6((px, py), dx, dy, 1)
-      szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
+      if is5x6:
+         d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
+         dx = d.x * nudge_factor; dy = d.y * nudge_factor
+         szCentroid = move5x6((px, py), dx, dy, 1)
+         szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
+      else:
+         dx = (centroid_pointd.x - px) * nudge_factor; dy = (centroid_pointd.y - py) * nudge_factor
+         szCentroid = dggal.Pointd(px + dx, py + dy)
 
       sub_zone = dggrs.getZoneFromCRSCentroid(sz_level, defaultCRS, szCentroid)
       if nullZone == nullZone:

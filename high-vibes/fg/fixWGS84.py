@@ -226,6 +226,30 @@ def intersects_extent_deg(a: Sequence[float], b: Sequence[float], deg_epsilon: f
         and bxmin < axmax - deg_epsilon
     )
 
+# Filter and accept pieces (handle Polygon, MultiPolygon, GeometryCollection)
+def _accept_polygon_piece(poly, xmin, ymin, xmax, ymax, fid, part_idx):
+   # poly is a shapely Polygon
+
+   if poly.is_empty or poly.area <= _AREA_EPS:
+      return None
+   tol = 1e-12
+
+   #ok = True
+   #for cx, cy in list(poly.exterior.coords):
+   #   if not (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
+   #      ok = False
+   #      break
+   #if not ok: return None
+
+   anyInside = False
+   for cx, cy in list(poly.exterior.coords):
+      if (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
+         anyInside = True
+         #print("Discard piece here")
+         #return None
+   #if not anyInside: return None
+   return {"tile_x": xmin, "tile_y": ymin, "geom": poly, "orig_fid": fid, "part_idx": part_idx}
+
 # ---------- tile-and-clip for a single polygon using wrap_lon_at ----------
 def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
                            holes_coords: List[List[Tuple[float, float]]],
@@ -385,34 +409,10 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
             else:
                final_polys = [sub for sub in result.geoms if sub.geom_type == "Polygon" and not sub.is_empty and sub.area > 0.0]
 
-      # Filter and accept pieces (handle Polygon, MultiPolygon, GeometryCollection)
-      def _accept_polygon_piece(poly):
-         # poly is a shapely Polygon
-
-         if poly.is_empty or poly.area <= _AREA_EPS:
-            return None
-         tol = 1e-12
-
-         #ok = True
-         #for cx, cy in list(poly.exterior.coords):
-         #   if not (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
-         #      ok = False
-         #      break
-         #if not ok: return None
-
-         anyInside = False
-         for cx, cy in list(poly.exterior.coords):
-            if (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
-               anyInside = True
-               #print("Discard piece here")
-               #return None
-         #if not anyInside: return None
-         return {"tile_x": xmin, "tile_y": ymin, "geom": poly, "orig_fid": fid, "part_idx": part_idx}
-
       for g in final_polys:
          # If g is a Polygon, test it directly
          if g.geom_type == "Polygon":
-            piece = _accept_polygon_piece(g)
+            piece = _accept_polygon_piece(g, xmin, ymin, xmax, ymax, fid, part_idx)
             if piece:
                pieces.append(piece)
             continue
@@ -420,7 +420,7 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
          # If g is a MultiPolygon, iterate sub-polygons
          if g.geom_type == "MultiPolygon":
             for sub in g.geoms:
-               piece = _accept_polygon_piece(sub)
+               piece = _accept_polygon_piece(sub, xmin, ymin, xmax, ymax, fid, part_idx)
                if piece:
                   pieces.append(piece)
             continue
@@ -429,7 +429,7 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
          if g.geom_type == "GeometryCollection":
             for sub in g.geoms:
                if sub.geom_type == "Polygon":
-                  piece = _accept_polygon_piece(sub)
+                  piece = _accept_polygon_piece(sub, xmin, ymin, xmax, ymax, fid, part_idx)
                   if piece:
                      pieces.append(piece)
             continue
@@ -669,6 +669,85 @@ def _ensure_output_type(merged, orig_type: str):
 
    return mapping(merged)
 
+def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[float], eps_zone_tile, fid_for_debug = None) -> Optional[Dict[str, Any]]:
+   if geom is None:
+      return None
+
+   orig_type = geom["type"]
+   tile_geoms = []
+
+   if orig_type == "Polygon":
+      ext = geom["coordinates"][0]
+      holes = geom["coordinates"][1:]
+      pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=0)
+      #print("_tile_and_clip returned", len(pieces), "pieces")
+      for p in pieces:
+         tile_geoms.append(p["geom"])
+
+   elif orig_type == "MultiPolygon":
+      for i, poly in enumerate(geom["coordinates"]):
+         ext = poly[0]
+         holes = poly[1:]
+         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=i)
+         for p in pieces:
+            tile_geoms.append(p["geom"])
+   else:
+      shp = shape(geom)
+      for xmin, ymin, xmax, ymax in TILES_4:
+         tile_box = box(xmin, ymin, xmax, ymax)
+         # Only process if the feature naturally intersects this tile frame
+         if shp.intersects(tile_box):
+            inter = shp.intersection(tile_box)
+            if not inter.is_empty:
+               tile_geoms.append(inter)
+
+   if not tile_geoms:
+      return None
+
+   # Disabled unary_union to avoid GEOS errors while geometries are still invalid.
+   # When clipped polygons are consistently valid, re-enable:
+   merged = unary_union(tile_geoms)
+   #merged = shapely.union_all(tile_geoms, grid_size = 1e-9)
+   # merged = tile_geoms
+
+   if orig_type in ("Polygon", "MultiPolygon"):
+      all_kept_pieces = [{"geom": g} for g in tile_geoms]
+      assembled = _assemble_feature_from_pieces(all_kept_pieces, fid_for_debug, props={})
+      if not assembled:
+         if DEBUG:
+            _debug_write_files()
+         return None
+      if len(assembled) == 1:
+         if DEBUG:
+            _debug_write_files()
+         return assembled[0]["geometry"]
+      polys = []
+      for f in assembled:
+         g = f["geometry"]
+         if g is None:
+            continue
+         if g["type"] == "Polygon":
+            polys.append(Polygon(g["coordinates"][0], g["coordinates"][1:]))
+         elif g["type"] == "MultiPolygon":
+            for sub in g["coordinates"]:
+               polys.append(Polygon(sub[0], sub[1:]))
+      if not polys:
+         if DEBUG:
+            _debug_write_files()
+         return None
+      if len(polys) == 1:
+         if DEBUG:
+            _debug_write_files()
+         return mapping(polys[0])
+      if DEBUG:
+         _debug_write_files()
+      return mapping(MultiPolygon(polys))
+
+   # For non-polygon families, coerce merged (list) into GeometryCollection and ensure output type
+   if DEBUG:
+      _debug_write_files()
+   return _ensure_output_type(merged, orig_type)
+
 # ---------- main public function ----------
 def fix_WGS84_geometry(obj: Any, zone_extent: List[float], eps_zone_tile = EPS_ZONE_TILE, fid = None) -> Any:
    # quick dateline check
@@ -692,86 +771,6 @@ def fix_WGS84_geometry(obj: Any, zone_extent: List[float], eps_zone_tile = EPS_Z
 
    #print("Zone extent:", zone_extent)
 
-   def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[float], fid_for_debug = None) -> Optional[Dict[str, Any]]:
-      if geom is None:
-         return None
-
-      orig_type = geom["type"]
-      tile_geoms = []
-
-      if orig_type == "Polygon":
-         ext = geom["coordinates"][0]
-         holes = geom["coordinates"][1:]
-         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=0)
-         #print("_tile_and_clip returned", len(pieces), "pieces")
-         for p in pieces:
-            tile_geoms.append(p["geom"])
-
-      elif orig_type == "MultiPolygon":
-         for i, poly in enumerate(geom["coordinates"]):
-            ext = poly[0]
-            holes = poly[1:]
-            pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=i)
-            for p in pieces:
-               tile_geoms.append(p["geom"])
-      else:
-         shp = shape(geom)
-         for xmin, ymin, xmax, ymax in TILES_4:
-            tile_box = box(xmin, ymin, xmax, ymax)
-            # Only process if the feature naturally intersects this tile frame
-            if shp.intersects(tile_box):
-               inter = shp.intersection(tile_box)
-               if not inter.is_empty:
-                  tile_geoms.append(inter)
-
-      if not tile_geoms:
-         return None
-
-
-      # Disabled unary_union to avoid GEOS errors while geometries are still invalid.
-      # When clipped polygons are consistently valid, re-enable:
-      merged = unary_union(tile_geoms)
-      #merged = shapely.union_all(tile_geoms, grid_size = 1e-9)
-      # merged = tile_geoms
-
-      if orig_type in ("Polygon", "MultiPolygon"):
-         all_kept_pieces = [{"geom": g} for g in tile_geoms]
-         assembled = _assemble_feature_from_pieces(all_kept_pieces, fid_for_debug, props={})
-         if not assembled:
-            if DEBUG:
-               _debug_write_files()
-            return None
-         if len(assembled) == 1:
-            if DEBUG:
-               _debug_write_files()
-            return assembled[0]["geometry"]
-         polys = []
-         for f in assembled:
-            g = f["geometry"]
-            if g is None:
-               continue
-            if g["type"] == "Polygon":
-               polys.append(Polygon(g["coordinates"][0], g["coordinates"][1:]))
-            elif g["type"] == "MultiPolygon":
-               for sub in g["coordinates"]:
-                  polys.append(Polygon(sub[0], sub[1:]))
-         if not polys:
-            if DEBUG:
-               _debug_write_files()
-            return None
-         if len(polys) == 1:
-            if DEBUG:
-               _debug_write_files()
-            return mapping(polys[0])
-         if DEBUG:
-            _debug_write_files()
-         return mapping(MultiPolygon(polys))
-
-      # For non-polygon families, coerce merged (list) into GeometryCollection and ensure output type
-      if DEBUG:
-         _debug_write_files()
-      return _ensure_output_type(merged, orig_type)
-
    # preserve top-level shape
    if obj["type"] == "FeatureCollection":
       out = {"type": "FeatureCollection", "features": []}
@@ -783,7 +782,7 @@ def fix_WGS84_geometry(obj: Any, zone_extent: List[float], eps_zone_tile = EPS_Z
             out["features"].append(new_feat)
             continue
          fid = feat.get("id", str(len(out["features"])))
-         fixed = _process_single_geometry(geom, zone_extent, fid_for_debug=fid)
+         fixed = _process_single_geometry(geom, zone_extent, eps_zone_tile, fid_for_debug=fid)
          new_feat = dict(feat)
          new_feat["geometry"] = fixed
          out["features"].append(new_feat)
@@ -794,9 +793,9 @@ def fix_WGS84_geometry(obj: Any, zone_extent: List[float], eps_zone_tile = EPS_Z
       if geom is None:
          return obj
       fid = obj.get("id", "0")
-      fixed = _process_single_geometry(geom, zone_extent, fid_for_debug=fid)
+      fixed = _process_single_geometry(geom, zone_extent, eps_zone_tile, fid_for_debug=fid)
       out = dict(obj)
       out["geometry"] = fixed
       return out
 
-   return _process_single_geometry(obj, zone_extent, fid_for_debug=fid)
+   return _process_single_geometry(obj, zone_extent, eps_zone_tile, fid_for_debug=fid)

@@ -29,6 +29,8 @@ def write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir: str = "debug_out
    with open(outpath, "w", encoding="utf-8") as fh:
       json.dump(fc, fh, ensure_ascii=False, indent=3)
 
+def _is_dggrs_5x6(name):
+   return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
 
 def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, unclipped: bool = False) -> Optional[Polygon]:
    # Build the raw zone polygon (refined=False => 5 or 6 vertices), run the
@@ -52,10 +54,12 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, uncl
 
    raw_ring = coords
 
-   if unclipped:
+   if unclipped or not _is_dggrs_5x6(type(dggrs).__name__):
       return Polygon(raw_ring)
 
    #print(raw_ring)
+
+   # NOTE: Code below is all specific to 5x6 space
 
    # 2) run distance5x6 insertion on the raw ring (same routine used for features)
 
@@ -98,25 +102,6 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, uncl
 
    # 6) return the merged polygonal geometry (Polygon or MultiPolygon)
    return merged
-
-def get_zone_polygon_before(dggrs, zone, refined: bool = True, ico: bool = False) -> Polygon:
-   if ico:
-      crs = CRS(ogc, 1534)
-   else:
-      crs = CRS(0)
-
-   if refined:
-      verts_container = dggrs.getZoneRefinedCRSVertices(zone, crs)
-   else:
-      verts_container = dggrs.getZoneCRSVertices(zone, crs)
-
-   coords = [[float(v.x), float(v.y)] for v in verts_container]
-   if not coords:
-      return Polygon()
-   if coords[0] != coords[-1]:
-      coords = coords + [coords[0]]
-   return Polygon(coords)
-
 
 def _collect_boundary_points(shp) -> List[tuple]:
    pts: List[tuple] = []
@@ -273,17 +258,14 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
             zone_poly = get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
             if not zone_poly.is_valid:
                zone_poly = make_valid(zone_poly)
+            # write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
 
       src_shp = shape(geom)
 
       if not src_shp.is_valid:
          src_shp = make_valid(src_shp)
 
-      if geom_type in ("LineString", "MultiLineString"):
-         clipped = src_shp.intersection(zone_poly_lines)
-      else:
-         clipped = src_shp.intersection(zone_poly)
-
+      clipped = src_shp.intersection(zone_poly_lines if geom_type in ("LineString", "MultiLineString") else zone_poly)
       if clipped is None or clipped.is_empty:
          continue
 

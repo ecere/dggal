@@ -68,8 +68,8 @@ def reproject_coord_lonlat_to_crs(lon, lat, proj, ico=False):
    # input: lon, lat in degrees (WGS84)
    # output: [x, y] in DGGRS native CRS (float)
    if proj is None:
-      # GNOSISGlobalGrid: identity pass-through (lon, lat)
-      return [float(lon), float(lat)]
+      # GNOSISGlobalGrid: identity pass-through (lat, lon)
+      return [float(lat * Pi / 180), float(lon * Pi / 180)]
    in_gp = make_GeoPoint(lon, lat)
    out_pd = Pointd()
    # forward: WGS84 GeoPoint -> projected Pointd; oddGrid False per contract

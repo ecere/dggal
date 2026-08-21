@@ -220,7 +220,7 @@ def _worker_process_package(
       # serialize to WKB (binary) and store under integer feature id
       result[fid] = _wkb.dumps(merged_shp, hex=False)
 
-   Instance.delete(projection)
+   if projection: Instance.delete(projection)
 
    gc.collect()
    return result
