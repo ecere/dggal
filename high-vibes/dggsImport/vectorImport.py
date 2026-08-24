@@ -224,7 +224,7 @@ def import_vector(input_geojson_path: str,
       print(f"[IMPORT] wrote collection attributes for {len(features)} features", flush=True)
 
    # write WKBC file for workers (WKBC contains geometries and feature ids; properties are not included)
-   tmp_wkbc_path = os.path.join(store.collection_dir, "tmp_input.wkbc")
+   tmp_wkbc_path = os.path.join('/dev/shm' if os.path.exists('/dev/shm') else store.collection_dir, f"tmp_input_{os.getpid()}.wkbc")
    write_wkb_collection_file(src, tmp_wkbc_path)
    print(f"[IMPORT] wrote WKBC to {tmp_wkbc_path}", flush=True)
 
