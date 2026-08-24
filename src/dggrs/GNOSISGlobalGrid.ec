@@ -5,10 +5,24 @@ import "dggrs"
 
 #include <stdio.h>
 
+extern int __builtin_clz(uint x);
+
 enum GGGNeighborType
 {
    north, north2, west, east, south, south2
 };
+
+private static inline int getRowCoalesceShift(uint row, uint level)
+{
+   int numRows = 2 << level;
+   if(row < numRows)
+   {
+      int hr = numRows >> 1;
+      int r = row >= hr ? numRows - 1 - row : row;
+      return r ? Max(0, (int)level - (32 - __builtin_clz(r))) : level;
+   }
+   return 0;
+}
 
 public class GNOSISGlobalGrid : DGGRS
 {
@@ -367,6 +381,60 @@ public class GNOSISGlobalGrid : DGGRS
       return parent.toClassic().getSubZoneCentroids(depth);
    }
 
+   Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
+   {
+      GGGZone rootGGG = (GGGZone)parent;
+      uint64 nSubZones = rootGGG.getSubZonesCount(relativeDepth);
+
+      if(nSubZones < 1LL<<31)
+      {
+         int rLevel = rootGGG.level, sLevel = rLevel + relativeDepth;
+         Array<DGGRSZone> subZones { size = (uint)nSubZones };
+         int nRows = (1 << relativeDepth);
+         GeoExtent rootExtent = rootGGG.extent;
+         Radians rDLat = rootExtent.ur.lat - rootExtent.ll.lat;
+         Radians rDLon = rootExtent.ur.lon - rootExtent.ll.lon;
+         Radians sDLat = rDLat / nRows, sDLon = rDLon / nRows;
+         GeoPoint sampleCentroid { rootExtent.ur.lat - (sDLat / 2), rootExtent.ll.lon + (sDLon / 2) };
+         GGGZone topLeftZone = (GGGZone)getZoneFromWGS84Centroid(sLevel, sampleCentroid);
+         int startRow = topLeftZone.row, startCol = topLeftZone.col;
+         int sRow = startRow, r;
+         int rc = rootGGG.getCoalesceShift();
+         uint i = 0;
+         int totalRowsAtSubLevel = 2 << sLevel;
+         int halfRows = totalRowsAtSubLevel >> 1;
+         int currentSubRC = getRowCoalesceShift(startRow, sLevel);
+         int dist = startRow >= halfRows ? totalRowsAtSubLevel - 1 - startRow : startRow;
+         bool isSouth = (startRow >= halfRows);
+
+         for(r = 0; r < nRows; r++, sRow++)
+         {
+            int sc = currentSubRC - rc;
+            int nCols = nRows >> sc;
+            int sCol = startCol, c;
+            uint ci = 1 << currentSubRC;
+
+            for(c = 0; c < nCols; c++, sCol += ci, i++)
+               subZones[i] = GGGZone { sLevel, sRow, sCol };
+
+            if(!isSouth)
+            {
+               dist++;
+               if(!(dist & (dist - 1))&& currentSubRC)
+                  currentSubRC--;
+            }
+            else
+            {
+               if(!(dist & (dist - 1)))
+                  currentSubRC++;
+               dist--;
+            }
+         }
+         return subZones;
+      }
+      return null;
+   }
+
    void compactZones(Array<DGGRSZone> zones)
    {
       int maxLevel = 0, i, count = zones.count;
@@ -424,34 +492,64 @@ public:
 
    Array<GeoPoint> getSubZoneCentroids(int rDepth)
    {
-      // The same getSubZonesCount() implementation also works with classic key
-      uint64 nSubZones = ((GGGZone)this).getSubZonesCount(rDepth);
+      GGGZone rootGGG = toGGG();
+      uint64 nSubZones = rootGGG.getSubZonesCount(rDepth);
+
       if(nSubZones < 1LL<<31)
       {
-         int level = this.level + rDepth;
-         GeoExtent extent = this.extent;
-         int i = 0;
+         int rLevel = this.level, sLevel = rLevel + rDepth;
          Array<GeoPoint> centroids { size = (uint)nSubZones };
-         Array<GGGZone> subZones { minAllocSize = (uint)nSubZones };
+         int nRows = (1 << rDepth);
+         GeoExtent rootExtent = this.extent;
+         Radians rDLat = rootExtent.ur.lat - rootExtent.ll.lat;
+         Radians rDLon = rootExtent.ur.lon - rootExtent.ll.lon;
+         Radians sDLat = rDLat / nRows, sDLon = rDLon / nRows;
+         GeoPoint sampleCentroid { rootExtent.ur.lat - (sDLat / 2), rootExtent.ll.lon + (sDLon / 2) };
+         GGGZone topLeftZone = (GGGZone)GNOSISGlobalGrid::getZoneFromWGS84Centroid(0, sLevel, sampleCentroid);
+         int startRow = topLeftZone.row;
+         int startCol = topLeftZone.col;
+         int sRow = startRow, r;
+         int rc = getCoalesceShift();
+         uint i = 0;
+         int totalRowsAtSubLevel = 2 << sLevel;
+         int halfRows = totalRowsAtSubLevel >> 1;
+         // Compute starting state variables
+         int currentSubRC = getRowCoalesceShift(startRow, sLevel);
+         int dist = startRow >= halfRows ? totalRowsAtSubLevel - 1 - startRow : startRow;
+         bool isSouth = (startRow >= halfRows);
 
-         // REVIEW: Optimize this
-         listGGGZones(subZones, level, extent, 0);
-
-   #ifdef _DEBUG
-         if(nSubZones != subZones.count)
-            PrintLn("WARNING: mismatched GGG sub-zone count");
-   #endif
-
-         for(i = 0; i < nSubZones && i < subZones.count; i++)
+         for(r = 0; r < nRows; r++, sRow++)
          {
-            const GeoExtent e = subZones[i].toClassic().extent;
-            centroids[i] =
+            int sc = currentSubRC - rc;
+            int nCols = nRows >> sc;
+            int sCol = startCol, c;
+            uint ci = 1 << currentSubRC;
+            Radians diffLong = sDLat * (1LL << sc);
+            for(c = 0; c < nCols; c++, sCol += ci, i++)
+               centroids[i] =
+               {
+                  Pi / 2 - sRow * sDLat - sDLat/2,
+                  sCol * sDLat - Pi  + diffLong / 2
+               };
+
+            // Pure arithmetic tracking of the ripple step function
+            if(!isSouth)
             {
-               ((Radians)e.ll.lat + (Radians)e.ur.lat) / 2,
-               ((Radians)e.ll.lon + (Radians)e.ur.lon) / 2
-            };
+               // North: moving AWAY from the pole. Distance increases.
+               // Coalescing drops by 1 immediately after crossing a power of 2.
+               dist++;
+               if(!(dist & (dist - 1)) && currentSubRC)
+                  currentSubRC--;
+            }
+            else
+            {
+               // South: moving TOWARD the pole. Distance decreases.
+               // Coalescing bumps up by 1 when the current distance is a power of 2.
+               if(!(dist & (dist - 1)))
+                  currentSubRC++;
+               dist--;
+            }
          }
-         delete subZones;
          return centroids;
       }
       return null;
@@ -539,6 +637,20 @@ private:
       return { level, numRows-1-row, col >> coalesce };
    }
 
+   property GeoExtent extent
+   {
+      get
+      {
+         Radians diffLat { Pi / (2 << level) };
+         Radians diffLong = getTileDeltaLon();
+
+         value.ur.lat = Pi / 2 - row * diffLat;
+         value.ll.lat = value.ur.lat - diffLat;
+         value.ll.lon = wrapLon(col * diffLat - Pi); // Col in GGG increases by coalescing shift
+         value.ur.lon = Min((Radians)Pi, (Radians)value.ll.lon + diffLong); // Values over Pi were problematic with wrapLon()
+      }
+   }
+
    Radians ::getDeltaLon(Radians lat1, Radians lat2, int level)
    {
       Radians lat { Abs((lat1 + lat2) / 2 + zoneEpsilon) };
@@ -554,18 +666,7 @@ private:
 
    int getCoalesceShift()
    {
-      uint row = this.row, level = this.level;
-      int numRows = 2 << level;
-      if(row >= 0 && row < numRows)
-      {
-         int hr = numRows >> 1, r = row >= hr ? numRows-1-row : row, coalesce = 0, i;
-         for(i = 0; i < level; i++, r >>= 1)
-            if(!r)
-               coalesce++;
-         return coalesce;
-      }
-      else
-         return 0;
+      return getRowCoalesceShift(row, level);
    }
 
    int OnCompare(GGGZone b)
