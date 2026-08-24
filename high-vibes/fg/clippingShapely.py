@@ -253,14 +253,27 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
       if geom_type in ("LineString", "MultiLineString"):
          if zone_poly_lines is None:
             zone_poly_lines = get_zone_polygon(dggrs, zone, refined=refined, ico=ico, unclipped=True)
+            zone_bounds = zone_poly_lines.bounds
       else:
          if zone_poly is None:
             zone_poly = get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
             if not zone_poly.is_valid:
                zone_poly = make_valid(zone_poly)
+            zone_bounds = zone_poly.bounds
             # write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
 
-      src_shp = shape(geom)
+      src_shp = None
+
+      if geom and "bbox" not in feat:
+         src_shp = shape(geom)
+         feat["bbox"] = src_shp.bounds
+
+      f_minx, f_miny, f_maxx, f_maxy = feat["bbox"]
+      if f_minx > zone_bounds[2] or f_maxx < zone_bounds[0] or f_miny > zone_bounds[3] or f_maxy < zone_bounds[1]:
+         continue
+
+      if not src_shp:
+         src_shp = shape(geom)
 
       if not src_shp.is_valid:
          src_shp = make_valid(src_shp)

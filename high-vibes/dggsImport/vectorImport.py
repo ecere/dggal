@@ -15,6 +15,7 @@ import json
 import gzip
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
+from shapely.geometry import shape
 import ubjson
 
 try:
@@ -222,6 +223,12 @@ def import_vector(input_geojson_path: str,
    if features:
       store.write_collection_attributes(features)
       print(f"[IMPORT] wrote collection attributes for {len(features)} features", flush=True)
+
+   # We should probably add bbox option to WKBC
+   #   for feat in features:
+   #      geom = feat.get("geometry")
+   #      if geom and "bbox" not in feat:
+   #         feat["bbox"] = shape(geom).bounds
 
    # write WKBC file for workers (WKBC contains geometries and feature ids; properties are not included)
    tmp_wkbc_path = os.path.join('/dev/shm' if os.path.exists('/dev/shm') else store.collection_dir, f"tmp_input_{os.getpid()}.wkbc")
