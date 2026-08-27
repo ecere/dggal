@@ -166,23 +166,20 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
          pin.y = y_crs
          if proj:
             proj.inverse(pin, gp, False)
-            lat = float(gp.lat)
-            lon = float(gp.lon)
+            lat, lon = float(gp.lat), float(gp.lon)
          else:
-            gp = pin
-            lat = float(gp.x * 180 / Pi)
-            lon = float(gp.y * 180 / Pi)
+            lat, lon = float(pin.x * 180 / Pi), float(pin.y * 180 / Pi)
+
          if 90 - abs(lat) < 1e-10 and not intersects_extent_deg((lon, lat, lon, lat), zone_extent):
             continue
          out_coords.append((lon, lat))
    last_x, last_y = closed[-1]
-   pin.x = last_x
-   pin.y = last_y
+   pin.x, pin.y = float(last_x), float(last_y)
    if proj:
       proj.inverse(pin, gp, False)
       out_coords.append((float(gp.lon), float(gp.lat)))
    else:
-      out_coords.append((float(gp.y * 180 / Pi), float(gp.x * 180 / Pi)))
+      out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
    if out_coords[0] != out_coords[-1]:
       out_coords.append(out_coords[0])
    return out_coords

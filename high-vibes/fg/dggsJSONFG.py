@@ -42,7 +42,7 @@ def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_l
       szCentroid = dggal.Pointd(px + dx, py + dy)
 
    sub_zone = dggrs.getZoneFromCRSCentroid(sz_level, defaultCRS, szCentroid)
-   if nullZone == nullZone:
+   if sub_zone != nullZone:
       # idx = dggrs.getSubZoneIndex(root_zone, sub_zone)
       # if idx != -1: idx = idx + 1
       idx = sub_indices.get(int(sub_zone), -2) + 1
@@ -62,7 +62,7 @@ def _is_dggrs_5x6(name):
 def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_indices: Set[int],
                           dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor = 1e-8) -> List[int]:
    out: List[int] = []
-   print("Processing ring with ", len(ring_coords), "vertices")
+   # print("Processing ring with ", len(ring_coords), "vertices")
 
    is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
 
@@ -72,11 +72,18 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
    cx = centroid_pointd.x
    cy = centroid_pointd.y
    defaultCRS = CRS(0)
+
+   vertex_pt = dggal.Pointd(0.0, 0.0)
+   szCentroid = dggal.Pointd(0.0, 0.0)
+
+   get_zone = dggrs.getZoneFromCRSCentroid
+   get_index = sub_indices.get
+
    for i, coord in enumerate(ring_coords):
       if i in insert_zero_indices:
          out.append(0)
 
-      px = coord[0]; py = coord[1]
+      px, py = coord
 
       #px = 2.9999999995527866
       #py = 2.500000000894427
@@ -89,19 +96,20 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
       #szCentroid = Pointd(px + dx * nudge_factor, py + dy * nudge_factor)
 
       if is5x6:
-         d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
+         vertex_pt.x, vertex_pt.y = px, py
+         d, *unused = distance5x6(vertex_pt, centroid_pointd)
          dx = d.x * nudge_factor; dy = d.y * nudge_factor
-         szCentroid = move5x6((px, py), dx, dy, 1)
-         szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
+         szc = move5x6((px, py), dx, dy, 1)
+         szCentroid.x, szCentroid.y = szc.x, szc.y
       else:
          dx = (centroid_pointd.x - px) * nudge_factor; dy = (centroid_pointd.y - py) * nudge_factor
-         szCentroid = dggal.Pointd(px + dx, py + dy)
+         szCentroid.x, szCentroid.y = px + dx, py + dy
 
-      sub_zone = dggrs.getZoneFromCRSCentroid(sz_level, defaultCRS, szCentroid)
-      if nullZone == nullZone:
+      sub_zone = get_zone(sz_level, defaultCRS, szCentroid)
+      if sub_zone != nullZone:
          # idx = dggrs.getSubZoneIndex(root_zone, sub_zone)
          # if idx != -1: idx = idx + 1
-         idx = sub_indices.get(int(sub_zone), -2) + 1
+         idx = get_index(int(sub_zone), -2) + 1
       else:
          idx = -1
          print("WARNING: Failed to resolve sub-zone at", szCentroid.x, ",", szCentroid.y)
@@ -124,8 +132,14 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
          count = count + 1
       else:
          pass # TODO: Avoid self-intersection if points get quantized to same sub-zone
-      if i and i % 1000 == 0: print(i, "/", len(ring_coords))
+      # if i and i % 1000 == 0: print(i, "/", len(ring_coords))
    return out, count
+
+_CONFORMS_TO = [
+   "https://www.opengis.net/spec/json-fg-1/0.2/conf/core",
+   "https://www.opengis.net/spec/ogcapi-dggs-1/1.0/conf/data-dggs-jsonfg"
+]
+_LINKS_TEMPLATE = [{"rel": "profile", "href": ""}]
 
 def write_dggs_json_fg(out_fc: Dict[str, Any],
                        features_rings_entry_exit_indices: Dict[str, Any],
@@ -133,21 +147,16 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
                        root_zone,
                        depth: int,
                        profile_uri: str = "https://www.opengis.net/def/profile/ogc/0/jsonfg-dggs"):
-   # strict contract: dggrs.getZoneCRSCentroid(root_zone, CRS(0)) returns Pointd
    centroid_pointd = dggrs.getZoneCRSCentroid(root_zone, CRS(0))
-
    features = out_fc.get("features", []) or []
-   print(f"write_dggs_json_fg: features_in={len(features)}, entry_exits_items={len(features_rings_entry_exit_indices)}")
 
    dggrs_name = dggrs.__class__.__name__
+
+   _LINKS_TEMPLATE[0]["href"] = profile_uri
+
    dggs_obj: Dict[str, Any] = {
-      "conformsTo": [
-         "https://www.opengis.net/spec/json-fg-1/0.2/conf/core",
-         "https://www.opengis.net/spec/ogcapi-dggs-1/1.0/conf/data-dggs-jsonfg"
-      ],
-      "links": [
-         {"rel": "profile", "href": profile_uri}
-      ],
+      "conformsTo": _CONFORMS_TO,
+      "links": _LINKS_TEMPLATE,
       "dggrs": f"[ogc-dggrs:{dggrs_name}]",
       "zoneId": dggrs.getZoneTextID(root_zone),
       "depth": depth,
@@ -158,91 +167,94 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    root_level = dggrs.getZoneLevel(root_zone)
    sz_level = root_level + depth
    nudge_factor = 10.0 / (ref_ratio ** sz_level)
-   print("Selecting nudge_factor =", nudge_factor,
-      "for root zone of level", root_level, "at depth", depth)
 
-   print("Precalculating all sub-zones...")
    sub_zones = dggrs.getSubZones(root_zone, depth)
    sub_count = sub_zones.count
    sub_ptr = ffi.cast("uint64_t *", sub_zones.array)
-   print("Building sub-zone map...")
+
    sub_indices = { int(sub_ptr[i]): i for i in range(sub_count) }
    Instance.delete(sub_zones)
-   print("Quantizing features...")
 
    for fi, feat in enumerate(features):
       fid = feat.get("id")
-      print(f"processing feature {fi} id={fid}")
-
       props = feat.get("properties", {})
-      geom = feat.get("geometry")
-      # strict contract: features_rings_entry_exit_indices[fi] exists and has the correct shape for the geometry
       entry_exit_indices = features_rings_entry_exit_indices[fi]
-      shp = shape(geom) if geom is not None else None
+
+      shp = feat.get("_shapely_geom")
+      if shp is None and feat.get("geometry") is not None:
+         shp = shape(feat["geometry"])
 
       dggs_place = None
       if shp is not None:
-         if shp.geom_type == "Polygon":
+         g_type = shp.geom_type
+
+         if g_type == "Polygon":
             rings = []
-            exterior = list(shp.exterior.coords)
+            exterior = shp.exterior.coords
             exterior_entry_exit_indices = entry_exit_indices[0]
             ring, count = _ring_to_dggs_indices(exterior, exterior_entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-            if ring and count > 3: rings.append(ring)
+            if ring and count > 3:
+               rings.append(ring)
+
             for ri, interior in enumerate(shp.interiors, start=1):
-               coords = list(interior.coords)
+               coords = interior.coords
                ring_entry_exit_indices = entry_exit_indices[ri]
                ring, count = _ring_to_dggs_indices(coords, ring_entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-               if ring and count > 3: rings.append(ring)
+               if ring and count > 3:
+                  rings.append(ring)
+
             dggs_place = {"type": "Polygon", "coordinates": rings if rings else None}
 
-         elif shp.geom_type == "MultiPolygon":
+         elif g_type == "MultiPolygon":
             mcoords = []
-            # strict contract: entry_exit_indices is List[List[List[int]]] (polygons -> rings -> indices)
             for p_index, p in enumerate(shp.geoms):
                poly_rings = []
                polygon_entry_exit_lists = entry_exit_indices[p_index]
-               ext = list(p.exterior.coords)
+
+               ext = p.exterior.coords
                ext_entry_exit_indices = polygon_entry_exit_lists[0]
                ring, count = _ring_to_dggs_indices(ext, ext_entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-               if ring and count > 3: poly_rings.append(ring)
+               if ring and count > 3:
+                  poly_rings.append(ring)
+
                for ri, interior in enumerate(p.interiors, start=1):
-                  coords = list(interior.coords)
+                  coords = interior.coords
                   ring_entry_exit_indices = polygon_entry_exit_lists[ri]
                   ring, count = _ring_to_dggs_indices(coords, ring_entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-                  if ring and count > 3: poly_rings.append(ring)
+                  if ring and count > 3:
+                     poly_rings.append(ring)
                if poly_rings:
                   mcoords.append(poly_rings)
             dggs_place = {"type": "MultiPolygon", "coordinates": mcoords if mcoords else None}
 
-         elif shp.geom_type == "LineString":
-            coords = list(shp.coords)
+         elif g_type == "LineString":
+            coords = shp.coords
             ls, count = _ring_to_dggs_indices(coords, entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
             dggs_place = {"type": "LineString", "coordinates": ls if ls and count >= 2 else None }
 
-         elif shp.geom_type == "MultiLineString":
+         elif g_type == "MultiLineString":
             lines_coords = []
             for li, line in enumerate(shp.geoms):
-               coords = list(line.coords)
+               coords = line.coords
                line_entry_exit = entry_exit_indices[li]
                ls, count = _ring_to_dggs_indices(coords, set(line_entry_exit), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
                if ls and count >= 2:
                   lines_coords.append(ls)
             dggs_place = {"type": "MultiLineString", "coordinates": lines_coords if lines_coords else None}
 
-         elif shp.geom_type == "Point":
+         elif g_type == "Point":
             idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
             dggs_place = {"type": "Point", "coordinates": idx if idx != -1 else None }
 
-         elif shp.geom_type == "MultiPoint":
-            # MultiPoint -> resolve each point to a subzone index; preserve order
-            pts_coords: List[Any] = []
+         elif g_type == "MultiPoint":
+            pts_coords = []
             for p in shp.geoms:
                idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
                if idx != -1:
                   pts_coords.append(idx)
             dggs_place = {"type": "MultiPoint", "coordinates": pts_coords if pts_coords else None}
 
-      out_feature: Dict[str, Any] = {
+      dggs_obj["features"].append({
          "type": "Feature",
          "id": fid,
          "properties": props if props else {},
@@ -250,11 +262,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
          "place": None,
          "time": None,
          "dggsPlace": dggs_place
-      }
-      dggs_obj["features"].append(out_feature)
-      print(f"processed feature {fi} id={fid}")
-
-   print(f"write_dggs_json_fg: finished features={len(dggs_obj['features'])}")
+      })
 
    return dggs_obj
 

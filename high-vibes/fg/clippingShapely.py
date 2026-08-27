@@ -262,10 +262,12 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
             zone_bounds = zone_poly.bounds
             # write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
 
-      src_shp = None
+      src_shp = feat.get("_shapely_geom")
 
       if geom and "bbox" not in feat:
-         src_shp = shape(geom)
+         if src_shp is None:
+            src_shp = shape(geom)
+            feat["_shapely_geom"] = src_shp
          feat["bbox"] = src_shp.bounds
 
       f_minx, f_miny, f_maxx, f_maxy = feat["bbox"]
@@ -274,6 +276,7 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
 
       if not src_shp:
          src_shp = shape(geom)
+         feat["_shapely_geom"] = src_shp
 
       if not src_shp.is_valid:
          src_shp = make_valid(src_shp)
@@ -308,7 +311,13 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
          continue
 
       out_geom = mapping(poly_clipped)
-      out_fc["features"].append({"type": "Feature", "id": fid, "properties": props, "geometry": out_geom})
+      out_fc["features"].append({
+          "type": "Feature",
+          "id": fid,
+          "properties": props,
+          "geometry": out_geom,
+          "_shapely_geom": poly_clipped
+      })
 
       # original boundary points are considered "inside"
       orig_pts = _collect_boundary_points(src_shp)

@@ -15,8 +15,12 @@ import json
 import gzip
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Any, Dict, List, Optional
+import shapely
 from shapely.geometry import shape
 import ubjson
+
+# Persistent process-local cache for the single global dataset
+_WORKER_CACHE = None
 
 try:
    from dggsStore.store import DGGSDataStore
@@ -90,43 +94,94 @@ def _vector_package_worker(wkbc_path: str,
 
    return gz
 
-# build blobs in parallel for a batch of zones
-def _build_vector_blobs_processes(
-   store_worker_config: dict,
-   wkbc_path: str,
-   dggrs,
-   zones: List,
-   depth: int,
-   max_workers: int = 16
-) -> Dict[int, bytes]:
-   if not zones:
-      return {}
-   workers = min(max_workers, max(1, len(zones)))
-   blobs: Dict[int, bytes] = {}
-   with ProcessPoolExecutor(max_workers=workers, initializer=_initialize_dggal_worker) as ex:
-      futures = {}
-      for z in zones:
-         fut = ex.submit(_vector_package_worker, wkbc_path, int(z), store_worker_config, dggrs.__class__.__name__, depth)
-         futures[fut] = z
-      for fut in as_completed(futures):
-         zone = futures[fut]
-         res = fut.result()
-         if not res:
-            print(f"[BUILD] zone={dggrs.getZoneTextID(zone)} returned empty, skipping", flush=True)
-            continue
-         # store the raw gzip'ed blob bytes directly
-         blobs[int(zone)] = res
-         print(f"[BUILD] zone={dggrs.getZoneTextID(zone)} blob_ready", flush=True)
-   return blobs
-
-# coordinator: process a batch of root zones and write to store (precompressed)
-def _process_batch_vector(store, wkbc_path: str, dggrs, base_zone, batch_zones: List, base_ancestors: List,
-   depth: int, max_workers: int = 16) -> int:
-   if not batch_zones:
-      print("[BATCH] empty batch, skipping", flush=True)
+# build blobs in parallel for a batch of base zones
+def _build_vector_blobs_processes(store,                         # Pass store directly
+                                  ancestors_lookup: dict,         # Pass ancestors lookup directly
+                                  store_worker_config: dict,
+                                  wkbc_path: str,
+                                  dggrs,
+                                  base_zones_list: List,
+                                  depth: int,
+                                  max_root_level: int,
+                                  max_workers: int = 16,
+                                  executor=None) -> int:          # Now returns total_written count
+   parent_pid = os.getpid()
+   if not base_zones_list:
       return 0
 
-   print(f"[BATCH] processing batch base_zone={dggrs.getZoneTextID(base_zone)} roots={len(batch_zones)}", flush=True)
+   total_written = 0                                              # Counter tracked inline here
+
+   if max_workers == 1 or executor is None:
+      for bz in base_zones_list:
+         bz_text = dggrs.getZoneTextID(bz)
+
+         bz_id, root_blobs = _base_zone_package_worker(
+            wkbc_path, int(bz), store_worker_config, dggrs.__class__.__name__, depth, max_root_level
+         )
+         if root_blobs:
+            base_zone = DGGRSZone(bz_id)
+            base_ancestors = ancestors_lookup[bz_id]
+            entries = {int(DGGRSZone(r_id)): blob_bytes for r_id, blob_bytes in root_blobs.items()}
+
+            print(f"[BATCH] Writing {len(entries)} child roots to store for base_zone={dggrs.getZoneTextID(base_zone)}", flush=True)
+            store.write_zone_batch(base_zone=base_zone, entries=entries, base_ancestor_list=base_ancestors, precompressed=True)
+            total_written += len(entries)
+      return total_written
+
+   futures = {}
+
+   for bz in base_zones_list:
+      bz_text = dggrs.getZoneTextID(bz)
+
+      fut = executor.submit(
+         _base_zone_package_worker, wkbc_path, int(bz), store_worker_config, dggrs.__class__.__name__, depth, max_root_level
+      )
+      futures[fut] = bz
+
+   for fut in as_completed(futures):
+      bz = futures[fut]
+      bz_text = dggrs.getZoneTextID(bz)
+      bz_id, root_blobs = fut.result()
+      if not root_blobs:
+         continue
+
+      base_zone = DGGRSZone(bz_id)
+      base_ancestors = ancestors_lookup[bz_id]
+
+      entries: Dict[int, bytes] = {}
+      for r_id, blob_bytes in root_entries_map.items() if 'root_entries_map' in locals() else root_blobs.items():
+         entries[int(DGGRSZone(r_id))] = blob_bytes
+
+      print(f"[BATCH] Writing {len(entries)} child roots to store for base_zone={dggrs.getZoneTextID(base_zone)}", flush=True)
+      store.write_zone_batch(
+         base_zone=base_zone,
+         entries=entries,
+         base_ancestor_list=base_ancestors,
+         precompressed=True
+      )
+      total_written += len(entries)
+      print(f"[BATCH] Write complete for base_zone={dggrs.getZoneTextID(base_zone)}", flush=True)
+
+      # Explicitly clear variables from coordinator memory space to allow instant GC
+      del root_blobs, entries
+      # =====================================================================
+
+   print(f"[COORDINATOR {parent_pid}] Finished processing batch of base zones.", flush=True)
+   return total_written
+
+def _process_batch_vector(store,
+                          wkbc_path: str,
+                          dggrs,
+                          base_zones_batch: List[Tuple[Any, List]],
+                          depth: int,
+                          max_root_level: int,
+                          max_workers: int = 16,
+                          executor=None) -> int:
+   if not base_zones_batch:
+      print("[BATCH] Empty base zone batch, skipping", flush=True)
+      return 0
+
+   print(f"[BATCH] Processing batch containing {len(base_zones_batch)} intersecting base zones", flush=True)
 
    worker_config = {
       "_data_root": store.data_root,
@@ -134,37 +189,92 @@ def _process_batch_vector(store, wkbc_path: str, dggrs, base_zone, batch_zones: 
       "collection_config": store.config
    }
 
-   entries_map = _build_vector_blobs_processes(
+   just_zones = [bz for bz, ancestors in base_zones_batch]
+   ancestors_lookup = {int(bz): ancestors for bz, ancestors in base_zones_batch}
+
+   # Modified signature: passes store and ancestors_lookup down so writes execute on-the-fly
+   total_written = _build_vector_blobs_processes(
+      store=store,
+      ancestors_lookup=ancestors_lookup,
       store_worker_config=worker_config,
       wkbc_path=wkbc_path,
       dggrs=dggrs,
-      zones=batch_zones,
+      base_zones_list=just_zones,
       depth=depth,
-      max_workers=max_workers
+      max_root_level=max_root_level,
+      max_workers=max_workers,
+      executor=executor
    )
 
-   if not entries_map:
-      print("[BATCH] no entries produced for this batch, skipping write", flush=True)
+   if not total_written:
+      print("[BATCH] No entries produced for any base zones in this batch, skipping database writes", flush=True)
       return 0
 
-   # Build entries according to the store contract:
-   # entries is a mapping DGGRSZone -> gzip'ed DGGS-UBJSON-FG blob (bytes)
-   entries: Dict[int, bytes] = {}   # int are DGGRSZone
-   for zid, blob in entries_map.items():
-      zone = DGGRSZone(int(zid))
-      entries[int(zone)] = blob
+   return total_written
 
-   print(f"[BATCH] writing {len(entries)} entries to store for base_zone={dggrs.getZoneTextID(base_zone)}", flush=True)
-   store.write_zone_batch(
-      base_zone=base_zone,
-      entries=entries,
-      base_ancestor_list=base_ancestors,
-      precompressed=True
-   )
-   print(f"[BATCH] write complete for base_zone={dggrs.getZoneTextID(base_zone)} wrote={len(entries)}", flush=True)
-   return len(entries)
+def _base_zone_package_worker(wkbc_path: str,
+                              base_zone_id: int,
+                              worker_config: dict,
+                              dggrs_name: str,
+                              depth: int,
+                              max_root_level: int) -> Tuple[int, Dict[int, bytes]]:
+   worker_pid = os.getpid()
+   print(f"[WORKER {worker_pid}] Task started for base_zone_id={base_zone_id}.", flush=True)
 
-# top-level import_vector (keeps CLI signature unchanged elsewhere)
+   store = DGGSDataStore(worker_config["_data_root"], worker_config["collection"], config=worker_config["collection_config"])
+   dggrs = store.dggrs
+   base_zone = DGGRSZone(base_zone_id)
+
+   global _WORKER_CACHE
+   if _WORKER_CACHE is None:
+      print(f"[WORKER {worker_pid}] Cache miss in process {worker_pid}. Reading and materializing WKBC once...", flush=True)
+      # 1. READ RAW WORK CHUNK ONCE
+      src_fc = read_wkb_collection_file(wkbc_path)
+
+      features = src_fc.get("features", []) or []
+      for feat in features:
+         geom_dict = feat.get("geometry")
+         if geom_dict and "_shapely_geom" not in feat:
+            shp = shape(geom_dict)
+            # shapely.prepare(shp)
+            feat["_shapely_geom"] = shp
+
+      _WORKER_CACHE = src_fc
+   else:
+      src_fc = _WORKER_CACHE
+
+   local_blobs: Dict[int, bytes] = {}
+
+   # Walk the sub-grid roots in pure local memory within this single process context
+   roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=False)
+   for zone in roots_iter:
+      root_zone = DGGRSZone(zone)
+
+      # CALLS YOUR EXACT UNTOUCHED CLIPPING PASS
+      # If your internal logic uses feat.get("_shapely_geom"), it skips conversion entirely!
+
+      #print(f"[WORKER {worker_pid}] Executing native clip_featurecollection_to_zone math...", flush=True)
+      out_fc, indices = clip_featurecollection_to_zone(src_fc, dggrs, root_zone, refined=False)
+      feat_list = out_fc.get("features", []) or []
+      if not feat_list:
+         continue
+
+      #print(f"[WORKER {worker_pid}] Compiling features into DGGS-JSON-FG schema structures...", flush=True)
+      dggs_obj = write_dggs_json_fg(out_fc, indices, dggrs, root_zone, depth)
+
+      #print(f"[WORKER {worker_pid}] Serializing payload to binary UBJSON...", flush=True)
+      ubbuf = io.BytesIO()
+      ubjson.dump(dggs_obj, ubbuf)
+
+      #print(f"[WORKER {worker_pid}] Gzipping binary stream payload...", flush=True)
+      gz = gzip.compress(ubbuf.getvalue(), compresslevel=9)
+
+      #print(f"[WORKER {worker_pid}] Task successfully complete for zone_id={int(zone)}.", flush=True)
+      local_blobs[int(zone)] = gz
+
+   print(f"[WORKER {worker_pid}] Task complete for base_zone_id={base_zone_id}. Packed Blobs={len(local_blobs)}", flush=True)
+   return base_zone_id, local_blobs
+
 def import_vector(input_geojson_path: str,
                   collection_id: str,
                   dggrs_name: str,
@@ -198,7 +308,7 @@ def import_vector(input_geojson_path: str,
       "dggrs": dggrs_name, "maxRefinementLevel": data_level, "depth": depth,
       "groupSize": groupSize, "title": collection_id, "description": collection_id, "version": "1.0"
    }
-   dggrs_uri = f"[ogc-dggrs:{dggrs_name}]"
+   # dggrs_uri = f"[ogc-dggrs:{dggrs_name}]"
 
    base = os.path.join(data_root, collection_id)
    os.makedirs(base, exist_ok=True)
@@ -220,15 +330,42 @@ def import_vector(input_geojson_path: str,
 
    # write collection-level attributes (features list) into store.attributes.sqlite
    features = src.get("features", []) or []
+
+   fc_min_lat, fc_min_lon = float('inf'), float('inf')
+   fc_max_lat, fc_max_lon = float('-inf'), float('-inf')
+
    if features:
       store.write_collection_attributes(features)
       print(f"[IMPORT] wrote collection attributes for {len(features)} features", flush=True)
 
-   # We should probably add bbox option to WKBC
-   #   for feat in features:
-   #      geom = feat.get("geometry")
-   #      if geom and "bbox" not in feat:
-   #         feat["bbox"] = shape(geom).bounds
+      for feat in features:
+         geom = feat.get("geometry")
+         if geom and "bbox" not in feat:
+            g_type = geom.get("type")
+            coords = geom.get("coordinates", [])
+            if g_type == "Point":
+               feat["bbox"] = [coords[0], coords[1], coords[0], coords[1]]
+            elif g_type in ("LineString", "MultiPoint"):
+               lats = [p[0] for p in coords]
+               lons = [p[1] for p in coords]
+               feat["bbox"] = [min(lats), min(lons), max(lats), max(lons)]
+            elif g_type in ("Polygon", "MultiLineString"):
+               pts = [p for ring in coords for p in ring]
+               lats = [p[0] for p in pts]
+               lons = [p[1] for p in pts]
+               feat["bbox"] = [min(lats), min(lons), max(lats), max(lons)]
+            else:
+               feat["bbox"] = shape(geom).bounds
+
+         if "bbox" in feat:
+            fb = feat["bbox"]
+            if fb[0] < fc_min_lat: fc_min_lat = fb[0]
+            if fb[1] < fc_min_lon: fc_min_lon = fb[1]
+            if fb[2] > fc_max_lat: fc_max_lat = fb[2]
+            if fb[3] > fc_max_lon: fc_max_lon = fb[3]
+
+   src["bbox"] = [fc_min_lat, fc_min_lon, fc_max_lat, fc_max_lon]
+   print(f"[IMPORT] Calculated unified FeatureCollection bbox: {src['bbox']}", flush=True)
 
    # write WKBC file for workers (WKBC contains geometries and feature ids; properties are not included)
    tmp_wkbc_path = os.path.join('/dev/shm' if os.path.exists('/dev/shm') else store.collection_dir, f"tmp_input_{os.getpid()}.wkbc")
@@ -238,57 +375,63 @@ def import_vector(input_geojson_path: str,
    pkg_index = 0
    total_written = 0
 
-   for root_level in range(deepest_root_level, -1, -1):
-      base_level = store._base_level_for_root(root_level)
-      up_to = False
-      for base_zone, base_ancestors in store.iter_bases(base_level, up_to=up_to):
-         pkg_index += 1
-         base_text = dggrs.getZoneTextID(base_zone)
-         print(f"[LEVEL {root_level}] #{pkg_index}: base_zone={base_text}", flush=True)
+   with ProcessPoolExecutor(max_workers=max_workers, initializer=_initialize_dggal_worker, max_tasks_per_child=None) as executor:
+      for root_level in range(deepest_root_level, -1, -1):
+         base_level = store._base_level_for_root(root_level)
+         up_to = False
 
-         base_level = dggrs.getZoneLevel(base_zone)
-         package_group_levels = store.group0Size if base_level == 0 else store.groupSize
-         package_max = base_level + package_group_levels - 1
-         max_root_level = root_level
-         if base_level > max_root_level:
-            print(f"[SKIP] package base {base_text} (base_level={base_level}) deeper than target {max_root_level}", flush=True)
-            continue
+         base_zones_batch: List[Tuple[Any, List]] = []
+         skipped_count = 0
+         processed_count = 0
 
-         roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=up_to)
-
-         batch_num = 0
-         batch_zones: List = []
-         for zone in roots_iter:
-            root_level = dggrs.getZoneLevel(zone)
-            if data_level - root_level < 0:
-               print(f"[IMPORT] skipping root {dggrs.getZoneTextID(zone)} because data_level < root_level", flush=True)
+         for base_zone, base_ancestors in store.iter_bases(base_level, up_to=up_to):
+            current_base_level = dggrs.getZoneLevel(base_zone)
+            if current_base_level > root_level:
                continue
-            batch_zones.append(zone)
-            if len(batch_zones) >= batch_size:
-               batch_num += 1
-               print(f"[LEVEL {root_level}] #{pkg_index} BATCH {batch_num}: handling {len(batch_zones)} roots", flush=True)
+
+            bz_extent = CRSExtent()
+            dggrs.getZoneCRSExtent(base_zone, CRS(0), bz_extent)
+
+            bz_min_lat = bz_extent.tl.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.br.x
+            bz_max_lat = bz_extent.br.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.tl.x
+            bz_min_lon = bz_extent.tl.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.br.y
+            bz_max_lon = bz_extent.br.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.tl.y
+
+            bz_text = dggrs.getZoneTextID(base_zone)
+            # print(f"   [EVAL {bz_text}] Zone Extent: Min_Lat={bz_min_lat:.6f}, Max_Lat={bz_max_lat:.6f} | Min_Lon={bz_min_lon:.6f}, Max_Lon={bz_max_lon:.6f}", flush=True)
+
+            if (bz_min_lat > src["bbox"][2] or bz_max_lat < src["bbox"][0] or
+                bz_min_lon > src["bbox"][3] or bz_max_lon < src["bbox"][1]):
+
+               skipped_count += 1
+               continue
+
+            processed_count += 1
+            base_zones_batch.append((base_zone, base_ancestors))
+
+            if len(base_zones_batch) >= batch_size:
+               pkg_index += 1
                written = _process_batch_vector(
-                  store, tmp_wkbc_path, dggrs, base_zone, batch_zones, base_ancestors,
-                  depth, max_workers=max_workers
+                  store, tmp_wkbc_path, dggrs, base_zones_batch,
+                  depth, root_level, max_workers=max_workers, executor=executor
                )
                total_written += written
-               batch_zones = []
+               base_zones_batch = []
 
-         if batch_zones:
-            batch_num += 1
-            print(f"[LEVEL {root_level}] #{pkg_index} BATCH {batch_num}: handling {len(batch_zones)} roots", flush=True)
+         if base_zones_batch:
+            pkg_index += 1
             written = _process_batch_vector(
-               store, tmp_wkbc_path, dggrs, base_zone, batch_zones, base_ancestors,
-               depth, max_workers=max_workers
+               store, tmp_wkbc_path, dggrs, base_zones_batch,
+               depth, root_level, max_workers=max_workers, executor=executor
             )
             total_written += written
-            batch_zones = []
+            base_zones_batch = []
 
-         print(f"[LEVEL {root_level}] #{pkg_index} complete; total_written so far={total_written}", flush=True)
+         print(f"[LEVEL {root_level}] Kept={processed_count}, Pruned/Skipped={skipped_count}, Total Written={total_written}", flush=True)
 
    # cleanup temporary WKBC
    if os.path.exists(tmp_wkbc_path):
       os.remove(tmp_wkbc_path)
 
-   print(f"[IMPORT] complete; total written={total_written}", flush=True)
+   print(f"[IMPORT] complete; total written spatial data packets={total_written}", flush=True)
    return 0
