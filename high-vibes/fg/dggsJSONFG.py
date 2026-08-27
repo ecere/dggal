@@ -22,7 +22,7 @@ class BadNudge(Exception):
     pass
 
 def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_level, sub_indices,
-   centroid_pointd, nudge_factor = 1e-8) -> int:
+   centroid_pointd, is5x6: bool = False, nudge_factor = 1e-8) -> int:
    cx = centroid_pointd.x
    cy = centroid_pointd.y
    defaultCRS = CRS(0)
@@ -166,6 +166,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    ref_ratio = dggrs.getRefinementRatio()
    root_level = dggrs.getZoneLevel(root_zone)
    sz_level = root_level + depth
+   is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
    nudge_factor = 10.0 / (ref_ratio ** sz_level)
 
    sub_zones = dggrs.getSubZones(root_zone, depth)
@@ -243,13 +244,13 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
             dggs_place = {"type": "MultiLineString", "coordinates": lines_coords if lines_coords else None}
 
          elif g_type == "Point":
-            idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
+            idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, nudge_factor)
             dggs_place = {"type": "Point", "coordinates": idx if idx != -1 else None }
 
          elif g_type == "MultiPoint":
             pts_coords = []
             for p in shp.geoms:
-               idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
+               idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, nudge_factor)
                if idx != -1:
                   pts_coords.append(idx)
             dggs_place = {"type": "MultiPoint", "coordinates": pts_coords if pts_coords else None}

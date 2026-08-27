@@ -70,6 +70,7 @@ def _interpolate_between_5x6(a: Tuple[float, float], b: Tuple[float, float], div
    # note: this returns points that lie strictly between a and b; callers decide whether to include endpoints
    return out
 
+# REVIEW: This function was only intended for 5x6 space
 def _insert_intermediate_points_crs_segment(p: Tuple[float, float], n: Tuple[float, float],
    refine_wgs84 = None) -> List[Tuple[float, float]]:
 
@@ -157,10 +158,14 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
       closed.append(closed[0])
    out_coords: List[Tuple[float, float]] = []
    L = len(closed) - 1
+
+   is5x6 = proj and (isinstance(proj, IVEAProjection) or isinstance(proj, ISEAProjection) or isinstance(proj, RTEAProjection))
+
    for i in range(L):
       p = closed[i]
       n = closed[i + 1]
-      seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
+      seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84) if is5x6 else [p]
+
       for (x_crs, y_crs) in seg_pts:
          pin.x = x_crs
          pin.y = y_crs
@@ -187,6 +192,8 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
 def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refine_wgs84=None) -> Dict[str, Any]:
    pin = Pointd()
    gp = GeoPoint()
+
+   is5x6 = proj and (isinstance(proj, IVEAProjection) or isinstance(proj, ISEAProjection) or isinstance(proj, RTEAProjection))
 
    def _process_geom(geom: Dict[str, Any], zone_extent, refine_wgs84 = None) -> Dict[str, Any]:
       gtype = geom["type"]
@@ -236,7 +243,7 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
          for i in range(len(coords) - 1):
             p = coords[i]
             n = coords[i + 1]
-            seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
+            seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84) if is5x6 else [p]
             for (x_crs, y_crs) in seg_pts:
                pin.x = x_crs
                pin.y = y_crs
@@ -260,7 +267,7 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             for i in range(len(line) - 1):
                p = line[i]
                n = line[i + 1]
-               seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84)
+               seg_pts = _insert_intermediate_points_crs_segment(p, n, refine_wgs84=refine_wgs84) if is5x6 else [p]
                for (x_crs, y_crs) in seg_pts:
                   pin.x = x_crs
                   pin.y = y_crs
