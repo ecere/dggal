@@ -1,6 +1,7 @@
 from dggal import *
 from .distance import distance5x6, move5x6
 from typing import Any, Dict, List, Tuple, Sequence
+import math
 
 _DEFAULT_SUBDIV = 50 #300
 
@@ -151,15 +152,76 @@ def intersects_extent_deg(a: Sequence[float], b: Sequence[float], deg_epsilon: f
         and bxmin < axmax - deg_epsilon
     )
 
+def _snap_polar_vertex(lon: float, lat: float, sz_dlon: float, polar_cap_limit: float) -> Optional[Tuple[float, float]]:
+   # Standalone top-level helper to evaluate and snap a vertex to polar boundaries.
+   norm_lon = lon if lon <= 180.0 else lon - 360.0
+
+   quad_idx = int((norm_lon + 180.0) // 90.0)
+   if quad_idx < 0: quad_idx = 0
+   if quad_idx > 3: quad_idx = 3
+
+   quad_left = -180.0 + (quad_idx * 90.0)
+   quad_right = quad_left + 90.0
+
+   # 1. Absolute Polar Cap Baseline Expansion
+   if lat < 0 and (90.0 + lat < polar_cap_limit):
+      return quad_left, -90.0
+   elif lat > 0 and (90.0 - lat < polar_cap_limit):
+      return quad_left, 90.0
+
+   # 2. Parent Root Zone Vertical Edge Snapping Pass (CLZ Bit-Length Optimization)
+   rad_lat = lat * Pi / 180.0
+   cos_factor = max(1e-10, math.cos(rad_lat))
+   v = int(math.ceil(1.0 / cos_factor))
+
+   # find next power of 2, applying required * 2 adjustment factor
+   coalesce_mult = (1 << (v - 1).bit_length()) * 2 if v > 1 else 2
+
+   row_dlon = sz_dlon * coalesce_mult
+   snap_window = row_dlon * 0.51
+
+   # Direct check against the absolute 180 antimeridian line boundary limits
+   if abs(abs(norm_lon) - 180.0) <= snap_window or abs(abs(lon) - 180.0) <= snap_window:
+      left_match = (abs(quad_left) == 180.0)
+      right_match = (abs(quad_right) == 180.0)
+   else:
+      left_match = abs(norm_lon - quad_left) <= snap_window or abs(norm_lon - (quad_left + 360.0)) <= snap_window
+      right_match = abs(norm_lon - quad_right) <= snap_window or abs(norm_lon - (quad_right - 360.0)) <= snap_window
+
+   if left_match:
+      return quad_left, lat
+   elif right_match:
+      return quad_right, lat
+
+   return None
+
+
+def _expand_polar_cap_vertices(out_coords: List[Tuple[float, float]], start_lon: float, snap_lat: float) -> None:
+   # Generates a fixed set of intermediate vertices along the polar cap boundary.
+   # Injects: Start, +4, +20, Midpoint (+45), End - 20, End - 4, and End.
+   offsets = [0.0, 4.0, 20.0, 45.0, 70.0, 86.0, 90.0]
+
+   for offset in offsets:
+      out_coords.append((start_lon + offset, snap_lat))
+
+
 def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, zone_extent,
-   pin: Pointd, gp: GeoPoint, refine_wgs84=None) -> List[Tuple[float, float]]:
+   pin: Pointd, gp: GeoPoint, root_level: int = 5, subzone_level: int = 16,
+   is_polar_root: bool = False, refine_wgs84=None) -> List[Tuple[float, float]]:
+
    closed = list(ring_crs)
-   if closed[0] != closed[-1]:
+   if len(closed) > 0 and closed[0] != closed[-1]:
       closed.append(closed[0])
    out_coords: List[Tuple[float, float]] = []
    L = len(closed) - 1
 
    is5x6 = proj and (isinstance(proj, IVEAProjection) or isinstance(proj, ISEAProjection) or isinstance(proj, RTEAProjection))
+   v_count = 0
+
+   s_level = subzone_level
+   sDLat = 90.0 / (2 ** s_level)
+   polar_cap_limit = sDLat * 1.01
+   sz_dlon = 90.0 / (2 ** s_level)
 
    for i in range(L):
       p = closed[i]
@@ -177,19 +239,46 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
 
          if 90 - abs(lat) < 1e-10 and not intersects_extent_deg((lon, lat, lon, lat), zone_extent):
             continue
+
+         if is_polar_root:
+            snapped = _snap_polar_vertex(lon, lat, sz_dlon, polar_cap_limit)
+            if snapped:
+               lon, snap_lat = snapped
+               if snap_lat in (-90.0, 90.0):
+                  _expand_polar_cap_vertices(out_coords, lon, snap_lat)
+                  continue
+               lat = snap_lat
+
          out_coords.append((lon, lat))
-   last_x, last_y = closed[-1]
-   pin.x, pin.y = float(last_x), float(last_y)
-   if proj:
-      proj.inverse(pin, gp, False)
-      out_coords.append((float(gp.lon), float(gp.lat)))
-   else:
-      out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
-   if out_coords[0] != out_coords[-1]:
-      out_coords.append(out_coords[0])
+         v_count += 1
+
+   if len(closed) > 0:
+      last_x, last_y = closed[-1]
+      pin.x, pin.y = float(last_x), float(last_y)
+      if proj:
+         proj.inverse(pin, gp, False)
+         final_lon, final_lat = float(gp.lon), float(gp.lat)
+      else:
+         final_lon, final_lat = float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)
+
+      if is_polar_root:
+         snapped = _snap_polar_vertex(final_lon, final_lat, sz_dlon, polar_cap_limit)
+         if snapped:
+            final_lon, snap_lat = snapped
+            if snap_lat in (-90.0, 90.0):
+               _expand_polar_cap_vertices(out_coords, final_lon, snap_lat)
+            else:
+               final_lat = snap_lat
+               out_coords.append((final_lon, final_lat))
+         else:
+            out_coords.append((final_lon, final_lat))
+      else:
+         out_coords.append((final_lon, final_lat))
+
    return out_coords
 
-def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refine_wgs84=None) -> Dict[str, Any]:
+def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refine_wgs84=None,
+                               root_level: int = None, subzone_level: int = None, is_polar_root: bool = False) -> Dict[str, Any]:
    pin = Pointd()
    gp = GeoPoint()
 
@@ -202,7 +291,9 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             raise InvalidPolygonGeometry
          exterior = geom["coordinates"][0]
          holes = geom["coordinates"][1:] if len(geom["coordinates"]) > 1 else []
-         ext_wgs = _process_ring_crs_to_wgs84(exterior, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+         ext_wgs = _process_ring_crs_to_wgs84(exterior, proj, zone_extent, pin, gp,
+                                              root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root,
+                                              refine_wgs84=refine_wgs84)
 
          # Prune if exterior ring lacks 3 valid vertices + closure point
          if not ext_wgs or len(ext_wgs) < 4:
@@ -210,7 +301,9 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
 
          holes_wgs = []
          for h in holes:
-            hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+            hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp,
+                                            root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root,
+                                            refine_wgs84=refine_wgs84)
             # Prune invalid inner hole rings
             if hw and len(hw) >= 4:
                holes_wgs.append(hw)
@@ -220,7 +313,10 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
          for poly in geom["coordinates"]:
             ext = poly[0]
             holes = poly[1:] if len(poly) > 1 else []
-            ext_wgs = _process_ring_crs_to_wgs84(ext, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+
+            ext_wgs = _process_ring_crs_to_wgs84(ext, proj, zone_extent, pin, gp,
+                                                 root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root,
+                                                 refine_wgs84=refine_wgs84)
 
             # Skip this sub-polygon component if its shell is invalid
             if not ext_wgs or len(ext_wgs) < 4:
@@ -228,7 +324,9 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
 
             holes_wgs = []
             for h in holes:
-               hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp, refine_wgs84=refine_wgs84)
+               hw = _process_ring_crs_to_wgs84(h, proj, zone_extent, pin, gp,
+                                               root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root,
+                                               refine_wgs84=refine_wgs84)
                # Prune invalid inner holes inside the multi-component
                if hw and len(hw) >= 4:
                   holes_wgs.append(hw)

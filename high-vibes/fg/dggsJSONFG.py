@@ -414,9 +414,13 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
       return None
    return geom
 
-def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None, fix_geom=True):
+def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None, fix_geom=True,
+                      root_level: int = None, subzone_level: int = None, is_polar_root: bool = False):
    if converted:
-      converted = unproject_geojson_to_wgs84(converted, projection, extent, refine_wgs84=refine_wgs84)
+      converted = unproject_geojson_to_wgs84(
+         converted, projection, extent, refine_wgs84=refine_wgs84,
+         root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+      )
 
    if fix_geom and converted:
       dlon = extent[2] - extent[0]
@@ -449,13 +453,21 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
 
    root_zone = dggrs.getZoneFromTextID(zone_text)
 
+   root_level = int(dggrs.getZoneLevel(root_zone))
+   subzone_level = root_level + depth
+   is_polar_root = False
+
    if unproject:
       ge = GeoExtent()
       projection = instantiate_projection_for_dggrs_name(dggrs_id)
       dggrs.getZoneWGS84Extent(root_zone, ge)
       extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
+      # For GNOSIS Global Grid, pass a flag identifying zones touching a pole:
+      if not projection and (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7):
+         is_polar_root = True
    else:
       projection = None
+      extent = None
 
    # centroids: List[GeoPoint] = dggrs.getSubZoneWGS84Centroids(root_zone, depth)
    centroids: List[Pointd] = dggrs.getSubZoneCRSCentroids(root_zone, CRS(0), depth)
@@ -475,7 +487,11 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
          props = feat.get("properties", {})
          id = feat.get("id", None)
          converted = convert_geometry_indexed(geom, centroids, id)
-         if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
+         if unproject:
+            converted = unproject_and_fix(
+               projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
+               root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+            )
          feature = {
             "type": "Feature",
             "id": id,
@@ -493,7 +509,11 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
       geom = data["dggsPlace"]
       props = data.get("properties", {})
       converted = convert_geometry_indexed(geom, centroids, id)
-      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
+      if unproject:
+         converted = unproject_and_fix(
+            projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
+            root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+         )
       feature = {
          "type": "Feature",
          "properties": {
@@ -508,7 +528,11 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
    else:
       geom = data
       converted = convert_geometry_indexed(geom, centroids, id)
-      if unproject: converted = unproject_and_fix(projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom)
+      if unproject:
+         converted = unproject_and_fix(
+            projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
+            root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+         )
       result = converted
 
    Instance.delete(centroids)

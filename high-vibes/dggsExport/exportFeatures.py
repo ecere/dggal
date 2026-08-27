@@ -14,6 +14,9 @@ import traceback
 import shapely
 from shapely import wkb as _wkb
 from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
+import math
+from functools import partial
+import numpy as np
 
 try:
    from ogcapi.utils import pretty_json
@@ -101,6 +104,20 @@ def combine_geojson_geometries(geoms: List[Optional[Dict[str, Any]]]) -> Optiona
    # fallback: if nothing matched, return None
    return None
 
+def _snap_coordinates_vectorized(coords: np.ndarray, sz_dlon: float) -> np.ndarray:
+   # Fast vectorized snap function for coordinate arrays
+   x = coords[:, 0]
+
+   # Check standard quadrant boundaries (-180, -90, 0, 90, 180)
+   mask_180 = np.abs(np.abs(x) - 180.0) <= sz_dlon
+   coords[mask_180, 0] = np.where(x[mask_180] >= 0, 180.0, -180.0)
+
+   coords[np.abs(x - -90.0) <= sz_dlon, 0] = -90.0
+   coords[np.abs(x - 0.0) <= sz_dlon, 0] = 0.0
+   coords[np.abs(x - 90.0) <= sz_dlon, 0] = 90.0
+
+   return coords
+
 # merge_shapely_geometries: merge iterable of Shapely geometries and return a single Shapely geometry
 # - strict contract: geoms is an iterable of Shapely geometry objects (caller responsibility)
 # - do_buffer defaults to False
@@ -109,7 +126,9 @@ def merge_shapely_geometries(
    geoms: Iterable[Any],
    *,
    do_buffer: bool = False,
-   grid_size: float = 1e-10
+   grid_size: float = 1e-10,
+   subzone_level: int = 16,
+   ggg_snap: bool = False
 ) -> Optional[Any]:
    # convert iterable to list (caller must supply valid Shapely geometries)
    geom_list = list(geoms)
@@ -147,6 +166,11 @@ def merge_shapely_geometries(
          if lines:
             merged = lines[0] if len(lines) == 1 else shapely.ops.linemerge(lines)
 
+   if merged and ggg_snap and merged.geom_type in ("Polygon", "MultiPolygon"):
+      sz_dlon = 90.0 / (2 ** subzone_level)
+
+      # Use functools.partial to bind the parameter cleanly without nested functions
+      merged = shapely.transform(merged, partial(_snap_coordinates_vectorized, sz_dlon=sz_dlon))
    # return merged Shapely geometry
    return merged
 
@@ -194,9 +218,14 @@ def _worker_process_package(
 
    # merge per-feature and serialize to WKB; worker does NOT run final buffer cleanup
    projection = instantiate_projection_for_dggrs_name(store.config['dggrs'])
+   ggg_snap = False if projection else True
    ge = GeoExtent()
    store.dggrs.getZoneWGS84Extent(base_zone_id, ge)
    extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
+
+   subzone_level = target_level
+   # does this bounding box touches the literal geodetic pole limits?
+   is_polar_root = (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7)
 
    result: Dict[int, bytes] = {}
    for fid, geoms in features.items():
@@ -206,7 +235,10 @@ def _worker_process_package(
       geoms.clear()
 
       if merged_geojson:
-         merged_geojson = unproject_and_fix(projection, extent, merged_geojson, fid, refine_wgs84=None, fix_geom=True) #1e-2)
+         merged_geojson = unproject_and_fix(
+            projection, extent, merged_geojson, fid, refine_wgs84=None, fix_geom=True,
+            root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+         ) #1e-2)
 
       if merged_geojson is None: continue
 
@@ -214,7 +246,7 @@ def _worker_process_package(
       if shp is None: continue
 
       # merge shapely geometries (worker-level union across parts), no buffer cleanup here
-      merged_shp = merge_shapely_geometries([shp], do_buffer=False, grid_size=grid_size)
+      merged_shp = merge_shapely_geometries([shp], do_buffer=False, grid_size=grid_size, ggg_snap=ggg_snap)
       if merged_shp is None: continue
 
       # serialize to WKB (binary) and store under integer feature id
@@ -224,6 +256,103 @@ def _worker_process_package(
 
    gc.collect()
    return result
+
+# Helper to process an individual coordinate ring and add intermediate polar points
+def _process_polar_ring(coords: list, offsets: list) -> list:
+   if not coords:
+      return coords
+
+   new_coords = []
+   L = len(coords)
+
+   for i in range(L):
+      p = coords[i]
+      new_coords.append(p)
+
+      if i < L - 1:
+         n = coords[i + 1]
+         # Verify both endpoints are locked onto the exact same polar baseline
+         if p in (-90.0, 90.0) and n == p:
+            lon_start, lat = p, p
+            lon_end = n
+
+            delta = lon_end - lon_start
+            midpoint_dist = abs(delta) / 2.0
+            direction = 1.0 if delta >= 0 else -1.0
+
+            # Step forward from the starting node
+            for offset in offsets:
+               if offset < midpoint_dist:
+                  new_coords.append((lon_start + (offset * direction), lat))
+
+            # Step backward from the ending node
+            for offset in reversed(offsets):
+               if offset < midpoint_dist:
+                  new_coords.append((lon_end - (offset * direction), lat))
+
+   return new_coords
+
+
+# Helper to process an individual coordinate ring and add intermediate polar points
+def _process_polar_ring(coords: list, offsets: list) -> list:
+   if not coords:
+      return coords
+
+   new_coords = []
+   L = len(coords)
+
+   for i in range(L):
+      p = coords[i]
+      new_coords.append(p)
+
+      if i < L - 1:
+         n = coords[i + 1]
+         # Verify both endpoints are locked onto the exact same polar latitude baseline
+         if p[1] in (-90.0, 90.0) and n[1] == p[1]:
+            lon_start = p[0]
+            lat = p[1]
+            lon_end = n[0]
+
+            delta = lon_end - lon_start
+            midpoint_dist = abs(delta) / 2.0
+            direction = 1.0 if delta >= 0 else -1.0
+
+            # Step forward from the starting node
+            for offset in offsets:
+               if offset < midpoint_dist:
+                  new_coords.append((lon_start + (offset * direction), lat))
+
+            # Step backward from the ending node
+            for offset in reversed(offsets):
+               if offset < midpoint_dist:
+                  new_coords.append((lon_end - (offset * direction), lat))
+
+   return new_coords
+
+
+# Traverses a Shapely geometry and injects extra structural vertices near polar nodes
+def _inject_polar_densification_points(geom: shapely.geometry.base.BaseGeometry) -> shapely.geometry.base.BaseGeometry:
+   if geom is None or geom.is_empty:
+      return geom
+
+   # Single array containing all required directional border offsets
+   offsets = [1.0, 2.0, 4.0, 20.0]
+
+   if isinstance(geom, shapely.geometry.Polygon):
+      exterior = _process_polar_ring(list(geom.exterior.coords), offsets)
+      interiors = [_process_polar_ring(list(hole.coords), offsets) for hole in geom.interiors]
+      return shapely.geometry.Polygon(exterior, interiors)
+
+   elif isinstance(geom, shapely.geometry.MultiPolygon):
+      new_polys = []
+      for poly in geom.geoms:
+         exterior = _process_polar_ring(list(poly.exterior.coords), offsets)
+         interiors = [_process_polar_ring(list(hole.coords), offsets) for hole in poly.interiors]
+         new_polys.append(shapely.geometry.Polygon(exterior, interiors))
+      return shapely.geometry.MultiPolygon(new_polys)
+
+   return geom
+
 
 # orchestrator: receives list of worker results (each Dict[int, bytes]),
 # aggregates WKBs per feature id, rehydrates to Shapely, calls merge_shapely_geometries(do_buffer=True),
@@ -242,6 +371,8 @@ def orchestrator_finalize(
             agg[fid] = []
          agg[fid].append(wkb_bytes)
 
+   ggg_snap = False if projection else True
+
    # merge per-feature across workers, perform final buffer cleanup, convert to GeoJSON
    final_geoms: Dict[int, dict] = {}
    #extent = [-180,-90,180,90]
@@ -249,7 +380,15 @@ def orchestrator_finalize(
       # rehydrate all WKBs to Shapely geometries
       shps = [_wkb.loads(b) for b in wkb_list]
       # merge across workers and perform final cleanup (do_buffer=True)
-      merged = merge_shapely_geometries(shps, do_buffer=True, grid_size=grid_size)
+      merged = merge_shapely_geometries(shps, do_buffer=True, grid_size=grid_size, ggg_snap = ggg_snap)
+
+      if merged and not merged.is_empty:
+         merged = shapely.ops.orient(merged, sign=1.0)
+
+      # Inject the extra polar points right after all buffering/fixing actions finish
+      if merged:
+         merged = _inject_polar_densification_points(merged)
+
       geojson = mapping(merged) if merged else None
       # REVIEW: It would be ideal to unproject at the end, but it currently runs into topology issues
       #if geojson:

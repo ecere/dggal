@@ -18,7 +18,7 @@ from shapely.geometry import (
    mapping,
    shape
 )
-from shapely.ops import unary_union, linemerge
+from shapely.ops import unary_union, linemerge, orient
 from shapely.validation import explain_validity
 import shapely
 
@@ -717,20 +717,16 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
          if DEBUG:
             _debug_write_files()
          return None
-      if len(assembled) == 1:
-         if DEBUG:
-            _debug_write_files()
-         return assembled[0]["geometry"]
       polys = []
       for f in assembled:
          g = f["geometry"]
          if g is None:
             continue
          if g["type"] == "Polygon":
-            polys.append(Polygon(g["coordinates"][0], g["coordinates"][1:]))
+            polys.append(orient(Polygon(g["coordinates"][0], g["coordinates"][1:]), sign=1.0))
          elif g["type"] == "MultiPolygon":
             for sub in g["coordinates"]:
-               polys.append(Polygon(sub[0], sub[1:]))
+               polys.append(orient(Polygon(sub[0], sub[1:]), sign=1.0))
       if not polys:
          if DEBUG:
             _debug_write_files()
