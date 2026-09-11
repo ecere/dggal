@@ -11,6 +11,10 @@ import "RI9R"
 #include <stdio.h>
 
 static define POW_EPSILON = 0.1;
+static define tinyOffset = 2E-11;     // This tiny offset is used in getBaseRefinedVertices()
+                                      // We are now keeping this offset to invoke move5x6Vertex(),
+                                      // but that function now zeroes such a tiny offset for
+                                      // its output.
 
 // These DGGRSs have the topology of Goldberg polyhedra class I and II with m = 3^k
 
@@ -633,7 +637,9 @@ public class RhombicIcosahedral3H : DGGRS
 
                            //if(oddGrid)
                            {
-                              if(((double)point.lon - (double)centroid.lon) < -95)
+                              if(((double)point.lon - (double)centroid.lon) < -265)
+                                 point.lon += 360; // REVIEW: This fixed top right-corner of *EA3H A8-0-C (level 1, 3...)
+                              else if(((double)point.lon - (double)centroid.lon) < -95)
                                  point.lon += 180;
                               else if(((double)point.lon - (double)centroid.lon) > 95)
                                  point.lon -= 180;
@@ -656,7 +662,9 @@ public class RhombicIcosahedral3H : DGGRS
 
                            //if(oddGrid)
                            {
-                              if(((double)point.lon - (double)centroid.lon) < -95)
+                              if(((double)point.lon - (double)centroid.lon) < -265)
+                                 point.lon += 360; // REVIEW: This fixed bottom right-corner of *EA3H A5-0-D (level 1, 3...)
+                              else if(((double)point.lon - (double)centroid.lon) < -95)
                                  point.lon += 180;
                               else if(((double)point.lon - (double)centroid.lon) > 95)
                                  point.lon -= 180;
@@ -2055,8 +2063,8 @@ private:
                }
                else
                {
-                  move5x6Vertex(vertices[numPoints++], tl,-2E-11, d/3);
-                  move5x6Vertex(vertices[numPoints++], tl,2E-11, d/3);
+                  move5x6Vertex(vertices[numPoints++], tl,-tinyOffset, d/3);
+                  move5x6Vertex(vertices[numPoints++], tl,tinyOffset, d/3);
                }
 
                move5x6Vertex(vertices[numPoints++], tl, d/3, d/3);
@@ -2069,8 +2077,8 @@ private:
                }
                else
                {
-                  move5x6Vertex(vertices[numPoints++], tl, d/3,2E-11);
-                  move5x6Vertex(vertices[numPoints++], tl, d/3,-2E-11);
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,tinyOffset);
+                  move5x6Vertex(vertices[numPoints++], tl, d/3,-tinyOffset);
                }
             }
             break;
@@ -2079,16 +2087,18 @@ private:
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl,    d,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl,    d,  d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2*d/3,2E-11);
-            move5x6Vertex(vertices[numPoints++], tl,  d/3,2E-11);
+            move5x6Vertex(vertices[numPoints++], tl,2*d/3,tinyOffset);
+            move5x6Vertex(vertices[numPoints++], tl,  d/3,tinyOffset);
             break;
          case 3:  // Odd level -- type D
-            move5x6Vertex(vertices[numPoints++], tl,2E-11,2*d/3);
+            move5x6Vertex(vertices[numPoints++], tl,tinyOffset,2*d/3);
+
             move5x6Vertex(vertices[numPoints++], tl,  d/3,    d);
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,    d);
             move5x6Vertex(vertices[numPoints++], tl,2*d/3,2*d/3);
             move5x6Vertex(vertices[numPoints++], tl, d/3,   d/3);
-            move5x6Vertex(vertices[numPoints++], tl,2E-11,   d/3);
+            move5x6Vertex(vertices[numPoints++], tl,tinyOffset,   d/3);
+
             break;
          default:
             result = false;

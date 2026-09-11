@@ -915,7 +915,6 @@ void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd 
    int n = (count + 2) * nDivisions;
    Array<Pointd> points { minAllocSize = n };
    int i;
-   // double r = 1.0 / nDivisions;
    double e = 1E-11;
 
    // REVIEW: This logic is likely not as correct as crosses5x6Interruption() and rotate5x6Offset()
@@ -932,14 +931,15 @@ void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd 
       bool nTopLeftOfP = (next.x < p.x - e && p.x - next.x < 3) || next.x - p.x > 3;
       bool nBottomRightOfP = (next.y > p.y && next.y - p.y < 3) || p.y - next.y > 3;
       bool nBottomLeftOfP = (next.y < p.y - e && p.y - next.y < 3) || next.y - p.y > 3;
-      bool atTopDentCrossingRight    = cpx2 != cpx1 && p.x > p.y && nTopRightOfP;
-      bool atTopDentCrossingLeft     = cpy2 != cpy1 && p.x > p.y && nTopLeftOfP;
-      bool atBottomDentCrossingLeft  = cpx2 != cpx1 && p.y > p.x + 1 && nBottomLeftOfP;
-      bool atBottomDentCrossingRight = cpy2 != cpy1 && p.y > p.x + 1 && nBottomRightOfP;
-      bool nextAtTopDentCrossingRight    = cnx2 != cnx1 && next.x > next.y && nTopLeftOfP;
-      bool nextAtTopDentCrossingLeft     = cny2 != cny1 && next.x > next.y && nTopRightOfP;
-      bool nextAtBottomDentCrossingLeft  = cnx2 != cnx1 && next.y > next.x + 1 && nBottomRightOfP;
-      bool nextAtBottomDentCrossingRight = cny2 != cny1 && next.y > next.x + 1 && nBottomLeftOfP;
+      bool atTopDentCrossingRight    = cpx2 != cpx1 && p.x > p.y && nTopRightOfP && (cpx1 != cnx1);
+      bool atTopDentCrossingLeft     = cpy2 != cpy1 && p.x > p.y && nTopLeftOfP  && (cpy1 != cny1);
+      bool atBottomDentCrossingLeft  = cpx2 != cpx1 && p.y > p.x + 1 && nBottomLeftOfP && (cpx1 != cnx1);
+      bool atBottomDentCrossingRight = cpy2 != cpy1 && p.y > p.x + 1 && nBottomRightOfP && (cpy1 != cny1);
+      bool nextAtTopDentCrossingRight    = cnx2 != cnx1 && next.x > next.y && nTopLeftOfP  && (cpx1 != cnx1);
+      bool nextAtTopDentCrossingLeft     = cny2 != cny1 && next.x > next.y && nTopRightOfP && (cpy1 != cny1);
+      bool nextAtBottomDentCrossingLeft  = cnx2 != cnx1 && next.y > next.x + 1 && nBottomRightOfP && (cpx1 != cnx1);
+      bool nextAtBottomDentCrossingRight = cny2 != cny1 && next.y > next.x + 1 && nBottomLeftOfP  && (cpy1 != cny1);
+
       int cpx, cpy, cnx, cny;
       // int k;
       double dx = (next.x - p.x), dy = (next.y - p.y);
@@ -959,17 +959,9 @@ void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd 
          continue;
       }
 
-      //if(i != 0) continue;
-      //if(i != 1) continue;
-      //if(i != 2) continue;
-      //if(i != 3) continue;
-      //if(i != 4) continue;
-      //if(i != 5) continue;
-
       if(fabs(dx) < 1E-11 && fabs(dy) < 1E-11 && wrap) continue;
 
       // Cross already for cases where crossing does not happen mid-edge
-
       if(wrap)
       {
          if(atTopDentCrossingRight)
@@ -1141,101 +1133,6 @@ void ::addIntermediatePointsNoAlloc(Pointd * points, uint * count, const Pointd 
       }
 
       addIntermediatePoints(points, p, next, nDivisions, interrupted ? pi1 : null, interrupted ? pi2 : null, wrap);
-
-      #if 0
-
-      points.Add(p);
-
-      /*
-      if(i == 1) continue;
-      if(i == 2) continue;
-      if(i == 3) continue;
-      if(i == 4) continue;
-      if(i == 0) continue;
-      */
-
-      if(wrap) // Clarify this boolean parameter -- is actual refining only happening when wrap is true?
-      {
-         int startPoint = points.count - 1, startK = 0;
-         // dx *= r, dy *= r;
-
-         double stepBack = 1E-5;
-
-         double x = points[startPoint].x, y = points[startPoint].y;
-         if((fabs(x - 0.5) < 1E-9 && fabs(y - 0/*.5*/) < 1E-9) ||
-            (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
-            (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
-            (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9))
-            points.Add({ x - dx * stepBack, y - dy * stepBack });
-
-         for(k = 1; k <= nDivisions - 1; k++)
-         {
-            bool skipPole = false;
-            // int count = points.count;
-            double lastX = points[startPoint].x, lastY = points[startPoint].y;
-            double x = lastX + dx * (k - startK) / nDivisions, y = lastY + dy * (k - startK) / nDivisions;
-            int px = (int)floor(x+1E-11), py = (int)floor(y+1E-11);
-
-            // Add extra point in the middle of polar edges
-            if((fabs(x - 0.5) < 1E-9 && fabs(y - 0 /*.5*/) < 1E-9) ||
-               (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
-               (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
-               (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9)
-               )
-            {
-               points.Add({ x - dx * stepBack, y - dy * stepBack });
-               skipPole = true;
-            }
-
-            if(x < 0 || x > 5 || y < 0 || y > 6 || py < px || py - px > 1)
-            {
-               // Crossing interruption or wrapping: add points on each side
-               if(interrupted || wrapped)
-               {
-                  if((fabs(pi1.x - 0.5) < 1E-9 && fabs(pi1.y - 0) < 1E-9) ||
-                     (fabs(pi1.x - 5) < 1E-9 && fabs(pi1.y - 4.5) < 1E-9) ||
-                     (fabs(pi1.x - 2) < 1E-9 && fabs(pi1.y - 3.5) < 1E-9) ||
-                     (fabs(pi1.x - 1.5) < 1E-9 && fabs(pi1.y - 3) < 1E-9))
-                     points.Add({ pi1.x - dx * stepBack, pi1.y - dy * stepBack });
-                  else
-                     points.Add(pi1);
-                  if((fabs(pi2.x - 0.5) < 1E-9 && fabs(pi2.y - 0) < 1E-9) ||
-                     (fabs(pi2.x - 5) < 1E-9 && fabs(pi2.y - 4.5) < 1E-9) ||
-                     (fabs(pi2.x - 2) < 1E-9 && fabs(pi2.y - 3.5) < 1E-9) ||
-                     (fabs(pi2.x - 1.5) < 1E-9 && fabs(pi2.y - 3) < 1E-9))
-                     points.Add({ pi2.x + dx * stepBack, pi2.y + dy * stepBack });
-                  else
-                     points.Add(pi2);
-
-                  startPoint = points.count-1;
-                  startK = k;
-               }
-               else if(!skipPole)
-                  points.Add({ x, y }); // This currently happens when walking along x = 6 edge
-               if(interrupted)
-               {
-                  // REVIEW: Do we need point after left over distance?
-                  // points.Add({ pi2.x + dx - (pi1.x - lastX), pi2.y + dy - (pi1.y - lastY) });
-                  double t = dx;
-                  dx = dy, dy = t;
-               }
-            }
-            else if(!skipPole)
-               points.Add({ x, y });
-
-            if((fabs(x - 0.5) < 1E-9 && fabs(y - 0/*.5*/) < 1E-9) ||
-               (fabs(x - 5) < 1E-9 && fabs(y - 4.5) < 1E-9) ||
-               (fabs(x - 2) < 1E-9 && fabs(y - 3.5) < 1E-9) ||
-               (fabs(x - 1.5) < 1E-9 && fabs(y - 3) < 1E-9))
-               points.Add({ x + dx * stepBack, y + dy * stepBack });
-         }
-      }
-      else if(interrupted)
-      {
-         points.Add(pi1);
-         points.Add(pi2);
-      }
-      #endif
    }
 
    points.minAllocSize = 0;
@@ -1506,39 +1403,45 @@ void move5x6Vertex(Pointd v, const Pointd c, double dx, double dy)
 {
    int cx = (int)(c.x + 1E-11), cy = (int)(c.y + 1E-11);
    int vx, vy;
+   // REVIEW: We use a tiny 2E-11 offset instead of 0 for dx or dy to guarantee correct root rhombus in RI3H for the crossing logic below.
+   //         This cleaned delta used for assignment avoids zone geometry being slightly off (e.g., South Pole station point).
+   // NOTE: These changes required fixes in refine5x6()
+   double cleanDx = fabs(dx) < 3E-11 ? 0 : dx, cleanDy = fabs(dy) < 3E-11 ? 0 : dy;
 
-   v = { c.x + dx, c.y + dy };
    vx = (int)floor(c.x + dx - Sgn(dx) * 1E-11);
    vy = (int)floor(c.y + dy - Sgn(dy) * 1E-11);
 
-   if(((vx != cx && fabs(v.y - vy) > 1E-11) || (vy != cy && fabs(v.x - vx) > 1E-11)) &&
+   if(((vx != cx && fabs(c.y + dy - vy) > 1E-11) || (vy != cy && fabs(c.x + dx - vx) > 1E-11)) &&
       (vy - vx > 1 || vy < vx))
    {
       if(vx < cx)
       {
          // Stepping over bottom dent to the left
-         v.x = cx - (c.y - cy) + dx - dy;
-         v.y = cy + dx;
+         v.x = cx - (c.y - cy) + cleanDx - cleanDy;
+         v.y = cy + cleanDx;
       }
       else if(vx > cx)
       {
          // Stepping over top dent to the right
-         v.x = cx - (c.y - cy) + dx - dy;
-         v.y = cy + dx;
+         v.x = cx - (c.y - cy) + cleanDx - cleanDy;
+         v.y = cy + cleanDx;
       }
       else if(vy < cy)
       {
          // Stepping over top dent to the left
-         v.x = cx + dy;
-         v.y = cy - (c.x - cx) - dx + dy;
+         v.x = cx + cleanDy;
+         v.y = cy - (c.x - cx) - cleanDx + cleanDy;
       }
       else if(vy > cy)
       {
          // Stepping over bottom dent to the right
-         v.x = cx + dy;
-         v.y = cy - (c.x - cx) - dx + dy;
+         v.x = cx + cleanDy;
+         v.y = cy - (c.x - cx) - cleanDx + cleanDy;
       }
    }
+   else
+      v = { c.x + cleanDx, c.y + cleanDy };
+
 #if 0 // _DEBUG   // TODO: Clarify where the behavior of move5x6Vertex2() differ
    {
       Pointd v2;
