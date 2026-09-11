@@ -173,6 +173,8 @@ class DGGAL : Application
 
                   else if(!strcmpi(arg, "rHEALPix")) dggrsClass = class(rHEALPix);
                   else if(!strcmpi(arg, "HEALPix"))  dggrsClass = class(HEALPix);
+                  else if(!strcmpi(arg, "NUNIQ") || !strcmpi(arg, "HEALPix_NUNIQ"))
+                     dggrsClass = class(HEALPixNUNIQ);
 
                   else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
                   else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);

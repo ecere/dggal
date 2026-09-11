@@ -904,9 +904,9 @@ static uint getHPRefinedWGS84Vertices(HEALPix dggrs, HPZone zone, GeoPoint * out
    //bool includesNorthPole = e.tl.y > Pi/2 && e.br.y < Pi/2 && e.tl.x < -3*Pi/4 && e.br.x > -3*Pi/4;
    //bool includesSouthPole = e.tl.y > -Pi/2 && e.br.y < -Pi/2 && e.tl.x < -3*Pi/4 && e.br.x > -3*Pi/4;
 
-   dggrs.getZoneCRSVertices(zone, 0, dp);
+   dggrs.HEALPix::getZoneCRSVertices(zone, 0, dp);
 
-   dggrs.getZoneWGS84Centroid(zone, centroid);
+   dggrs.HEALPix::getZoneWGS84Centroid(zone, centroid);
 
    for(i = 0; i < 4; i++)
    {
