@@ -135,7 +135,7 @@ LIB_EXPORT const char ** DGGAL_DGGRS_list(uint * count)
       "ISEA4R", "ISEA9R", "ISEA3H", "ISEA7H", "ISEA7H_Z7",
       "IVEA4R", "IVEA9R", "IVEA3H", "IVEA7H", "IVEA7H_Z7",
       "RTEA4R", "RTEA9R", "RTEA3H", "RTEA7H", "RTEA7H_Z7",
-      "HEALPix", "rHEALPix", "HEALPix_NUNIQ",
+      "HEALPix", "rHEALPix", "HEALPix_NUNIQ", "SpatialID",
       null
    };
    if(count)
