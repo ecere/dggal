@@ -92,7 +92,8 @@
                   "ISEA7H_Z7.ec",
                   "IVEA7H_Z7.ec",
                   "RTEA7H_Z7.ec",
-                  "HEALPixNUNIQ.ec"
+                  "HEALPixNUNIQ.ec",
+                  "SpatialID.ec"
                ]
             },
             {
@@ -102,7 +103,8 @@
                   "authalic.ec",
                   "barycentric5x6.ec",
                   "icoVertexGreatCircle.ec",
-                  "rHEALPix.ec"
+                  "rHEALPix.ec",
+                  "WebMercator.ec"
                ]
             },
             {
