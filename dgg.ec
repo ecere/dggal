@@ -23,7 +23,7 @@ static void showSyntax()
       "   dgg <dggrs> <command> [options] <arguments>\n"
       "\n"
       "Supported DGGRSs:\n"
-      "   GNOSIS (Global Grid), ISEA(4R/9R/3H/7H/7H_Z7), IVEA(4R/9R/3H/7H/7H_Z7), RTEA(9R/4R/3H/7H/7H_Z7), rHEALPix (A9 50° E), HEALPix (A4 H=4, K=3)\n"
+      "   GNOSIS (Global Grid), ISEA(4R/9R/3H/7H/7H_Z7), IVEA(4R/9R/3H/7H/7H_Z7), RTEA(9R/4R/3H/7H/7H_Z7), rHEALPix (A9 50° E), HEALPix (A4 H=4, K=3), SpatialID\n"
       "\n"
       "Commands:\n"
       "   info       [zone]\n"
@@ -127,6 +127,8 @@ class DGGAL : Application
       else if(!strcmpi(argv[0], "rhp") || !strcmpi(argv[0], "rHEALPix")) dggrsClass = class(rHEALPix), cmdArg = 1;
       else if(!strcmpi(argv[0], "hpx") || !strcmpi(argv[0], "HEALPix")) dggrsClass = class(HEALPix), cmdArg = 1;
 
+      else if(!strcmpi(argv[0], "sid") || !strcmpi(argv[0], "SpatialID")) dggrsClass = class(SpatialID), cmdArg = 1;
+
       for(a = 1; !syntaxError && a < argc; a++)
       {
          const char * arg = argv[a];
@@ -178,6 +180,8 @@ class DGGAL : Application
 
                   else if(!strcmpi(arg, "GPP3H"))    dggrsClass = class(GPP3H);
                   else if(!strcmpi(arg, "BCTA3H"))   dggrsClass = class(BCTA3H);
+
+                  else if(!strcmpi(arg, "SpatialID"))   dggrsClass = class(SpatialID);
 
                   else if(!strcmpi(arg, "togeo"))
                      command = togeo;
