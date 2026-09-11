@@ -80,7 +80,7 @@ private:
          double y = rCol + (int)(rRow == 2) + row * oop;
 
          /*
-         Conversion from 4x6 to HEALPix:
+         Conversion from 5x5 to HEALPix:
             x = (x + y) * Pi/4 - 5*Pi/4,
             y = -(y - x) * Pi/4
          */
@@ -100,20 +100,20 @@ private:
    {
       HPZone zone = nullZone;
       int64 p = 1LL << level;
-      // Conversion from HEALPix to 4x6 space:
+      // Conversion from HEALPix to 5x5 space:
       double x = (v.y + v.x + 5 * Pi / 4) * 2/Pi;
       double y = v.x * 4 / Pi + 5 - x;
-      int cx = (int)(x + 1E-11);
-      int cy = (int)(y + 1E-11);
+      int cx = (int)x, cy = (int)y;
       double sx = x - cx, sy = y - cy;
       bool addX = cx > cy, addY = cy > cx;
       int rCol = cx - addX; // or cy - addY
       int rRow = addX ? 0 : addY ? 2 : 1;
-      int64 col = (int64)(sx * p);
-      int64 row = (int64)(sy * p);
+      int64 col = Min(Max(0, (int64)(sx * p)), p - 1);
+      int64 row = Min(Max(0, (int64)(sy * p)), p - 1);
       int root = (rRow << 2) | rCol;
 
-      if(rCol >= 0 && rCol <= 4 && rRow >= 0 && rRow <= 2 && col >= 0 && col < p && row >= 0 && row < p)
+      if(rCol >= 0 && rCol <= 4 && rRow >= 0 && rRow <= 2 &&
+         sx >= -1E-12 && sx < 1 + 1E-12 && sy >= -1E-12 && sy < 1 + 1E-12)
          zone = { level, root, ((int64)row << level) | col };
       return zone;
    }
@@ -123,12 +123,26 @@ private:
       uint dm = 1 << depth;
       Array<Pointd> centroids { size = dm * dm };
       int r, c, i = 0;
-      CRSExtent e = hpExtent;
-      double w = e.br.x - e.tl.x, h = e.br.y - e.tl.y;
+      int root = rootRhombus, rCol = root & 3, rRow = (root >> 2);
+      int64 p = 1LL << level;
+      double oop = 1.0 / p;
+      int row = (int)(subIndex >> level);
+      int col = (int)(subIndex - ((int64)row << level));
+      double w = oop, h = oop;
+      Pointd tl { rCol + (int)(rRow == 0) + col * oop, rCol + (int)(rRow == 2) + row * oop };
 
       for(r = 0; r < dm; r++)
+      {
          for(c = 0; c < dm; c++, i++)
-            centroids[i] = { e.tl.x + c * w / dm, e.tl.y + r * h / dm };
+         {
+            double x = tl.x + c * w / dm;
+            double y = tl.y + r * h / dm;
+            centroids[i] = {
+               (x + y) * Pi / 4 - 5 * Pi / 4,
+               -(y - x) * Pi / 4
+            };
+         }
+      }
       return centroids;
    }
 
@@ -360,7 +374,8 @@ public class HEALPix : DGGRS
    Array<DGGRSZone> getSubZones(HPZone parent, int relativeDepth)
    {
       int pLevel = parent.level, level = pLevel + relativeDepth;
-      if(level <= 26)
+
+      if(level <= 26 && relativeDepth <= 15)
       {
          uint root = parent.rootRhombus;
          uint64 pSubIndex = parent.subIndex;
@@ -616,7 +631,7 @@ public class HEALPix : DGGRS
       uint count = 4, i;
 
       /*
-      Conversion from 4x6 to HEALPix:
+      Conversion from 5x5 to HEALPix:
          x =  (x + y) * Pi/4 - 5*Pi/4,
          y = -(y - x) * Pi/4
       */
@@ -732,7 +747,7 @@ public class HEALPix : DGGRS
       double y = rCol + (int)(rRow == 2) + row * oop;
 
       /*
-      Conversion from 4x6 to HEALPix:
+      Conversion from 5x5 to HEALPix:
          x =  (x + y) * Pi/4 - 5*Pi/4,
          y = -(y - x) * Pi/4
       */
