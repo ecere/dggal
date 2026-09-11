@@ -65,9 +65,35 @@ def getZonePrimaryChildren7H(self, zone):
    return children
 
 def getZonePrimaryChildren3H(self, zone):
+   zone_level = self.getZoneLevel(zone)
+
+   if zone_level == 0:
+      # Declared strictly inside the conditional scope where it is required
+      zone_int = int(zone)
+
+      # Extract the 4 bits corresponding to the root rhombus (shifted past 2 LSBs + 51 sub-rhombus bits)
+      root_rhombus = (zone_int >> 53) & 0xF
+
+      # Always pull the mandatory central centroid child (-B, variant 1)
+      centroid_child = self.getZoneCentroidChild(zone)
+      primary_children = [ centroid_child ]
+
+      # Polar zones (0xA / North Pole, 0xB / South Pole) ONLY have their centroid child
+      if root_rhombus in (0xA, 0xB):
+         return primary_children
+
+      # For standard non-polar zones, append the non-centroid primary siblings:
+      # Clear the 2 LSB bits to isolate the base parent value
+      base_cleared = zone_int & ~0x3
+      # Variant 2 corresponds to -C, Variant 3 corresponds to -D
+      for variant_bit in (2, 3):
+         primary_children.append(DGGRSZone(base_cleared | variant_bit))
+      return primary_children
+
    # The 3H children are associated with the parent who is itself a centroid child (snowflake fractal)
    return self.getZoneChildren(zone) if self.isZoneCentroidChild(zone) else [ self.getZoneCentroidChild(zone) ]
 
+# TODO: Review whether this matches for new level 0 rule
 def getZonePrimaryParent3H(self, zone):
    primaryParent = None
    parents = self.getZoneParents(zone)
@@ -481,7 +507,7 @@ class DGGSDataStore:
          # coarser base when up_to=True: yield but still descend to find finer bases
          if up_to and zone_level < base_level and self._is_base_level(zone_level):
             yield (zone, base_ancestors + [zone])
-            children = dggrs.getZoneChildren(zone) or []
+            children = dggrs.getZonePrimaryChildren(zone) or []
             for child in children:
                stack.append((child, base_ancestors + [zone]))
             if not isinstance(children, list):

@@ -212,6 +212,32 @@ def _process_batch_vector(store,
 
    return total_written
 
+def _shift_coords_healpix_vectorized(coords):
+   return coords + [2.0 * math.pi, 0.0]
+
+def _shift_individual_primitive_healpix(part):
+   x_apex = -0.75 * math.pi
+   epsilon = 1e-12
+   p_minx, p_miny, p_maxx, p_maxy = part.bounds
+   if p_maxx < (x_apex - abs(p_miny) - epsilon):
+      return shapely.transform(part, _shift_coords_healpix_vectorized)
+   return part
+
+def fix_geometry_components_healpix(shp):
+   if shp is None or shp.is_empty:
+      return shp
+
+   g_type = shp.geom_type
+
+   if g_type == "MultiPolygon":
+      return shapely.geometry.MultiPolygon([_shift_individual_primitive_healpix(p) for p in shp.geoms])
+   elif g_type == "MultiLineString":
+      return shapely.geometry.MultiLineString([_shift_individual_primitive_healpix(p) for p in shp.geoms])
+   elif g_type == "MultiPoint":
+      return shapely.geometry.MultiPoint([_shift_individual_primitive_healpix(p) for p in shp.geoms])
+   else:
+      return _shift_individual_primitive_healpix(shp)
+
 def _base_zone_package_worker(wkbc_path: str,
                               base_zone_id: int,
                               worker_config: dict,
@@ -219,7 +245,7 @@ def _base_zone_package_worker(wkbc_path: str,
                               depth: int,
                               max_root_level: int) -> Tuple[int, Dict[int, bytes]]:
    worker_pid = os.getpid()
-   print(f"[WORKER {worker_pid}] Task started for base_zone_id={base_zone_id}.", flush=True)
+   print(f"[WORKER {worker_pid}] Task started for base_zone_id={base_zone_id} max_root_level={max_root_level}.", flush=True)
 
    store = DGGSDataStore(worker_config["_data_root"], worker_config["collection"], config=worker_config["collection_config"])
    dggrs = store.dggrs
@@ -243,15 +269,29 @@ def _base_zone_package_worker(wkbc_path: str,
    else:
       src_fc = _WORKER_CACHE
 
+   if dggrs_name.startswith("HEALPix"):
+      a4_0 = 0x40000000000000
+      if int(base_zone_id) == a4_0 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(a4_0), 0):
+         print(f"[WORKER {worker_pid}] Base Zone {dggrs.getZoneTextID(base_zone)} is an A4-0 descendant. Flagging for context shift.", flush=True)
+
+         local_features = []
+         for feat in src_fc.get("features", []):
+            if "_shapely_geom" in feat:
+               shifted_feat = dict(feat)
+               shifted_feat["_shapely_geom"] = fix_geometry_components_healpix(feat["_shapely_geom"])
+               shifted_feat["bbox"] = shifted_feat["_shapely_geom"].bounds
+               local_features.append(shifted_feat)
+            else:
+               local_features.append(feat)
+
+         src_fc = {"type": "FeatureCollection", "features": local_features}
+
    local_blobs: Dict[int, bytes] = {}
 
    # Walk the sub-grid roots in pure local memory within this single process context
    roots_iter = store.iter_roots_for_base(base_zone, max_root_level, up_to=False)
    for zone in roots_iter:
       root_zone = DGGRSZone(zone)
-
-      # CALLS YOUR EXACT UNTOUCHED CLIPPING PASS
-      # If your internal logic uses feat.get("_shapely_geom"), it skips conversion entirely!
 
       #print(f"[WORKER {worker_pid}] Executing native clip_featurecollection_to_zone math...", flush=True)
       out_fc, indices = clip_featurecollection_to_zone(src_fc, dggrs, root_zone, refined=False)
@@ -331,8 +371,8 @@ def import_vector(input_geojson_path: str,
    # write collection-level attributes (features list) into store.attributes.sqlite
    features = src.get("features", []) or []
 
-   fc_min_lat, fc_min_lon = float('inf'), float('inf')
-   fc_max_lat, fc_max_lon = float('-inf'), float('-inf')
+   fc_min_x, fc_min_y = float('inf'), float('inf')
+   fc_max_x, fc_max_y = float('-inf'), float('-inf')
 
    if features:
       store.write_collection_attributes(features)
@@ -346,25 +386,29 @@ def import_vector(input_geojson_path: str,
             if g_type == "Point":
                feat["bbox"] = [coords[0], coords[1], coords[0], coords[1]]
             elif g_type in ("LineString", "MultiPoint"):
-               lats = [p[0] for p in coords]
-               lons = [p[1] for p in coords]
-               feat["bbox"] = [min(lats), min(lons), max(lats), max(lons)]
+               xs = [p[0] for p in coords]
+               ys = [p[1] for p in coords]
+               feat["bbox"] = [min(xs), min(ys), max(xs), max(ys)]
             elif g_type in ("Polygon", "MultiLineString"):
                pts = [p for ring in coords for p in ring]
-               lats = [p[0] for p in pts]
-               lons = [p[1] for p in pts]
-               feat["bbox"] = [min(lats), min(lons), max(lats), max(lons)]
+               xs = [p[0] for p in pts]
+               ys = [p[1] for p in pts]
+               feat["bbox"] = [min(xs), min(ys), max(xs), max(ys)]
             else:
                feat["bbox"] = shape(geom).bounds
 
          if "bbox" in feat:
             fb = feat["bbox"]
-            if fb[0] < fc_min_lat: fc_min_lat = fb[0]
-            if fb[1] < fc_min_lon: fc_min_lon = fb[1]
-            if fb[2] > fc_max_lat: fc_max_lat = fb[2]
-            if fb[3] > fc_max_lon: fc_max_lon = fb[3]
+            if fb[0] < fc_min_x: fc_min_x = fb[0]
+            if fb[1] < fc_min_y: fc_min_y = fb[1]
+            if fb[2] > fc_max_x: fc_max_x = fb[2]
+            if fb[3] > fc_max_y: fc_max_y = fb[3]
 
-   src["bbox"] = [fc_min_lat, fc_min_lon, fc_max_lat, fc_max_lon]
+   # Widen the global longitudinal limit across the wrap divide for HEALPix grids
+   if dggrs_name.startswith("HEALPix") and fc_min_x < -3/4 * math.pi:
+      fc_max_x = max(fc_max_x, fc_min_x + 2.0 * math.pi)
+
+   src["bbox"] = [fc_min_x, fc_min_y, fc_max_x, fc_max_y]
    print(f"[IMPORT] Calculated unified FeatureCollection bbox: {src['bbox']}", flush=True)
 
    # write WKBC file for workers (WKBC contains geometries and feature ids; properties are not included)
@@ -392,17 +436,22 @@ def import_vector(input_geojson_path: str,
             bz_extent = CRSExtent()
             dggrs.getZoneCRSExtent(base_zone, CRS(0), bz_extent)
 
-            bz_min_lat = bz_extent.tl.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.br.x
-            bz_max_lat = bz_extent.br.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.tl.x
-            bz_min_lon = bz_extent.tl.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.br.y
-            bz_max_lon = bz_extent.br.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.tl.y
+            # bz_text = dggrs.getZoneTextID(base_zone)
 
-            bz_text = dggrs.getZoneTextID(base_zone)
+            if dggrs_name.startswith("HEALPix"):
+               a4_0 = 0x40000000000000
+               if int(base_zone) == a4_0 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(a4_0), 0):
+                  bz_extent.tl = Pointd(bz_extent.tl.x + 2.0 * math.pi, bz_extent.tl.y)
+                  bz_extent.br = Pointd(bz_extent.br.x + 2.0 * math.pi, bz_extent.br.y)
+
+            bz_min_x = bz_extent.tl.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.br.x
+            bz_max_x = bz_extent.br.x if bz_extent.tl.x < bz_extent.br.x else bz_extent.tl.x
+            bz_min_y = bz_extent.tl.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.br.y
+            bz_max_y = bz_extent.br.y if bz_extent.tl.y < bz_extent.br.y else bz_extent.tl.y
+
             # print(f"   [EVAL {bz_text}] Zone Extent: Min_Lat={bz_min_lat:.6f}, Max_Lat={bz_max_lat:.6f} | Min_Lon={bz_min_lon:.6f}, Max_Lon={bz_max_lon:.6f}", flush=True)
 
-            if (bz_min_lat > src["bbox"][2] or bz_max_lat < src["bbox"][0] or
-                bz_min_lon > src["bbox"][3] or bz_max_lon < src["bbox"][1]):
-
+            if bz_min_x > fc_max_x or bz_max_x < fc_min_x or bz_min_y > fc_max_y or bz_max_y < fc_min_y:
                skipped_count += 1
                continue
 

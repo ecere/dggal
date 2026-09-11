@@ -142,7 +142,7 @@ def main():
    tg.add_argument("--wgs84-refine", dest="wgs84_refine", type=float, default=None, help="maximum 5x6 distance between points before unprojecting to WGS84 (might currently cause issues)")
 
    args = p.parse_args()
-   skip_reproj = getattr(args, 'skip_reproj', False) or getattr(args, 'skip_fix', False)
+   skip_reproj = getattr(args, 'skip_reproj', False) # or getattr(args, 'skip_fix', False)
 
    if args.cmd == "reproj":
       input_path = args.input_opt if args.input_opt is not None else args.input_pos
@@ -182,6 +182,12 @@ def main():
       src = _prepare_input_pipeline(input_path, args.dggrs, args.ico, skip_reproj, args.skip_fix)
 
       out_fc, feature_entry_exit_indices = clip_featurecollection_to_zone(src, dggrs, zone, refined=args.refined, ico=args.ico)
+
+      features = out_fc.get("features", []) or []
+      for feat in features:
+         if "_shapely_geom" in feat:
+            del feat["_shapely_geom"]
+
       geojson_dump(out_fc, output_path)
       return
 
@@ -198,7 +204,7 @@ def main():
 
       src = _prepare_input_pipeline(input_path, args.dggrs, args.ico, skip_reproj, args.skip_fix)
 
-      depth_val = args.depth if args.depth is not None else 2 * dggrs.get64KDepth()
+      depth_val = args.depth if args.depth is not None else dggrs.get64KDepth() * 3 // 2
       out_fc, feature_entry_exit_indices = clip_featurecollection_to_zone(src, dggrs, zone, refined=args.refined, ico=args.ico)
       write_dggs_json_fg_to_file(out_fc, feature_entry_exit_indices, output_path, dggrs, zone, depth_val)
       return

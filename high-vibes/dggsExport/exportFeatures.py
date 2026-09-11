@@ -23,13 +23,13 @@ try:
    from fg.dggsJSONFG import read_dggs_json_fg
    from dggsStore.store import DGGSDataStore, iter_packages
    from fg.reproj import instantiate_projection_for_dggrs_name
-   from fg.dggsJSONFG import unproject_and_fix
+   from fg.dggsJSONFG import unproject_and_fix, PolarRootMode
 except(ImportError):
    from ..ogcapi.utils import pretty_json
    from ..fg.dggsJSONFG import read_dggs_json_fg
    from ..dggsStore.store import DGGSDataStore, iter_packages
    from ..fg.reproj import instantiate_projection_for_dggrs_name
-   from ..fg.dggsJSONFG import unproject_and_fix
+   from ..fg.dggsJSONFG import unproject_and_fix, PolarRootMode
 
 GRID_SIZE_DEFAULT = 1e-2
 WORKERS = 16
@@ -178,6 +178,9 @@ def _initialize_dggal_worker():
    app = Application(appGlobals=globals());
    pydggal_setup(app)
 
+def _is_dggrs_5x6(name):
+   return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
+
 # worker: collects GeoJSON per feature id, coalesces with combine_geojson_geometries,
 # converts to Shapely, merges with merge_shapely_geometries(do_buffer=False),
 # serializes merged geometry to WKB, and returns Dict[int, bytes]
@@ -217,15 +220,22 @@ def _worker_process_package(
                features[fid].append(geom_json)
 
    # merge per-feature and serialize to WKB; worker does NOT run final buffer cleanup
+   dggrs_name = store.config['dggrs']
    projection = instantiate_projection_for_dggrs_name(store.config['dggrs'])
    ggg_snap = False if projection else True
    ge = GeoExtent()
    store.dggrs.getZoneWGS84Extent(base_zone_id, ge)
+   is5x6 = _is_dggrs_5x6(dggrs_name)
    extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
 
    subzone_level = target_level
    # does this bounding box touches the literal geodetic pole limits?
-   is_polar_root = (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7)
+   if is5x6:
+      is_polar_root = PolarRootMode.RI5x6 # Automatic pole detection so this should always be set
+   elif (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7):
+      is_polar_root = PolarRootMode.HEALPIX if projection else PolarRootMode.GGG
+   else:
+      is_polar_root = PolarRootMode.NONE
 
    result: Dict[int, bytes] = {}
    for fid, geoms in features.items():
@@ -336,7 +346,7 @@ def _inject_polar_densification_points(geom: shapely.geometry.base.BaseGeometry)
       return geom
 
    # Single array containing all required directional border offsets
-   offsets = [1.0, 2.0, 4.0, 20.0]
+   offsets = [1.0, 2.0, 4.0, 8.0, 16.0, 32.0]
 
    if isinstance(geom, shapely.geometry.Polygon):
       exterior = _process_polar_ring(list(geom.exterior.coords), offsets)

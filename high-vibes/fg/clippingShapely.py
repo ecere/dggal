@@ -52,6 +52,11 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, uncl
    if coords[0] != coords[-1]:
       coords = coords + [coords[0]]
 
+   if type(dggrs).__name__.startswith("HEALPix"):
+      a4_0 = 0x40000000000000
+      if int(zone) == a4_0 or dggrs.isZoneDescendantOf(zone, DGGRSZone(a4_0), 0):
+         coords = [[pt[0] + 2.0 * math.pi, pt[1]] for pt in coords]
+
    raw_ring = coords
 
    if unclipped or not _is_dggrs_5x6(type(dggrs).__name__):

@@ -22,7 +22,7 @@ class BadNudge(Exception):
     pass
 
 def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_level, sub_indices,
-   centroid_pointd, is5x6: bool = False, nudge_factor = 1e-8) -> int:
+   centroid_pointd, is5x6: bool = False, isHEALPix: bool = False, nudge_factor = 1e-8) -> int:
    cx = centroid_pointd.x
    cy = centroid_pointd.y
    defaultCRS = CRS(0)
@@ -33,13 +33,19 @@ def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_l
    #   dx = dx + 5; dy = dy + 5
    #szCentroid = dggal.Pointd(px + dx * nudge_factor, py + dy * nudge_factor)
 
+   # REVIEW: Currently the nudge_factor is fixed and multiplying a distance relative to the root zone size
+   #         It might be preferable to make it dependent on sz_level and the DGGRS aperture to as to avoid
+   #         overshooting sub-zones at high depths (for an aperture 4 quad-tree the limit might currently be around depth 25-26).
    if is5x6:
       d, *unused = distance5x6(Pointd(px, py), centroid_pointd)
       szCentroid = move5x6((px, py), sgn(d.x) * nudge_factor, sgn(d.y) * nudge_factor, 1)
       szCentroid = dggal.Pointd(szCentroid.x, szCentroid.y) # FIXME: utils vs. DGGAL Pointd
    else:
-      dx = sgn(centroid_pointd.x - px) * nudge_factor; dy = sgn(centroid_pointd.y - py) * nudge_factor
-      szCentroid = dggal.Pointd(px + dx, py + dy)
+      dx = centroid_pointd.x - px; dy = centroid_pointd.y - py
+      # Wrap-around for HEALPix A4-0
+      if isHEALPix and dx > Pi:     dx -= 2*Pi
+      elif isHEALPix and dx < -Pi:  dx += 2*Pi
+      szCentroid = dggal.Pointd(px + sgn(dx) * nudge_factor, py + sgn(dy) * nudge_factor)
 
    sub_zone = dggrs.getZoneFromCRSCentroid(sz_level, defaultCRS, szCentroid)
    if sub_zone != nullZone:
@@ -59,12 +65,16 @@ def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_l
 def _is_dggrs_5x6(name):
    return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
 
+def _is_dggrs_HEALPix(name):
+   return name.startswith("HEALPix")
+
 def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_indices: Set[int],
                           dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor = 1e-8) -> List[int]:
    out: List[int] = []
    # print("Processing ring with ", len(ring_coords), "vertices")
 
    is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
+   isHEALPix = _is_dggrs_HEALPix(type(dggrs).__name__)
 
    lastIX = None
    count = 0
@@ -102,8 +112,13 @@ def _ring_to_dggs_indices(ring_coords: Sequence[Sequence[float]], insert_zero_in
          szc = move5x6((px, py), dx, dy, 1)
          szCentroid.x, szCentroid.y = szc.x, szc.y
       else:
-         dx = (centroid_pointd.x - px) * nudge_factor; dy = (centroid_pointd.y - py) * nudge_factor
-         szCentroid.x, szCentroid.y = px + dx, py + dy
+         dx = (centroid_pointd.x - px); dy = (centroid_pointd.y - py)
+         # Wrap-around for HEALPix A4-0
+         if isHEALPix and dx > Pi:     dx -= 2*Pi
+         elif isHEALPix and dx < -Pi:  dx += 2*Pi
+         szCentroid.x, szCentroid.y = px + dx * nudge_factor, py + dy * nudge_factor
+         if isHEALPix and szCentroid.x > Pi:     szCentroid.x -= 2*Pi
+         elif isHEALPix and szCentroid.x < -Pi:  szCentroid.x += 2*Pi
 
       sub_zone = get_zone(sz_level, defaultCRS, szCentroid)
       if sub_zone != nullZone:
@@ -167,6 +182,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    root_level = dggrs.getZoneLevel(root_zone)
    sz_level = root_level + depth
    is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
+   isHEALPix = _is_dggrs_HEALPix(type(dggrs).__name__)
    nudge_factor = 10.0 / (ref_ratio ** sz_level)
 
    sub_zones = dggrs.getSubZones(root_zone, depth)
@@ -244,13 +260,13 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
             dggs_place = {"type": "MultiLineString", "coordinates": lines_coords if lines_coords else None}
 
          elif g_type == "Point":
-            idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, nudge_factor)
+            idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, isHEALPix, nudge_factor)
             dggs_place = {"type": "Point", "coordinates": idx if idx != -1 else None }
 
          elif g_type == "MultiPoint":
             pts_coords = []
             for p in shp.geoms:
-               idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, nudge_factor)
+               idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, isHEALPix, nudge_factor)
                if idx != -1:
                   pts_coords.append(idx)
             dggs_place = {"type": "MultiPoint", "coordinates": pts_coords if pts_coords else None}
@@ -415,7 +431,7 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
    return geom
 
 def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None, fix_geom=True,
-                      root_level: int = None, subzone_level: int = None, is_polar_root: bool = False):
+                      root_level: int = None, subzone_level: int = None, is_polar_root: PolarRootMode = PolarRootMode.NONE):
    if converted:
       converted = unproject_geojson_to_wgs84(
          converted, projection, extent, refine_wgs84=refine_wgs84,
@@ -455,7 +471,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
 
    root_level = int(dggrs.getZoneLevel(root_zone))
    subzone_level = root_level + depth
-   is_polar_root = False
+   is_polar_root = PolarRootMode.NONE
 
    if unproject:
       ge = GeoExtent()
@@ -463,8 +479,11 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
       dggrs.getZoneWGS84Extent(root_zone, ge)
       extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
       # For GNOSIS Global Grid, pass a flag identifying zones touching a pole:
-      if not projection and (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7):
-         is_polar_root = True
+      is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
+      if is5x6:
+         is_polar_root = PolarRootMode.RI5x6 # This should always be set for 5x6
+      elif extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7:
+         is_polar_root = PolarRootMode.HEALPIX if projection else PolarRootMode.GGG
    else:
       projection = None
       extent = None

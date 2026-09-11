@@ -54,9 +54,6 @@ def wrap_lon_at(lon: float, c_lon: float) -> float:
    rel = lon - c_lon
 
    # coarse wrap into (-180,180] using floor-based single-step style (but allow multiple-step via floor)
-   # This mirrors the logic:
-   # if(rel < -180 - eps) rel += 360 * floor((180 - rel)/360)
-   # elif(rel > 180 + eps) rel -= 360 * floor((rel + 180)/360)
    if rel < -180.0 - _EPS:
       rel += 360.0 * floor((180.0 - rel) / 360.0)
    elif rel > 180.0 + _EPS:
@@ -65,6 +62,7 @@ def wrap_lon_at(lon: float, c_lon: float) -> float:
    # return absolute lon (relative + center)
    return rel + c_lon
 
+# REVIEW: No longer used?
 # ---------- localization using wrap_lon_at ----------
 def _localize_ring_with_wrap(ring: List[Tuple[float, float]],
                                       tile_center: float
@@ -226,236 +224,257 @@ def intersects_extent_deg(a: Sequence[float], b: Sequence[float], deg_epsilon: f
         and bxmin < axmax - deg_epsilon
     )
 
-# Filter and accept pieces (handle Polygon, MultiPolygon, GeometryCollection)
-def _accept_polygon_piece(poly, xmin, ymin, xmax, ymax, fid, part_idx):
-   # poly is a shapely Polygon
-
+def _accept_polygon_piece(poly: Polygon, xmin: float, ymin: float, xmax: float, ymax: float, fid: Any, part_idx: int) -> Optional[Dict[str, Any]]:
+   # Rely directly on the clipping engine's spatial filtering output bounds
    if poly.is_empty or poly.area <= _AREA_EPS:
       return None
-   tol = 1e-12
 
-   #ok = True
-   #for cx, cy in list(poly.exterior.coords):
-   #   if not (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
-   #      ok = False
-   #      break
-   #if not ok: return None
-
-   anyInside = False
-   for cx, cy in list(poly.exterior.coords):
-      if (xmin - tol <= cx <= xmax + tol and ymin - tol <= cy <= ymax + tol):
-         anyInside = True
-         #print("Discard piece here")
-         #return None
-   #if not anyInside: return None
    return {"tile_x": xmin, "tile_y": ymin, "geom": poly, "orig_fid": fid, "part_idx": part_idx}
 
-# ---------- tile-and-clip for a single polygon using wrap_lon_at ----------
+def _fmt_closed(coords: Any) -> List[List[float]]:
+   # Constructs a closed ring array for clean GeoJSON representation.
+   lst = list(coords)
+   if lst and lst != lst[-1]:
+      lst.append(lst[0])
+   return [[float(p[0]), float(p[1])] for p in lst]
+
+def _write_milestone_file(path: str, data: Dict[str, Any]) -> None:
+   # Safely serializes tracking milestones straight to the local filesystem.
+   try:
+      with open(path, "w") as f:
+         json.dump(data, f, indent=2)
+   except Exception as e:
+      print(f"Warning: Could not write debug milestone file to {path}: {e}")
+
+def _flatten_to_simple_polygons(raw_polys: List[Polygon]) -> List[Polygon]:
+   # Extracts individual valid simple Polygon components from collection objects.
+   final_polys = []
+   for p in raw_polys:
+      if p.is_empty or p.area <= 0.0:
+         continue
+      if p.geom_type == "Polygon":
+         final_polys.append(p)
+      elif p.geom_type == "MultiPolygon":
+         final_polys.extend([sub for sub in p.geoms if not sub.is_empty and sub.area > 0.0])
+   return final_polys
+
+def _execute_phase1_topology_wrap(exterior_coords: List[Tuple[float, float]],
+                                  holes_coords: List[List[Tuple[float, float]]],
+                                  zone_c_lon: float) -> Tuple[List[Tuple[float, float]], List[List[Tuple[float, float]]]]:
+   # Phase 1: Repairs broken raw deprojection topology vertex by vertex.
+   phase1_ext = []
+   for lon, lat in exterior_coords:
+      phase1_ext.append((wrap_lon_at(lon, zone_c_lon), lat))
+
+   phase1_holes = []
+   for h in holes_coords or []:
+      if not h:
+         continue
+      stabilized_h = [(wrap_lon_at(lon, zone_c_lon), lat) for lon, lat in h]
+      phase1_holes.append(stabilized_h)
+
+   return phase1_ext, phase1_holes
+
+def _process_hole_subtraction(outer_poly: Polygon, shifted_holes: List[List[Tuple[float, float]]],
+                              xmin: float, ymin: float, xmax: float, ymax: float, fid: Any) -> List[Polygon]:
+   # Clips holes, clears shell geometry self-intersections, and executes difference operations.
+   hole_polys = []
+   for sh_h in shifted_holes:
+      clipped_h = rect_clip_polygon(sh_h, xmin, ymin, xmax, ymax)
+      if not clipped_h:
+         continue
+      clipped_h = collapse_near_duplicates(clipped_h, eps=DUP_EPS)
+      if clipped_h and clipped_h == clipped_h[-1]:
+         clipped_h = clipped_h[:-1]
+      if len(clipped_h) < 3:
+         continue
+      hp = Polygon(clipped_h)
+      if not hp.is_empty and hp.area > 0.0:
+         hole_polys.append(hp)
+
+   outer_poly = outer_poly.buffer(0)
+
+   if not hole_polys:
+      return [outer_poly]
+
+   hole_union = unary_union(hole_polys)
+   if hole_union.is_empty:
+      return [outer_poly]
+
+   try:
+      result = outer_poly.difference(hole_union)
+      if result.geom_type == "Polygon":
+         return [result]
+      elif result.geom_type == "MultiPolygon":
+         return list(result.geoms)
+      elif result.geom_type == "GeometryCollection":
+         return [sub for sub in result.geoms if sub.geom_type == "Polygon"]
+   except Exception:
+      print(f"\nWARNING: Error subtracting holes for feature {fid}")
+
+   return [outer_poly]
+
 def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
                            holes_coords: List[List[Tuple[float, float]]],
-                           zone_extent, zone_tile_eps, fid, part_idx: int) -> List[Dict[str, Any]]:
-   """
-   For each of the 4 tiles:
-    - Drop exterior ring if it has no vertex inside the tile without shifts (raw lon test).
-    - Otherwise apply wrap_lon_at(lon, tile_center) to each vertex.
-    - Record shifted polygon as proper GeoJSON in per-tile debug files.
-    - Clip rings with rect_clip_polygon and assemble pieces (holes processed similarly).
-   """
-   poly = Polygon(exterior_coords, holes_coords)
-   if poly.is_empty:
+                           zone_extent, zone_tile_eps, fid, part_idx: int, zone_c_lon: float) -> List[Dict[str, Any]]:
+
+   base_poly = Polygon(exterior_coords, holes_coords)
+   if base_poly.is_empty:
+      return []
+
+   # Guard folder and filename creation under DEBUG status to save memory allocations
+   if DEBUG:
+      milestone_dir = os.path.join(os.getcwd(), "debugMilestones")
+      for step_idx in range(6):
+         os.makedirs(os.path.join(milestone_dir, f"step{step_idx}"), exist_ok=True)
+
+      try:
+         ext_slug = f"ext_{int(zone_extent[0])}_{int(zone_extent[1])}_{int(zone_extent[2])}_{int(zone_extent[3])}"
+      except (TypeError, IndexError):
+         ext_slug = "ext_unknown"
+
+      ctx_filename = f"{ext_slug}_fid_{fid}_part_{part_idx}.geojson"
+
+      # --- STEP 0: RAW FUNCTION INPUT ---
+      _write_milestone_file(os.path.join(milestone_dir, "step0", ctx_filename), {
+         "type": "Feature",
+         "properties": {"step": "0_raw_function_input", "zone_extent": zone_extent, "fid": fid, "part_idx": part_idx, "zone_c_lon": zone_c_lon},
+         "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(exterior_coords)]}
+      })
+
+   phase1_ext, phase1_holes = _execute_phase1_topology_wrap(exterior_coords, holes_coords, zone_c_lon)
+   if not phase1_ext:
       return []
 
    pieces: List[Dict[str, Any]] = []
+   global_accumulated_step4_features = []
+   global_accumulated_step5_features = []
+
    for q, (xmin, ymin, xmax, ymax) in enumerate(TILES_4):
-      if not intersects_extent_deg((xmin, ymin, xmax, ymax), zone_extent, zone_tile_eps):
-      #   #print("Not processing tile", (xmin, ymin, xmax, ymax), "for zone with extent", zone_extent)
-         continue
-
       tile_center = 0.5 * (xmin + xmax)
+      tile_label = f"q{q}_{int(xmin)}_{int(xmax)}"
+      is_target_tile = (abs(xmin - 90.0) < 1e-3 and abs(xmax - 180.0) < 1e-3)
 
-      # Drop exterior if it has no vertex inside tile without shifts (raw lon test)
-      if not _ring_has_vertex_in_tile_without_shift(exterior_coords, xmin, xmax):
-         continue
+      wrapped_zone_lon = wrap_lon_at(zone_c_lon, tile_center)
+      tile_shift = wrapped_zone_lon - zone_c_lon
 
-      # Localize exterior using wrap_lon_at
-      localized_ext, ext_shifts = _localize_ring_with_wrap(exterior_coords, tile_center)
+      shifted_ext = [(lon + tile_shift, lat) for lon, lat in phase1_ext]
+      shifted_holes = [[(lon + tile_shift, lat) for lon, lat in h] for h in phase1_holes]
 
-      # Build debug geometry (proper GeoJSON Polygon) using shifted coords (ensure closure)
-      shifted_ext_closed = list(localized_ext)
-      if shifted_ext_closed and shifted_ext_closed[0] != shifted_ext_closed[-1]:
-         shifted_ext_closed = shifted_ext_closed + [shifted_ext_closed[0]]
+      s_lons = [float(pt[0]) for pt in shifted_ext]
+      s_lats = [float(pt[1]) for pt in shifted_ext]
+      shifted_p1_extent = [min(s_lons), min(s_lats), max(s_lons), max(s_lats)]
 
-      debug_geom_coords: List[List[List[float]]] = [ [[float(x), float(y)] for (x, y) in shifted_ext_closed] ]
-      holes_debug_list: List[Dict[str, Any]] = []
-
-      # Process holes for debug geometry: include shifted holes that pass the raw-vertex test
-      for h in holes_coords or []:
-         if not h:
-            continue
-         hh = list(h)
-         if hh[0] != hh[-1]:
-            hh.append(hh[0])
-         if not _ring_has_vertex_in_tile_without_shift(hh, xmin, xmax):
-            holes_debug_list.append({"original_hole": hh, "skipped_reason": "no_vertex_in_tile_without_shift"})
-            continue
-         localized_h, h_shifts = _localize_ring_with_wrap(hh, tile_center)
-         shifted_h_closed = list(localized_h)
-         if shifted_h_closed and shifted_h_closed[0] != shifted_h_closed[-1]:
-            shifted_h_closed = shifted_h_closed + [shifted_h_closed[0]]
-         debug_geom_coords.append([[float(x), float(y)] for (x, y) in shifted_h_closed])
-         holes_debug_list.append({
-            "original_hole": hh,
-            "localized_hole_shifted": [[float(x), float(y)] for (x, y) in localized_h],
-            "hole_shifts": [float(s) for s in h_shifts]
+      # --- STEP 1: PRE-CLIP QUADRANT INPUT ---
+      if DEBUG:
+         _write_milestone_file(os.path.join(milestone_dir, "step1", f"{tile_label}_{ctx_filename}"), {
+            "type": "Feature",
+            "properties": {"step": "1_pre_clip_shifted_input", "extent_slug": ext_slug, "tile_bounds": [xmin, ymin, xmax, ymax]},
+            "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(shifted_ext)]}
          })
 
-      # Create debug feature (proper GeoJSON) with shifted polygon geometry
-      if DEBUG:
-         debug_feature = {
-            "type": "Feature",
-            "properties": {
-               "fid": fid,
-               "part_idx": part_idx,
-               "tile_xmin": xmin,
-               "tile_xmax": xmax,
-               "exterior_shifts": [float(s) for s in ext_shifts],
-               "holes_info": holes_debug_list
-            },
-            "geometry": {
-               "type": "Polygon",
-               "coordinates": debug_geom_coords
-            }
-         }
-         _debug_record_tile(xmin, xmax, debug_feature)
+      if not intersects_extent_deg((xmin, ymin, xmax, ymax), shifted_p1_extent, zone_tile_eps):
+         continue
 
-      # Clip exterior ring (use shifted exterior for clipping)
-      clipped = rect_clip_polygon(localized_ext, xmin, ymin, xmax, ymax)
+      if DEBUG:
+         debug_ext_closed = list(shifted_ext)
+         if debug_ext_closed and debug_ext_closed != debug_ext_closed[-1]:
+            debug_ext_closed.append(debug_ext_closed[0])
+         _debug_record_tile(xmin, xmax, {
+            "type": "Feature",
+            "properties": {"fid": fid, "part_idx": part_idx, "tile_xmin": xmin, "tile_xmax": xmax},
+            "geometry": {"type": "Polygon", "coordinates": [[[float(x), float(y)] for (x, y) in debug_ext_closed]]}
+         })
+
+      clipped = rect_clip_polygon(shifted_ext, xmin, ymin, xmax, ymax)
       if not clipped:
          continue
+
+      # --- STEP 2: IMMEDIATE CLIPPER OUTPUT ---
+      if DEBUG:
+         _write_milestone_file(os.path.join(milestone_dir, "step2", f"{tile_label}_{ctx_filename}"), {
+            "type": "Feature",
+            "properties": {"step": "2_result_immediate_after_clip", "extent_slug": ext_slug, "vertex_count": len(clipped)},
+            "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(clipped)]}
+         })
+
       clipped = collapse_near_duplicates(clipped, eps=DUP_EPS)
-      if clipped and clipped[0] == clipped[-1]:
+      if clipped and clipped == clipped[-1]:
          clipped = clipped[:-1]
       if len(clipped) < 3:
-         # print("Skipping no clipped")
          continue
       outer_poly = Polygon(clipped)
       if outer_poly.is_empty or outer_poly.area <= 0.0:
-         # print("empty or no area")
          continue
 
-      # Process holes: only keep holes that have at least one vertex inside tile without shifts
-      hole_polys: List[Polygon] = []
-      for h in holes_coords or []:
-         if not h:
-            continue
-         hh = list(h)
-         if hh[0] != hh[-1]:
-            hh.append(hh[0])
-         if not _ring_has_vertex_in_tile_without_shift(hh, xmin, xmax):
-            continue
-         localized_h, h_shifts = _localize_ring_with_wrap(hh, tile_center)
-         clipped_h = rect_clip_polygon(localized_h, xmin, ymin, xmax, ymax)
-         if not clipped_h:
-            continue
-         clipped_h = collapse_near_duplicates(clipped_h, eps=DUP_EPS)
-         if clipped_h and clipped_h[0] == clipped_h[-1]:
-            clipped_h = clipped_h[:-1]
-         if len(clipped_h) < 3:
-            continue
-         hp = Polygon(clipped_h)
-         if hp.is_empty or hp.area <= 0.0:
-            continue
-         hole_polys.append(hp)
+      # --- STEP 3: CLOSED RING POLYGON ---
+      if DEBUG:
+         _write_milestone_file(os.path.join(milestone_dir, "step3", f"{tile_label}_{ctx_filename}"), {
+            "type": "Feature",
+            "properties": {"step": "3_outer_poly_ring_built", "extent_slug": ext_slug, "is_valid": outer_poly.is_valid},
+            "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(outer_poly.exterior.coords)]}
+         })
 
-      outer_poly = outer_poly.buffer(0)
+      raw_output_polys = _process_hole_subtraction(outer_poly, shifted_holes, xmin, ymin, xmax, ymax, fid)
+      final_polys = _flatten_to_simple_polygons(raw_output_polys)
 
-      # Subtract holes if present (fail-hard semantics; no try/except)
-      if not hole_polys:
-         # if outer_poly.is_empty: print("final empty")
-         #print("final area:", outer_poly.area)
+      # Only accumulate the milestone array payloads if actively debugging
+      if DEBUG:
+         for idx, p in enumerate(final_polys):
+            global_accumulated_step4_features.append({
+               "type": "Feature",
+               "properties": {"tile_q": q, "part_idx": idx, "geom_type": p.geom_type, "bounds": [xmin, xmax]},
+               "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(p.exterior.coords)]}
+            })
 
-         final_polys = [outer_poly]
-      else:
-         hole_union = unary_union(hole_polys)
-         if hole_union.is_empty:
-            final_polys = [outer_poly]
-         else:
-            try:
-               # outer_poly = outer_poly.buffer(0)
-               result = outer_poly.difference(hole_union)
-            except:
-               print("\nWARNING: Error adding holes to feature", fid)
-               print("outer_poly is:", outer_poly)
-               print("hole_union is:", hole_union, "\n")
+      for g_idx, global_poly in enumerate(final_polys):
+         if DEBUG and is_target_tile:
+            global_accumulated_step5_features.append({
+               "type": "Feature",
+               "properties": {"tile_q": q, "global_idx": g_idx, "is_valid": global_poly.is_valid, "bounds": [xmin, xmax]},
+               "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(global_poly.exterior.coords)]}
+            })
 
-               print("outer valid:", outer_poly.is_valid)
-               print("outer validity reason:", explain_validity(outer_poly))
-               print("hole_union valid:", hole_union.is_valid)
-               print("hole_union validity reason:", explain_validity(hole_union))
-
-               print("outer intersects hole_union:", outer_poly.intersects(hole_union))
-               print("outer contains hole_union:", outer_poly.contains(hole_union))
-               print("outer covers hole_union:", outer_poly.covers(hole_union))
-               print("outer touches hole_union:", outer_poly.touches(hole_union))
-               print("outer crosses hole_union:", outer_poly.crosses(hole_union))
-               print("outer overlaps hole_union:", outer_poly.overlaps(hole_union))
-
-               result = outer_poly
-            if result.geom_type == "Polygon":
-               if not result.is_empty and result.area > 0.0:
-                  final_polys = [result]
-               else:
-                  final_polys = []
-            else:
-               final_polys = [sub for sub in result.geoms if sub.geom_type == "Polygon" and not sub.is_empty and sub.area > 0.0]
-
-      for g in final_polys:
-         # If g is a Polygon, test it directly
-         if g.geom_type == "Polygon":
-            piece = _accept_polygon_piece(g, xmin, ymin, xmax, ymax, fid, part_idx)
-            if piece:
-               pieces.append(piece)
-            continue
-
-         # If g is a MultiPolygon, iterate sub-polygons
-         if g.geom_type == "MultiPolygon":
-            for sub in g.geoms:
-               piece = _accept_polygon_piece(sub, xmin, ymin, xmax, ymax, fid, part_idx)
-               if piece:
-                  pieces.append(piece)
-            continue
-
-         # If g is a GeometryCollection, extract polygon members
-         if g.geom_type == "GeometryCollection":
-            for sub in g.geoms:
+         if global_poly.geom_type == "Polygon":
+            piece = _accept_polygon_piece(global_poly, xmin, ymin, xmax, ymax, fid, part_idx)
+            if piece: pieces.append(piece)
+         elif global_poly.geom_type == "MultiPolygon":
+            for sub in global_poly.geoms:
                if sub.geom_type == "Polygon":
                   piece = _accept_polygon_piece(sub, xmin, ymin, xmax, ymax, fid, part_idx)
-                  if piece:
-                     pieces.append(piece)
-            continue
+                  if piece: pieces.append(piece)
 
-         # Unexpected geometry type: log and skip
-         print(f"Debug: unexpected geometry type {g.geom_type} for fid={fid} part={part_idx}; skipping")
+   # --- WRITE OUT COMBINED PASSTHROUGH COLLECTIONS INTO THEIR OWN STEPS ---
+   if DEBUG:
+      if global_accumulated_step4_features:
+         _write_milestone_file(os.path.join(milestone_dir, "step4", f"combined_{ctx_filename}"), {
+            "type": "FeatureCollection", "features": global_accumulated_step4_features
+         })
+
+      if global_accumulated_step5_features:
+         _write_milestone_file(os.path.join(milestone_dir, "step5", f"combined_{ctx_filename}"), {
+            "type": "FeatureCollection", "features": global_accumulated_step5_features
+         })
 
    return pieces
 
 # ---------- wrapper that accepts exterior+holes or polygon-like lists ----------
 def _tile_and_clip(exterior_or_poly, holes_coords: Optional[List[List[Tuple[float, float]]]],
-   zone_extent, eps_zone_tile, fid, part_idx: int,
+   zone_extent, eps_zone_tile, fid, part_idx: int, zone_c_lon: float,
    original_geom: Optional[Dict[str,Any]] = None) -> List[Dict[str, Any]]:
    # exterior_or_poly can be a shapely Polygon/MultiPolygon or a list of coords (exterior)
    if hasattr(exterior_or_poly, "exterior"):
       if exterior_or_poly.geom_type == "Polygon":
          ext = list(exterior_or_poly.exterior.coords)
          holes = [list(h.coords) for h in exterior_or_poly.interiors]
-         return _tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx)
+         return _tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon)
       pieces: List[Dict[str, Any]] = []
       for sub in exterior_or_poly.geoms:
          ext = list(sub.exterior.coords)
          holes = [list(h.coords) for h in sub.interiors]
-         pieces.extend(_tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx))
+         pieces.extend(_tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon))
       return pieces
-   return _tile_and_clip_polygon(exterior_or_poly, holes_coords or [], zone_extent, eps_zone_tile, fid, part_idx)
+   return _tile_and_clip_polygon(exterior_or_poly, holes_coords or [], zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon)
 
 # ---------- assemble features from pieces (disabled union to avoid GEOS errors) ----------
 def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str, Any]], fid: str, props: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -485,11 +504,7 @@ def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str, Any]], fid: st
                if not sub.is_empty and sub.area > _AREA_EPS:
                   valid_polys.append(sub)
 
-   # Disabled staged union to avoid GEOS errors while geometries are still invalid.
-   # When the clipped polygons are consistently valid, re-enable staged union:
    merged, skipped = _staged_union_polygons(valid_polys, fid)
-   # For now produce a MultiPolygon directly from valid_polys to avoid GEOS unary_union on invalid inputs.
-   #merged, skipped = (MultiPolygon(valid_polys), None)
 
    out_features: List[Dict[str, Any]] = []
    if merged is None:
@@ -501,7 +516,6 @@ def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str, Any]], fid: st
       out_features.append({"type": "Feature", "id": fid, "properties": props, "geometry": mapping(merged)})
       return out_features
 
-   # fallback: extract polygonal parts
    polys2: List[Polygon] = []
    for g in getattr(merged, "geoms", []) or []:
       if g.geom_type == "Polygon":
@@ -676,11 +690,19 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
    orig_type = geom["type"]
    tile_geoms = []
 
+   # Safe geographic mean calculation for extents that cross the dateline (xmin > xmax)
+   z_xmin, z_ymin, z_xmax, z_ymax = zone_extent
+   if z_xmin > z_xmax:
+      zone_c_lon = 0.5 * (z_xmin + z_xmax + 360.0)
+      if zone_c_lon > 180.0:
+         zone_c_lon -= 360.0
+   else:
+      zone_c_lon = 0.5 * (z_xmin + z_xmax)
+
    if orig_type == "Polygon":
       ext = geom["coordinates"][0]
       holes = geom["coordinates"][1:]
-      pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=0)
-      #print("_tile_and_clip returned", len(pieces), "pieces")
+      pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, 0, zone_c_lon)
       for p in pieces:
          tile_geoms.append(p["geom"])
 
@@ -688,14 +710,13 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
       for i, poly in enumerate(geom["coordinates"]):
          ext = poly[0]
          holes = poly[1:]
-         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, part_idx=i)
+         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, i, zone_c_lon)
          for p in pieces:
             tile_geoms.append(p["geom"])
    else:
       shp = shape(geom)
       for xmin, ymin, xmax, ymax in TILES_4:
          tile_box = box(xmin, ymin, xmax, ymax)
-         # Only process if the feature naturally intersects this tile frame
          if shp.intersects(tile_box):
             inter = shp.intersection(tile_box)
             if not inter.is_empty:
@@ -704,11 +725,7 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
    if not tile_geoms:
       return None
 
-   # Disabled unary_union to avoid GEOS errors while geometries are still invalid.
-   # When clipped polygons are consistently valid, re-enable:
    merged = unary_union(tile_geoms)
-   #merged = shapely.union_all(tile_geoms, grid_size = 1e-9)
-   # merged = tile_geoms
 
    if orig_type in ("Polygon", "MultiPolygon"):
       all_kept_pieces = [{"geom": g} for g in tile_geoms]
