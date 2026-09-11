@@ -79,11 +79,13 @@ _ECSOURCES = \
 	src/dggrs/IVEA7H_Z7.ec \
 	src/dggrs/RTEA7H_Z7.ec \
 	src/dggrs/HEALPixNUNIQ.ec \
+	src/dggrs/SpatialID.ec \
 	src/projections/ri5x6.ec \
 	src/projections/authalic.ec \
 	src/projections/barycentric5x6.ec \
 	src/projections/icoVertexGreatCircle.ec \
 	src/projections/rHEALPix.ec \
+	src/projections/WebMercator.ec \
 	src/dggsJSON/dggsJSON.ec \
 	$(EC_SDK_SRC)/extras/JSONSchema.ec \
 	src/ecere3D/Plane.ec \
@@ -294,6 +296,9 @@ $(OBJ)RTEA7H_Z7.sym: src/dggrs/RTEA7H_Z7.ec
 $(OBJ)HEALPixNUNIQ.sym: src/dggrs/HEALPixNUNIQ.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/HEALPixNUNIQ.ec) -o $(call quote_path,$@)
 
+$(OBJ)SpatialID.sym: src/dggrs/SpatialID.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggrs/SpatialID.ec) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6.sym: src/projections/ri5x6.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@)
 
@@ -308,6 +313,9 @@ $(OBJ)icoVertexGreatCircle.sym: src/projections/icoVertexGreatCircle.ec
 
 $(OBJ)rHEALPix.sym: src/projections/rHEALPix.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/rHEALPix.ec) -o $(call quote_path,$@)
+
+$(OBJ)WebMercator.sym: src/projections/WebMercator.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/projections/WebMercator.ec) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON.sym: src/dggsJSON/dggsJSON.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@)
@@ -413,6 +421,9 @@ $(OBJ)RTEA7H_Z7.c: src/dggrs/RTEA7H_Z7.ec $(OBJ)RTEA7H_Z7.sym | $(SYMBOLS)
 $(OBJ)HEALPixNUNIQ.c: src/dggrs/HEALPixNUNIQ.ec $(OBJ)HEALPixNUNIQ.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/HEALPixNUNIQ.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)SpatialID.c: src/dggrs/SpatialID.ec $(OBJ)SpatialID.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggrs/SpatialID.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)ri5x6.c: src/projections/ri5x6.ec $(OBJ)ri5x6.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/ri5x6.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -427,6 +438,9 @@ $(OBJ)icoVertexGreatCircle.c: src/projections/icoVertexGreatCircle.ec $(OBJ)icoV
 
 $(OBJ)rHEALPix.c: src/projections/rHEALPix.ec $(OBJ)rHEALPix.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/rHEALPix.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)WebMercator.c: src/projections/WebMercator.ec $(OBJ)WebMercator.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/projections/WebMercator.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)dggsJSON.c: src/dggsJSON/dggsJSON.ec $(OBJ)dggsJSON.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/dggsJSON/dggsJSON.ec) -o $(call quote_path,$@) -symbols $(OBJ)
@@ -532,6 +546,9 @@ $(OBJ)RTEA7H_Z7$(O): $(OBJ)RTEA7H_Z7.c
 $(OBJ)HEALPixNUNIQ$(O): $(OBJ)HEALPixNUNIQ.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HEALPixNUNIQ.c) -o $(call quote_path,$@)
 
+$(OBJ)SpatialID$(O): $(OBJ)SpatialID.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)SpatialID.c) -o $(call quote_path,$@)
+
 $(OBJ)ri5x6$(O): $(OBJ)ri5x6.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ri5x6.c) -o $(call quote_path,$@)
 
@@ -546,6 +563,9 @@ $(OBJ)icoVertexGreatCircle$(O): $(OBJ)icoVertexGreatCircle.c
 
 $(OBJ)rHEALPix$(O): $(OBJ)rHEALPix.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)rHEALPix.c) -o $(call quote_path,$@)
+
+$(OBJ)WebMercator$(O): $(OBJ)WebMercator.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)WebMercator.c) -o $(call quote_path,$@)
 
 $(OBJ)dggsJSON$(O): $(OBJ)dggsJSON.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dggsJSON.c) -o $(call quote_path,$@)
