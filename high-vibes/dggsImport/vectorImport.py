@@ -57,43 +57,6 @@ def _initialize_dggal_worker():
    app = Application(appGlobals=globals());
    pydggal_setup(app)
 
-# worker: build a single FG blob for a root zone (picklable top-level)
-def _vector_package_worker(wkbc_path: str,
-   zone_id: int,
-   worker_config: dict,
-   dggrs_name: str,
-   depth: int) -> Optional[bytes]:
-   data_root = worker_config["_data_root"]
-   collection = worker_config["collection"]
-   collection_config = worker_config["collection_config"]
-
-   store = DGGSDataStore(data_root, collection, config=collection_config)
-   dggrs = store.dggrs
-   root_zone = DGGRSZone(zone_id)
-
-   # read WKBC (geometry-only feature collection)
-   src_fc = read_wkb_collection_file(wkbc_path)
-
-   # clip features to zone (out_fc will have features with ids and no properties)
-   out_fc, feature_entry_exit_indices = clip_featurecollection_to_zone(src_fc, dggrs, root_zone, refined=False)
-
-   # free the large WKBC source from memory
-   del src_fc
-
-   features = out_fc.get("features", []) or []
-   if not features:
-      return None
-
-   # produce DGGS-JSON-FG object (properties remain empty in out_fc)
-   dggs_obj = write_dggs_json_fg(out_fc, feature_entry_exit_indices, dggrs, root_zone, depth)
-
-   # convert to UBJSON then gzip
-   ubbuf = io.BytesIO()
-   ubjson.dump(dggs_obj, ubbuf)
-   gz = gzip.compress(ubbuf.getvalue(), compresslevel=9)
-
-   return gz
-
 # build blobs in parallel for a batch of base zones
 def _build_vector_blobs_processes(store,                         # Pass store directly
                                   ancestors_lookup: dict,         # Pass ancestors lookup directly
