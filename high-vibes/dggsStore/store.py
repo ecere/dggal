@@ -592,7 +592,7 @@ class DGGSDataStore:
             if not isinstance(children, list):
                Instance.delete(children)
 
-   def list_zones_with_data_at_level(self, root_level: int, as_textIDs: bool = False) -> List[Any]:
+   def list_zones_with_data_at_level(self, root_level: int, as_textIDs: bool = False, bbox: list = None) -> List[Any]:
       result: List[Any] = []
       seen_ids = set()  # Prevent duplicate zone IDs
       dggrs = self.dggrs
@@ -607,10 +607,15 @@ class DGGSDataStore:
             continue
          for root_zone in self.iter_roots_for_base(base_zone, root_level, up_to=False):
             zid_text = dggrs.getZoneTextID(root_zone)
-            if zid_text and zid_text in root_ids:
-               if zid_text not in seen_ids:
-                  seen_ids.add(zid_text)
-                  result.append(zid_text if as_textIDs else root_zone)
+            if zid_text and zid_text in root_ids and zid_text not in seen_ids:
+               if bbox:
+                  ge = GeoExtent()
+                  dggrs.getZoneWGS84Extent(root_zone, ge)
+                  if (float(ge.ur.lon) < bbox[0] or float(ge.ll.lon) > bbox[2] or
+                      float(ge.ur.lat) < bbox[1] or float(ge.ll.lat) > bbox[3]):
+                     continue
+               seen_ids.add(zid_text)
+               result.append(zid_text if as_textIDs else root_zone)
       return result
 
    def write_zone_batch(self,
