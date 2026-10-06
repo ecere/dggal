@@ -5,6 +5,7 @@ from dggal import *
 import json
 from typing import Dict, Any, List, Sequence, Set
 from shapely.geometry import shape
+import numpy as np
 
 try:
    from ogcapi.utils import *
@@ -156,6 +157,39 @@ _CONFORMS_TO = [
 ]
 _LINKS_TEMPLATE = [{"rel": "profile", "href": ""}]
 
+class NumPyDictWrapper:
+   def __init__(self, raw_view):
+      self.keys = raw_view
+      self.length = len(raw_view)
+      #self.sorter = np.argsort(raw_view).astype(np.int32)
+      #sorter_64 = np.argsort(raw_view, kind='quicksort')
+      sorter_64 = np.argsort(raw_view, kind='stable')
+      self.sorter = sorter_64 # np.empty(self.length, dtype=np.int32)
+      #np.copyto(self.sorter, sorter_64, casting='unsafe')
+      #del sorter_64
+   def __getitem__(self, key):
+      idx = np.searchsorted(self.keys, np.uint64(key), sorter=self.sorter)
+      if idx < self.length:
+         actual_idx = self.sorter[idx]
+         if self.keys[actual_idx] == key:
+            return int(actual_idx)
+      raise KeyError(key)
+
+   def __contains__(self, key):
+      idx = np.searchsorted(self.keys, np.uint64(key), sorter=self.sorter)
+      if idx < self.length:
+         actual_idx = self.sorter[idx]
+         return self.keys[actual_idx] == key
+      return False
+
+   def get(self, key, default=None):
+      idx = np.searchsorted(self.keys, np.uint64(key), sorter=self.sorter)
+      if idx < self.length:
+         actual_idx = self.sorter[idx]
+         if self.keys[actual_idx] == key:
+            return int(actual_idx)
+      return default
+
 def write_dggs_json_fg(out_fc: Dict[str, Any],
                        features_rings_entry_exit_indices: Dict[str, Any],
                        dggrs,
@@ -189,8 +223,12 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    sub_count = sub_zones.count
    sub_ptr = ffi.cast("uint64_t *", sub_zones.array)
 
-   sub_indices = { int(sub_ptr[i]): i for i in range(sub_count) }
-   Instance.delete(sub_zones)
+   #sub_indices = { int(sub_ptr[i]): i for i in range(sub_count) }
+   #Instance.delete(sub_zones)
+
+   # This takes up significantly less memory and avoids the copy. While lookups might be slower, it should initialize faster than the dictionary comprehension.
+   sub_indices = NumPyDictWrapper(np.frombuffer(ffi.buffer(sub_ptr, sub_count * 8), dtype=np.uint64))
+   # Keep sub_zones around if using NumPyDictWrapper
 
    for fi, feat in enumerate(features):
       fid = feat.get("id")
