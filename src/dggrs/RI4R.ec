@@ -150,7 +150,6 @@ public class RhombicIcosahedral4R : DGGRS
    {
       uint64 p = (uint64)(1LL << level);
       uint64 numCols = 5*p, numRows = 6*p;
-      AVLTree<I4RZone> zonesTree { };
       Array<I4RZone> zones { };
       Pointd tl, br;
       int row, col, y1, y2, x1, x2;
@@ -177,6 +176,8 @@ public class RhombicIcosahedral4R : DGGRS
       x2 = Min(Max(0, (int64)(br.x * p)), numCols-1);
       y2 = Min(Max(0, (int64)(br.y * p)), numRows-1);
 
+      zones.minAllocSize = (y2 - y1 + 1) * (x2 - x1 + 1);
+
       for(row = y1; row <= y2; row++)
       {
          for(col = x1; col <= x2; col++)
@@ -198,19 +199,16 @@ public class RhombicIcosahedral4R : DGGRS
                   if(!e.intersects(bbox))
                      continue;
                }
-               zonesTree.Add(zone);
+               zones.Add(zone);
             }
          }
       }
 
-      zones.minAllocSize = zonesTree.count;
-      for(t : zonesTree)
-         zones.Add(t);
+      zones.Sort(true);
       zones.minAllocSize = 0;
       if(!zones.count)
          delete zones;
 
-      delete zonesTree;
       return (Array<DGGRSZone>)zones;
    }
 
@@ -472,6 +470,30 @@ public class RhombicIcosahedral4R : DGGRS
          }
       }
       return centroids;
+   }
+
+   Array<DGGRSZone> getSubZones(DGGRSZone parent, int relativeDepth)
+   {
+      uint64 s = (1LL << relativeDepth), nSubZones = s * s;
+      if(nSubZones < (1LL << 31))
+      {
+         Array<DGGRSZone> subZones { size = (uint)nSubZones };
+         int szLevel = parent.level + relativeDepth;
+         I4RZone rZone = (I4RZone)parent;
+         uint64 startRow = (uint64)rZone.row * s;
+         uint64 startCol = (uint64)rZone.col * s;
+         uint64 y, x;
+         DGGRSZone * ptr = subZones.array;
+
+         for(y = 0; y < s; y++)
+         {
+            int sRow = (int)(startRow + y), sCol = (int)startCol;
+            for(x = 0; x < s; x++)
+               *ptr++ = I4RZone { szLevel, sRow, sCol++ };
+         }
+         return subZones;
+      }
+      return null;
    }
 }
 

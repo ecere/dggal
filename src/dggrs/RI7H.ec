@@ -33,6 +33,12 @@ static define POW_EPSILON = 0.1;
 
 #define POW7(x) ((x) < sizeof(powersOf7) / sizeof(powersOf7[0]) ? (uint64)powersOf7[x] : (uint64)(pow(7, x) + POW_EPSILON))
 
+static struct AZContext
+{
+   DGGRSZone * subZones;
+   int level;
+};
+
 public class RhombicIcosahedral7H : DGGRS
 {
    RI5x6Projection pj;
@@ -609,7 +615,7 @@ public class RhombicIcosahedral7H : DGGRS
          }
          else
          {
-            rVertices.minAllocSize = 0;
+            r.minAllocSize = 0;
             rVertices = r;
          }
       }
@@ -3785,6 +3791,30 @@ private:
          else
             centroids[0] = centroid;
          return centroids;
+      }
+      return null;
+   }
+
+   private static inline bool ::addZone(const AZContext ctx, uint64 index, Pointd centroid)
+   {
+      ctx.subZones[(uint)index] = I7HZone::fromCentroid(ctx.level, centroid);
+      return true;
+   }
+
+   Array<DGGRSZone> getSubZones(DGGRSZone parent, int rDepth)
+   {
+      uint64 nSubZones = getSubZonesCount(rDepth);
+      if(this != nullZone && nSubZones < 1LL<<32)
+      {
+         Array<DGGRSZone> subZones { size = (uint)nSubZones };
+         if(rDepth > 0)
+         {
+            AZContext ctx { subZones.array, parent.level + rDepth };
+            iterateI7HSubZones(rDepth, ctx, addZone, -1);
+         }
+         else
+            subZones[0] = parent;
+         return subZones;
       }
       return null;
    }
