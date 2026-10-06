@@ -74,16 +74,42 @@ def list_zones(collectionId, dggrsId):
       level_arg = request.args.get("zone-level")
       level = int(level_arg) if level_arg and level_arg.isdigit() else ZONE_QUERY_LEVEL
 
+      # bbox Query Parameter (minLon,minLat,maxLon,maxLat)
+      bbox = None
+      bbox_arg = request.args.get("bbox")
+      if bbox_arg:
+         parts = bbox_arg.split(",")
+         if len(parts) == 4:
+            is_valid = True
+            parsed_bbox = []
+            for p in parts:
+               p_strip = p.strip()
+               if p_strip:
+                  # Basic structural validation for floats without throwing exceptions
+                  dots = p_strip.count(".")
+                  minus = p_strip.count("-")
+                  clean = p_strip.replace(".", "").replace("-", "")
+                  if clean.isdigit() and dots <= 1 and (minus == 0 or (minus == 1 and p_strip.startswith("-"))):
+                     parsed_bbox.append(float(p_strip))
+                  else:
+                     is_valid = False
+               else:
+                  is_valid = False
+            if is_valid:
+               bbox = parsed_bbox
+
       # Get zones as TEXT IDs
-      zones = store.list_zones_with_data_at_level(level, as_textIDs=True)
+      zones = store.list_zones_with_data_at_level(level, as_textIDs=True, bbox=bbox)
 
       # Base href (no ?f=)
       zones_href = f"/collections/{collectionId}/dggs/{dggrsId}/zones"
       level_suffix = f"&zone-level={level}" if level_arg else ""
+      bbox_suffix = f"&bbox={bbox_arg}" if bbox_arg else ""
+      query_suffixes = level_suffix + bbox_suffix
 
       # Typed links (explicit representations)
-      zones_href_json = zones_href + "?f=json" + level_suffix
-      zones_href_html = zones_href + "?f=html" + level_suffix
+      zones_href_json = zones_href + "?f=json" + query_suffixes
+      zones_href_html = zones_href + "?f=html" + query_suffixes
 
       #
       # JSON REPRESENTATION
