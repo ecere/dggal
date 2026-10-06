@@ -217,7 +217,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
    sz_level = root_level + depth
    is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
    isHEALPix = _is_dggrs_HEALPix(type(dggrs).__name__)
-   nudge_factor = 10.0 / (ref_ratio ** sz_level)
+   nudge_factor = 10.0 / (ref_ratio ** depth)
 
    sub_zones = dggrs.getSubZones(root_zone, depth)
    sub_count = sub_zones.count
