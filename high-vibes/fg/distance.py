@@ -189,7 +189,15 @@ def distance5x6(
     north = pivot.x >= pivot.y
     top = (f1.x == f1.y)
     no_interruptions = (dx <= 0 and dy >= 0) if top else (dx >= 0 and dy <= 0)
-    a_is_vertex = (abs(a.y - a.x) < _EPS) if top else (abs(a.y - a.x - 1.0) < _EPS)
+
+    #(0,0), (1,1), (2,2), (3,3), (4,4), (5,5), -- (0,0) and (5,5) are twin points
+    #(0,2), (1,3), (2,4), (3,5), (4, 6), -- the same "south" vertex quintuplet points
+    #(0,1), (1,2), (2,3), (3,4), (4,5), (5,6), -- (0,1) and (1,2) are twin points
+    #(1,0), (2,1), (3,2), (4,3), (5,4) -- the same "north" vertex quintuplet points
+    # 5 + 1 + 5 + 1 = 12 distinct icosahedron vertices.
+
+    # This checks if we are one of the inside vertices at the base of the northern or southern interruptions (not polar vertices)
+    a_is_vertex = abs(a.x - round(a.x)) < _EPS and ((abs(a.y - a.x) < _EPS) if top else (abs(a.y - a.x - 1.0) < _EPS))
 
     if (not no_interruptions) and (not a_is_vertex):
         if dx == -1:
