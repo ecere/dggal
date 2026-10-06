@@ -41,12 +41,12 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, uncl
    # 1) build raw zone polygon
    crs = CRS(ogc, 1534) if ico else CRS(0)
 
-   if True: #refined:
-      verts_container = dggrs.getZoneRefinedCRSVertices(zone, crs, 0)
-   else:
-      verts_container = dggrs.getZoneCRSVertices(zone, crs)
+   verts_container = dggrs.getZoneRefinedCRSVertices(zone, crs, 0)
 
    coords = [[float(v.x), float(v.y)] for v in verts_container]
+
+   Instance.delete(verts_container)
+
    if not coords:
       return Polygon()
    if coords[0] != coords[-1]:

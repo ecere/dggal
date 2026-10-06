@@ -58,6 +58,7 @@ def generate_zone_geometry_shapely(dggrs, zone, crs, centroids: bool):
          if not verts or verts.count == 0:
             return None
          coords = [(verts[i].x, verts[i].y) for i in range(verts.count)]
+      Instance.delete(verts)
       if coords and coords[0] != coords[-1]:
          coords.append(coords[0])
       return Polygon(coords)
