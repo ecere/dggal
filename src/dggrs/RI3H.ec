@@ -32,6 +32,12 @@ level GP notation Name                             Class       Conway           
 
 #define POW3(x) ((x) < sizeof(powersOf3) / sizeof(powersOf3[0]) ? (uint64)powersOf3[x] : (uint64)(pow(3, x) + POW_EPSILON))
 
+static struct AZContext
+{
+   DGGRSZone * subZones;
+   int level;
+};
+
 public class RhombicIcosahedral3H : DGGRS
 {
    RI5x6Projection pj;
@@ -2314,6 +2320,30 @@ private:
    Array<Pointd> getSubZoneCentroids(int rDepth)
    {
       return getI3HSubZoneCentroids(this, rDepth);
+   }
+
+   private static inline bool ::addZone(const AZContext ctx, uint64 index, Pointd centroid)
+   {
+      ctx.subZones[(uint)index] = I3HZone::fromCentroid(ctx.level, centroid);
+      return true;
+   }
+
+   Array<DGGRSZone> getSubZones(DGGRSZone parent, int rDepth)
+   {
+      uint64 nSubZones = getSubZonesCount(rDepth);
+      if(this != nullZone && nSubZones < 1LL<<32)
+      {
+         Array<DGGRSZone> subZones { size = (uint)nSubZones };
+         if(rDepth > 0)
+         {
+            AZContext ctx { subZones.array, parent.level + rDepth };
+            iterateI3HSubZones(this, rDepth, ctx, addZone, -1);
+         }
+         else
+            subZones[0] = parent;
+         return subZones;
+      }
+      return null;
    }
 
    private /*static */bool orderZones(int zoneLevel, AVLTree<I3HZone> tsZones, Array<I3HZone> zones)
