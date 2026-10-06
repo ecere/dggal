@@ -3,8 +3,11 @@ from typing import Dict, Tuple, List, Any, Optional, Sequence
 from shapely.geometry import shape, mapping, Polygon, MultiPolygon, LineString, MultiLineString, Point, MultiPoint, GeometryCollection
 from shapely.ops import polygonize, unary_union
 from shapely.validation import make_valid
+import shapely
+import functools
 import json
 import os
+import numpy as np
 
 from . import fix_topology_5x6 as topo
 from .sutherlandHodgman import *
@@ -31,6 +34,54 @@ def write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir: str = "debug_out
 
 def _is_dggrs_5x6(name):
    return name.startswith("IVEA") or name.startswith("RTEA") or name.startswith("ISEA")
+
+# Private global helper for staircase clipping in pure 5x6 layout coordinate space
+def _clip_and_wrap_to_staircase(shp_geom) -> Any:
+   import shapely
+   from shapely.geometry import Polygon, box
+
+   staircase_polygon = Polygon([
+      (0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (2.0, 1.0), (2.0, 2.0),
+      (3.0, 2.0), (3.0, 3.0), (4.0, 3.0), (4.0, 4.0), (5.0, 4.0),
+      (5.0, 5.0), (5.0, 6.0), (4.0, 6.0), (4.0, 5.0), (3.0, 5.0),
+      (3.0, 4.0), (2.0, 4.0), (2.0, 3.0), (1.0, 3.0), (1.0, 2.0),
+      (0.0, 2.0), (0.0, 0.0)
+   ])
+
+   results = []
+
+   # Pass 1: Core interior clip
+   if shp_geom.intersects(staircase_polygon):
+      core_piece = shp_geom.intersection(staircase_polygon)
+      if not core_piece.is_empty:
+         results.append(core_piece)
+
+   # Pass 2: LEFT-wrapping clip (x < 0)
+   left_boundary = box(-1.0, -1.0, 0.0, 1.0)
+   if shp_geom.intersects(left_boundary):
+      left_piece = shp_geom.intersection(left_boundary)
+      if not left_piece.is_empty:
+         shifted_left = shapely.transform(left_piece, lambda coords: coords + 5.0)
+         if shifted_left.intersects(staircase_polygon):
+            final_left = shifted_left.intersection(staircase_polygon)
+            if not final_left.is_empty:
+               results.append(final_left)
+
+   # Pass 3: RIGHT-wrapping clip (x > 5)
+   right_boundary = box(5.0, 5.0, 6.0, 7.0)
+   if shp_geom.intersects(right_boundary):
+      right_piece = shp_geom.intersection(right_boundary)
+      if not right_piece.is_empty:
+         shifted_right = shapely.transform(right_piece, lambda coords: coords - 5.0)
+         if shifted_right.intersects(staircase_polygon):
+            final_right = shifted_right.intersection(staircase_polygon)
+            if not final_right.is_empty:
+               results.append(final_right)
+
+   if not results:
+      return Polygon()
+
+   return shapely.union_all(results, grid_size=1e-10)
 
 def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, unclipped: bool = False) -> Optional[Polygon]:
    # Build the raw zone polygon (refined=False => 5 or 6 vertices), run the
@@ -59,51 +110,28 @@ def get_zone_polygon(dggrs, zone, refined: bool = False, ico: bool = False, uncl
 
    raw_ring = coords
 
-   if unclipped or not _is_dggrs_5x6(type(dggrs).__name__):
+   if (not _is_dggrs_5x6(type(dggrs).__name__) or
+       (unclipped and # We still need to clip for zones extending past 5x6 wrapping points
+       (min(xs := [pt[0] for pt in coords]) > -1e-10 and max(xs) < 5.0 + 1e-10))):
       return Polygon(raw_ring)
 
    #print(raw_ring)
 
    # NOTE: Code below is all specific to 5x6 space
 
-   # 2) run distance5x6 insertion on the raw ring (same routine used for features)
+   return Polygon(raw_ring) # We may no longer need this _clip_and_wrap_to_staircase() at all after properly rotating/dropping the far geometry
 
-   # This may not be necessary when using the refined tiles, and causes some left-over slivers
-   # connecting warping tiles...
-   #inserted_coords, _seg_debug = topo._insert_ring_coords(raw_ring, f"zone_{dggrs.getZoneTextID(zone)}", 0)
-
-   #return Polygon(raw_ring) #
    inserted_coords = raw_ring
 
-   # 3) determine candidate tiles the inserted ring touches
-   candidates = topo._candidate_tiles_from_vertices(inserted_coords, margin_neighbors=1)
-   if not candidates:
+   shp_geom = Polygon(inserted_coords)
+   if shp_geom.is_empty:
       return Polygon()
 
-   # 4) for each candidate tile, clip/localize using the same tile pipeline
-   polys = []
-   for (tx, ty) in candidates:
-      # _tile_and_filter_staircase will localize the ring for each tile and return clipped pieces
-      #pieces = topo._tile_and_filter_staircase(inserted_coords, f"zone_{dggrs.getZoneTextID(zone)}", 0)
-      pieces = topo._tile_and_filter_staircase(inserted_coords, [], f"zone_{dggrs.getZoneTextID(zone)}", 0)
+   # 4) Run the clean static canvas clipping operation directly
+   merged = _clip_and_wrap_to_staircase(shp_geom)
 
-      # pieces may include many tiles; filter to the current tile (tile_and_filter returns only relevant tiles,
-      # but we call it per-ring for consistency with feature pipeline)
-      for p in pieces:
-         if p.get("tile_x") == tx and p.get("tile_y") == ty:
-            #print("Adding piece of clipper from ", tx, ty)
-            polys.append(p["geom"])
-         #polys.append(p["geom"])
-
-   if not polys:
+   if merged.is_empty:
       return Polygon()
-
-   # 5) staged union/repair using the same routine as features
-   merged, skipped = topo._staged_union_polygons(polys, f"zone_{dggrs.getZoneTextID(zone)}")
-   if merged is None:
-      return Polygon()
-
-   #print(merged)
 
    # 6) return the merged polygonal geometry (Polygon or MultiPolygon)
    return merged
@@ -220,6 +248,30 @@ def _entry_exit_for_multipolygon(mpoly: MultiPolygon, orig_set: set) -> List[Lis
       mpolys_entry_exit.append(_entry_exit_for_polygon(p, orig_set))
    return mpolys_entry_exit
 
+def _shift_cross_seam_coords(coords, z_cx, z_cy):
+   # Computes the seam thresholds directly using scalar min/max values
+   # from the raw coordinates, avoiding unnecessary array math.
+   new_coords = coords.copy()
+
+   x = coords[:, 0]
+   y = coords[:, 1]
+
+   offset = 2.0
+
+   # Check thresholds by subtracting the zone centroid directly from scalar bounds
+   if (np.max(x) - z_cx) > offset and (np.max(y) - z_cy) > offset:
+      shift = -5.0
+   elif (np.min(x) - z_cx) < -offset and (np.min(y) - z_cy) < -offset:
+      shift = 5.0
+   else:
+      shift = 0.0
+
+   # Apply the unified translation to both dimensions in absolute lockstep
+   new_coords[:, 0] += shift
+   new_coords[:, 1] += shift
+
+   return new_coords
+
 def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
    refined: bool = False, ico: bool = False) -> Tuple[Dict, List[Any]]:
    """
@@ -245,6 +297,13 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
    out_fc: Dict[str, Any] = {"type": "FeatureCollection", "features": []}
    features_entry_exit_indices: List[Any] = []
 
+   dggrs_name = type(dggrs).__name__
+   is5x6 = _is_dggrs_5x6(dggrs_name)
+
+   zc = dggrs.getZoneCRSCentroid(zone, CRS(0)) if is5x6 else None
+   if is5x6:
+      z_cx, z_cy = float(zc.x), float(zc.y)
+
    for feat in fc.get("features", []):
       geom = feat.get("geometry")
       props = feat.get("properties")
@@ -259,13 +318,17 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
          if zone_poly_lines is None:
             zone_poly_lines = get_zone_polygon(dggrs, zone, refined=refined, ico=ico, unclipped=True)
             zone_bounds = zone_poly_lines.bounds
+            target_mask = zone_poly_lines
+            if is5x6: z_cx, z_cy = target_mask.centroid.x, target_mask.centroid.y
       else:
          if zone_poly is None:
             zone_poly = get_zone_polygon(dggrs, zone, refined=refined, ico=ico)
             if not zone_poly.is_valid:
                zone_poly = make_valid(zone_poly)
+            target_mask = zone_poly
             zone_bounds = zone_poly.bounds
             # write_zone_debug_geojson(zone_poly, dggrs, zone, debug_dir="zone_tiles")
+            if is5x6: z_cx, z_cy = target_mask.centroid.x, target_mask.centroid.y
 
       src_shp = feat.get("_shapely_geom")
 
@@ -276,17 +339,28 @@ def clip_featurecollection_to_zone(fc: Dict, dggrs, zone,
          feat["bbox"] = src_shp.bounds
 
       f_minx, f_miny, f_maxx, f_maxy = feat["bbox"]
+
+      # skip only if truly out-of-bounds AND not a cross-seam candidate
       if f_minx > zone_bounds[2] or f_maxx < zone_bounds[0] or f_miny > zone_bounds[3] or f_maxy < zone_bounds[1]:
-         continue
+         if not is5x6 or not (max(abs(f_minx - zone_bounds[2]), abs(f_maxx - zone_bounds[0])) > 2.0 or max(abs(f_miny - zone_bounds[3]), abs(f_maxy - zone_bounds[1])) > 2.0):
+            continue
 
       if not src_shp:
          src_shp = shape(geom)
          feat["_shapely_geom"] = src_shp
 
-      if not src_shp.is_valid:
-         src_shp = make_valid(src_shp)
+      if is5x6 and (zone_bounds[2] > 5 + 1e-12 or zone_bounds[3] > 6 + 1e-12 or zone_bounds[0] < -1e-12 or zone_bounds[1] < -1e-12):
+         # We need to shift the geometry to valid space to clip this zone...
+         atomic_parts = shapely.get_parts(src_shp)
+         transformed_parts = [shapely.transform(part, functools.partial(_shift_cross_seam_coords, z_cx=z_cx, z_cy=z_cy)) for part in atomic_parts if not part.is_empty]
+         aligned_shp = shapely.union_all(transformed_parts) if transformed_parts else src_shp
+      else:
+         aligned_shp = src_shp
 
-      clipped = src_shp.intersection(zone_poly_lines if geom_type in ("LineString", "MultiLineString") else zone_poly)
+      if not aligned_shp.is_valid:
+         aligned_shp = shapely.make_valid(aligned_shp)
+
+      clipped = aligned_shp.intersection(target_mask)
       if clipped is None or clipped.is_empty:
          continue
 
