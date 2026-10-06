@@ -6,28 +6,30 @@ from enum import IntEnum
 
 _DEFAULT_SUBDIV = 50 #300
 
+check_eps = 1e-2
+
 def _segment_near_pole_by_crs(p: Tuple[float, float], n: Tuple[float, float]) -> bool:
    # Proximity Checks
    # Geographic South Pole
-   if n[0] < 2.01 and n[1] > 3.49 and n[1] < 3.51:
+   if n[0] < 2 + check_eps and n[1] > 3.5 - check_eps and n[1] < 3.5 + check_eps:
       return True
-   if p[0] < 2.01 and p[1] > 3.49 and p[1] < 3.51:
+   if p[0] < 2 + check_eps and p[1] > 3.5 - check_eps and p[1] < 3.5 + check_eps:
       return True
 
-   if n[1] > 2.99 and n[0] > 1.49 and n[0] < 1.51:
+   if n[1] > 3 - check_eps and n[0] > 1.5 - check_eps and n[0] < 1.5 + check_eps:
       return True
-   if p[1] > 2.99 and p[0] > 1.49 and p[0] < 1.51:
+   if p[1] > 3 - check_eps and p[0] > 1.5 - check_eps and p[0] < 1.5 + check_eps:
       return True
 
    # Geographic North Pole
-   if n[1] < 0.01 and n[0] > 0.49 and n[0] < 0.51:
+   if n[1] < check_eps and n[0] > 0.5 - check_eps and n[0] < 0.5 + check_eps:
       return True
-   if p[1] < 0.01 and p[0] > 0.49 and p[0] < 0.51:
+   if p[1] < check_eps and p[0] > 0.5 - check_eps and p[0] < 0.5 + check_eps:
       return True
 
-   if n[0] > 4.99 and n[1] > 4.49 and n[1] < 4.51:
+   if n[0] > 5 - check_eps and n[1] > 4.5 - check_eps and n[1] < 4.5 + check_eps:
       return True
-   if p[0] > 4.99 and p[1] > 4.49 and p[1] < 4.51:
+   if p[0] > 5 - check_eps and p[1] > 4.5 - check_eps and p[1] < 4.5 + check_eps:
       return True
 
    # Straddle Checks (Catches crossing lines like (2,3) -> (2,4))
