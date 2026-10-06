@@ -233,7 +233,7 @@ def _worker_process_package(
    if is5x6:
       is_polar_root = PolarRootMode.RI5x6 # Automatic pole detection so this should always be set
    elif (extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7):
-      is_polar_root = PolarRootMode.HEALPIX if projection else PolarRootMode.GGG
+      is_polar_root = PolarRootMode.GGG if not projection else PolarRootMode.RHEALPIX if dggrs_name.startswith("rHEALPix") else PolarRootMode.HEALPIX
    else:
       is_polar_root = PolarRootMode.NONE
 
@@ -371,7 +371,11 @@ def orchestrator_finalize(
    package_results: List[Dict[int, bytes]],
    projection,
    *,
-   grid_size: float = GRID_SIZE_DEFAULT
+   grid_size: float = GRID_SIZE_DEFAULT,
+   root_level=None,
+   subzone_level=None,
+   is_polar_root=None,
+   dggrs=None
 ) -> Dict[int, dict]:
    # aggregate WKB lists per feature id
    agg: Dict[int, List[bytes]] = {}
@@ -386,6 +390,9 @@ def orchestrator_finalize(
    # merge per-feature across workers, perform final buffer cleanup, convert to GeoJSON
    final_geoms: Dict[int, dict] = {}
    #extent = [-180,-90,180,90]
+
+   is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
+
    for fid, wkb_list in agg.items():
       # rehydrate all WKBs to Shapely geometries
       shps = [_wkb.loads(b) for b in wkb_list]
@@ -476,7 +483,19 @@ def export_to_geojson(
 
    # aggregate and finalize geometries from workers
    print("All zone data processed, merging final features...")
-   final_geoms: Dict[int, dict] = orchestrator_finalize(package_results, projection, grid_size=grid_size)
+
+   dggrs_name = store.config['dggrs']
+   is5x6 = _is_dggrs_5x6(dggrs_name)
+
+   if is5x6:
+      is_polar_root = PolarRootMode.RI5x6 # Automatic pole detection so this should always be set
+   elif True: #(extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7):
+      is_polar_root = PolarRootMode.GGG if not projection else PolarRootMode.RHEALPIX if dggrs_name.startswith("rHEALPix") else PolarRootMode.HEALPIX
+   else:
+      is_polar_root = PolarRootMode.NONE
+
+   final_geoms: Dict[int, dict] = orchestrator_finalize(package_results, projection, grid_size=grid_size,
+      root_level=root_level,subzone_level=sampling_level_clamped, is_polar_root=is_polar_root, dggrs=store.dggrs)
 
    if projection:
       Instance.delete(projection)

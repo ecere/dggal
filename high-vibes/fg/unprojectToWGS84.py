@@ -4,6 +4,11 @@ from typing import Any, Dict, List, Tuple, Sequence
 import math
 from enum import IntEnum
 
+def sgn(v: float) -> int:
+    if v > 0: return 1
+    if v < 0: return -1
+    return 0
+
 _DEFAULT_SUBDIV = 50 #300
 
 check_eps = 1e-2
@@ -131,13 +136,13 @@ def _insert_intermediate_points_crs_segment(p: Tuple[float, float], n: Tuple[flo
 
    if not near_pole:
       # REVIEW: Improve on automatic refinement
-      if refine_wgs84:
-         max_5x6_distance = refine_wgs84
+      if True: #refine_wgs84:
+         max_5x6_distance = 1e-3 #refine_wgs84
          d, *unused = distance5x6(Pointd(p[0], p[1]), Pointd(n[0], n[1]))
          md = abs(d.x) + abs(d.y)
          if md > max_5x6_distance:
             divs = int(floor(md / max_5x6_distance))
-            # print("Interpolating with divisions:", divs)
+            #print("Interpolating between", p, "and", n, "distance:", d.x, ",", d.y, ",", md, "with divisions:", divs)
             inter = _interpolate_between_5x6(p, n, divs)
             out.extend(inter)
       return out
@@ -154,7 +159,7 @@ def _insert_intermediate_points_crs_segment(p: Tuple[float, float], n: Tuple[flo
       return out
 
    # If twin equals p or is extremely close, skip first interpolation
-   eps_close = 1e-12
+   eps_close = 0.1 # 1e-12 # was causing small gaps near south pole with IVEA4R
    if not (abs(twin[0] - p[0]) <= eps_close and abs(twin[1] - p[1]) <= eps_close):
       # interpolate from p toward twin (exclude endpoints)
       seg1 = _interpolate_between_5x6(p, twin, divs)
@@ -258,6 +263,7 @@ class PolarRootMode(IntEnum):
    GGG = 1
    HEALPIX = 2
    RI5x6 = 3
+   RHEALPIX = 4
 
 def _unfold_healpix_pole_shelf(lon: float, lat: float, out_coords: List[Tuple[float, float]]) -> None:
    # Instantly unfolds a single polar vertex into two explicit horizontal
@@ -278,6 +284,18 @@ def _unfold_healpix_pole_shelf(lon: float, lat: float, out_coords: List[Tuple[fl
       out_coords.append((cell_right, snap_lat))
       out_coords.append((cell_left, snap_lat))
 
+def _unfold_rhealpix_pole_shelf(lon: float, lat: float, out_coords: List[Tuple[float, float]]) -> None:
+   is_north = (lat > 0)
+   snap_lat = 90.0 if is_north else -90.0
+   west = -180
+   east =  180
+   if is_north:
+      out_coords.append((west, snap_lat))
+      out_coords.append((east, snap_lat))
+   else:
+      out_coords.append((east, snap_lat))
+      out_coords.append((west, snap_lat))
+
 def _calculate_healpix_cell_width(lat: float, subzone_level: int, polar_threshold: float) -> float:
     # Evaluates the Cotillon corner-to-corner cell width
     if abs(lat) >= polar_threshold:
@@ -297,6 +315,24 @@ def _calculate_healpix_cell_width(lat: float, subzone_level: int, polar_threshol
 
     return 90.0
 
+def _calculate_rhealpix_cell_width(lat: float, subzone_level: int, polar_threshold: float) -> float:
+    # Evaluates the Cotillon corner-to-corner cell width
+    if abs(lat) >= polar_threshold:
+        # At the absolute polar cap row, the border cell footprint width spans exactly 45.0 degrees.
+        return 45.0
+
+    row_height_segment = (math.pi / 2.0) / (3 ** subzone_level)
+
+    sin_lat = math.sin(math.radians(abs(lat)))
+    s_param = math.sqrt(max(0.0, 1.0 - sin_lat))
+    width_param = math.sqrt(3.0) * (math.pi / 2.0) * s_param
+
+    if width_param > 1e-11:
+        ring_idx = int(round((width_param / 2.0) / row_height_segment))
+        ring_idx = max(1, ring_idx)
+        return 2.0 * (90.0 / ring_idx)
+
+    return 90.0
 
 def _snap_healpix_longitude(lon: float, lat: float, subzone_level: int, polar_threshold: float) -> float:
     norm_lon = lon if lon <= 180.0 else lon - 360.0
@@ -322,6 +358,14 @@ def _snap_healpix_longitude(lon: float, lat: float, subzone_level: int, polar_th
 
     return lon
 
+def _snap_rhealpix_longitude(lon: float, lat: float, subzone_level: int, polar_threshold: float) -> float:
+    norm_lon = lon if lon <= 180.0 else lon - 360.0
+    dLon = _calculate_rhealpix_cell_width(lat, subzone_level, polar_threshold)
+    full_cell_width = dLon * 1.05
+    if abs(abs(norm_lon) - 180.0) <= full_cell_width:
+        return -180.0 if norm_lon < 0 else 180.0
+    return lon
+
 def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, zone_extent: list,
    pin: Pointd, gp: GeoPoint, root_level: int = 5, subzone_level: int = 16,
    polar_root_mode: PolarRootMode = PolarRootMode.NONE, refine_wgs84=None) -> List[Tuple[float, float]]:
@@ -341,14 +385,17 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
       ggg_polar_cap_limit = sDLat * 1.01
       sz_dlon_ggg = 90.0 / (2 ** subzone_level)
    elif polar_root_mode == PolarRootMode.HEALPIX:
-      polar_threshold = 90.0
       hz_dlat = 45.0 / (2 ** subzone_level)
       hp_polar_threshold = 90.0 - (hz_dlat * 1.05)
+   elif polar_root_mode == PolarRootMode.RHEALPIX:
+      hz_dlat = 90.0 / (3 ** subzone_level)
+      rhp_polar_threshold = 90.0 - (hz_dlat * 1.05)
 
    # --- ROLLING STATE TRACKERS FOR RI5x6 ---
    at_pole = False
    pole_lat_val = 0.0
    prev_lon = None
+   prev_lat = None
 
    for i in range(L):
       p = closed[i]
@@ -374,6 +421,13 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
             if abs(lat) >= hp_polar_threshold:
                _unfold_healpix_pole_shelf(lon, lat, out_coords)
                continue
+         elif polar_root_mode == PolarRootMode.RHEALPIX:
+            lon = _snap_rhealpix_longitude(lon, lat, subzone_level, rhp_polar_threshold)
+            if prev_lon is not None and abs(lat) >= 84:
+               if abs(lon - prev_lon) > 180.0 and (abs(lon - 180) < 0.001 or abs(lon - -180) < 0.001):
+                  out_coords.append((sgn(prev_lon) * 180, prev_lat))
+                  _unfold_rhealpix_pole_shelf(lon, lat, out_coords)
+                  out_coords.append((lon, lat))
          elif polar_root_mode == PolarRootMode.GGG:
             snapped = _snap_polar_vertex(lon, lat, sz_dlon_ggg, ggg_polar_cap_limit)
             if snapped:
@@ -388,6 +442,9 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
             is_curr_pole = (abs(lat) >= 90.0 - 1e-10)
             if is_curr_pole:
                lat = -90.0 if lat < 0 else 90.0
+               # Normalize the active longitude so the trailing append doesn't insert a rogue value
+               if prev_lon is not None:
+                  lon = prev_lon
 
             if is_curr_pole and not at_pole:
                # Case A: Entering the pole singularity
@@ -407,6 +464,7 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
          out_coords.append((lon, lat))
          v_count += 1
          prev_lon = lon
+         prev_lat = lat
 
    # --- FINAL POINT CLOSURE WRAP ---
    if len(closed) > 0:
@@ -426,6 +484,14 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
             _unfold_healpix_pole_shelf(final_lon, final_lat, out_coords)
          else:
             out_coords.append((final_lon, final_lat))
+      elif polar_root_mode == PolarRootMode.RHEALPIX:
+         final_lon = _snap_rhealpix_longitude(final_lon, final_lat, subzone_level, rhp_polar_threshold)
+         if abs(final_lat) >= 84 and prev_lon is not None and abs(final_lon - prev_lon) > 180.0 and (abs(final_lon - 180) < 0.001 or abs(final_lon - -180) < 0.001):
+            out_coords.append((sgn(prev_lon) * 180, prev_lat))
+            _unfold_rhealpix_pole_shelf(final_lon, final_lat, out_coords)
+            out_coords.append((final_lon, final_lat))
+         else:
+            out_coords.append((final_lon, final_lat))
       elif polar_root_mode == PolarRootMode.GGG:
          snapped = _snap_polar_vertex(final_lon, final_lat, sz_dlon_ggg, ggg_polar_cap_limit)
          if snapped:
@@ -441,6 +507,8 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
          is_final_pole = (abs(final_lat) >= 90.0 - 1e-10)
          if is_final_pole:
             final_lat = -90.0 if final_lat < 0 else 90.0
+            if prev_lon is not None:
+               final_lon = prev_lon
 
          if is_final_pole and not at_pole:
             if prev_lon is not None and abs(final_lon - prev_lon) > 1e-7:
@@ -462,7 +530,7 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
    is5x6 = proj and (isinstance(proj, IVEAProjection) or isinstance(proj, ISEAProjection) or isinstance(proj, RTEAProjection))
 
    def _process_geom(geom: Dict[str, Any], zone_extent, refine_wgs84 = None) -> Dict[str, Any]:
-      gtype = geom["type"]
+      gtype = geom["type"] if geom else None
       if gtype == "Polygon":
          if not geom["coordinates"]:
             raise InvalidPolygonGeometry

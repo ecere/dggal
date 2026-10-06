@@ -465,6 +465,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
    dggrs_id =  curie[start:end]
 
    dggrs = get_dggrs(dggrs_id)
+   is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
 
    zone_text = data["zoneId"]
    depth = int(data["depth"])
@@ -481,11 +482,10 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
       dggrs.getZoneWGS84Extent(root_zone, ge)
       extent = [float(ge.ll.lon), float(ge.ll.lat), float(ge.ur.lon), float(ge.ur.lat)]
       # For GNOSIS Global Grid, pass a flag identifying zones touching a pole:
-      is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
       if is5x6:
          is_polar_root = PolarRootMode.RI5x6 # This should always be set for 5x6
       elif extent[1] <= -90.0 + 1e-7 or extent[3] >= 90.0 - 1e-7:
-         is_polar_root = PolarRootMode.HEALPIX if projection else PolarRootMode.GGG
+         is_polar_root = PolarRootMode.GGG if not projection else PolarRootMode.RHEALPIX if type(dggrs).__name__.startswith("rHEALPix") else PolarRootMode.HEALPIX
    else:
       projection = None
       extent = None
