@@ -65,9 +65,9 @@ public class HEALPixProjection
             Radians dLon = (v.x - (- Pi + Pi/2 * n + (Pi/2 - width) / 2)) * Pi/2 / width;
             if(dLon < 0 || dLon > Pi/2 + 1E-15)
             {
-               if(dLon < 0 && dLon > -1E-11)
+               if(dLon < 0 && dLon > -1E-10)
                   dLon = 0;
-               else if(dLon > 0 && dLon < Pi/2 + 1E-11)
+               else if(dLon > 0 && dLon < Pi/2 + 1E-10)
                   dLon = Pi/2;
                else
                   r = false;
