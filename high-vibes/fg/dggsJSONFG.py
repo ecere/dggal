@@ -258,7 +258,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
                if ring and count > 3:
                   rings.append(ring)
 
-            dggs_place = {"type": "Polygon", "coordinates": rings if rings else None}
+            dggs_place = {"type": "Polygon", "coordinates": rings } if rings else None
 
          elif g_type == "MultiPolygon":
             mcoords = []
@@ -280,12 +280,12 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
                      poly_rings.append(ring)
                if poly_rings:
                   mcoords.append(poly_rings)
-            dggs_place = {"type": "MultiPolygon", "coordinates": mcoords if mcoords else None}
+            dggs_place = {"type": "MultiPolygon", "coordinates": mcoords } if mcoords else None
 
          elif g_type == "LineString":
             coords = shp.coords
             ls, count = _ring_to_dggs_indices(coords, entry_exit_indices, dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
-            dggs_place = {"type": "LineString", "coordinates": ls if ls and count >= 2 else None }
+            dggs_place = {"type": "LineString", "coordinates": ls } if ls and count >= 2 else None
 
          elif g_type == "MultiLineString":
             lines_coords = []
@@ -295,11 +295,11 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
                ls, count = _ring_to_dggs_indices(coords, set(line_entry_exit), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, nudge_factor)
                if ls and count >= 2:
                   lines_coords.append(ls)
-            dggs_place = {"type": "MultiLineString", "coordinates": lines_coords if lines_coords else None}
+            dggs_place = {"type": "MultiLineString", "coordinates": lines_coords } if lines_coords else None
 
          elif g_type == "Point":
             idx = _resolve_point_to_subzone_index(float(shp.x), float(shp.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, isHEALPix, nudge_factor)
-            dggs_place = {"type": "Point", "coordinates": idx if idx != -1 else None }
+            dggs_place = {"type": "Point", "coordinates": idx } if idx != -1 else None
 
          elif g_type == "MultiPoint":
             pts_coords = []
@@ -307,7 +307,7 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
                idx = _resolve_point_to_subzone_index(float(p.x), float(p.y), dggrs, root_zone, sz_level, sub_indices, centroid_pointd, is5x6, isHEALPix, nudge_factor)
                if idx != -1:
                   pts_coords.append(idx)
-            dggs_place = {"type": "MultiPoint", "coordinates": pts_coords if pts_coords else None}
+            dggs_place = {"type": "MultiPoint", "coordinates": pts_coords } if pts_coords else None
 
       dggs_obj["features"].append({
          "type": "Feature",
@@ -345,7 +345,6 @@ def _index_to_xy(idx: int, centroids: List[Pointd]) -> List[float]:
       return []
    p = centroids[idx - 1]
 
-   # return [float(p.lon), float(p.lat)]
    return [float(p.x), float(p.y)]
 
 def _resolve_interruption_segments(resolved_pts: List[Tuple[float, float]]) -> List[List[float]]:
@@ -426,7 +425,7 @@ def resolve_coordinates(coords: Any, centroids: List[Pointd], is5x6: bool = Fals
 # Convert a geometry object (GeoJSON geometry) whose coordinates are index-based
 # into a geometry with numeric coordinates. Returns a new geometry dict.
 def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid: str, is5x6: bool = False) -> Dict[str, Any]:
-   gtype = geom["type"]
+   gtype = geom["type"] if geom else None
 
    if gtype == "Point":
       coords = geom.get("coordinates", [])
@@ -508,10 +507,11 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
          return None
       return {"type": "GeometryCollection", "geometries": out_geoms}
 
-   coords = geom.get("coordinates")
-   if coords is None:
-      print(f"Warning: Geometry of type {gtype} missing coordinates for feature id={fid}")
-      return None
+   if geom:
+      coords = geom.get("coordinates")
+      if coords is None:
+         print(f"Warning: Geometry of type {gtype} missing coordinates for feature id={fid}")
+         return None
    return geom
 
 def unproject_and_fix(projection, extent, converted, fid, refine_wgs84=None, fix_geom=True,
