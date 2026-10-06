@@ -357,7 +357,9 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
          pin.x = x_crs
          pin.y = y_crs
          if proj:
-            proj.inverse(pin, gp, False)
+            if not proj.inverse(pin, gp, False):
+               print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
+               continue
             lat, lon = float(gp.lat), float(gp.lon)
          else:
             lat, lon = float(pin.x * 180 / Pi), float(pin.y * 180 / Pi)
@@ -409,7 +411,9 @@ def _process_ring_crs_to_wgs84(ring_crs: List[Tuple[float, float]], proj: Any, z
       last_x, last_y = closed[-1]
       pin.x, pin.y = float(last_x), float(last_y)
       if proj:
-         proj.inverse(pin, gp, False)
+         if not proj.inverse(pin, gp, False):
+            print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
+            return out_coords
          final_lon, final_lat = float(gp.lon), float(gp.lat)
       else:
          final_lon, final_lat = float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)
@@ -517,14 +521,16 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
                pin.x = x_crs
                pin.y = y_crs
                if proj:
-                  proj.inverse(pin, gp, False)
+                  if not proj.inverse(pin, gp, False):
+                     print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
                   out_coords.append((float(gp.lon), float(gp.lat)))
                else:
                   out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
          pin.x = coords[-1][0]
          pin.y = coords[-1][1]
          if proj:
-            proj.inverse(pin, gp, False)
+            if not proj.inverse(pin, gp, False):
+               print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
             out_coords.append((float(gp.lon), float(gp.lat)))
          else:
             out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
@@ -541,14 +547,16 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
                   pin.x = x_crs
                   pin.y = y_crs
                   if proj:
-                     proj.inverse(pin, gp, False)
+                     if not proj.inverse(pin, gp, False):
+                        print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
                      out_coords.append((float(gp.lon), float(gp.lat)))
                   else:
                      out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
             pin.x = line[-1][0]
             pin.y = line[-1][1]
             if proj:
-               proj.inverse(pin, gp, False)
+               if not proj.inverse(pin, gp, False):
+                  print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
                out_coords.append((float(gp.lon), float(gp.lat)))
             else:
                out_coords.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
@@ -558,7 +566,8 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
          pin.x = geom["coordinates"][0]
          pin.y = geom["coordinates"][1]
          if proj:
-            proj.inverse(pin, gp, False)
+            if not proj.inverse(pin, gp, False):
+               print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
             coords = (float(gp.lon), float(gp.lat))
          else:
             coords = (float(pin.y * 180 / Pi), float(pin.x * 180 / Pi))
@@ -569,7 +578,8 @@ def unproject_geojson_to_wgs84(obj: Dict[str, Any], proj: Any, zone_extent, refi
             pin.x = x_crs
             pin.y = y_crs
             if proj:
-               proj.inverse(pin, gp, False)
+               if not proj.inverse(pin, gp, False):
+                  print("WARNING: Inverse projection failed for:", pin.x, ",", pin.y, "->", gp.lat, ",", gp.lon)
                pts.append((float(gp.lon), float(gp.lat)))
             else:
                pts.append((float(pin.y * 180 / Pi), float(pin.x * 180 / Pi)))
