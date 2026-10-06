@@ -3,7 +3,7 @@
 
 from dggal import *
 import json
-from typing import Dict, Any, List, Sequence, Set
+from typing import Dict, Any, List, Sequence, Set, Tuple, Optional
 from shapely.geometry import shape
 import numpy as np
 
@@ -20,7 +20,7 @@ from .fixWGS84 import *
 dggal_ffi = dggal.ffi
 
 class BadNudge(Exception):
-    pass
+   pass
 
 def _resolve_point_to_subzone_index(px: float, py: float, dggrs, root_zone, sz_level, sub_indices,
    centroid_pointd, is5x6: bool = False, isHEALPix: bool = False, nudge_factor = 1e-8) -> int:
@@ -348,9 +348,53 @@ def _index_to_xy(idx: int, centroids: List[Pointd]) -> List[float]:
    # return [float(p.lon), float(p.lat)]
    return [float(p.x), float(p.y)]
 
+def _resolve_interruption_segments(resolved_pts: List[Tuple[float, float]]) -> List[List[float]]:
+   # helper evaluating decoded coordinates, detecting icosahedral
+   # interruption crossings using distance5x6, and injecting i_src/i_dst twin points.
+   if not resolved_pts:
+      return []
+
+   out: List[List[float]] = []
+   # Seed the loop with the initial vertex coordinate
+   out.append([resolved_pts[0][0], resolved_pts[0][1]])
+
+   eps_close = 1e-7  # Proximity filter tolerance
+
+   for i in range(len(resolved_pts) - 1):
+      p_a = resolved_pts[i]
+      p_b = resolved_pts[i+1]
+
+      pt_a = Pointd(p_a[0], p_a[1])
+      pt_b = Pointd(p_b[0], p_b[1])
+
+      # Invoke the specialized 5x6 projection crossing evaluator
+      res = distance5x6(pt_a, pt_b)
+
+      i_src: Optional[Pointd] = None
+      i_dst: Optional[Pointd] = None
+
+      if res and len(res) >= 5:
+         i_src = res[3]
+         i_dst = res[4]
+
+      # If both twin intersection bounds exist, we crossed an active interruption seam
+      if i_src is not None and i_dst is not None:
+         # Constraint Check A: Skip i_src if it is functionally identical to the source point
+         if abs(i_src.x - p_a[0]) > eps_close or abs(i_src.y - p_a[1]) > eps_close:
+            out.append([float(i_src.x), float(i_src.y)])
+
+         # Constraint Check B: Skip i_dst if it is functionally identical to the target point
+         if abs(i_dst.x - p_b[0]) > eps_close or abs(i_dst.y - p_b[1]) > eps_close:
+            out.append([float(i_dst.x), float(i_dst.y)])
+
+      # Append the terminal vertex for this active segment lineation
+      out.append([p_b[0], p_b[1]])
+
+   return out
+
 # Recursively resolve coordinate arrays where the leaf elements are integer indices.
 # Preserves nesting shape but replaces numeric leaves with [x,y] pairs.
-def resolve_coordinates(coords: Any, centroids: List[Pointd]) -> Any:
+def resolve_coordinates(coords: Any, centroids: List[Pointd], is5x6: bool = False) -> Any:
    if coords is None:
       return []
 
@@ -360,17 +404,17 @@ def resolve_coordinates(coords: Any, centroids: List[Pointd]) -> Any:
          first = coords[0]
          ft = type(first)
          if ft is int or ft is float:
-            out: List[List[float]] = []
+            out: List[Tuple[float, float]] = []
             for v in coords:
                iv = int(v)
                xy = _index_to_xy(iv, centroids)
                if xy:
-                  out.append(xy)
+                  out.append((float(xy[0]), float(xy[1])))
 
-            return out
+            return _resolve_interruption_segments(out) if is5x6 else out
       out_list: List[Any] = []
       for item in coords:
-         resolved = resolve_coordinates(item, centroids)
+         resolved = resolve_coordinates(item, centroids, is5x6)
          out_list.append(resolved)
       return out_list
    iv = int(coords)
@@ -381,7 +425,7 @@ def resolve_coordinates(coords: Any, centroids: List[Pointd]) -> Any:
 
 # Convert a geometry object (GeoJSON geometry) whose coordinates are index-based
 # into a geometry with numeric coordinates. Returns a new geometry dict.
-def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid: str) -> Dict[str, Any]:
+def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid: str, is5x6: bool = False) -> Dict[str, Any]:
    gtype = geom["type"]
 
    if gtype == "Point":
@@ -422,7 +466,7 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
 
    if gtype == "Polygon":
       coords = geom.get("coordinates", [])
-      resolved = resolve_coordinates(coords, centroids)
+      resolved = resolve_coordinates(coords, centroids, is5x6)
       if not resolved or not resolved[0] or len(resolved[0]) <= 3:
          print(f"Warning: Polygon exterior ring too short (len={len(resolved[0]) if resolved and resolved[0] else 0}) for feature id={fid}")
          return None
@@ -432,7 +476,7 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
 
    if gtype == "MultiPolygon":
       coords = geom.get("coordinates", [])
-      resolved = resolve_coordinates(coords, centroids)
+      resolved = resolve_coordinates(coords, centroids, is5x6)
       if not resolved:
          print(f"Warning: MultiPolygon has 0 polygons for feature id={fid}")
          return None
@@ -453,7 +497,7 @@ def convert_geometry_indexed(geom: Dict[str, Any], centroids: List[Pointd], fid:
       geoms = geom.get("geometries", [])
       out_geoms: List[Dict[str, Any]] = []
       for g in geoms:
-         conv = convert_geometry_indexed(g, centroids, fid)
+         conv = convert_geometry_indexed(g, centroids, fid, is5x6)
          if conv is None:
             inner_id = g.get("id") or "<no-id>"
             print(f"Warning: GeometryCollection contained empty/invalid geometry id={inner_id} in feature id={fid}")
@@ -545,7 +589,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
          geom = feat["dggsPlace"]
          props = feat.get("properties", {})
          id = feat.get("id", None)
-         converted = convert_geometry_indexed(geom, centroids, id)
+         converted = convert_geometry_indexed(geom, centroids, id, is5x6)
          if unproject:
             converted = unproject_and_fix(
                projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
@@ -567,7 +611,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
    elif top_type == "Feature":
       geom = data["dggsPlace"]
       props = data.get("properties", {})
-      converted = convert_geometry_indexed(geom, centroids, id)
+      converted = convert_geometry_indexed(geom, centroids, id, is5x6)
       if unproject:
          converted = unproject_and_fix(
             projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
@@ -586,7 +630,7 @@ def read_dggs_json_fg(data: Dict[str, Any], unproject = True, refine_wgs84=None)
       result = feature
    else:
       geom = data
-      converted = convert_geometry_indexed(geom, centroids, id)
+      converted = convert_geometry_indexed(geom, centroids, id, is5x6)
       if unproject:
          converted = unproject_and_fix(
             projection, extent, converted, id, refine_wgs84=refine_wgs84, fix_geom=fix_geom,
