@@ -176,18 +176,17 @@ def _flatten_to_simple_polygons(raw_polys: List[Polygon]) -> List[Polygon]:
 
 def _execute_phase1_topology_wrap(exterior_coords: List[Tuple[float, float]],
                                   holes_coords: List[List[Tuple[float, float]]],
-                                  zone_c_lon: float) -> Tuple[List[Tuple[float, float]], List[List[Tuple[float, float]]]]:
+                                  geom_c_lon: float) -> Tuple[List[Tuple[float, float]], List[List[Tuple[float, float]]]]:
    # Phase 1: Repairs broken raw deprojection topology vertex by vertex.
    phase1_ext = []
    for lon, lat in exterior_coords:
-      phase1_ext.append((wrap_lon_at(lon, zone_c_lon), lat))
+      phase1_ext.append((wrap_lon_at(lon, geom_c_lon), lat))
 
    phase1_holes = []
    for h in holes_coords or []:
-      if not h:
-         continue
-      stabilized_h = [(wrap_lon_at(lon, zone_c_lon), lat) for lon, lat in h]
-      phase1_holes.append(stabilized_h)
+      if h:
+         stabilized_h = [(wrap_lon_at(lon, geom_c_lon), lat) for lon, lat in h]
+         phase1_holes.append(stabilized_h)
 
    return phase1_ext, phase1_holes
 
@@ -232,7 +231,7 @@ def _process_hole_subtraction(outer_poly: Polygon, shifted_holes: List[List[Tupl
 
 def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
                            holes_coords: List[List[Tuple[float, float]]],
-                           zone_extent, zone_tile_eps, fid, part_idx: int, zone_c_lon: float) -> List[Dict[str, Any]]:
+                           zone_extent, zone_tile_eps, fid, part_idx: int, geom_c_lon: float) -> List[Dict[str, Any]]:
 
    base_poly = Polygon(exterior_coords, holes_coords)
    if base_poly.is_empty:
@@ -254,11 +253,11 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
       # --- STEP 0: RAW FUNCTION INPUT ---
       _write_milestone_file(os.path.join(milestone_dir, "step0", ctx_filename), {
          "type": "Feature",
-         "properties": {"step": "0_raw_function_input", "zone_extent": zone_extent, "fid": fid, "part_idx": part_idx, "zone_c_lon": zone_c_lon},
+         "properties": {"step": "0_raw_function_input", "zone_extent": zone_extent, "fid": fid, "part_idx": part_idx, "geom_c_lon": geom_c_lon},
          "geometry": {"type": "Polygon", "coordinates": [_fmt_closed(exterior_coords)]}
       })
 
-   phase1_ext, phase1_holes = _execute_phase1_topology_wrap(exterior_coords, holes_coords, zone_c_lon)
+   phase1_ext, phase1_holes = _execute_phase1_topology_wrap(exterior_coords, holes_coords, geom_c_lon)
    if not phase1_ext:
       return []
 
@@ -271,8 +270,8 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
       tile_label = f"q{q}_{int(xmin)}_{int(xmax)}"
       is_target_tile = (abs(xmin - 90.0) < 1e-3 and abs(xmax - 180.0) < 1e-3)
 
-      wrapped_zone_lon = wrap_lon_at(zone_c_lon, tile_center)
-      tile_shift = wrapped_zone_lon - zone_c_lon
+      wrapped_zone_lon = wrap_lon_at(geom_c_lon, tile_center)
+      tile_shift = wrapped_zone_lon - geom_c_lon
 
       shifted_ext = [(lon + tile_shift, lat) for lon, lat in phase1_ext]
       shifted_holes = [[(lon + tile_shift, lat) for lon, lat in h] for h in phase1_holes]
@@ -376,21 +375,21 @@ def _tile_and_clip_polygon(exterior_coords: List[Tuple[float, float]],
 
 # ---------- wrapper that accepts exterior+holes or polygon-like lists ----------
 def _tile_and_clip(exterior_or_poly, holes_coords: Optional[List[List[Tuple[float, float]]]],
-   zone_extent, eps_zone_tile, fid, part_idx: int, zone_c_lon: float,
+   zone_extent, eps_zone_tile, fid, part_idx: int, geom_c_lon: float,
    original_geom: Optional[Dict[str,Any]] = None) -> List[Dict[str, Any]]:
    # exterior_or_poly can be a shapely Polygon/MultiPolygon or a list of coords (exterior)
    if hasattr(exterior_or_poly, "exterior"):
       if exterior_or_poly.geom_type == "Polygon":
          ext = list(exterior_or_poly.exterior.coords)
          holes = [list(h.coords) for h in exterior_or_poly.interiors]
-         return _tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon)
+         return _tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, geom_c_lon)
       pieces: List[Dict[str, Any]] = []
       for sub in exterior_or_poly.geoms:
          ext = list(sub.exterior.coords)
          holes = [list(h.coords) for h in sub.interiors]
-         pieces.extend(_tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon))
+         pieces.extend(_tile_and_clip_polygon(ext, holes, zone_extent, eps_zone_tile, fid, part_idx, geom_c_lon))
       return pieces
-   return _tile_and_clip_polygon(exterior_or_poly, holes_coords or [], zone_extent, eps_zone_tile, fid, part_idx, zone_c_lon)
+   return _tile_and_clip_polygon(exterior_or_poly, holes_coords or [], zone_extent, eps_zone_tile, fid, part_idx, geom_c_lon)
 
 # ---------- assemble features from pieces (disabled union to avoid GEOS errors) ----------
 def _assemble_feature_from_pieces(all_kept_pieces: List[Dict[str, Any]], fid: str, props: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -599,6 +598,64 @@ def _ensure_output_type(merged, orig_type: str):
 
    return mapping(merged)
 
+def calculate_anti_meridian_aware_center(poly: list) -> float:
+   min_lon, min_lat = 20000.0, 90.0
+   max_lon, max_lat = -20000.0, -90.0
+   has_points = False
+
+   for ring in poly:
+      for pt in ring:
+         if len(pt) >= 2:
+            lon_f = float(pt[0])
+            lat_f = float(pt[1])
+            has_points = True
+
+            if min_lon > 10000.0:
+               min_lon, min_lat = lon_f, lat_f
+               max_lon, max_lat = lon_f, lat_f
+               continue
+
+            if lat_f < min_lat: min_lat = lat_f
+            if lat_f > max_lat: max_lat = lat_f
+
+            # 1. Check if the incoming point is already inside the active circular interval
+            is_inside = False
+            if max_lon >= min_lon:
+               if min_lon <= lon_f <= max_lon:
+                  is_inside = True
+            else: # Interval wraps across the antimeridian
+               if lon_f >= min_lon or lon_f <= max_lon:
+                  is_inside = True
+
+            # 2. If it's not inside, expand the box via the absolute shortest circular path
+            if not is_inside:
+               d_left = min_lon - lon_f
+               if d_left < 0.0: d_left += 360.0
+
+               d_right = lon_f - max_lon
+               if d_right < 0.0: d_right += 360.0
+
+               if d_right < d_left:
+                  max_lon = lon_f
+               else:
+                  min_lon = lon_f
+
+   if not has_points:
+      return 0.0
+
+   # Compute midPointDL
+   if max_lon >= min_lon:
+      center = (min_lon + max_lon) / 2.0
+      if (max_lon - min_lon) > 200 and (abs(min_lat) > 85 or abs(max_lat) > 85):
+         center = 0
+   else:
+      center = min_lon + (max_lon + 360.0 - min_lon) / 2.0
+      if center > 180.0:
+         center -= 360.0
+      if (max_lon + 360.0 - min_lon) > 200 and (abs(min_lat) > 85 or abs(max_lat) > 85):
+         center = 0
+   return center
+
 def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[float], eps_zone_tile, fid_for_debug = None) -> Optional[Dict[str, Any]]:
    if geom is None:
       return None
@@ -606,19 +663,12 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
    orig_type = geom["type"]
    tile_geoms = []
 
-   # Safe geographic mean calculation for extents that cross the dateline (xmin > xmax)
-   z_xmin, z_ymin, z_xmax, z_ymax = zone_extent
-   if z_xmin > z_xmax:
-      zone_c_lon = 0.5 * (z_xmin + z_xmax + 360.0)
-      if zone_c_lon > 180.0:
-         zone_c_lon -= 360.0
-   else:
-      zone_c_lon = 0.5 * (z_xmin + z_xmax)
-
    if orig_type == "Polygon":
-      ext = geom["coordinates"][0]
-      holes = geom["coordinates"][1:]
-      pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, 0, zone_c_lon)
+      poly = geom["coordinates"]
+      ext = poly[0]
+      holes = poly[1:]
+      geom_c_lon = calculate_anti_meridian_aware_center(poly)
+      pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, 0, geom_c_lon)
       for p in pieces:
          tile_geoms.append(p["geom"])
 
@@ -626,7 +676,8 @@ def _process_single_geometry(geom: Optional[Dict[str, Any]], zone_extent: List[f
       for i, poly in enumerate(geom["coordinates"]):
          ext = poly[0]
          holes = poly[1:]
-         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, i, zone_c_lon)
+         geom_c_lon = calculate_anti_meridian_aware_center(poly)
+         pieces = _tile_and_clip(ext, holes, zone_extent, eps_zone_tile, fid_for_debug, i, geom_c_lon)
          for p in pieces:
             tile_geoms.append(p["geom"])
    else:
