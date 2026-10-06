@@ -201,6 +201,228 @@ def fix_geometry_components_healpix(shp):
    else:
       return _shift_individual_primitive_healpix(shp)
 
+
+def transform_coord_rhealpix_equatorial_to_n_face(x, y):
+   half_pi = Pi / 2
+   quarter_pi = Pi / 4
+
+   if -quarter_pi <= y <= quarter_pi:
+      # 1. Face O: Sits natively underneath the bottom edge (Direct alignment)
+      if -Pi <= x < -half_pi:
+         # No rotation needed, it stays directly below Y = quarter_pi
+         return x, y
+
+      # 2. Face P: Rotated to extend past the RIGHT (East) edge
+      if -half_pi <= x < 0:
+         dx = x - (-half_pi)
+         dy = y - quarter_pi
+         # Moves rightward beyond -half_pi, and upward along the Y axis
+         return -half_pi - dy, quarter_pi + dx
+
+      # 3. Face Q: Rotated to extend past the TOP (North) edge
+      if 0 <= x < half_pi:
+         dx = x - 0
+         dy = y - quarter_pi
+         # Moves westward horizontally, and pushes upward past 3*quarter_pi
+         return -half_pi - dx, (quarter_pi + half_pi) - dy
+
+      # 4. Face R: Rotated to extend past the LEFT (West) edge
+      if half_pi <= x <= Pi:
+         dx = x - half_pi
+         dy = y - quarter_pi
+         # Pushes leftward beyond -Pi, and moves downward along the Y axis
+         return -Pi + dy, (quarter_pi + half_pi) - dx
+   elif y < -quarter_pi:
+      return None
+
+   return x, y
+
+def transform_coord_rhealpix_to_equatorial_face(x, y, rootZone):
+   half_pi = Pi / 2
+   quarter_pi = Pi / 4
+
+   # =========================================================================
+   # 1. NORTH POLAR FACE INPUTS (y > quarter_pi)
+   # =========================================================================
+   if y > quarter_pi:
+      # STEP 1: Relative coordinates from the exact N-square center
+      dx = x - (-Pi + quarter_pi)
+      dy = y - half_pi
+
+      # STEP 2: Find the quadrant triangle using diagonal lines / and \
+
+      # Bottom Triangle (Borders Face O)
+      if dy < dx and dy < -dx:
+         return x, y
+
+      # Right Triangle (Borders Face P)
+      elif dy < dx and dy > -dx:
+         # STEP 3: Rotate 90° CW -> (dy, -dx)
+         rx = dy
+         ry = -dx
+         # STEP 4: Translate over the Face P equatorial lane
+         return rx - quarter_pi, ry + half_pi
+
+      # Top Triangle (Borders Face Q)
+      elif dy > dx and dy > -dx:
+         # STEP 3: Rotate 180° CW -> (-dx, -dy)
+         rx = -dx
+         ry = -dy
+         # STEP 4: Translate over the Face Q equatorial lane
+         return rx + quarter_pi, ry + half_pi
+
+      # Left Triangle (Borders Face R)
+      elif dy > dx and dy < -dx:
+         # STEP 3: Rotate 270° CW -> (-dy, dx)
+         rx = -dy
+         ry = dx
+         # STEP 4: Translate over the Face R equatorial lane
+         return rx + (3 * quarter_pi), ry + half_pi
+
+   # =========================================================================
+   # 2. SOUTH POLAR FACE INPUTS (y < -quarter_pi)
+   # =========================================================================
+   elif y < -quarter_pi:
+      # STEP 1: Identify coordinates relative to the S-square center
+      dx = x - (-Pi + quarter_pi)
+      dy = y - (-half_pi)
+
+      # STEP 2: Find the quadrant triangle using the diagonal lines / and \
+
+      # Top Triangle (Borders Face O)
+      if dy > dx and dy > -dx:
+         return x, y
+
+      # Right Triangle (Borders Face P)
+      elif dy < dx and dy > -dx:
+         # STEP 3: Rotate 90° CCW -> (-dy, dx)
+         rx = -dy
+         ry = dx
+         # STEP 4: Translate under the Face P equatorial lane
+         return rx - quarter_pi, ry - half_pi
+
+      # Bottom Triangle (Borders Face Q)
+      elif dy < dx and dy < -dx:
+         # STEP 3: Rotate 180° CCW -> (-dx, -dy)
+         rx = -dx
+         ry = -dy
+         # STEP 4: Translate under the Face Q equatorial lane
+         return rx + quarter_pi, ry - half_pi
+
+      # Left Triangle (Borders Face R) -> PROVEN WORKING VERSION FOR R
+      elif dy > dx and dy < -dx:
+         # STEP 3: Rotate 270° CCW -> (dy, -dx)
+         rx = dy
+         ry = -dx
+         # STEP 4: Translate under the Face R equatorial lane
+         return rx + (3 * quarter_pi), ry - half_pi
+
+   return x, y
+
+
+def transform_coord_rhealpix_equatorial_to_s_face(x, y):
+   half_pi = Pi / 2
+   quarter_pi = Pi / 4
+
+   if -quarter_pi <= y <= quarter_pi:
+      if -Pi <= x < -half_pi:
+         # Face O: Stays directly on top of S
+         return x, y
+      if -half_pi <= x < 0:
+         # Face P: Rotates around S (Different anchor/direction than N)
+         dx = x - (-half_pi)
+         dy = y - (-quarter_pi)
+         return -half_pi + dy, -quarter_pi - dx
+      if 0 <= x < half_pi:
+         # Face Q: Flips below S
+         dx = x - 0
+         dy = y - (-quarter_pi)
+         return -half_pi + dx, (-quarter_pi - half_pi) - dy
+      if half_pi <= x <= Pi:
+         # Face R: Rotates around S
+         dx = x - half_pi
+         dy = y - (-quarter_pi)
+         # Subtract half_pi to shift Face R down exactly one square into position
+         return -Pi - dy, -quarter_pi - half_pi + dx
+   elif y > quarter_pi:
+      return None
+   return x, y
+
+def transform_coord_list_rhealpix(coords, rootZone, closeRing = False):
+   new_coords = []
+   if rootZone == 'N':
+      #print("Rotating coordinates for N...")
+      for x, y in coords:
+         c = transform_coord_rhealpix_equatorial_to_n_face(x, y)
+         if c is not None:
+            new_coords.append(c)
+   elif rootZone == 'S':
+      #print("Rotating coordinates for S...")
+      for x, y in coords:
+         c = transform_coord_rhealpix_equatorial_to_s_face(x, y)
+         if c is not None:
+            new_coords.append(c)
+   elif rootZone in ['O', 'P', 'Q', 'R']:
+      #print("Rotating coordinates for OPQR...")
+      for x, y in coords:
+         c = transform_coord_rhealpix_to_equatorial_face(x, y, rootZone)
+         if c is not None:
+            new_coords.append(c)
+   else:
+      for x, y in coords:
+         new_coords.append((x, y))
+
+   if closeRing and new_coords and new_coords[0] != new_coords[-1]:
+      new_coords.append(new_coords[0])
+
+   return new_coords
+
+def wrap_rhealpix_geometry(geom, rootZone):
+   if geom.is_empty:
+      return geom
+
+   if isinstance(geom, shapely.geometry.Polygon):
+      ext_coords = transform_coord_list_rhealpix(geom.exterior.coords, rootZone, closeRing=True)
+      if ext_coords:
+         int_rings = []
+         for hole in geom.interiors:
+            ring = transform_coord_list_rhealpix(hole.coords, rootZone, closeRing=True)
+            if ring:
+               int_rings.append(ring)
+      return shapely.geometry.Polygon(ext_coords, int_rings) if ext_coords else None
+
+   if isinstance(geom, shapely.geometry.LineString):
+      coords = transform_coord_list_rhealpix(geom.coords, rootZone)
+      return shapely.geometry.LineString(coords) if coords else None
+
+   if isinstance(geom, shapely.geometry.Point):
+      # Single-point dispatch matching the zone matrix transformations
+      coords = transform_coord_list_rhealpix([(geom.x, geom.y)], rootZone)
+      return shapely.geometry.Point(coords[0]) if coords else None
+
+   return geom
+
+def fix_geometry_components_rhealpix(shp, rootZone):
+   if shp is None or shp.is_empty:
+      return shp
+
+   g_type = shp.geom_type
+
+   if g_type == "MultiPolygon":
+      polys = [wrap_rhealpix_geometry(p, rootZone) for p in shp.geoms]
+      polys = [p for p in polys if p and not p.is_empty]
+      return shapely.geometry.MultiPolygon(polys) if polys else None
+   elif g_type == "MultiLineString":
+      lineStrings = [wrap_rhealpix_geometry(p, rootZone) for p in shp.geoms]
+      lineStrings = [l for l in lineStrings if l and not l.is_empty]
+      return shapely.geometry.MultiLineString(lineStrings) if lineStrings else None
+   elif g_type == "MultiPoint":
+      points = [wrap_rhealpix_geometry(p, rootZone) for p in shp.geoms]
+      points = [pt for pt in points if pt and not pt.is_empty]
+      return shapely.geometry.MultiPoint(points) if points else None
+   else:
+      return wrap_rhealpix_geometry(shp, rootZone)
+
 def _base_zone_package_worker(wkbc_path: str,
                               base_zone_id: int,
                               worker_config: dict,
@@ -241,13 +463,39 @@ def _base_zone_package_worker(wkbc_path: str,
          for feat in src_fc.get("features", []):
             if "_shapely_geom" in feat:
                shifted_feat = dict(feat)
-               shifted_feat["_shapely_geom"] = fix_geometry_components_healpix(feat["_shapely_geom"])
-               shifted_feat["bbox"] = shifted_feat["_shapely_geom"].bounds
+               sFeat = fix_geometry_components_healpix(feat["_shapely_geom"])
+               if sFeat:
+                  shifted_feat["_shapely_geom"] = sFeat
+                  shifted_feat["bbox"] = sFeat.bounds
+                  shifted_feat["geometry"] = shapely.geometry.mapping(sFeat) # Review is this mapping necessary here?
                local_features.append(shifted_feat)
             else:
                local_features.append(feat)
 
          src_fc = {"type": "FeatureCollection", "features": local_features}
+   elif dggrs_name.startswith("rHEALPix"):
+      rootZone = ""
+      if   base_zone == 0x00000000 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x00000000), 0): rootZone = "N"
+      elif base_zone == 0x80000000 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x80000000), 0): rootZone = "S"
+      elif base_zone == 0x40000000 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x40000000), 0): rootZone = "O"
+      elif base_zone == 0x40000001 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x40000001), 0): rootZone = "P"
+      elif base_zone == 0x40000002 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x40000002), 0): rootZone = "Q"
+      elif base_zone == 0x40000003 or dggrs.isZoneDescendantOf(base_zone, DGGRSZone(0x40000003), 0): rootZone = "R"
+
+      local_features = []
+      for feat in src_fc.get("features", []):
+         if "_shapely_geom" in feat:
+            shifted_feat = dict(feat)
+            sFeat = fix_geometry_components_rhealpix(shifted_feat["_shapely_geom"], rootZone)
+            if sFeat:
+               shifted_feat["_shapely_geom"] = sFeat
+               shifted_feat["bbox"] = sFeat.bounds
+               shifted_feat["geometry"] = shapely.geometry.mapping(sFeat)
+               local_features.append(shifted_feat)
+         else:
+            local_features.append(feat)
+
+      src_fc = {"type": "FeatureCollection", "features": local_features}
 
    local_blobs: Dict[int, bytes] = {}
 
