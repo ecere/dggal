@@ -23,7 +23,9 @@ def get_zone_polygon(dggrs, zone, refined=True, ico=False):
    else:
       verts_container = dggrs.getZoneCRSVertices(zone, crs)
 
-   return [[float(v.x), float(v.y)] for v in verts_container]
+   polygon = [[float(v.x), float(v.y)] for v in verts_container]
+   Instance.delete(verts_container)
+   return polygon
 
 def sort_key_for_hits(h: Dict[str, Any]):
    et = h.get("edge_t")

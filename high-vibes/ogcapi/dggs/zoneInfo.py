@@ -84,6 +84,7 @@ def polygon_geometry_from_zone(dggrs, zone):
    if not verts:
       return None
    coords = [[float(v.lon), float(v.lat)] for v in verts]
+   Instance.delete(verts)
    if not coords:
       return None
    if coords[0] != coords[-1]:

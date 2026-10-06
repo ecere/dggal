@@ -281,6 +281,8 @@ def write_dggs_json_fg(out_fc: Dict[str, Any],
          "dggsPlace": dggs_place
       })
 
+   Instance.delete(sub_zones)
+
    return dggs_obj
 
 def write_dggs_json_fg_to_file(out_fc: Dict[str, Any],
