@@ -13,10 +13,12 @@ import sys
 import traceback
 import shapely
 from shapely import wkb as _wkb
-from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection
+from shapely.geometry import shape, mapping, Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon, GeometryCollection, box
+from shapely.ops import polygonize
 import math
 from functools import partial
 import numpy as np
+import json
 
 try:
    from ogcapi.utils import pretty_json
@@ -24,12 +26,14 @@ try:
    from dggsStore.store import DGGSDataStore, iter_packages
    from fg.reproj import instantiate_projection_for_dggrs_name
    from fg.dggsJSONFG import unproject_and_fix, PolarRootMode
+   from fg.fix_topology_5x6 import _get_rhombus_layout, _process_geometry_dropping_vertices, _extract_same_dimension_geoms
 except(ImportError):
    from ..ogcapi.utils import pretty_json
    from ..fg.dggsJSONFG import read_dggs_json_fg
    from ..dggsStore.store import DGGSDataStore, iter_packages
    from ..fg.reproj import instantiate_projection_for_dggrs_name
    from ..fg.dggsJSONFG import unproject_and_fix, PolarRootMode
+   from ..fg.fix_topology_5x6 import _get_rhombus_layout, _process_geometry_dropping_vertices, _extract_same_dimension_geoms
 
 GRID_SIZE_DEFAULT = 1e-2
 WORKERS = 16
@@ -118,41 +122,126 @@ def _snap_coordinates_vectorized(coords: np.ndarray, sz_dlon: float) -> np.ndarr
 
    return coords
 
-# merge_shapely_geometries: merge iterable of Shapely geometries and return a single Shapely geometry
-# - strict contract: geoms is an iterable of Shapely geometry objects (caller responsibility)
-# - do_buffer defaults to False
-# - if do_buffer is True and grid_size == 0, perform a single buffer(0) call; otherwise perform buffer(grid).buffer(-grid)
-def merge_shapely_geometries(
-   geoms: Iterable[Any],
-   *,
-   do_buffer: bool = False,
-   grid_size: float = 1e-10,
-   subzone_level: int = 16,
-   ggg_snap: bool = False
-) -> Optional[Any]:
-   # convert iterable to list (caller must supply valid Shapely geometries)
-   geom_list = list(geoms)
+def _fix_geometries_5x6_topology(geom_list, fid):
    if not geom_list:
       return None
 
-   # single geometry -> use directly
-   if len(geom_list) == 1:
-      merged = geom_list[0]
-   else:
-      merged = shapely.union_all(geom_list, grid_size=grid_size)
+   shapes_to_process = list(geom_list) if isinstance(geom_list, (list, tuple)) else [geom_list]
+   geom_type = shapes_to_process[0].geom_type
+   all_rhombus_pieces = []
 
-   if merged is None or merged.is_empty:
+   # Ensure our targeted debug subdirectory is ready
+   #debug_dir = os.path.join(os.getcwd(), "debug_dumps", f"fid_{fid}")
+   #os.makedirs(debug_dir, exist_ok=True)
+   #pid = 0
+
+   for index in range(10):
+      x_start, y_start, is_even = _get_rhombus_layout(index)
+      target_box = box(x_start, y_start, x_start + 1.0, y_start + 1.0)
+
+      local_face_shps = []
+      for s_idx, shp in enumerate(shapes_to_process):
+         if not shp or shp.is_empty:
+            continue
+
+         # --- ATOMIC TOPOLOGY CONVERSION ---
+         transformed_shp = _process_geometry_dropping_vertices(shp, x_start, y_start, is_even)
+
+         if not transformed_shp.is_empty:
+            if not transformed_shp.is_valid:
+               try:
+                  validShape = shapely.make_valid(transformed_shp, method="structure", keep_collapsed=False)
+               except:
+                  validShape = shapely.make_valid(transformed_shp)
+            else:
+               validShape = transformed_shp
+            if validShape.geom_type == "GeometryCollection":
+               polys = [g for g in validShape.geoms if "Polygon" in g.geom_type]
+               if polys:
+                  validShape = polys[0] if len(polys) == 1 else shapely.MultiPolygon(polys)
+
+            local_face_shps.append(validShape)
+
+      # Process intersections directly using your original master function logic
+      for transformed_shp in local_face_shps:
+         if transformed_shp.intersects(target_box):
+            try:
+               clipped = transformed_shp.intersection(target_box)
+            except Exception:
+               clipped = transformed_shp.buffer(0).intersection(target_box)
+
+            filtered_parts = _extract_same_dimension_geoms(clipped, geom_type)
+            for part in filtered_parts:
+               if not part.is_empty:
+                  all_rhombus_pieces.append(part)
+
+   if not all_rhombus_pieces:
       return None
 
-   # optional cleanup: single buffer when grid_size == 0, otherwise buffer(grid).buffer(-grid)
-   if do_buffer:
-      if merged.geom_type in ("Polygon", "MultiPolygon"):
+   # --- COMBINED SNAP-TO-GRID UNION PASS ---
+   unified_geom = shapely.union_all(all_rhombus_pieces, grid_size=1e-10)
+   return unified_geom
+
+
+def _merge_and_clean_dggs_geometry(
+   shps,
+   projection,
+   valid_5x6_space,
+   grid_size,
+   do_buffer,
+   subzone_level,
+   ggg_snap,
+   fid=None
+):
+   if not shps:
+      return None
+
+   geom_type = shps[0].geom_type
+
+   # 1. AREAL ROUTE: Polygons / MultiPolygons
+   if "Polygon" in geom_type:
+      is_projected_5x6 = projection is not None and type(projection).__name__.startswith(("IVEA", "RTEA", "ISEA"))
+
+      if is_projected_5x6:
+         # print("5x6 fixing for feature", fid, "...")
+         merged = _fix_geometries_5x6_topology(shps, fid)
+
+         #shps = [shapely.make_valid(s) for s in shps if s and not s.is_empty]
+         #merged = shps[0] if len(shps) == 1 else shapely.union_all(shps, grid_size=grid_size)
+
+         #merged_geojson = mapping(merged)
+         #_dump_debug_geojson(merged_geojson, fid, stage_name="un_dissolved_grid")
+      else:
+         shps = [shapely.make_valid(s) for s in shps if s and not s.is_empty]
+
+         merged = shps[0] if len(shps) == 1 else shapely.union_all(shps, grid_size=grid_size)
+
+      # Shared buffering and cell-healing step for all areal geometries
+      if merged is not None and not merged.is_empty and do_buffer:
          if grid_size == 0:
             merged = merged.buffer(0)
          else:
-            merged = merged.buffer(grid_size).buffer(-grid_size)
+            healed = merged.buffer(grid_size).buffer(-grid_size)
+            if True and is_projected_5x6:
+               # Re-clip against valid space to prune bled edges and force clean topology boundaries
+               re_clipped = shapely.intersection(healed, valid_5x6_space, grid_size=0)
+               clean_polys = _extract_pure_polygons(re_clipped)
+               merged = clean_polys[0] if len(clean_polys) == 1 else shapely.MultiPolygon(clean_polys)
+            else:
+               merged = healed
 
-      elif merged.geom_type in ("LineString", "MultiLineString", "GeometryCollection"):
+   # 2. LINEAR ROUTE: LineStrings / MultiLineStrings
+   elif "Line" in geom_type:
+      flat_lines = []
+      for s in shps:
+         if s.geom_type == "LineString":
+            flat_lines.append(s)
+         elif s.geom_type == "MultiLineString":
+            flat_lines.extend(s.geoms)
+
+      merged = flat_lines[0] if len(flat_lines) == 1 else shapely.MultiLineString(flat_lines)
+
+      if merged is not None and not merged.is_empty and do_buffer:
          if grid_size > 0:
             merged = shapely.snap(merged, merged, tolerance=grid_size)
 
@@ -165,11 +254,16 @@ def merge_shapely_geometries(
 
          if lines:
             merged = lines[0] if len(lines) == 1 else shapely.ops.linemerge(lines)
+         else:
+            merged = None
 
+   # 3. POINT / FALLBACK ROUTE: Points, MultiPoints, etc.
+   else:
+      merged = shps[0] if len(shps) == 1 else shapely.union_all(shps, grid_size=grid_size)
+
+   # Apply final global GNOSIS coordinate snaps if enabled on valid areal outputs
    if merged and ggg_snap and merged.geom_type in ("Polygon", "MultiPolygon"):
       sz_dlon = 90.0 / (2 ** subzone_level)
-
-      # Use functools.partial to bind the parameter cleanly without nested functions
       merged = shapely.transform(merged, partial(_snap_coordinates_vectorized, sz_dlon=sz_dlon))
    # return merged Shapely geometry
    return merged
@@ -244,7 +338,7 @@ def _worker_process_package(
       # free memory for this entry
       geoms.clear()
 
-      if merged_geojson:
+      if merged_geojson and (not projection or not is5x6):
          merged_geojson = unproject_and_fix(
             projection, extent, merged_geojson, fid, refine_wgs84=None, fix_geom=True,
             root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
@@ -256,7 +350,7 @@ def _worker_process_package(
       if shp is None: continue
 
       # merge shapely geometries (worker-level union across parts), no buffer cleanup here
-      merged_shp = merge_shapely_geometries([shp], do_buffer=False, grid_size=grid_size, ggg_snap=ggg_snap)
+      merged_shp = shp #merge_shapely_geometries([shp], do_buffer=False, grid_size=grid_size, ggg_snap=ggg_snap)
       if merged_shp is None: continue
 
       # serialize to WKB (binary) and store under integer feature id
@@ -363,6 +457,100 @@ def _inject_polar_densification_points(geom: shapely.geometry.base.BaseGeometry)
 
    return geom
 
+def extract_same_type_only(geom, target_type: str):
+   if geom.is_empty:
+      return geom
+   if geom.geom_type == target_type:
+      return geom
+   # Handle cases where the geometry is a multi-type but within the same family
+   if geom.geom_type.startswith("Multi") and target_type in geom.geom_type:
+      return geom
+   # Flatten and filter out multi-dimensional leakage or GeometryCollections
+   if hasattr(geom, "geoms"):
+      parts = []
+      for g in geom.geoms:
+         if g.geom_type == target_type:
+            parts.append(g)
+         elif g.geom_type.startswith("Multi") and target_type in g.geom_type:
+            parts.extend(g.geoms)
+      if not parts:
+         return shapely.geometry.GeometryCollection()
+      if len(parts) == 1:
+         return parts[0]
+      if target_type == "Polygon":
+         return shapely.geometry.MultiPolygon(parts)
+      if target_type == "LineString":
+         return shapely.geometry.MultiLineString(parts)
+      if target_type == "Point":
+         return shapely.geometry.MultiPoint(parts)
+   return geom
+
+# Process-safe utility that saves intermediate 5x6 geometries with descriptive names
+def _dump_debug_geojson(geojson_dict: Any, fid: Any, stage_name: str) -> None:
+   try:
+      dump_dir = os.path.join(os.getcwd(), "debug_dumps")
+      os.makedirs(dump_dir, exist_ok=True)
+
+      fid_str = str(fid) if fid is not None else "unknown"
+      pid = os.getpid()
+
+      # Clear, meaningful filename format reflecting the processing stage
+      filename = f"5x6_layout_fid_{fid_str}_stage_{stage_name}_pid_{pid}.geojson"
+      file_path = os.path.join(dump_dir, filename)
+
+      # geojson_dict is already a mapped dictionary, dump it directly
+      with open(file_path, "w") as df:
+         json.dump(geojson_dict, df, indent=2)
+      print(f"💾 DEBUG SUCCESS: Dumped {stage_name} geometry to {file_path}")
+   except Exception as dump_err:
+      print(f"⚠️ DEBUG FAILURE: Could not dump debug stage ({stage_name}): {dump_err}")
+
+# Filters out linear and point artifacts, returning only pure Polygon pieces
+def _extract_pure_polygons(geometry_collection: Any) -> List[Polygon]:
+   pure_polygons = []
+   if geometry_collection.geom_type == 'Polygon':
+      pure_polygons.append(geometry_collection)
+   elif geometry_collection.geom_type in ('MultiPolygon', 'GeometryCollection'):
+      for part in geometry_collection.geoms:
+         if part.geom_type == 'Polygon':
+            pure_polygons.append(part)
+   return pure_polygons
+
+def calculate_grid_size(dggrs, subzone_level, projection):
+   linear_m = math.sqrt(dggrs.getRefZoneArea(subzone_level))
+   earth_linear_m = math.sqrt(5.100656217240885092949E14)
+   units_linear = 0.0
+
+   if projection is None:
+      units_linear = math.sqrt(4.0 * (180.0 ** 2.0) / math.pi)
+   else:
+      proj_type = type(projection)
+      if proj_type in (IVEAProjection, RTEAProjection, ISEAProjection):
+         units_linear = math.sqrt(10.0)
+      elif proj_type in (HEALPixProjection, rHEALPixProjection):
+         units_linear = math.sqrt(6.0 * (math.pi / 2.0) ** 2.0)
+
+   return linear_m * (units_linear / earth_linear_m)
+
+def prepare_valid_5x6_space():
+   # 1. Programmatically reconstruct the true 10-rhombus valid space footprint
+   rhombus_polygons = []
+   def _get_rhombus_layout(index: int):
+      x_start = float(index // 2)
+      y_start = float(index // 2) if (index % 2 == 0) else float((index // 2) + 1)
+      return x_start, y_start, (index % 2 == 0)
+   for index in range(10):
+       x_start, y_start, is_even = _get_rhombus_layout(index)
+       vertices = [
+            (x_start, y_start),
+            (x_start + 1.0, y_start),
+            (x_start + 1.0, y_start + 1.0),
+            (x_start, y_start + 1.0),
+            (x_start, y_start)
+       ]
+       rhombus_polygons.append(Polygon(vertices))
+   valid_5x6_space = shapely.unary_union(rhombus_polygons)
+   return valid_5x6_space
 
 # orchestrator: receives list of worker results (each Dict[int, bytes]),
 # aggregates WKBs per feature id, rehydrates to Shapely, calls merge_shapely_geometries(do_buffer=True),
@@ -389,27 +577,109 @@ def orchestrator_finalize(
 
    # merge per-feature across workers, perform final buffer cleanup, convert to GeoJSON
    final_geoms: Dict[int, dict] = {}
-   #extent = [-180,-90,180,90]
+
+   extent = [-180,-90,180,90]
 
    is5x6 = _is_dggrs_5x6(type(dggrs).__name__)
 
+   valid_5x6_space = prepare_valid_5x6_space() if is5x6 else None
+
+   if projection and not is5x6:
+      grid_size = 10 * calculate_grid_size(dggrs, subzone_level, projection)
+   else:
+      grid_size = (1.1 if is5x6 else 1.1 if projection else 10) * calculate_grid_size(dggrs, subzone_level, projection)
+   print(f"Selected a grid_size of {grid_size} CRS units to heal sub-zone gaps")
+
+   finalSnap = None
    for fid, wkb_list in agg.items():
       # rehydrate all WKBs to Shapely geometries
       shps = [_wkb.loads(b) for b in wkb_list]
       # merge across workers and perform final cleanup (do_buffer=True)
-      merged = merge_shapely_geometries(shps, do_buffer=True, grid_size=grid_size, ggg_snap = ggg_snap)
+
+      gs = grid_size
+      if projection and not is5x6 and shps and "Polygon" in shps[0].geom_type:
+         gs *= 59
+
+      final_merged_geometry = _merge_and_clean_dggs_geometry(
+         shps=shps,
+         projection=projection,
+         valid_5x6_space=valid_5x6_space,
+         grid_size=gs,
+         do_buffer=True,
+         subzone_level=subzone_level,
+         ggg_snap=ggg_snap,
+         fid=fid
+      )
+
+      if final_merged_geometry is None or final_merged_geometry.is_empty:
+         continue
+
+      if projection and is5x6:
+         # Map the unified geometry directly to GeoJSON
+         merged_geojson = mapping(final_merged_geometry)
+         #_dump_debug_geojson(merged_geojson, fid, stage_name="dissolved_final")
+
+         merged_geojson = unproject_and_fix(
+               projection, extent, merged_geojson, fid, refine_wgs84=None, fix_geom=True,
+               root_level=root_level, subzone_level=subzone_level, is_polar_root=is_polar_root
+            ) #1e-2)
+         merged = shape(merged_geojson) if merged_geojson else None
+      else:
+         merged = final_merged_geometry
+
+      if projection and merged and not merged.is_empty and merged.geom_type in ("Polygon", "MultiPolygon"):
+         if finalSnap is None:
+            is4R = is5x6 and type(dggrs).__name__.endswith(("4R"))
+            is9R = is5x6 and type(dggrs).__name__.endswith(("9R"))
+
+            if is9R:
+               finalSnap = grid_size * 1400 # at 1100 Antarctica has gaps for 9R
+            elif is4R:
+               finalSnap = grid_size * 850 # at 800 Antarctica has gaps for 4R
+            elif not is5x6 and projection:
+               finalSnap = grid_size * 1
+            else:
+               finalSnap = grid_size * 62
+            print("Final buffer snapping of", finalSnap)
+         merged = merged.buffer(finalSnap).buffer(-finalSnap)
+         merged = merged.intersection(box(-180.0, -90.0, 180.0, 90.0))
+
+      # Determine primary geometry family before modifications change it
+      primary_type = "Polygon"
+      if shps:
+         if "Line" in shps[0].geom_type:
+            primary_type = "LineString"
+         elif "Point" in shps[0].geom_type:
+            primary_type = "Point"
+
+      if merged and merged.geom_type in ("Polygon", "MultiPolygon") and not merged.is_empty:
+         merged = shapely.ops.orient(merged, sign=1.0)
+         # Inject the extra polar points right after all buffering/fixing actions finish
+         if merged:
+            merged = _inject_polar_densification_points(merged)
+
+      elif merged and not merged.is_empty:
+         if merged.geom_type in ("MultiLineString", "GeometryCollection"):
+            lines = [g for g in merged.geoms if g.geom_type == "LineString"]
+            if lines:
+               merged = lines[0] if len(lines) == 1 else shapely.ops.linemerge(lines)
 
       if merged and not merged.is_empty:
-         merged = shapely.ops.orient(merged, sign=1.0)
+         if not merged.is_valid:
+            merged = shapely.validation.make_valid(merged)
+            merged = shapely.ops.orient(merged, sign=1.0)
+            try:
+               merged = shapely.validation.make_valid(merged, method="structure")
+            except TypeError:
+               merged = shapely.validation.make_valid(merged)
 
-      # Inject the extra polar points right after all buffering/fixing actions finish
-      if merged:
-         merged = _inject_polar_densification_points(merged)
+         # Unified dynamic extraction for all geometry type families
+         merged = extract_same_type_only(merged, primary_type)
+
+         if merged and not merged.is_empty:
+            merged = shapely.ops.orient(merged, sign=1.0)
 
       geojson = mapping(merged) if merged else None
-      # REVIEW: It would be ideal to unproject at the end, but it currently runs into topology issues
-      #if geojson:
-      #   geojson = unproject_and_fix(projection, extent, geojson, fid, refine_wgs84=1e-2)
       final_geoms[fid] = geojson
 
    return final_geoms
@@ -451,7 +721,7 @@ def export_to_geojson(
    package_results: List[Dict[int, bytes]] = []
    submitted = 0
 
-   projection = None #instantiate_projection_for_dggrs_name(store.config['dggrs'])
+   projection = instantiate_projection_for_dggrs_name(store.config['dggrs'])
 
    with ProcessPoolExecutor(max_workers=worker_count, initializer=_initialize_dggal_worker) as ex:
       for pkg_path, base_zone_id, base_ancestors_ids in pkg_iter:
