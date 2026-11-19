@@ -487,61 +487,61 @@ public class HEALPix : DGGRS
 
    Array<DGGRSZone> listZones(int level, const GeoExtent bbox)
    {
-      AVLTree<HPZone> zonesTree { };
-      Array<HPZone> zones { };
-      int root;
-      int l;
+      Array<HPZone> zones { minAllocSize = 12 };
+      bool extentCheck = bbox != null && bbox.OnCompare(wholeWorld);
 
-      for(root = 0; root < 12; root++)
-         zonesTree.Add({ 0, root, 0 });
-
-      if(level == 0 && bbox != null)
+      if(level >= 0 && extentCheck &&
+         fabs((Radians)bbox.ur.lat - (Radians)bbox.ll.lat) < 1E-11 &&
+         fabs((Radians)bbox.ur.lon - (Radians)bbox.ll.lon) < 1E-11)
       {
-         AVLTree<HPZone> tmp { };
-
-         for(z : zonesTree)
-         {
-            HPZone zone = (HPZone)z;
-            GeoExtent e;
-            HEALPix::getZoneWGS84Extent(zone, e);
-            if(e.intersects(bbox))
-               tmp.Add(zone);
-         }
-         delete zonesTree;
-         zonesTree = tmp;
+         DGGRSZone zone = HEALPix::getZoneFromWGS84Centroid(level, bbox.ll);
+         if(zone != nullZone)
+            zones.Add((HPZone)zone);
       }
-
-      for(l = 1; l <= level; l++)
+      else if(level >= 0)
       {
-         AVLTree<HPZone> tmp { };
+         int root, l;
 
-         for(z : zonesTree)
+         for(root = 0; root < 12; root++)
          {
-            HPZone zz = z;
-            HPZone children[4];
-            int i;
-            int n = zz.getChildren(children);
-
-            for(i = 0; i < n; i++)
+            HPZone zone { 0, root, 0 };
+            if(extentCheck)
             {
-               HPZone c = children[i];
-               if(bbox != null)
+               GeoExtent e;
+               HEALPix::getZoneWGS84Extent(zone, e);
+               if(!e.intersects(bbox))
+                  continue;
+            }
+            zones.Add(zone);
+         }
+
+         for(l = 1; l <= level; l++)
+         {
+            Array<HPZone> next { minAllocSize = zones.count * 4 };
+            int idx;
+
+            for(idx = 0; idx < zones.count; idx++)
+            {
+               HPZone zz = zones[idx];
+               HPZone children[4];
+               int i, n = zz.getChildren(children);
+
+               for(i = 0; i < n; i++)
                {
-                  GeoExtent e;
-                  if(!tmp.Find(c))
+                  HPZone c = children[i];
+                  if(extentCheck)
                   {
+                     GeoExtent e;
                      HEALPix::getZoneWGS84Extent(c, e);
                      if(!e.intersects(bbox))
                         continue;
                   }
-                  else
-                     continue;
+                  next.Add(c);
                }
-               tmp.Add(children[i]);
             }
+            delete zones;
+            zones = next;
          }
-         delete zonesTree;
-         zonesTree = tmp;
       }
 
 /*
@@ -595,14 +595,11 @@ public class HEALPix : DGGRS
          addPolarZones(zonesTree, { 0, 2, 0 }, level, south);
 */
 
-      zones.minAllocSize = zonesTree.count;
-      for(t : zonesTree)
-         zones.Add(t);
+      zones.Sort(true);
       zones.minAllocSize = 0;
       if(!zones.count)
          delete zones;
 
-      delete zonesTree;
       return (Array<DGGRSZone>)zones;
    }
 
